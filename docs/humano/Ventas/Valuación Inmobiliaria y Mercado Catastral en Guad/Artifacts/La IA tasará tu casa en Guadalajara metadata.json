@@ -1,0 +1,56 @@
+{
+  "title": "La IA tasará tu casa en Guadalajara",
+  "type": "ARTIFACT_TYPE_AUDIO_OVERVIEW",
+  "sources": [{
+    "sourceId": {
+      "id": "5d55cd27-734d-4d55-92c9-fc499e96ae24"
+    }
+  }, {
+    "sourceId": {
+      "id": "99753452-5145-442a-95b0-a8a036bce365"
+    }
+  }, {
+    "sourceId": {
+      "id": "627ca482-42ca-4cea-b452-c9068f0541af"
+    }
+  }, {
+    "sourceId": {
+      "id": "26d7a951-d99a-4869-9054-149ec24f4276"
+    }
+  }, {
+    "sourceId": {
+      "id": "2cf1fce6-33ad-43e7-a378-ab2ed46b4c92"
+    }
+  }, {
+    "sourceId": {
+      "id": "64209b2c-e819-4d39-8c86-295f25cc961e"
+    }
+  }, {
+    "sourceId": {
+      "id": "c2fd3f1e-4d8b-4493-967c-fc4bf4a9958e"
+    }
+  }, {
+    "sourceId": {
+      "id": "e1028787-aa8e-4efb-a2c1-89c538732631"
+    }
+  }, {
+    "sourceId": {
+      "id": "bd5c12ad-f36d-4b05-a27b-34fddcb8a080"
+    }
+  }, {
+    "sourceId": {
+      "id": "ccd6c13f-06d6-40e1-8eed-d94b26147c89"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "audioOverview": {
+    "generationOptions": {
+      "episodeFocus": "",
+      "episodeLength": "EPISODE_LENGTH_UNSPECIFIED",
+      "targetAudience": "TARGET_AUDIENCE_UNSPECIFIED",
+      "languageCode": "es-MX",
+      "showFormat": "SHOW_FORMAT_UNSPECIFIED"
+    },
+    "isInteractive": false
+  }
+}

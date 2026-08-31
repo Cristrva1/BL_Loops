@@ -1,0 +1,29 @@
+<h3 id="llm-prameter-guideprompt-cachingseedllm-streamingtemperaturetop-ktop-pstop-sequencejson-modepresence-penaltystructured-outputsfunction-callinglogprobsfrequency-penaltymax-tokenslogit-biastry-vellumselect-llm-parameterwhat-is-logit-bias-and-how-to-use-it">LLM Prameter GuidePrompt CachingSeedLLM StreamingTemperatureTop KTop PStop SequenceJSON ModePresence PenaltyStructured OutputsFunction CallingLogprobsFrequency PenaltyMax TokensLogit Biastry VellumSelect LLM ParameterWhat is Logit Bias and how to use it</h3>
+<p>Supported by OpenAI Anthropic</p>
+<h3 id="what-is-logit-bias">What is Logit Bias</h3>
+<p>The  <strong>logit bias</strong>  parameter lets you control whether the model is more or less likely to generate a specific word.</p>
+<h3 id="how-does-it-work-behind-the-scenes">How does it work behind the scenes</h3>
+<p>The model is always deciding which word (or tokens) to pick next. All these tokens have their own IDs, and using logit bias we can forbid the model to use some of these IDs.
+But how can we actually find these IDs?
+The simplest way is to use OpenAI’s tokenizer tool. Just type in your words, toggle the “Text-Token ID” option at the bottom, and you’ll get the IDs for your words. In some cases you’ll get more tokens for one word.
+It’s important to note here that different models may produce different tokens for the same input, so you should always check with the model provider to learn about their tokenization process.
+There are couple of important things to note here:</p>
+<ol>
+<li>You can use OpenAI’s tokenizer tool to find out the tokens for GPT-3.5 and GPT-4 models, but there is still no data for GPT-4o and GPT-4o mini.</li>
+<li>One word can have two tokens.</li>
+<li>Characters before a word (e.g. a space or underscore) can produce different tokens for the same word.</li>
+<li>Capitalization and no-capitalization versions of same word might result in different tokens.</li>
+</ol>
+<h3 id="how-to-set-this-parameter-correctly">How to set this parameter correctly</h3>
+<p>In the API, this parameter accepts a JSON object that maps token IDs to bias value. This bias value can vary between -100 to 100. The parameter takes tokens, not text, so you’d use the tokenizer we mentioned above to take the token ids for the words that you’d want to “bias”.</p>
+<h3 id="how-to-experiment-with-logit-bias">How to experiment with Logit Bias</h3>
+<p>The closer the value is to -100, the more likely that token will be blocked from being generated. The closer it is to 100, the more the model is encouraged to use that token.
+To test this parameter, try adjusting the values gradually and analyze the impact. Using small values like 1 or -1 won’t make much difference, but values like 5 or -5 can have a much stronger effect.</p>
+<h3 id="when-to-use-logit-bias">When to use Logit Bias</h3>
+<p>Use logit bias when know specifically which words you want to ban or encourage repetitive use.</p>
+<h5 id="example-1-ban-offensive-words"><strong>Example 1: Ban offensive words</strong></h5>
+<p>One example where you’d want to ban some words (tokens) from appearing in the results is for moderation purposes.
+Suppose you’re building a guardrail that will capture offensive content in your chatbot. Now, you may want to ban words like “stupid”. The word “stupid” tokenizes to two IDs  [267, 16263] , and the same word with a space before “ stupid” tokenizes to another ID  [18754] . To ban them from appearing in the results we can add the logit bias like so:
+completion = client.chat.completions.create(   model= &#34;gpt-3.5-turbo&#34; ,   messages=[{ &#34;role&#34; :  &#34;system&#34; ,  &#34;content&#34; :  &#34;You finish user&#39;s sentences.&#34; },  &#34;role&#34; :  &#34;user&#34; ,  &#34;content&#34; :  &#34;Once upon a&#34; } ]   logit_bias={ 267 :- 100 ,  16263 :- 100 ,  18754 :- 100 }  )</p>
+<h5 id="example-2-encourage-neutral-answers-in-a-chatbot"><strong>Example 2: Encourage neutral answers in a chatbot</strong></h5>
+<p>If you’re using a customer support chatbot, you’ll likely want it to maintain a calm, neutral tone. To help with that, you can encourage the model to use more neutral words like “understand,” “assist,” and “resolve”. To make the model output “understand,” you need to map it to two token IDs and add a bias of 5:</p>

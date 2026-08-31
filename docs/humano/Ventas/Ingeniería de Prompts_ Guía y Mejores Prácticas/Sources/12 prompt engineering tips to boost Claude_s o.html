@@ -1,0 +1,184 @@
+<ul>
+<li><strong>Vellum is coming to the AI Engineering World&#39;s Fair in SF. Come visit our booth and get a live demo!</strong> Products</li>
+<li>ResourcesHow GravityStack Cut Credit Agreement Review Time by 200% with Agentic AI</li>
+<li>Docs</li>
+<li>Enterprise</li>
+<li>Pricing
+Start for FreeRequest demoAllCustomer StoriesProduct UpdatesModel ComparisonsLLM basicsGuidesAll Post/GuidesSearch...CONTENTSInline evaluation / Guardrails: Ensure good system performance at run-timeThis is some text inside of a div block.Prompt Engineering Guide for Claude Models •
+Learn how to prompt Claude with these 11 prompt engineering tips.
+Author Anita Kirkovska Author No items found. Feb 2, 2024 Guides No items found.Have you tried instructing any Claude model in the same way as you would GPT-4?
+Given the widespread use and familiarity with OpenAI&#39;s models, it&#39;s a common reflex.
+Yet, this approach doesn&#39;t quite hit the mark with these models.
+Claude models are trained with different methods/techniques, and should be instructed with specific instructions that cater to those differences. So, I looked into Anthropic&#39;s official docs, and tried to use their guidelines to improve the LLM outputs for our customers.
+<strong>Turns out, Claude models, specifically Claude 3 Opus, can do even better than GPT-4 if you learn to prompt it right.</strong>
+The official documentation can be a bit confusing, so this guide will show you the most useful prompt engineering techniques. We&#39;ve also developed a prompt converter; just paste your GPT-4 prompt and get an adapted Claude 3 Opus version. Try the tool here.
+Now let&#39;s learn how to prompt Claude.
+‍</li>
+</ul>
+<h3 id="1-use-xml-tags-to-separate-instructions-from-context">1. Use XML tags to separate instructions from context</h3>
+<p>The Claude models have been fine-tuned to pay special attention to the structure created by XML tags, and it won’t follow any random indicators like GPT does. It’s important to use these tags to separate instructions, examples, questions, context, and input data as needed.
+For example you can add text tags to wrap the input:
+Summarize the main ideas from a provided text.  
+You can use any names you like for these tags; there are no specific or exclusive names required. What&#39;s important is the format. Just make sure to include  <em>&lt;&gt;</em>  and  <em>&lt;/&gt;</em> , and it will work fine!
+‍</p>
+<h3 id="2-be-direct-concise-and-as-specific-as-possible">2. Be direct, concise and as specific as possible</h3>
+<p>This is equally important for every large model.
+You’ll need to clearly state what the model should do rather than what it should avoid. Using affirmatives like “do” instead of “don’t” will give you better results.
+Provide Claude with detailed context and clearly specify which tag to use to find this information.
+Here’s how we can improve the above prompt:</p>
+<p>Summarize the main ideas from the   provided article text within the </p>
+<h3 id="3-help-claude-with-the-output">3. Help Claude with the output</h3>
+<p>The biggest problem with generally all Claude models is that it tends to be very chatty in its answers. It will always start with a sentence or two prior to providing the answer, despite being instructed in the prompt to follow a specific format.
+To mitigate this, you can use the  <em>Assistant</em>  message to provide the beginning of the output. This technique will ensure Claude always begins its answer the same way.
+Here’s how that prompt will look like if we want Claude to follow a specific format:
+Summarize the main ideas from the provided article text within the </p>
+<h3 id="4-assign-a-role">4. Assign a role</h3>
+<p>Always assign a role. If you’re building an AI-powered writing tool, start your prompt with “You’re a content writer…”, or better yet &#34;You&#39;re the best content writer in the world!&#34;. Using the previous technique of putting the first token in the Assistant’s response, you can also force Claude to stay in character.
+For example:
+You’re Jack, the best content writer in the world.  Summarize the main ideas from the provided article text within the </p>
+<h3 id="5-give-claude-time-to-think">5. Give Claude time to think</h3>
+<p>There are some cases when it can be beneficial to explicitly instruct Claude to generate extra text where it reasons through the problem. To achieve this, you can instruct Claude to first &#34;think through the problem&#34; and then provide the answer. You can request that Claude outputs this process with two separate XML tags: one for the &#34;thinking&#34; part and another for the &#34;answer.&#34;, like in the prompt below:
+You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="6-provide-examples">6. Provide Examples</h3>
+<p>Few-shot prompting is probably the most effective way to get Claude to give very good answers. Including a couple of examples that might generalize well for your use case, can have high impact on the quality of the answers. The more examples you add the better the response will be, but at the cost of higher latency and tokens.
+You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="7-let-claude-say-i-don-t-know">7. Let Claude say &#34;I don&#39;t know&#34;</h3>
+<p>To prevent hallucinations just add the phrase shown in the prompt below
+Answer the following question only if you know the answer or can make a well-informed guess; otherwise tell me you don&#39;t know it.
+‍</p>
+<h3 id="8-long-documents-before-instructions">8. Long documents before instructions</h3>
+<p>If you’re dealing with longer documents, always ask your question at the end of the prompt. For very long prompts Claude gives accent to the end of your prompt, so you need to add important instructions at the end. This is extremely important for Claude 2.1.
+   You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="9-think-step-by-step">9. Think step by step</h3>
+<p>You can significantly improve the accuracy, by adding the phrase “Think step by step” that will force Claude to think step by step, and follow intermediate steps to arrive to the final answer. This is called zero-shot chain of thought prompting and we wrote more on that in this blog post.
+‍</p>
+<h3 id="10-break-complex-tasks-into-steps">10. Break complex tasks into steps</h3>
+<p>Claude might perform poorly at complex tasks that are composed of several subtasks. If you know who those subtasks are, you can help Claude by providing a step by step instructions. Something like:
+You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="11-prompt-chaining">11. Prompt Chaining</h3>
+<p>If you can’t get reliable results by breaking the prompt into subtasks, you can split the tasks in different prompts. This is called prompt chaining, and is very useful at troubleshooting specific steps in your prompts.
+‍</p>
+<h3 id="12-look-for-relevant-sentences-first">12. Look for Relevant Sentences First</h3>
+<p>All Claude models can recall information very good across their 200K context window (they passed the &#34;Needle in a Haystack&#34; test with 95% accuracy). But, the models can be reluctant to answer questions based on an individual sentence in a document, especially if that sentence has been injected or is out of place.
+To fix this, you can add start the  <em>Assistant</em>  message with &#34; <em>Here is the most relevant sentence in the context:”</em>  <em>,</em>  instructing Claude to begin its output with that sentence. This prompt instruction achieves <strong>near complete fidelity throughout Claude 2.1’s 200K context window</strong> .
+Assistant:  Here is the most relevant sentence in the context:
+‍</p>
+<h3 id="test-driven-prompt-engineering-with-claude">Test-driven prompt engineering with Claude</h3>
+<p>These best practices for Claude can help you write a solid first prompt. But, how can you determine if this method is effective across a wide range of user inputs?
+To build confidence in your prompt, you can follow a test-driven prompt engineering approach.
+You can compile a collection of test scenarios and apply them to various configurations of your prompt and model. Continue this process until you’re satisfied with the outcome.
+Remember, constant iteration is key here. Even after pushing your prompt to production, it’s critical to monitor how it’s doing against live traffic and run regression tests before deploying any changes to your prompts.
+If you need help with evaluating your prompts while you’re prototyping or when they’re in production — we can help.
+Vellum provides the tooling layer to experiment with prompts and models, evaluate at scale, monitor them in production, and make changes with confidence.
+If you’re interested, you can book a call here. You can also subscribe to our blog to stay tuned for updates.
+‍</p>
+<h3 id="faq">FAQ</h3>
+<p>‍</p>
+<h4 id="what-is-the-main-difference-between-claude-2-and-claude-2-1">What is the main difference between Claude 2 and Claude 2.1?</h4>
+<p>The primary distinction is that Claude 2.1 features a context window that is twice as large (200,000 tokens) and introduces the ability to make function calls, a functionality that was previously exclusive to OpenAI models.
+In addition to that, it demonstrates better recall capabilities, hallucinates less, and has better comprehension across a very big context window.
+So, Claude 2.1 is a perfect model to handle longer, more complex documents like legal docs, and Claude 2 is great at text processing suitable for many other applications.</p>
+<h4 id="how-large-is-claude-s-context-window">How large is Claude&#39;s context window?</h4>
+<p>Claude 2.1 leads in context prompting capabilities, supporting a maximum context window of 200,000 tokens, the highest available among models. This amounts to roughly 500 pages of information, or the equivalent of one Harry Potter book!</p>
+<h4 id="does-claude-2-by-anthropic-support-function-calling">Does Claude 2 by Anthropic support function calling?</h4>
+<p>Yes, but currently limited to select early access partners. With the function calling option you can pass Claude a set of tools and have Claude decide which tool to use to help you achieve your task. Some examples include:</p>
+<ul>
+<li>Function calling for arbitrary functions</li>
+<li>Search over web sources</li>
+<li>Retrieval over private knowledge bases
+Have you tried instructing any Claude model in the same way as you would GPT-4?
+Given the widespread use and familiarity with OpenAI&#39;s models, it&#39;s a common reflex.
+Yet, this approach doesn&#39;t quite hit the mark with these models.
+Claude models are trained with different methods/techniques, and should be instructed with specific instructions that cater to those differences. So, I looked into Anthropic&#39;s official docs, and tried to use their guidelines to improve the LLM outputs for our customers.
+<strong>Turns out, Claude models, specifically Claude 3 Opus, can do even better than GPT-4 if you learn to prompt it right.</strong>
+The official documentation can be a bit confusing, so this guide will show you the most useful prompt engineering techniques. We&#39;ve also developed a prompt converter; just paste your GPT-4 prompt and get an adapted Claude 3 Opus version. Try the tool here.
+Now let&#39;s learn how to prompt Claude.
+‍</li>
+</ul>
+<h3 id="1-use-xml-tags-to-separate-instructions-from-context-2">1. Use XML tags to separate instructions from context</h3>
+<p>The Claude models have been fine-tuned to pay special attention to the structure created by XML tags, and it won’t follow any random indicators like GPT does. It’s important to use these tags to separate instructions, examples, questions, context, and input data as needed.
+For example you can add text tags to wrap the input:
+Summarize the main ideas from a provided text.  
+You can use any names you like for these tags; there are no specific or exclusive names required. What&#39;s important is the format. Just make sure to include  <em>&lt;&gt;</em>  and  <em>&lt;/&gt;</em> , and it will work fine!
+‍</p>
+<h3 id="2-be-direct-concise-and-as-specific-as-possible-2">2. Be direct, concise and as specific as possible</h3>
+<p>This is equally important for every large model.
+You’ll need to clearly state what the model should do rather than what it should avoid. Using affirmatives like “do” instead of “don’t” will give you better results.
+Provide Claude with detailed context and clearly specify which tag to use to find this information.
+Here’s how we can improve the above prompt:</p>
+<p>Summarize the main ideas from the   provided article text within the </p>
+<h3 id="3-help-claude-with-the-output-2">3. Help Claude with the output</h3>
+<p>The biggest problem with generally all Claude models is that it tends to be very chatty in its answers. It will always start with a sentence or two prior to providing the answer, despite being instructed in the prompt to follow a specific format.
+To mitigate this, you can use the  <em>Assistant</em>  message to provide the beginning of the output. This technique will ensure Claude always begins its answer the same way.
+Here’s how that prompt will look like if we want Claude to follow a specific format:
+Summarize the main ideas from the provided article text within the </p>
+<h3 id="4-assign-a-role-2">4. Assign a role</h3>
+<p>Always assign a role. If you’re building an AI-powered writing tool, start your prompt with “You’re a content writer…”, or better yet &#34;You&#39;re the best content writer in the world!&#34;. Using the previous technique of putting the first token in the Assistant’s response, you can also force Claude to stay in character.
+For example:
+You’re Jack, the best content writer in the world.  Summarize the main ideas from the provided article text within the </p>
+<h3 id="5-give-claude-time-to-think-2">5. Give Claude time to think</h3>
+<p>There are some cases when it can be beneficial to explicitly instruct Claude to generate extra text where it reasons through the problem. To achieve this, you can instruct Claude to first &#34;think through the problem&#34; and then provide the answer. You can request that Claude outputs this process with two separate XML tags: one for the &#34;thinking&#34; part and another for the &#34;answer.&#34;, like in the prompt below:
+You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="6-provide-examples-2">6. Provide Examples</h3>
+<p>Few-shot prompting is probably the most effective way to get Claude to give very good answers. Including a couple of examples that might generalize well for your use case, can have high impact on the quality of the answers. The more examples you add the better the response will be, but at the cost of higher latency and tokens.
+You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="7-let-claude-say-i-don-t-know-2">7. Let Claude say &#34;I don&#39;t know&#34;</h3>
+<p>To prevent hallucinations just add the phrase shown in the prompt below
+Answer the following question only if you know the answer or can make a well-informed guess; otherwise tell me you don&#39;t know it.
+‍</p>
+<h3 id="8-long-documents-before-instructions-2">8. Long documents before instructions</h3>
+<p>If you’re dealing with longer documents, always ask your question at the end of the prompt. For very long prompts Claude gives accent to the end of your prompt, so you need to add important instructions at the end. This is extremely important for Claude 2.1.
+   You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="9-think-step-by-step-2">9. Think step by step</h3>
+<p>You can significantly improve the accuracy, by adding the phrase “Think step by step” that will force Claude to think step by step, and follow intermediate steps to arrive to the final answer. This is called zero-shot chain of thought prompting and we wrote more on that in this blog post.
+‍</p>
+<h3 id="10-break-complex-tasks-into-steps-2">10. Break complex tasks into steps</h3>
+<p>Claude might perform poorly at complex tasks that are composed of several subtasks. If you know who those subtasks are, you can help Claude by providing a step by step instructions. Something like:
+You’re Jack, the best content writer in the world. Summarize the main ideas from the provided article text within the </p>
+<h3 id="11-prompt-chaining-2">11. Prompt Chaining</h3>
+<p>If you can’t get reliable results by breaking the prompt into subtasks, you can split the tasks in different prompts. This is called prompt chaining, and is very useful at troubleshooting specific steps in your prompts.
+‍</p>
+<h3 id="12-look-for-relevant-sentences-first-2">12. Look for Relevant Sentences First</h3>
+<p>All Claude models can recall information very good across their 200K context window (they passed the &#34;Needle in a Haystack&#34; test with 95% accuracy). But, the models can be reluctant to answer questions based on an individual sentence in a document, especially if that sentence has been injected or is out of place.
+To fix this, you can add start the  <em>Assistant</em>  message with &#34; <em>Here is the most relevant sentence in the context:”</em>  <em>,</em>  instructing Claude to begin its output with that sentence. This prompt instruction achieves <strong>near complete fidelity throughout Claude 2.1’s 200K context window</strong> .
+Assistant:  Here is the most relevant sentence in the context:
+‍</p>
+<h3 id="test-driven-prompt-engineering-with-claude-2">Test-driven prompt engineering with Claude</h3>
+<p>These best practices for Claude can help you write a solid first prompt. But, how can you determine if this method is effective across a wide range of user inputs?
+To build confidence in your prompt, you can follow a test-driven prompt engineering approach.
+You can compile a collection of test scenarios and apply them to various configurations of your prompt and model. Continue this process until you’re satisfied with the outcome.
+Remember, constant iteration is key here. Even after pushing your prompt to production, it’s critical to monitor how it’s doing against live traffic and run regression tests before deploying any changes to your prompts.
+If you need help with evaluating your prompts while you’re prototyping or when they’re in production — we can help.
+Vellum provides the tooling layer to experiment with prompts and models, evaluate at scale, monitor them in production, and make changes with confidence.
+If you’re interested, you can book a call here. You can also subscribe to our blog to stay tuned for updates.
+‍</p>
+<h3 id="faq-2">FAQ</h3>
+<p>‍</p>
+<h4 id="what-is-the-main-difference-between-claude-2-and-claude-2-1-2">What is the main difference between Claude 2 and Claude 2.1?</h4>
+<p>The primary distinction is that Claude 2.1 features a context window that is twice as large (200,000 tokens) and introduces the ability to make function calls, a functionality that was previously exclusive to OpenAI models.
+In addition to that, it demonstrates better recall capabilities, hallucinates less, and has better comprehension across a very big context window.
+So, Claude 2.1 is a perfect model to handle longer, more complex documents like legal docs, and Claude 2 is great at text processing suitable for many other applications.</p>
+<h4 id="how-large-is-claude-s-context-window-2">How large is Claude&#39;s context window?</h4>
+<p>Claude 2.1 leads in context prompting capabilities, supporting a maximum context window of 200,000 tokens, the highest available among models. This amounts to roughly 500 pages of information, or the equivalent of one Harry Potter book!</p>
+<h4 id="does-claude-2-by-anthropic-support-function-calling-2">Does Claude 2 by Anthropic support function calling?</h4>
+<p>Yes, but currently limited to select early access partners. With the function calling option you can pass Claude a set of tools and have Claude decide which tool to use to help you achieve your task. Some examples include:</p>
+<ul>
+<li>Function calling for arbitrary functions</li>
+<li>Search over web sources</li>
+<li>Retrieval over private knowledge bases
+ABOUT THE AUTHOR Anita Kirkovska Founding Growth LeadAn AI expert with a strong ML background, specializing in GenAI and LLM education. A former Fulbright scholar, she leads Growth and Education at Vellum, helping companies build and scale AI products. She conducts LLM evaluations and writes extensively on AI best practices, empowering business leaders to drive effective AI adoption.
+No items found. Share Post
+Related PostsView MoreGuides August 8, 2025 • 7 Effective Multi Agent Systems Building With Context Engineering Best PracticesGuides August 7, 2025 • 7 min GPT-5 BenchmarksModel Comparisons August 6, 2025 • 7 min OpenAI o3 vs gpt-oss 120bGuides August 5, 2025 • 7 min Understanding your agent’s behavior in productionGuides July 27, 2025 • Subliminal Learning in LLMsGuides July 15, 2025 • 7 min Why ‘Context Engineering’ is the New Frontier for AI AgentsThe Best AI Tips — Direct To Your Inbox
+Latest AI news, tips, and techniques
+Specific tips for Your AI use cases
+No spam
+Thank you! Your submission has been received! Oops! Something went wrong while submitting the form.
+<em>Each issue is packed with valuable resources, tools, and insights that help us stay ahead in AI development. We&#39;ve discovered strategies and frameworks that boosted our efficiency by 30%, making it a must-read for anyone in the field.</em>
+Marina Trajkovska Head of Engineering
+<em>This is just a great newsletter. The content is so helpful, even when I’m busy I read them.</em>
+Jeremy Hicks Solutions Architect</li>
+</ul>
+<h4 id="experiment-evaluate-deploy-repeat">Experiment, Evaluate, Deploy, Repeat.</h4>
+<p>AI development doesn’t end once you&#39;ve defined your system. Learn how Vellum helps you manage the entire AI development lifecycle.
+Prompting Current PageOrchestration Current PageEvaluation Current PageRetrieval Current PageDeployment Current PageMonitoring Current Pagex
+Book a DemoorLearn more</p>

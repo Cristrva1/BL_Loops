@@ -1,0 +1,18 @@
+{
+  "title": "HUD AI Blueprint",
+  "type": "ARTIFACT_TYPE_SLIDES",
+  "sources": [{
+    "sourceId": {
+      "id": "9f4cc8e2-8f0f-4d88-bb9d-22a716a64baf"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "slides": {
+    "generationOptions": {
+      "languageCode": "es_mx",
+      "deckType": "DECK_TYPE_READING",
+      "length": "SLIDE_DECK_LENGTH_MEDIUM"
+    },
+    "title": "HUD AI Blueprint"
+  }
+}

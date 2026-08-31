@@ -1,0 +1,47 @@
+MODEL: <p>Para que una IA realice una investigación exhaustiva sobre el <strong>Proyecto 1: Pipeline de Trabajo Multi-IA</strong> basándose en la información técnica proporcionada, puedes utilizar el siguiente prompt detallado. Este prompt está diseñado para extraer el máximo valor de los niveles (Tiers) y las capacidades técnicas mencionadas en las fuentes.</p>
+<hr>
+<h3 id="prompt-de-investigaci-n-para-la-ia">Prompt de Investigación para la IA</h3>
+<p>&#34;Actúa como un <strong>Arquitecto de Soluciones de IA Senior</strong>. Tu tarea es realizar un análisis técnico y estratégico profundo del <strong>Proyecto 1 (Pipeline de Trabajo Multi-IA: Planificación → Ejecución → Revisión)</strong>. Utiliza los siguientes ejes de investigación:</p>
+<ol>
+<li>
+<p><strong>Análisis de Niveles de Implementación (Tiers):</strong></p>
+<ul>
+<li><strong>Nivel Low Cost (Local):</strong> Evalúa el uso de <strong>Ollama</strong> y <strong>CrewAI</strong> con modelos <strong>Qwen 2.5 7B</strong>. Analiza las limitaciones de razonamiento en modelos pequeños y el impacto de una velocidad de 15-25 tokens/segundo en la productividad [1, 2].</li>
+<li><strong>Nivel Híbrido:</strong> Investiga la eficiencia de usar <strong>n8n</strong> como orquestador visual frente a código puro. Analiza el beneficio de integrar <strong>Gemini 2.5 Pro</strong> (vía Google AI Studio) por su límite gratuito de 1,500 solicitudes diarias y cómo <strong>OpenRouter</strong> optimiza costos [3-5].</li>
+<li><strong>Nivel Premium:</strong> Detalla la arquitectura de <strong>LangGraph</strong> para orquestación con estado y el uso de <strong>LangSmith</strong> para debugging. Explica cómo el <strong>routing inteligente</strong> (enviar tareas fáciles a modelos baratos y difíciles a modelos premium) optimiza el ROI [5, 6].</li>
+</ul>
+</li>
+<li>
+<p><strong>Dimensiones Económicas y de Calidad:</strong></p>
+<ul>
+<li>Compara los <strong>costos operativos</strong> mensuales: desde <strong>$0 USD</strong> (Tier 1) hasta los <strong>$50-200 USD</strong> estimados para uso intensivo en Tier 3 [2, 5, 7].</li>
+<li>Analiza la <strong>calidad de los resultados</strong>: contrasta la precisión de modelos locales de 7B frente al razonamiento complejo de <strong>Claude Opus 4.6</strong> y <strong>GPT-4o</strong> [2, 5, 6].</li>
+</ul>
+</li>
+<li>
+<p><strong>Ángulos por Resolver o Contemplar:</strong></p>
+<ul>
+<li>Investiga la necesidad de <strong>reintentos automáticos</strong> y <strong>estado persistente</strong> para evitar la pérdida de trabajo en tareas largas [6].</li>
+<li>Analiza los riesgos de <strong>seguridad y observabilidad</strong>: ¿Cómo se monitorea cuánto gastó cada agente y qué tokens usó? [6].</li>
+</ul>
+</li>
+<li>
+<p><strong>Usos Ingeniosos y Casos de Éxito:</strong></p>
+<ul>
+<li><strong>Uso Ingenioso:</strong> Implementación de <strong>ramas condicionales</strong> (ej. si el revisor califica &lt; 8/10, la tarea regresa automáticamente al ejecutor) [6].</li>
+<li><strong>Uso Famoso:</strong> Investiga el caso del investigador <strong>Nicholas Carlini (Anthropic)</strong>, quien utilizó un bucle de agentes para construir un <strong>compilador de C</strong> sin intervención humana en 2,000 sesiones [8].</li>
+<li><strong>Aplicación Práctica:</strong> Uso de <strong>Claude Code</strong> con la función <code>/loop</code> para que la IA trabaje de forma autónoma hasta cumplir un criterio de verificación [9].</li>
+</ul>
+</li>
+</ol>
+<p><strong>Entregable Requerido:</strong> Presenta un cuadro comparativo de opciones, una hoja de ruta de costos y una sección de &#39;Mejores Prácticas de Orquestación&#39; para maximizar la calidad del pipeline.&#34;</p>
+<hr>
+<h3 id="notas-adicionales-basadas-en-las-fuentes-para-tu-comprensi-n">Notas adicionales basadas en las fuentes para tu comprensión:</h3>
+<ul>
+<li><strong>Costos:</strong> El pipeline puede ser extremadamente económico si usas <strong>Ollama local</strong> ($0), pero el costo por &#34;pipeline&#34; complejo en niveles superiores puede oscilar entre <strong>$0.05 y $0.50 USD</strong> por ejecución [2, 7].</li>
+<li><strong>Calidad:</strong> La diferencia clave entre niveles es la capacidad de <strong>razonamiento complejo</strong>. Mientras el Tier 1 es para tareas simples, el Tier 3 permite <strong>routing inteligente</strong>, lo que significa que el sistema decide qué IA es la más barata y capaz para cada subtarea específica [2, 6].</li>
+<li><strong>Uso Famoso:</strong> El ejemplo de Nicholas Carlini demuestra que la orquestación masiva puede resolver problemas de ingeniería de software que una sola IA no podría [8].</li>
+</ul>
+
+USER: <p>Dame un Prompt completo para que una IA investigue todos los angulos que faltan de contemplarse o solucionarse para el proyecto 1, desde costos, hasta calidad de resultados, agrega usos ingeniosos y si hay algún uso famoso de esto. Necesito que el modelo lm busque varias opciones y niveles</p>
+

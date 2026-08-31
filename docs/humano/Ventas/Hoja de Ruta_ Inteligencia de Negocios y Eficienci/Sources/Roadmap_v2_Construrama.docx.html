@@ -1,0 +1,275 @@
+<p>ROADMAP DE IMPLEMENTACIÓN
+<strong>SISTEMA DE INTELIGENCIA</strong>
+<strong>EMPRESARIAL CONSTRURAMA</strong>
+<strong>BASADO EN DOCUMENTO MAESTRO CONSOLIDADO V3.0</strong>
+<em>3 Fases × Criterios de Salida × RACI × Niveles de Automatización</em>
+| <strong>PRINCIPIOS RECTORES DEL SISTEMA</strong> | 1. Caja sobre contabilidad — el flujo de efectivo manda, el CCC es la métrica reina | 2. Gobernanza antes de cálculo — sin definiciones unívocas, todo indicador es sospechoso | 3. Menor a mayor complejidad — primero lo que libera caja, después lo que predice | 4. Cada indicador tiene acción, dueño y costo de no-acción | 5. Mejor 5 indicadores usados que 400 ignorados |
+| ------ | ------ | ------ | ------ | ------ | ------ |</p>
+<p>Versión 2.0 — Marzo 2026
+<strong>FASE 1 — VISIBILIDAD Y VICTORIAS RÁPIDAS</strong>
+<em><strong>Resultados visibles en 1 a 4 semanas. Datos directos del ERP. Los primeros 4 elementos representan el 70% del impacto inicial y se implementan antes de tocar cualquier otro.</strong></em>
+<strong>PRIORIDAD MÁXIMA: LOS 4 INDICADORES QUE SE IMPLEMENTAN PRIMERO</strong>
+<strong>1.1 Margen Bruto por SKU, Categoría y Proveedor</strong>
+| <strong>1.1  MARGEN BRUTO DESGLOSADO — EL PRIMER GRAN FILTRO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Tabla de ventas del ERP: producto, cantidad, precio unitario de venta. Tabla de costos: costo de adquisición por SKU (incluyendo flete y descuentos de proveedor, sin IVA). Periodo: mensual mínimo. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Margen Bruto % = (Precio Venta - Costo Compra) / Precio Venta × 100. Se calcula por cada SKU individual, se agrega por categoría (cemento, acero, tubería, herramientas) y por proveedor. Se compara contra benchmark: 19-22% margen bruto promedio industria 2026. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Los 1,000 SKUs ordenados por margen. Productos alerta roja (&lt;10%), zona de monitoreo (10-18%), zona sana (18-25%), estrellas (&gt;25%). Top y bottom 20 por margen. Margen promedio ponderado por categoría y por proveedor. Proveedor cuyo portafolio promedio está debajo de 15%: candidato a negociación. |
+| <strong>PARA QUÉ SIRVE</strong> | Es el punto de partida absoluto del sistema. Identifica dónde se gana dinero y dónde se pierde. Productos con margen &lt;10% destruyen valor cuando se suman costos indirectos. Acción inmediata: subir precio, renegociar costo, o evaluar descontinuación. RACI: Responsable = Gerente de Compras. Aprobador = CEO. |</p>
+<p><strong>1.2 Rotación de Inventario e Inventario Muerto</strong>
+| <strong>1.2  CAPITAL ATRAPADO — IMPACTO ESPERADO: LIBERAR 10-20% DEL CAPITAL DE TRABAJO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Inventario actual valorado a costo de reposición (no histórico). Costo de ventas por SKU (mensual/anual). Fecha de último movimiento de cada SKU. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Rotación = Costo de Ventas Anual / Inventario Promedio. Días de inventario (DIO) = 365 / Rotación. Inventario muerto = SKUs sin movimiento en &gt;180 días (definición del diccionario corporativo). Costo de oportunidad diario = valor inventario muerto × 18% WACC / 365. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Cada SKU clasificado: alta rotación (&gt;12x), normal (6-12x), baja (2-6x), muerto (&lt;2x o sin movimiento). Valor total en pesos del inventario muerto con costo diario de tenerlo. Antigüedad por rangos (0-30, 31-60, 61-90, 91-180, &gt;180 días). Lista de liquidación automática con precio de remate calculado. |
+| <strong>PARA QUÉ SIRVE</strong> | En una tienda con $800K en inventario, libera entre $80K y $160K en los primeros 30 días. Cada $500K de inventario muerto cuesta ~$247 diarios ($7,400/mes) en costo de capital. RACI: Responsable = Jefe de Almacén. Aprobador = Gerente de Operaciones. Alerta: si inventario muerto supera $100K, se genera lista de liquidación automática. SLA: 1 semana. |</p>
+<p><strong>1.3 Punto de Equilibrio Global y por Categoría</strong>
+| <strong>1.3  BREAK-EVEN: CUÁNTO DEBES VENDER PARA NO PERDER</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Costos fijos mensuales desglosados: renta, nómina (fija + prestaciones), servicios, seguros, depreciación. Margen de contribución ponderado por mix de ventas real (no promedio simple). Ventas mensuales reales. |
+| <strong>CÁLCULO QUE REALIZA</strong> | PE en pesos = Costos Fijos / Margen de Contribución Ponderado. Margen de Seguridad = (Ventas Reales - PE) / Ventas Reales × 100. PE por categoría = CF asignados a categoría / MC de esa categoría. PE en efectivo = excluye depreciación/amortización (cuánto vender para cubrir la caja mínima de supervivencia). |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Cifra exacta en pesos del nivel mínimo de ventas. Distancia entre ventas actuales y quiebre. Categorías que ya superaron su PE (generan utilidad) vs. categorías subsidiadas. Sensibilidad: si ventas caen 10%, 15%, 20%, ¿en cuál caso se cruza el PE? |
+| <strong>PARA QUÉ SIRVE</strong> | Si el margen de seguridad es 12%, una baja de 15% te pone en pérdidas. Si una categoría no cubre su PE individual, las demás la están cargando. Alerta: si ventas son menores al PE durante 2 meses consecutivos, se activa revisión de estructura de costos. RACI: Responsable = Gerente de Finanzas. Aprobador = CEO. SLA: 1 semana. |</p>
+<p><strong>1.5 Ciclo de Conversión de Efectivo (CCC)</strong>
+| <strong>1.5  CCC: LA MÉTRICA REINA DEL SISTEMA — META: &lt;45 DÍAS</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | DIO (días de inventario, de 1.2). DSO (días de cobranza, de 1.4). DPO (días de pago a proveedores) = CxP / Compras diarias promedio. |
+| <strong>CÁLCULO QUE REALIZA</strong> | CCC = DIO + DSO - DPO. Costo diario del CCC elevado = Ventas diarias × días de exceso sobre meta × WACC/365. Ejemplo: si ventas diarias = $80K, exceso = 15 días, WACC = 18%, costo diario = ~$600. El sistema muestra las 3 palancas y el impacto de mover cada una. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | CCC actual en días. Tendencia mensual. Desglose por componente (DIO, DSO, DPO) con flecha de tendencia cada uno. Costo diario del CCC elevado en pesos. Simulador simple: “si DSO baja 5 días, liberas $X de capital”. |
+| <strong>PARA QUÉ SIRVE</strong> | Un CCC de 60 días en un negocio de $2.5M mensuales = ~$5.4M de capital permanentemente inmovilizado. Reducir 10 días libera ~$830K. Las palancas: cobrar más rápido (DSO), rotar inventario más rápido (DIO), negociar más plazo (DPO). RACI: Responsable = Gerente de Finanzas. Aprobador = CEO. Consultados: Almacén y Ventas. Revisión: semanal. Alerta roja: CCC &gt;60 días. |</p>
+<p><strong>INDICADORES COMPLEMENTARIOS DE FASE 1 (implementar después de los 4 prioritarios)</strong>
+<strong>1.4 Antigüedad de Cartera (Aging de CxC) y DSO</strong>
+| <strong>1.4  CARTERA VENCIDA: LA FUGA SILENCIOSA DE CAJA</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Facturas pendientes de cobro: cliente, monto, fecha emisión, fecha vencimiento, estatus. Política de crédito vigente. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Clasifica por rango: corriente, 1-30, 31-60, 61-90, &gt;90 días. DSO = (CxC / Ventas a Crédito) × 365. Pérdida esperada: &gt;90 días = 25-50% de pérdida probable. Se compara DSO vs DPO para detectar si financias clientes con dinero de proveedores. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Mapa de cartera por cliente y antigüedad. Total en riesgo de incobrabilidad. Top clientes morosos con acción requerida. % cartera vencida / cartera total. |
+| <strong>PARA QUÉ SIRVE</strong> | Acción: cobranza agresiva para &gt;60 días, suspensión de crédito para reincidentes. Alerta: si cartera &gt;90 días supera 15% de ventas, se suspende crédito y se escala a cobranza externa. RACI: Responsable = Gerente de Cobranza. SLA: 24 horas. |</p>
+<p><strong>1.6 Matriz ABC Cruzada (Ingreso × Margen) — 9 Cuadrantes</strong>
+| <strong>1.6  MAPA ESTRATÉGICO DEL PORTAFOLIO DE 1,000 SKUs</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Ventas anuales por SKU (valor y margen bruto). |
+| <strong>CÁLCULO QUE REALIZA</strong> | ABC por ingreso (A=80%, B=15%, C=5%) y ABC por margen de contribución. Cruce en matriz 3×3 = 9 cuadrantes. AA = estrella (proteger), AC = volumen sin utilidad (ajustar precio), CA = nicho rentable (impulsar), CC = lastre (descontinuar). |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Cada SKU ubicado en su cuadrante con acción recomendada. Listas operativas: productos a proteger, a revisar precio, a impulsar comercialmente, a liquidar/eliminar. |
+| <strong>PARA QUÉ SIRVE</strong> | Supera el ABC unidimensional. Un producto puede ser C en ventas pero A en margen (oportunidad). O A en ventas pero C en margen (trampa de volumen que consume esfuerzo sin utilidad real). Decisiones de surtido basadas en dos dimensiones, no una. |</p>
+<p><strong>1.7 Doce Razones Financieras con Semáforo</strong>
+| <strong>1.7  RADIOGRAFÍA FINANCIERA INSTANTÁNEA</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Balance General y Estado de Resultados mensuales. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Liquidez: Razón Circulante, Prueba Ácida. Actividad: Rotación Inventario, Rotación CxC, Rotación CxP. Endeudamiento: Deuda/Capital, Cobertura Intereses. Rentabilidad: Margen Bruto, Margen Neto, ROA, ROE, EBITDA/Ventas. Cada una con umbral verde/amarillo/rojo calibrado a benchmarks retail materiales 2026. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Tablero de una página: valor actual, tendencia (flecha), semáforo, comparativo vs. mes anterior y vs. mismo mes del año anterior. Sin decimales en modo CEO (22%, no 22.37%). |
+| <strong>PARA QUÉ SIRVE</strong> | En 30 segundos sabes si la liquidez es sana, si estás sobreendeudado, si la eficiencia mejora o empeora, y si la rentabilidad es sostenible. Benchmarks: Margen bruto 19-22%, Margen neto 6-7.5%, Rotación &gt;6x. |</p>
+<p><strong>1.8 Análisis Vertical y Horizontal del EdoR</strong>
+| <strong>1.8  ESTRUCTURA DE COSTOS Y EROSIÓN SILENCIOSA</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Estado de Resultados mensual de al menos 12-24 meses. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Vertical: cada partida como % de Ventas Netas. Horizontal: variación % periodo contra periodo y año contra año. Detección de partidas que crecen más rápido que las ventas (erosión de margen). |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Tabla comparativa con estructura porcentual actual, cómo ha cambiado cada partida, y alertas de gastos que crecen desproporcionadamente. CMV debe ser 75-85% en materiales de construcción. |
+| <strong>PARA QUÉ SIRVE</strong> | Detecta la compresión silenciosa de margen. Si ventas crecen 8% pero gastos admin crecen 15%, el margen se está erosionando sin que sea evidente en las cifras totales. |</p>
+<p><strong>1.9 Concentración de Clientes y Proveedores (HHI)</strong>
+| <strong>1.9  DEPENDENCIA = RIESGO EXISTENCIAL</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Ventas por cliente (top 50+). Compras por proveedor (todos). |
+| <strong>CÁLCULO QUE REALIZA</strong> | Pareto: % de ventas en top 10%, 20% de clientes. HHI = ∑(participación)^2. HHI &gt;2,500 = alta concentración. Impacto estimado si se pierde el top 1, top 3. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Responde: ¿qué pasa si pierdo a mi cliente/proveedor más grande? Impacto en pesos. Semáforo de riesgo. |
+| <strong>PARA QUÉ SIRVE</strong> | Si 3 clientes &gt;40% de ventas, perder uno es riesgo existencial. Si un proveedor &gt;30% de categoría crítica y no tiene sustituto, un quiebre de stock es inminente ante cualquier falla. |</p>
+<p><strong>1.10 Productividad de Nómina</strong>
+| <strong>1.10  EFICIENCIA DEL CAPITAL HUMANO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Nómina mensual total y por empleado (incluyendo prestaciones). Ventas y margen bruto mensual. Headcount por área. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Ventas/empleado. Margen/empleado. Nómina como % de ventas. Nómina como % de margen bruto. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Pesos de margen generados por cada peso de nómina. Comparativo por área (ventas vs. admin vs. almacén). |
+| <strong>PARA QUÉ SIRVE</strong> | Benchmark: nómina &lt;12% de ventas, &lt;45% de margen bruto. Si excede, hay que revisar estructura, turnos o comisiones. |</p>
+<p><strong>1.11 Gobernanza de Datos y Diccionario Corporativo (EN PARALELO)</strong>
+| <strong>1.11  MÓDULO 0: EL CIMIENTO — SE IMPLEMENTA JUNTO CON TODO LO DEMÁS</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Catálogo de productos. Listado de clientes/proveedores. Calendario fiscal. Políticas internas. |
+| <strong>CÁLCULO QUE REALIZA</strong> | No es cálculo numérico sino estandarización: definir Venta (al facturar, sin IVA, menos devoluciones), Cliente Activo (compra en últimos 90 días), Margen Bruto (incluye flete), Inventario (a costo de reposición, no histórico), Inventario Muerto (&gt;180 días sin movimiento). Clasificar 1,000 SKUs en 4 dimensiones: familia, rol estratégico, comportamiento demanda, perfil proveedor. 5 pilares de calidad: completitud &gt;98%, consistencia &gt;99%, frescura &lt;24h, unicidad, conformidad. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Diccionario corporativo con definiciones unívocas. Jerarquía de productos en 4 dimensiones. Calendario de negocio (temporada alta ene-jun, baja jul-oct, Buen Fin, quincenas). Responsable asignado a cada definición. Reporte semanal de salud de datos. |
+| <strong>PARA QUÉ SIRVE</strong> | Si Contabilidad dice que vendiste $3.2M y Ventas dice $3.4M, el sistema no es confiable y nadie lo usa. El diccionario elimina discrepancias. Sin esto, los otros 10 indicadores de Fase 1 producen números bonitos pero falsos. |</p>
+<p><strong>CRITERIOS DE SALIDA DE FASE 1</strong>
+<em><strong>No se avanza a Fase 2 hasta que se cumplan TODOS estos requisitos:</strong></em>
+| <strong>CONDICIONES OBLIGATORIAS PARA AVANZAR A FASE 2</strong> |
+| ------ |
+| <strong>☑</strong> Los 4 indicadores críticos (1.1, 1.2, 1.3, 1.5) operan con datos reales, no de prueba |
+| <strong>☑</strong> La discrepancia entre áreas en definiciones del diccionario es menor al 2% |
+| <strong>☑</strong> Se han realizado al menos 3 sesiones semanales de revisión con equipo directivo |
+| <strong>☑</strong> Al menos 2 decisiones documentadas se tomaron basándose en datos del sistema |
+| <strong>☑</strong> Cada indicador tiene un responsable asignado y capacitado |
+| <strong>☑</strong> El ROI de Fase 1 está cuantificado: capital liberado, margen protegido, fugas detectadas |
+| <strong>☑</strong> Si NO se cumple: no avanzar. Corregir Fase 1 primero. Fase 2 sobre cimientos débiles = basura sofisticada |</p>
+<p><strong>FASE 2 — INTELIGENCIA INTERMEDIA Y PROTECCIÓN DE MARGEN</strong>
+<em><strong>Proteger 2-4 puntos de margen. Costeo real, pricing matemático, segmentación, presupuesto con rendición de cuentas. Duración: 1-3 meses después de consolidar Fase 1.</strong></em>
+<strong>2.1 Costeo ABC Real por SKU</strong>
+| <strong>2.1  RENTABILIDAD REAL: REVELA PRODUCTOS PARÁSITOS</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Gastos indirectos desglosados: renta (m² por zona), electricidad, nómina por área, costo de recepción por pedido, costo de almacenaje por m³. Drivers de actividad: pedidos por proveedor, transacciones por SKU, m² ocupados, tiempo de manejo. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Asigna costos indirectos a cada SKU por consumo real de recursos. Costo unitario real = Adquisición + (renta × m² ocupado / unidades) + (nómina almacén × tiempo manejo / unidades) + (costo pedido / unidades por pedido). Margen real = Precio venta - Costo unitario real ABC. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Lista de 1,000 SKUs con margen REAL (no solo precio-costo). Productos parásitos: margen contable positivo pero margen ABC negativo. Típicamente 10-15% de los SKUs tienen margen real negativo. |
+| <strong>PARA QUÉ SIRVE</strong> | Cambia radicalmente decisiones de surtido. Un producto de $50 con margen bruto de $10 parece bueno. Pero si ocupa mucho espacio, requiere manejo especial y se pide en lotes pequeños, su costo real puede ser $48 y su margen real $2. Nivel de automatización: 1 (recomendación, humano aprueba). |</p>
+<p><strong>2.2 Pricing Matemático: Precio Mínimo y Descuento Máximo</strong>
+| <strong>2.2  PROTECCIÓN DE 2-4 PUNTOS DE MARGEN ANUAL</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Costo variable unitario real por SKU (del costeo ABC). Margen mínimo objetivo por categoría (definido por dirección). Margen bruto actual. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Precio Mínimo Rentable = Costo Variable / (1 - Margen Mínimo Objetivo). Descuento Máximo = 1 - (Costo Variable / (Precio Lista × (1 - Margen Mínimo))). Implementación: 3 días (una fórmula, un campo en facturación, una alerta). |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Tabla por SKU: precio piso, descuento máximo permitido (%), precio sugerido óptimo. Si vendedor intenta descuento mayor, sistema bloquea o escala para aprobación del CEO. |
+| <strong>PARA QUÉ SIRVE</strong> | En un negocio de $30M anuales, proteger 2-4 puntos de margen = $600K-$1.2M adicionales al año. Alerta: si margen de SKU cae &lt;10% por 3 semanas consecutivas, se bloquea descuento y se requiere aprobación CEO. RACI: Responsable = Gerente Ventas. SLA: inmediato. |</p>
+<p><strong>2.3 Scorecard de Proveedores y TCO</strong>
+| <strong>2.3  NEGOCIACIÓN BASADA EN DATOS, NO EN RUEGO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Historial de órdenes: fecha pedido/entrega, cantidad pedida/recibida, precio pactado/facturado. Devoluciones. Condiciones de pago. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Score 0-100: Cumplimiento entrega (25%) + Competitividad precio (25%) + Calidad (15%) + Flexibilidad (15%) + Condiciones pago (20%). TCO = Precio + costo devoluciones + costo quiebre de stock por falla + costo financiero de pagar antes + costo admin de reclamos. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Ranking de proveedores con score y TCO. Comparativo entre proveedores del mismo producto. Proveedor con score cayendo &gt;15 puntos en 3 meses: alerta amarilla. |
+| <strong>PARA QUÉ SIRVE</strong> | Transforma la negociación: “tu score es 72/100, tu competidor tiene 91 y tu TCO es 8% mayor.” Identifica proveedores riesgosos antes de que fallen. |</p>
+<p><strong>2.4 Segmentación RFM + CLV de Clientes</strong>
+| <strong>2.4  CLIENTES COMO ACTIVOS CON VALOR MEDIBLE</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Historial de transacciones por cliente: fecha, monto, productos. Mínimo 12 meses. |
+| <strong>CÁLCULO QUE REALIZA</strong> | RFM: Recencia (días desde última compra), Frecuencia (compras/mes), Monto (ticket promedio). Score 1-5 en cada dimensión. Segmentos: Campeones (RFM alto → proteger), En Riesgo (R bajo, FM alto → recuperar), Nuevos Prometedores (R alto, M alto → desarrollar), Hibernantes (todo bajo → evaluar). CLV = Margen promedio × Frecuencia anual × Vida estimada. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Cada cliente clasificado en segmento accionable. CLV por segmento. Lista semanal de Campeones en riesgo (frecuencia cayendo). Clientes con CLV bajo pero alto costo de servicio. |
+| <strong>PARA QUÉ SIRVE</strong> | Si un contratista Campeón con CLV de $2M reduce frecuencia 40%, es un embudo de $800K anuales goteando. El sistema detecta y escala antes de perderlo. |</p>
+<p><strong>2.5 Presupuesto con Causa Raíz y Responsables</strong>
+| <strong>2.5  CONTROL QUE REDUCE DESVIACIONES 30-40% EN EL SEGUNDO AÑO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Presupuesto anual desglosado por mes y partida. Datos reales mensuales del ERP. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Desviación = (Real - Presupuesto) / Presupuesto × 100. Para cada desviación &gt;5%: causa raíz documentada (no “se vendió menos” sino “se perdieron 3 contratos por precio”), responsable, acción correctiva con plazo, seguimiento. Forecast rolling mensual. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Reporte mensual de desviaciones con semáforo. Acumulado de causas raíz recurrentes. Forecast del cierre anual actualizado cada mes. |
+| <strong>PARA QUÉ SIRVE</strong> | Convierte presupuesto de documento estático a instrumento de gobierno. Alerta: desviación &gt;5% en cualquier rubro. RACI: Responsable = Gerente de cada área. Aprobador = CEO. |</p>
+<p><strong>2.6 Estacionalidad e Índices Estacionales</strong>
+| <strong>2.6  PATRONES PREDECIBLES PARA COMPRAS INTELIGENTES</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Ventas mensuales por categoría de 24-36+ meses. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Descomposición multiplicativa: Ventas = Tendencia × Índice Estacional × Residual. Índice mensual por categoría. Ejemplo: cemento en julio = 0.82 (18% bajo promedio por lluvias Jalisco). Efecto quincena y día de la semana. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Índices estacionales por categoría y mes. Calendario de demanda esperada. Temporada alta: ene-jun. Temporada baja: jul-oct. Eventos: Buen Fin, Día del Albañil (3 mayo), quincenas. |
+| <strong>PARA QUÉ SIRVE</strong> | Comprar 20% más antes de temporada alta, 20% menos antes de baja. Sin índices, compras igual todo el año y tienes quiebres en alta y sobreinventario en baja. |</p>
+<p><strong>2.7 Flujo de Caja Rolling 13 Semanas</strong>
+| <strong>2.7  ANTICIPAR CRISIS DE LIQUIDEZ CON 5+ SEMANAS</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Saldo de caja actual. Cobranza esperada por semana (basada en CxC y DSO). Pagos programados a proveedores. Gastos fijos semanalizados. Compras planeadas. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Proyección semanal: Saldo Inicial + Ingresos Esperados - Egresos Programados = Saldo Final. Se actualiza cada semana con datos reales. Días de supervivencia = Saldo / Egresos diarios. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Mapa de caja 13 semanas con semáforo. Semanas en riesgo de iliquidez en rojo. Días de supervivencia si ingresos se detienen. |
+| <strong>PARA QUÉ SIRVE</strong> | Si el forecast muestra que en semana 6 no hay para nómina, tienes 5 semanas para actuar: cobrar cartera, posponer compra, negociar plazo. |</p>
+<p><strong>2.8 Sensibilidad CVP (Tornado Chart)</strong>
+| <strong>2.8  QUÉ VARIABLE MUEVE MÁS LA UTILIDAD</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Variables clave: precio, costo variable, volumen, costos fijos, mix de ventas. Rango ±5%, ±10%, ±20%. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Para cada variable: impacto en utilidad operativa de cambio de ±X%. Ordena por magnitud. GAO = MC Total / Utilidad Operativa. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Tornado chart ordenado. Si precio es 3x más sensible que volumen, proteger precio es más importante que perseguir volumen. |
+| <strong>PARA QUÉ SIRVE</strong> | Decisiones de pricing basadas en matemáticas, no en instinto. Identifica dónde enfocar esfuerzo para mayor impacto en utilidad. |</p>
+<p><strong>2.9 Market Basket Analysis</strong>
+| <strong>2.9  CROSS-SELLING: INCREMENTO DE TICKET 8-15%</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Historial de tickets con detalle de SKUs por transacción. Mínimo 6-12 meses. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Algoritmo Apriori/FP-Growth: Soporte, Confianza, Lift. Ejemplo: quien compra cemento también compra arena 70% de las veces con Lift 2.1. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Top 30 pares de productos con asociación fuerte. Productos ancla. Bundles óptimos por tipo de obra. Sugerencias de layout de tienda. |
+| <strong>PARA QUÉ SIRVE</strong> | Si la tasa de venta conjunta actual es 45% pero la asociación real es 72%, hay 27% de oportunidad. Acción: exhibición cercana, bundles, capacitación a vendedores. |</p>
+<p><strong>2.10 EVA y DuPont 5 Factores</strong>
+| <strong>2.10  ¿CREAS O DESTRUYES RIQUEZA?</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | NOPAT, Capital Invertido, WACC estimado (build-up para PYME: Rf + prima país + prima tamaño + prima específica). |
+| <strong>CÁLCULO QUE REALIZA</strong> | EVA = NOPAT - (Capital × WACC). Spread = ROIC - WACC. DuPont 5: ROE = Carga Fiscal × Carga Financiera × Margen Op × Rotación × Apalancamiento. Identifica qué factor cambió más vs. periodo anterior. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | EVA en pesos. Diagnóstico: “tu ROE bajó 3 puntos porque el margen operativo cayó (costos subieron), aunque la rotación mejoró.” |
+| <strong>PARA QUÉ SIRVE</strong> | Un negocio con utilidad contable positiva puede tener EVA negativo (ganarías más en CETES). DuPont dice exactamente qué palanca mover. |</p>
+<p><strong>2.11 Detección de Anomalías y Auditoría Algorítmica</strong>
+| <strong>2.11  RECUPERAR 1-3% DE VENTAS POR FRAUDE/ERROR/MERMA</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Historial completo de transacciones, descuentos por vendedor, inventario teórico vs. físico, cancelaciones, notas de crédito. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Z-score por vendedor para descuentos. Bandas de Bollinger en variaciones de inventario. Frecuencia de cancelaciones por turno. Validaciones lógicas: precio venta nunca &lt; costo, cantidad facturada nunca &gt; stock. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Alertas: vendedor X otorga descuentos 2.3σ arriba del promedio. SKU Y tiene merma 4x mayor que su categoría. Proveedor W factura 7% arriba de precio pactado. |
+| <strong>PARA QUÉ SIRVE</strong> | En $30M de facturación, merma 1-3% = $300K-$900K. Reducción a &lt;1% recupera $300K-$600K. No acusa; alerta para investigación. |</p>
+<p><strong>CRITERIOS DE SALIDA DE FASE 2</strong>
+| <strong>CONDICIONES OBLIGATORIAS PARA AVANZAR A FASE 3</strong> |
+| ------ |
+| <strong>☑</strong> Costeo ABC operando con margen real calculado para al menos las categorías A |
+| <strong>☑</strong> Pricing matemático implementado en sistema de facturación (bloqueo de descuento excesivo activo) |
+| <strong>☑</strong> Al menos 3 ciclos de presupuesto mensual con causa raíz documentada |
+| <strong>☑</strong> Segmentación RFM actualizada y al menos 1 acción de retención ejecutada sobre cliente En Riesgo |
+| <strong>☑</strong> Calidad de datos &gt;98% completitud, &gt;99% consistencia (medido por reporte semanal de Módulo 0) |
+| <strong>☑</strong> Historial de datos limpio de al menos 24 meses disponible para alimentar modelos predictivos |
+| <strong>☑</strong> RIESGO: si Fase 1 está débil, los modelos de Fase 3 amplifican errores. Datos con 5% error = pronósticos con 20% error |</p>
+<p><strong>FASE 3 — ANALÍTICA AVANZADA Y PREDICCIÓN</strong>
+<em><strong>Decisiones predictivas y óptimas. Duración: 3-6 meses después de consolidar Fase 2. Solo se activa cuando la base de datos está madura y hay historial suficiente.</strong></em>
+<strong>3.1 Pronóstico de Demanda (SARIMA / Holt-Winters)</strong>
+| <strong>3.1  ANTICIPAR VENTAS PARA COMPRAR INTELIGENTEMENTE</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Ventas mensuales por categoría de 36+ meses. Variables exógenas opcionales: permisos de construcción ZMG, tipo de cambio, INPC materiales, precipitación Jalisco. |
+| <strong>CÁLCULO QUE REALIZA</strong> | SARIMA(p,d,q)(P,D,Q,12) o Holt-Winters multiplicativo por categoría. Selección por AIC/BIC. Backtesting obligatorio antes de producción. MAPE como métrica de precisión. Si MAPE &gt;30%, el modelo NO se despliega. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Pronóstico mensual 3-12 meses con intervalo de confianza 80% y 95%. No un número sino un RANGO: “cemento en julio: $380K-$520K con 95% de confianza, punto central $450K.” Comparativo pronóstico vs. real para calibración continua. |
+| <strong>PARA QUÉ SIRVE</strong> | Base para compras, presupuesto de caja y planificación de inventario. Reduce quiebres 25-40% y sobreinventario 15-20%. Nivel de automatización: 1 (sugerencia con aprobación humana). |</p>
+<p><strong>3.2 EOQ Dinámico y Stock de Seguridad</strong>
+| <strong>3.2  CANTIDAD ÓPTIMA DE PEDIDO AUTOMÁTICA</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Demanda promedio y σ por SKU. Lead time y variabilidad por proveedor. Costo por pedido. Costo de mantenimiento. Nivel de servicio deseado. |
+| <strong>CÁLCULO QUE REALIZA</strong> | EOQ = √(2DS/H). Safety Stock = Z × σd × √LT + Z × d̄ × σLT. Punto de Reorden = Demanda Diaria × LT + SS. Ajuste por estacionalidad. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Para SKUs A y B: cantidad óptima por pedido, punto de reorden, safety stock. Alertas automáticas cuando inventario cruza punto de reorden. |
+| <strong>PARA QUÉ SIRVE</strong> | Diferencia entre EOQ calculado e intuición del comprador: 15-25% del costo total de inventario. Nivel de automatización: empieza en 1, migra a 2-3 cuando genera confianza. |</p>
+<p><strong>3.3 Simulación Monte Carlo</strong>
+| <strong>3.3  MILES DE ESCENARIOS PROBABILÍSTICOS</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Distribuciones calibradas con históricos: ventas (normal/triangular), costos (normal), tipo de cambio (log-normal), crecimiento gastos. |
+| <strong>CÁLCULO QUE REALIZA</strong> | 10,000 iteraciones del P&amp;L y flujo de caja. Escenarios pre-configurados: recesión (ventas -20%, DSO +15 días), shock costos (TC +15%, commodities +25%), pérdida cliente clave, falla proveedor, catastrófico (combinado). Revisión trimestral. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Distribución continua de resultados: “15% de probabilidad de utilidad neta negativa. Flujo de caja: 90% entre -$200K y +$800K.” VaR del inventario. Meses de supervivencia por escenario. |
+| <strong>PARA QUÉ SIRVE</strong> | Transforma “puede pasar” a “tiene X% de probabilidad.” Decisiones de inversión y deuda calibradas al riesgo real, no al optimismo. |</p>
+<p><strong>3.4 Mezcla Óptima de Productos (Programación Lineal)</strong>
+| <strong>3.4  MAXIMIZAR UTILIDAD CON RECURSOS LIMITADOS</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Margen de contribución por SKU. Restricciones: presupuesto de compra, m² almacén, límites crédito proveedor, mínimos de pedido. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Max Z = ∑(Margen_i × Cantidad_i) sujeto a restricciones de capital, espacio, proveedor. Precio sombra de cada restricción. Si restricción es capital: prioriza alta rotación. Si es espacio: prioriza alta contribución por m³. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Lista exacta de qué comprar y cuánto para maximizar utilidad total. Precio sombra: cuánto margen adicional generaría $1 extra de presupuesto o 1 m² extra. |
+| <strong>PARA QUÉ SIRVE</strong> | Con 1,000 SKUs y restricciones múltiples, la intuición no puede optimizar. La PL encuentra la combinación matemáticamente óptima. Mejora típica: 8-15% más margen con mismo capital. |</p>
+<p><strong>3.5 Modelo Predictivo de Churn</strong>
+| <strong>3.5  PREDECIR QUÉ CLIENTES VAS A PERDER</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Historial por cliente 24+ meses. Variables: recencia, frecuencia, monto, mix categorías, devoluciones, historial de pago. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Regresión logística: P(churn) = f(cambio_frecuencia, cambio_ticket, días_sin_compra, cambio_mix). Entrena con clientes perdidos vs. retenidos. Validación fuera de muestra. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Score 0-100% de probabilidad de abandono por cliente. Lista semanal priorizada por CLV (los más valiosos primero). Acción sugerida: contacto personal, oferta especial, revisión de condiciones. |
+| <strong>PARA QUÉ SIRVE</strong> | Perder un contratista de $200K mensuales = $2.4M anuales. El modelo detecta 60-90 días antes. Retener 2-3 clientes clave por año justifica todo el sistema. |</p>
+<p><strong>3.6 Pricing Dinámico</strong>
+| <strong>3.6  PRECIO ÓPTIMO SEMANAL POR CONTEXTO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Inventario actual vs. demanda proyectada. Índices estacionales. Elasticidad estimada. Costo de reposición actual. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Regla: si (inventario / demanda 4 semanas) &gt;2.0, bajar 5-10%. Si &lt;0.8, mantener o subir. Niveles de confianza: &gt;85% = ajuste automático, 70-85% = sugerencia con aprobación, &lt;70% = mantener y analizar. Comienza en modo sugerencia 4 semanas antes de activar automático. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Recomendación semanal para 50-100 SKUs clave. Impacto estimado en volumen y margen. Historial de ajustes y resultados. |
+| <strong>PARA QUÉ SIRVE</strong> | Captura margen en temporada alta (demanda soporta precio mayor) y libera capital en temporada baja (liquidación antes de que se vuelva muerto). Nivel de automatización: empieza en 1, migra a 3 después de 4 semanas validadas. |</p>
+<p><strong>3.7 Cadenas de Markov: Migración de Clientes</strong>
+| <strong>3.7  HACIA DÓNDE SE MUEVE TU BASE DE CLIENTES</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Segmentación RFM por trimestre. Segmento en t-1 y t por cliente. Mínimo 4-8 transiciones. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Matriz de transición P(ij). Ejemplo: P(Campeón→En Riesgo)=8%, P(En Riesgo→Perdido)=35%. Proyección: vector actual × P^n. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Proyección: “si no haces nada, en 12 meses tendrás 15% menos Campeones.” Tasa de degradación. Impacto monetario. |
+| <strong>PARA QUÉ SIRVE</strong> | No solo dónde están tus clientes hoy, sino hacia dónde van. Si la degradación sube de 8% a 14%, hay problema de servicio o competencia invisible en ventas agregadas. |</p>
+<p><strong>3.8 Simulador What-If Centralizado</strong>
+| <strong>3.8  LABORATORIO DE DECISIONES DEL CEO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Modelo financiero completo interconectado (P&amp;L, Balance, Flujo). Elasticidades. Parámetros de inventario. Estructura de costos. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Input: “Subo precio herramientas 8%, cambio proveedor cemento, contrato 1 vendedor más.” Output: efecto neto en EBITDA, CCC, PE, flujo de caja a 90 días. Cruza elasticidad, nuevo costo, nómina adicional. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Dashboard interactivo: antes vs. después de cada hipótesis. P&amp;L pro forma, flujo de caja, nuevo PE, nuevo CCC. |
+| <strong>PARA QUÉ SIRVE</strong> | Probar antes de ejecutar. Reducir riesgo de decisiones estratégicas. Si subo precios y 3 meses después descubro que fue error, perdí $X. Con el simulador, lo pruebo en 5 minutos. |</p>
+<p><strong>3.9 Teoría de Colas y Dotación de Personal</strong>
+| <strong>3.9  CUÁNTOS VENDEDORES POR TURNO</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Tasa de llegada de clientes por hora (λ). Tasa de servicio por empleado (μ). Servidores por turno. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Modelo M/M/c: probabilidad de espera, tiempo promedio en cola, utilización. Número óptimo = mínimo c tal que espera &lt;5 minutos. |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Dotación por franja horaria: “De 8-10am: 2 vendedores (65% utilización). De 10-13h: 4 (pico). De 13-16h: 3.” |
+| <strong>PARA QUÉ SIRVE</strong> | 5 vendedores cuando necesitas 3 = desperdicio. 2 cuando necesitas 4 = clientes perdidos. Optimiza 10-15% del costo de nómina. |</p>
+<p><strong>3.10 Sensibilidad a Aranceles y Macro 2026</strong>
+| <strong>3.10  ANTICIPAR SHOCKS DE COSTOS EXTERNOS</strong> |  |
+| ------ | ------ |
+| <strong>DATOS DE ENTRADA</strong> | Series históricas: USD/MXN, precio acero/cobre/PVC, INPC materiales, TIIE, permisos construcción ZMG. Aranceles 2026: 50% acero/aluminio EE.UU. |
+| <strong>CÁLCULO QUE REALIZA</strong> | Regresión: Costo compra = f(TC, commodity, INPC). Simulación: si acero +10% y TC +5%, ¿cuánto sube CMV? ¿Cuánto cae margen sin ajuste de precios? |
+| <strong>INFORMACIÓN QUE ARROJA</strong> | Alertas cuando variables macro cruzan umbrales. Recomendación de ajuste preventivo. “El acero subió 8%. Si no ajustas precios de varilla, tu margen cae de 22% a 16% en 30 días.” |
+| <strong>PARA QUÉ SIRVE</strong> | Anticipar semanas antes de que el impacto llegue a tu factura de proveedor. Tiempo para negociar o ajustar precios proactivamente. |</p>
+<p><strong>RESUMEN EJECUTIVO</strong>
+| <strong>Acción</strong> | <strong>Impacto Esperado</strong> | <strong>Fase</strong> |
+| ------ | ------ | ------ |
+| <strong>Liquidar inventario muerto</strong> | <strong>Liberar 10-20% del capital de trabajo</strong> | <strong>1</strong> |
+| <strong>Reducir CCC a &lt;45 días</strong> | <strong>Liberar capital de trabajo diario</strong> | <strong>1</strong> |
+| <strong>Pricing matemático (precio mín + desc máx)</strong> | <strong>Proteger 2-4 puntos de margen anual ($600K-$1.2M en $30M ventas)</strong> | <strong>2</strong> |
+| <strong>Costeo ABC</strong> | <strong>Identificar productos parásitos que destruyen valor</strong> | <strong>2</strong> |
+| <strong>Reducción de merma a &lt;1%</strong> | <strong>Recuperar 1-3% de ventas ($300K-$900K)</strong> | <strong>2</strong> |
+| <strong>Market basket + cross-selling</strong> | <strong>Incrementar ticket promedio 8-15%</strong> | <strong>2</strong> |
+| <strong>Pronóstico de demanda</strong> | <strong>Reducir quiebres 25-40% y sobreinventario 15-20%</strong> | <strong>3</strong> |
+| <strong>Optimización de mezcla (PL)</strong> | <strong>Maximizar utilidad: 8-15% más margen con mismo capital</strong> | <strong>3</strong> |</p>
+<p><strong>Regla de Oro</strong>
+<em><strong>Primero caja, luego margen, luego crecimiento. En ese orden. Si solo puedes hacer 3 cosas de Fase 1, haz las primeras 3: Margen por SKU (1.1), Rotación de Inventario (1.2) y Punto de Equilibrio (1.3). Con eso tienes el 70% de la visibilidad para empezar a decidir con evidencia.</strong></em>
+<em><strong>Cada fase se construye sobre la anterior. No implementes Fase 3 sin haber consolidado Fase 1. Los pronósticos sin datos limpios producen predicciones sobre arena movediza. Los criterios de salida existen por una razón: protegerte de ti mismo.</strong></em></p>

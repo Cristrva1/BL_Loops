@@ -1,0 +1,216 @@
+{
+  "title": "Guía Maestra para Hablar con la IA: De la Frustración a Resultados Brillantes con Prompt Engineering",
+  "type": "ARTIFACT_TYPE_AUDIO_OVERVIEW",
+  "sources": [{
+    "sourceId": {
+      "id": "5dbc0e0c-c069-4090-bcf0-00b93a47effd"
+    }
+  }, {
+    "sourceId": {
+      "id": "856d1b70-251e-4187-94bf-bb7de6293b73"
+    }
+  }, {
+    "sourceId": {
+      "id": "a1e9fd7d-8ac1-45a5-89d0-6b59af0a43f5"
+    }
+  }, {
+    "sourceId": {
+      "id": "cae3e953-48b6-4ab3-8d04-52c4ba6c9e2c"
+    }
+  }, {
+    "sourceId": {
+      "id": "6b1578ab-4fb3-41fd-b468-608027e36d27"
+    }
+  }, {
+    "sourceId": {
+      "id": "a3541d99-e7d8-476c-977b-1784e13e7583"
+    }
+  }, {
+    "sourceId": {
+      "id": "0621de19-5748-40fb-917f-27f283b90129"
+    }
+  }, {
+    "sourceId": {
+      "id": "8fc01a7c-e3a1-4c45-84d2-006148460842"
+    }
+  }, {
+    "sourceId": {
+      "id": "16fef721-8cd7-495b-a03e-843f3d7508dd"
+    }
+  }, {
+    "sourceId": {
+      "id": "4799a53a-8e48-4ccc-90cc-830e1546e6a6"
+    }
+  }, {
+    "sourceId": {
+      "id": "7a7c6940-5abe-4dc0-9523-3d103741149f"
+    }
+  }, {
+    "sourceId": {
+      "id": "b6e17931-0aae-45ff-b384-3466557fe72c"
+    }
+  }, {
+    "sourceId": {
+      "id": "e90985c6-567e-44de-b6fd-b5cae11e5b1c"
+    }
+  }, {
+    "sourceId": {
+      "id": "3493686f-9acb-4ef0-9635-c2ca5ce1fd37"
+    }
+  }, {
+    "sourceId": {
+      "id": "99edfae7-3489-4be8-b867-4d7a2678d47b"
+    }
+  }, {
+    "sourceId": {
+      "id": "bf3b48ee-276b-4013-9ce8-7e34edae19c9"
+    }
+  }, {
+    "sourceId": {
+      "id": "ca4349b9-5cc1-4487-9dfa-1bfe46485d67"
+    }
+  }, {
+    "sourceId": {
+      "id": "c846fe78-ab20-4469-97fb-ef5278ed3a5c"
+    }
+  }, {
+    "sourceId": {
+      "id": "f994f211-0e3d-45e8-a67d-23325745d57a"
+    }
+  }, {
+    "sourceId": {
+      "id": "dc30507f-e7dc-48bb-a021-61c6e67adbd9"
+    }
+  }, {
+    "sourceId": {
+      "id": "764b71ce-3cf5-4dd8-be2a-06efb67d6026"
+    }
+  }, {
+    "sourceId": {
+      "id": "3ce9da7e-33da-4b42-a734-a5c89fe6281b"
+    }
+  }, {
+    "sourceId": {
+      "id": "f3cf267b-82be-404b-a1e1-acaa82e48cd6"
+    }
+  }, {
+    "sourceId": {
+      "id": "c14e2d6b-c04d-45dd-8b48-c48d2e897152"
+    }
+  }, {
+    "sourceId": {
+      "id": "e49da0b0-03eb-4811-abb2-4cffd1d174f7"
+    }
+  }, {
+    "sourceId": {
+      "id": "70ebba42-a211-4f9f-8596-0f88ba49612f"
+    }
+  }, {
+    "sourceId": {
+      "id": "98f1bfdb-6bb5-4da4-8c59-3ff9bc7bad3e"
+    }
+  }, {
+    "sourceId": {
+      "id": "d0e8ee66-e054-464a-8315-b1cb10cbe9ca"
+    }
+  }, {
+    "sourceId": {
+      "id": "1eb65d34-9417-4c47-b36f-61b999ea111c"
+    }
+  }, {
+    "sourceId": {
+      "id": "e41e754d-c46b-43fb-9e6e-ef5148f2002a"
+    }
+  }, {
+    "sourceId": {
+      "id": "41301f75-aff3-4fee-8d5d-675af35100e2"
+    }
+  }, {
+    "sourceId": {
+      "id": "7552ccd1-268f-4489-acee-1c49f48951e4"
+    }
+  }, {
+    "sourceId": {
+      "id": "5af30838-c513-4b37-a52c-19ae210f44d6"
+    }
+  }, {
+    "sourceId": {
+      "id": "d80bde74-87f5-43a4-a401-99ffc30bda82"
+    }
+  }, {
+    "sourceId": {
+      "id": "08dbafb4-7dd7-4101-bde4-8c11aed13142"
+    }
+  }, {
+    "sourceId": {
+      "id": "f0cca556-b09f-4186-9591-fe87eda9e5ef"
+    }
+  }, {
+    "sourceId": {
+      "id": "3d7d9ef6-beec-4486-b588-0869551c5606"
+    }
+  }, {
+    "sourceId": {
+      "id": "21ff9181-21d9-446f-b112-0a84576fc676"
+    }
+  }, {
+    "sourceId": {
+      "id": "ee86edf8-b45a-48fb-9808-61aef94f1b2d"
+    }
+  }, {
+    "sourceId": {
+      "id": "4b2e9b9d-68e2-4527-9519-5da98b2b4165"
+    }
+  }, {
+    "sourceId": {
+      "id": "e2cbe9ed-95b8-4c99-a40d-912a41abb425"
+    }
+  }, {
+    "sourceId": {
+      "id": "542533bb-f3c3-4bb8-8e5f-bf43575de041"
+    }
+  }, {
+    "sourceId": {
+      "id": "c4b2263b-0ab9-40f6-9c64-e9d24648e8ab"
+    }
+  }, {
+    "sourceId": {
+      "id": "ec3ee3a0-ddba-429f-8d1d-f6997f4f7ce0"
+    }
+  }, {
+    "sourceId": {
+      "id": "8dd066cf-0b3b-4f37-a8a3-5c4aee7dc29e"
+    }
+  }, {
+    "sourceId": {
+      "id": "c4146f08-3ba7-40f0-af00-108f27285aea"
+    }
+  }, {
+    "sourceId": {
+      "id": "42391136-08b5-45cd-a609-3547fc659c63"
+    }
+  }, {
+    "sourceId": {
+      "id": "89c75576-e387-4c1b-a297-efca71bc593d"
+    }
+  }, {
+    "sourceId": {
+      "id": "15069e9e-c64f-41e6-aaf6-c14a70357a44"
+    }
+  }, {
+    "sourceId": {
+      "id": "b43a763b-0f74-4dab-9fe9-7610cd9f444c"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "audioOverview": {
+    "generationOptions": {
+      "episodeFocus": "",
+      "episodeLength": "EPISODE_LENGTH_UNSPECIFIED",
+      "targetAudience": "TARGET_AUDIENCE_UNSPECIFIED",
+      "languageCode": "es-MX",
+      "showFormat": "SHOW_FORMAT_UNSPECIFIED"
+    },
+    "isInteractive": false
+  }
+}

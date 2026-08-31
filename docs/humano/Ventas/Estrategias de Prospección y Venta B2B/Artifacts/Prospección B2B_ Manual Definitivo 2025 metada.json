@@ -1,0 +1,54 @@
+{
+  "title": "Prospección B2B: Manual Definitivo 2025",
+  "type": "ARTIFACT_TYPE_INFOGRAPHIC",
+  "sources": [{
+    "sourceId": {
+      "id": "ff18085e-0d9b-4aa3-a219-6f9234ec8d9d"
+    }
+  }, {
+    "sourceId": {
+      "id": "a85e9f26-19c3-429d-9c24-628ebd986c9c"
+    }
+  }, {
+    "sourceId": {
+      "id": "1d091869-d59c-44af-8397-db8e6c949f07"
+    }
+  }, {
+    "sourceId": {
+      "id": "e93f6ad8-5ec2-4065-8198-460ccd385abe"
+    }
+  }, {
+    "sourceId": {
+      "id": "e9dc54ef-d3d9-470b-a11c-3d9d4fa32b6a"
+    }
+  }, {
+    "sourceId": {
+      "id": "e5d944f7-5c47-47d8-a624-5e1f9cd670f8"
+    }
+  }, {
+    "sourceId": {
+      "id": "fff67531-6242-4d98-b976-4eca6dd9def5"
+    }
+  }, {
+    "sourceId": {
+      "id": "f12ecfb4-d301-4f29-80cc-124367ed98b8"
+    }
+  }, {
+    "sourceId": {
+      "id": "db0c751e-6524-48ba-aa29-cba7a4d1556d"
+    }
+  }, {
+    "sourceId": {
+      "id": "5eb5fb56-f1ed-49bd-b50d-1b9f83c96ff7"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "infographic": {
+    "generationOptions": {
+      "languageCode": "es-MX",
+      "aspectRatio": "ASPECT_RATIO_LANDSCAPE",
+      "informationDensity": "INFORMATION_DENSITY_STANDARD"
+    },
+    "title": "Prospección B2B: Manual Definitivo 2025"
+  }
+}

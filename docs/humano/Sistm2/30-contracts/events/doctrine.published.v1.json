@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "doctrine.published.v1",
+  "title": "doctrine.published",
+  "description": "Emitido por el Doctrine Publisher cuando una doctrina superó validación A/B y se despliega globalmente.",
+  "type": "object",
+  "required": [
+    "event_id", "event_type", "event_version", "occurred_at",
+    "producer", "correlation_id", "causation_id", "tenant_id", "payload"
+  ],
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "doctrine.published" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "doctrine-publisher" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid", "description": "ID del evento experiment.concluded que originó esto" },
+    "tenant_id":      { "type": "string", "const": "global", "description": "Las doctrinas son siempre globales" },
+    "payload": {
+      "type": "object",
+      "required": ["doctrine_id", "doctrine_version", "scope", "changes", "experiment_id", "lift"],
+      "properties": {
+        "doctrine_id":      { "type": "string", "format": "uuid" },
+        "doctrine_version": { "type": "integer", "minimum": 1 },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["meta-orchestrator", "router-triage", "guild-research", "guild-production",
+                     "guild-analysis", "guild-communication", "guild-memory", "guild-learning",
+                     "guild-qa", "user-profiler", "all"]
+          },
+          "description": "Módulos que deben adoptar esta doctrina"
+        },
+        "changes": {
+          "type": "object",
+          "description": "Descripción de qué cambia: prompts, políticas, parámetros de router",
+          "properties": {
+            "prompt_updates":  { "type": "object" },
+            "policy_updates":  { "type": "object" },
+            "router_updates":  { "type": "object" }
+          }
+        },
+        "experiment_id": { "type": "string", "format": "uuid" },
+        "lift": {
+          "type": "object",
+          "description": "Mejora medida respecto al baseline",
+          "properties": {
+            "quality_lift_pct":       { "type": "number" },
+            "efficiency_lift_pct":    { "type": "number" },
+            "satisfaction_lift_pct":  { "type": "number" },
+            "statistical_confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "rollback_event_id": { "type": "string", "format": "uuid", "description": "Completar si hay rollback posterior" }
+      }
+    }
+  }
+}

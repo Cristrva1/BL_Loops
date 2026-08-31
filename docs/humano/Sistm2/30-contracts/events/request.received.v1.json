@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "request.received.v1",
+  "title": "request.received",
+  "description": "Emitido por el API Gateway cuando llega una nueva petición de usuario al sistema.",
+  "type": "object",
+  "required": [
+    "event_id", "event_type", "event_version", "occurred_at",
+    "producer", "correlation_id", "causation_id", "tenant_id", "payload"
+  ],
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "request.received" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "api-gateway" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid", "description": "Igual a event_id para eventos raíz" },
+    "tenant_id":      { "type": "string" },
+    "payload": {
+      "type": "object",
+      "required": ["content", "channel"],
+      "properties": {
+        "content":     { "type": "string", "minLength": 1, "maxLength": 32000 },
+        "channel":     { "type": "string", "enum": ["http_rest", "websocket", "internal"] },
+        "context":     { "type": "object", "description": "Contexto adicional opcional del cliente" },
+        "priority":    { "type": "string", "enum": ["low", "normal", "high"], "default": "normal" },
+        "metadata":    { "type": "object" }
+      }
+    }
+  }
+}

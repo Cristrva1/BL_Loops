@@ -1,0 +1,106 @@
+{
+  "title": "Mercado Inmobiliario Guadalajara Doble Velocidad",
+  "type": "ARTIFACT_TYPE_INFOGRAPHIC",
+  "sources": [{
+    "sourceId": {
+      "id": "c12cada7-2bf4-4ccc-83b8-e6023a73a2e3"
+    }
+  }, {
+    "sourceId": {
+      "id": "262a37e2-d5a2-4a30-b53a-bf939de84b2d"
+    }
+  }, {
+    "sourceId": {
+      "id": "454c9ced-7ef1-4d90-bf73-1fa86d2b3dac"
+    }
+  }, {
+    "sourceId": {
+      "id": "2ec70b7c-fab5-4cc2-813a-2193bed2631a"
+    }
+  }, {
+    "sourceId": {
+      "id": "c059be27-8178-4d95-9608-5fb99be48aff"
+    }
+  }, {
+    "sourceId": {
+      "id": "7ca286d2-57c4-4634-b20d-844c56aef93c"
+    }
+  }, {
+    "sourceId": {
+      "id": "aefbb640-5f31-4d2a-a7a6-05e2a57b4654"
+    }
+  }, {
+    "sourceId": {
+      "id": "86a00927-97f7-46ce-9128-2c5664316cc6"
+    }
+  }, {
+    "sourceId": {
+      "id": "2ab26837-b944-42c0-a6ff-1bf99361d3c0"
+    }
+  }, {
+    "sourceId": {
+      "id": "ed24e722-9e54-461f-a6ee-19cd9e25e88b"
+    }
+  }, {
+    "sourceId": {
+      "id": "fd557bb5-811f-4e55-a8e9-4406f9a31953"
+    }
+  }, {
+    "sourceId": {
+      "id": "f0e0cb58-eba0-41ae-bb48-525f2d48c4bd"
+    }
+  }, {
+    "sourceId": {
+      "id": "6651c63f-0d54-4760-96d4-cef680e79cf9"
+    }
+  }, {
+    "sourceId": {
+      "id": "084f1e62-f972-426d-87cd-e335f7ddf710"
+    }
+  }, {
+    "sourceId": {
+      "id": "631b206b-7403-432e-ae53-4c8451f0ed5a"
+    }
+  }, {
+    "sourceId": {
+      "id": "392647f9-ee8e-4a62-9814-4ab2ca96c30b"
+    }
+  }, {
+    "sourceId": {
+      "id": "29863399-5872-4dae-8d69-f30498b09b63"
+    }
+  }, {
+    "sourceId": {
+      "id": "8212e661-3b97-477f-a1f8-396a20627b8f"
+    }
+  }, {
+    "sourceId": {
+      "id": "54f4cb85-48c5-485b-99a4-5220c3be82a2"
+    }
+  }, {
+    "sourceId": {
+      "id": "86dfe877-62a1-4776-b31b-8929ba2b23c2"
+    }
+  }, {
+    "sourceId": {
+      "id": "92b9b163-48d7-4231-98cf-33bb380b7cab"
+    }
+  }, {
+    "sourceId": {
+      "id": "07388bd6-e09c-4ffb-920b-367dbe522350"
+    }
+  }, {
+    "sourceId": {
+      "id": "51318876-1b64-4115-a2bc-9b682e0760b7"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "infographic": {
+    "generationOptions": {
+      "languageCode": "es_mx",
+      "aspectRatio": "ASPECT_RATIO_PORTRAIT",
+      "informationDensity": "INFORMATION_DENSITY_HIGH"
+    },
+    "title": "Mercado Inmobiliario Guadalajara Doble Velocidad"
+  }
+}

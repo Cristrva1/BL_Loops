@@ -1,0 +1,117 @@
+<p>SitemapOpen in appSign up
+Sign in
+Medium LogoWriteSign up
+Sign in</p>
+<h4 id="level-up-coding">Level Up Coding</h4>
+<p>·
+Follow publication
+Coding tutorials and news. The developer homepage gitconnected.com &amp;&amp; skilled.dev &amp;&amp; levelup.dev
+Follow publication</p>
+<h3 id="how-to-make-anthropic-s-claude-models-consistently-generate-valid-json">How to Make Anthropic’s Claude Models Consistently Generate Valid JSON</h3>
+<p>Practicus AI5 min read · Dec 27, 2023--
+Press enter or click to view image in full size Image by Alexandra_Koch from PixabayOpenAI’s GPT models are known to be quite good at consistently outputting valid JSON, especially when using the new JSON mode for GPT-4 Turbo.
+Unfortunately, the same can’t be said for Anthropic’s Claude models which frequently make mistakes in attempting to output JSON. The most common errors tend to be:</p>
+<ul>
+<li>Putting unwanted text before the JSON in the output</li>
+<li>Generating invalid JSON syntax</li>
+<li>Putting unwanted text after the JSON in the output
+This has led to many people believing that Claude models can’t output valid JSON at all. It’s quite unfortunate because Anthropic’s models are a  <em>fraction of the cost</em>  of OpenAI’s.
+But not to worry. There is a way to get Claude models to consistently generate valid JSON. I’ll show you how right now.</li>
+</ul>
+<h3 id="1-guide-the-json-syntax">(1) Guide the JSON Syntax</h3>
+<p>There is a special technique from the Anthropic team called “put words in Claude’s mouth”. With Claude, the model’s generation begins immediately following the Assistant token, e.g.  \n\nAssistant  . Thus, it understands that anything you put in the prompt that comes  <em>after</em>  the  \n\nAssistant  token is already part of your desired output. Cluade then knows to continue the generation from there.
+So if we want our model to output valid JSON, we can directly show Claude the  <em>start of the JSON output.</em> For example, below is a regular Anthropic prompt that most people would set up.
+import anthropic
+from anthropic import HUMAN_PROMPT, AI_PROMPT
+output = anthropic.Anthropic().completions.create(
+model=&#34;claude-2.1&#34;,
+max_tokens_to_sample=1024,
+prompt=f&#34;{HUMAN_PROMPT} Give me an example of a car colour.   Make the output in JSON format{AI_PROMPT}&#34;,
+)
+This will give very inconsistent results, frequently with invalid JSON. But we can fix it by showing Claude how to start the output.
+import anthropic
+from anthropic import HUMAN_PROMPT, AI_PROMPT
+output_start = &#39;{ &#34;color&#34; : &#39;
+closing_bracket = &#34;}&#34;
+output = anthropic.Anthropic().completions.create(
+model=&#34;claude-2.1&#34;,
+max_tokens_to_sample=1024,
+prompt=f&#34;{HUMAN_PROMPT} Give me an example of a car colour.   Make the output in JSON format{AI_PROMPT}
+{output_start}&#34;,
+stop_sequences=[&#34;\n\nHuman:&#34;, closing_bracket]
+)
+final_result = output_start + output.completion + closing_bracket
+Just by putting that  output_start  after the  \n\nAssistent token, we have shown Claude how we want the generation to begin. It will continue from there and output the rest of the result.
+Notice also that there were a couple of tweaks we made to the code:</p>
+<ul>
+<li>We added  &#34;}&#34;  to the list of  stop_sequences  . This tells Claude that we should stop at the closing JSON bracket, to avoid generating any unwanted text after the target JSON</li>
+<li>To form the  final_result  , we added the  output_start  and  closing_bracket  since Claude will now only output the text between those two
+With just this first step of guiding the JSON syntax, you will see a significant improvement in consistently outputting valid JSON.</li>
+</ul>
+<h3 id="2-communicate-the-json-usage">(2) Communicate the JSON Usage</h3>
+<p>Claude’s ability to output valid JSON can also be enhanced by explicitly stating the intended use of the JSON output. Most LLMs have been trained on vast amounts of code from GitHub and other sources. Thus, telling Claude how we will be using its output in our code can be of great help.
+Below is an example of telling Claude about how we will use its output.
+import anthropic
+from anthropic import HUMAN_PROMPT, AI_PROMPT</p>
+<h1 id="communicating-json-usage-intent">Communicating JSON usage intent</h1>
+<p>json_usage_intent = &#39;Ensure the output is valid JSON as it will be parsed   using <code>json.loads()</code> in Python. It should be in the   schema: {&#34;color&#34;: str}&#39;
+output_start = &#39;{ &#34;color&#34; : &#39;
+closing_bracket = &#34;}&#34;
+output = anthropic.Anthropic().completions.create(
+model=&#34;claude-2.1&#34;,
+max_tokens_to_sample=1024,
+prompt=f&#34;{HUMAN_PROMPT} Provide an example of a car color in JSON   format. {json_usage_intent}
+{AI_PROMPT} {output_start}&#34;,
+stop_sequences=[&#34;\n\nHuman:&#34;, closing_bracket]
+)
+final_result = output_start + output.completion + closing_bracket
+Notice how we’re now adding the  json_usage_intent  to the prompt which contains two key parts:</p>
+<ul>
+<li>Telling Claude that we will parse the output with  json.loads()  , which it understands well due to its extensive training in Python code</li>
+<li>We showed Claude the exact desired schema that we want, to ensure that it doesn’t output any additional, undesired JSON keys
+These simple extra instructions will further improve the consistency of getting a good JSON output when using Claude.</li>
+</ul>
+<h3 id="3-correct-the-json">(3) Correct the JSON</h3>
+<p>Even with the above techniques, Claude will occasionally output a JSON that has invalid syntax. It can be small things like missing a colon  :  or a quote  &#39;  . Thus, it’s beneficial to apply lightweight post-processing to quickly clean up minor JSON formatting errors.
+One of the best tools for doing this in Python is json_repair, which will effectively correct small mistakes according to the official JSON format. Below is an example of how to use it:
+import anthropic
+from anthropic import HUMAN_PROMPT, AI_PROMPT
+from json_repair import repair_json</p>
+<h1 id="communicating-json-usage-intent-2">Communicating JSON usage intent</h1>
+<p>json_usage_intent = &#39;Ensure the output is valid JSON as it will be parsed   using <code>json.loads()</code> in Python. It should be in the   schema: {&#34;color&#34;: str}&#39;
+output_start = &#39;{ &#34;color&#34; : &#39;
+closing_bracket = &#34;}&#34;
+output = anthropic.Anthropic().completions.create(
+model=&#34;claude-2.1&#34;,
+max_tokens_to_sample=1024,
+prompt=f&#34;{HUMAN_PROMPT} Provide an example of a car color in JSON   format. {json_usage_intent}
+{AI_PROMPT} {output_start}&#34;,
+stop_sequences=[&#34;\n\nHuman:&#34;, closing_bracket]
+)
+final_result = output_start + output.completion + closing_bracket
+cleaned_final_result = repair_json(final_result)
+This is the fastest, most lightweight way to fix your JSON outputs!
+There are other techniques which you can explore, such as passing the output back to Claude or even GPT-3.5 Turbo and asking the LLM to fix the JSON. The tradeoff is that using an LLM to correct JSON is much more expensive both in terms of latency and cost as compared to the  json_repair  .</p>
+<h3 id="summary">Summary</h3>
+<p>Anthropic’s Claude models might seem weaker than OpenAI’s GPTs in outputting valid JSON — but that’s just at first glance. Claude models are fully capable of consistently outputting valid JSON as long as you use them in the right way. There are 3 remarkably effective techniques for making Claude consistently output valid JSON:</p>
+<ol>
+<li>Guide the JSON Syntax — Start the output with an open-bracket  {</li>
+<li>Communicate the JSON Usage — Tell Claude how you will parse the output JSON</li>
+<li>Correct the JSON — Use open-source tools to quickly fix the output JSON in case of any minor syntax errors
+LlmArtificial IntelligenceGenerative Ai ToolsMachine LearningProgramming</li>
+</ol>
+<h4 id="published-in-level-up-coding">Published in  Level Up Coding</h4>
+<p>262K followers·Last published  3 days agoCoding tutorials and news. The developer homepage gitconnected.com &amp;&amp; skilled.dev &amp;&amp; levelup.dev</p>
+<h4 id="written-by-practicus-ai">Written by  Practicus AI</h4>
+<p>21K followers·51 followingUse AI, practically.</p>
+<h4 id="responses-3">Responses ( 3 )</h4>
+<p>Help
+Status
+About
+Careers
+Press
+Blog
+Privacy
+Rules
+Terms
+Text to speech</p>

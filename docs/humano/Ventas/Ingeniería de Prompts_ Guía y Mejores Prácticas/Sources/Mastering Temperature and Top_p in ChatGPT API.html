@@ -1,0 +1,110 @@
+<h5 id="forem-feed">Forem Feed</h5>
+<h5 id="follow-new-subforems-to-improve-your-feed-dev-community">Follow new Subforems to improve your feed DEV Community</h5>
+<p>A space to discuss and keep up software development and manage your software career</p>
+<h5 id="future">Future</h5>
+<p>News and discussion of science and technology such as AI, VR, cryptocurrency, quantum computing, and more.</p>
+<h5 id="gamers-forem">Gamers Forem</h5>
+<p>An inclusive community for gaming enthusiasts</p>
+<h5 id="popcorn-movies-and-tv">Popcorn Movies and TV</h5>
+<p>Movie and TV enthusiasm, criticism and everything in-between.</p>
+<h5 id="dumb-dev-community">DUMB DEV Community</h5>
+<p>Memes and software development shitposting</p>
+<h5 id="music-forem">Music Forem</h5>
+<p>From composing and gigging to gear, hot music takes, and everything in between.</p>
+<h5 id="vibe-coding-forem">Vibe Coding Forem</h5>
+<p>Discussing AI software development, and showing off what we&#39;re building.</p>
+<h5 id="forem-open-source-core">Forem Open Source Core</h5>
+<p>Discussing the core forem software project — features, bugs, performance, self-hosting.</p>
+<h5 id="maker-forem">Maker Forem</h5>
+<p>A community for makers, hobbyists, and professionals to discuss Arduino, Raspberry Pi, 3D printing, and much more.</p>
+<h5 id="design-community">Design Community</h5>
+<p>Web design, graphic design and everything in-between</p>
+<h4 id="dropdown-menu-skip-to-content-powered-by-search-algolia-log-in-create-account-dev-community">Dropdown menu  Skip to content Powered by  Search    Algolia  Log in  Create account DEV Community</h4>
+<p>Add reaction   Like   Unicorn   Exploding Head   Raised Hands   Fire  Copied to Clipboard   Share to X  Share to LinkedIn  Share to Facebook  Share to Mastodon Share Post via...Report AbuseTaki Posted on  Mar 9</p>
+<h3 id="mastering-temperature-and-top_p-in-chatgpt-api">Mastering Temperature and Top_p in ChatGPT API</h3>
+<h1 id="ai-openai-chatgpt-programmingin-ai-text-generation-models-like-chatgpt-temperature-and-top_p-are-two-parameters-that-control-randomness-and-diversity-in-responses-they-affect-how-tokens-words-or-phrases-are-selected-from-the-model-s-probability-distribution-here-s-the-difference">ai# openai# chatgpt# programmingIn AI text generation models like ChatGPT,  <strong>temperature</strong>  and  <strong>top_p</strong>  are two parameters that control randomness and diversity in responses. They affect how tokens (words or phrases) are selected from the model&#39;s probability distribution. Here’s the difference:</h1>
+<h5 id="1-temperature"><strong>1. Temperature (𝛕)</strong></h5>
+<ul>
+<li>Controls randomness by  <strong>scaling</strong>  the probability distribution.</li>
+<li>A  <strong>higher temperature</strong>  (e.g.,  <strong>1.0 - 1.5</strong> ) makes responses  <strong>more diverse and creative</strong> , but also  <strong>more random and unpredictable</strong> .</li>
+<li>A  <strong>lower temperature</strong>  (e.g.,  <strong>0.1 - 0.3</strong> ) makes responses  <strong>more focused, deterministic, and repetitive</strong> .</li>
+<li><strong>Example:</strong>  <strong>High Temperature (1.2)</strong>  → &#34;The sky is a canvas of endless hues, shifting from pink to deep indigo.&#34;</li>
+<li><strong>Low Temperature (0.2)</strong>  → &#34;The sky is blue.&#34;</li>
+</ul>
+<h5 id="2-top-p-nucleus-sampling"><strong>2. Top-P (Nucleus Sampling)</strong></h5>
+<ul>
+<li>Controls randomness by  <strong>restricting</strong>  token selection to a  <strong>subset</strong>  of the most likely tokens.</li>
+<li>Instead of considering all possible words,  <strong>top_p</strong>  ensures only the most probable ones (whose cumulative probability adds up to  p ) are considered.</li>
+<li><strong>Top-p = 1.0</strong>  → No restriction (like greedy sampling).</li>
+<li><strong>Lower top-p (e.g., 0.3 - 0.5)</strong>  → Limits the choice to fewer words, making output more  <strong>focused and deterministic</strong> .</li>
+<li><strong>Example:</strong>  <strong>High Top-P (0.9 - 1.0)</strong>  → &#34;The concert was an electrifying spectacle, filled with vibrant energy.&#34;</li>
+<li><strong>Low Top-P (0.3)</strong>  → &#34;The concert was enjoyable.&#34;</li>
+</ul>
+<h5 id="when-to-use-what"><strong>When to Use What?</strong></h5>
+<ul>
+<li><strong>For highly creative outputs</strong>  → Use  <strong>higher temperature</strong>  (e.g., 0.8 - 1.2) and/or  <strong>higher top_p</strong> .</li>
+<li><strong>For factual, precise responses</strong>  → Use  <strong>lower temperature</strong>  (e.g., 0.2 - 0.5) and/or  <strong>lower top_p</strong> .
+💡  <strong>Tip:</strong>  You can tweak  <strong>either</strong> temperature  or  top_p , but not both aggressively at the same time, as they both influence randomness.
+Here&#39;s a  <strong>TypeScript example</strong>  using OpenAI&#39;s API to demonstrate the difference between  <strong>temperature</strong>  and  <strong>top_p</strong>  in text generation.</li>
+</ul>
+<h5 id="setup"><strong>Setup</strong> :</h5>
+<ol>
+<li>Install  openai  package:
+npm  install  openai dotenv  Enter fullscreen mode   Exit fullscreen mode</li>
+<li>Create a  .env  file and add your API key:
+OPENAI_API_KEY=your_api_key_here  Enter fullscreen mode   Exit fullscreen mode</li>
+<li>Use the following TypeScript code:</li>
+</ol>
+<h5 id="typescript-code-temperature-vs-top-p"><strong>TypeScript Code: Temperature vs. Top-P</strong></h5>
+<p>import   {   OpenAI   }   from   &#39; openai &#39; ;   import   dotenv   from   &#34; dotenv &#34; ;   dotenv . config ();   const   openai   =   new   OpenAI  (   {   apiKey :   process . env . OPENAI_API_KEY ,   }   );   async   function   generateText (   prompt :   string ,   temperature :   number   =   1.0 ,   top_p :   number   =   1.0   ):   Promise &lt; void &gt;   {   try   {   const   response   =   await   this . openai . chat . completions . create ({   model :   &#34; gpt-4 &#34; ,   messages :   [{   role :   &#34; user &#34; ,   content :   prompt   }],   temperature :   temperature ,   // Controls randomness   top_p :   top_p ,   // Controls diversity   max_tokens :   100 ,   });   console . log ( <code>\n🔥 Temperature:  ${ temperature } , 🎯 Top-P:  ${ top_p } </code> );   console . log ( response . data . choices [ 0 ]. message ?. content );   }   catch  ( error )   {   console . error ( &#34; Error: &#34; ,   error );   }   }   const   prompt   =   &#34; Describe a futuristic city in 2050. &#34; ;   // High temperature → More creative, unpredictable   generateText ( prompt ,   1.2 ,   1.0 );   // Low temperature → More deterministic, factual   generateText ( prompt ,   0.2 ,   1.0 );   // High top_p → More diverse words considered   generateText ( prompt ,   1.0 ,   0.9 );   // Low top_p → Very focused choices, likely repetitive   generateText ( prompt ,   1.0 ,   0.3 );   Enter fullscreen mode   Exit fullscreen mode</p>
+<h5 id="expected-results"><strong>Expected Results:</strong></h5>
+<h6 id="high-temperature-1-2"><strong>High Temperature (1.2)</strong></h6>
+<ul>
+<li><em>&#34;The city of 2050 is a dazzling wonderland of neon-lit floating districts, sky gardens that recycle air, and AI-powered robots running entire industries.&#34;</em></li>
+</ul>
+<h6 id="low-temperature-0-2"><strong>Low Temperature (0.2)</strong></h6>
+<ul>
+<li><em>&#34;In 2050, cities have more electric vehicles, AI automation, and smart infrastructure for sustainability.&#34;</em></li>
+</ul>
+<h6 id="high-top-p-0-9"><strong>High Top-P (0.9)</strong></h6>
+<ul>
+<li><em>&#34;By 2050, cities are vibrant with self-repairing roads, quantum-powered networks, and holographic entertainment hubs.&#34;</em></li>
+</ul>
+<h6 id="low-top-p-0-3"><strong>Low Top-P (0.3)</strong></h6>
+<ul>
+<li><em>&#34;Cities in 2050 are automated, green, and efficient.&#34;</em></li>
+</ul>
+<h5 id="key-takeaways"><strong>Key Takeaways:</strong></h5>
+<ul>
+<li><strong>Higher Temperature</strong>  → More creativity, but less consistency.</li>
+<li><strong>Lower Temperature</strong>  → More deterministic and factual.</li>
+<li><strong>Higher Top-P</strong>  → More diverse wording.</li>
+<li><strong>Lower Top-P</strong>  → More predictable and repetitive responses.</li>
+</ul>
+<h4 id="top-comments-0">Top comments  (0)</h4>
+<p>Subscribe   Create template Templates let you quickly answer FAQs or store snippets for re-use.
+Dismiss Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment&#39;s permalink.
+Hide child comments as well
+For further actions, you may consider blocking this person and/or reporting abuse
+Taki  Healing By Code</p>
+<ul>
+<li>Location   HCMC, Viet Nam</li>
+<li>Education   University Of Science HCMC VN</li>
+<li>Joined  Aug 26, 2024</li>
+</ul>
+<h5 id="more-from-taki">More from Taki</h5>
+<p>Vite for React SPA  # webdev   # javascript   # programming   # nextjs   AI Flashcard: NextJs (Basic)  # webdev   # programming   # ai   # nextjs   AI Flashcard: NestJs (Basic) And Gemini (Free)  # programming   # javascript   # ai   # nestjs
+Google AI is the official AI Model and Platform Partner of DEV
+Neon is the official database partner of DEV
+Algolia is the official search partner of DEV
+DEV Community — A space to discuss and keep up software development and manage your software career
+Home
+Tags
+About
+Contact
+Code of Conduct
+Privacy Policy
+Terms of Use
+Built on Forem — the open source software that powers DEV and other inclusive communities.
+Made with love and Ruby on Rails. DEV Community  ©  2016 - 2025.
+We&#39;re a place where coders share, stay up-to-date and grow their careers.</p>

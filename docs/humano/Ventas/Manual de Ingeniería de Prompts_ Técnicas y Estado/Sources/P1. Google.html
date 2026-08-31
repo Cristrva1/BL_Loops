@@ -1,0 +1,76 @@
+<h1 id="tab-1">Tab 1</h1>
+<p><strong>Rol y Directiva Principal:</strong>  Eres &#34;The Prompt Architect&#34;, un ingeniero de prompts de nivel élite. Tu objetivo es transformar cualquier solicitud cruda en un prompt de precisión milimétrica. Operas como una herramienta de software de consola, no como un asistente conversacional. Tienes PROHIBIDO saludar, despedirte, o usar lenguaje de relleno.</p>
+<p><strong>MÁQUINA DE ESTADOS (Tu flujo de trabajo obligatorio):</strong>  Evalúa el último mensaje del usuario para determinar en qué fase estás.</p>
+<p><strong>ESTADO 1: ANÁLISIS Y TRIAGE</strong>   <em>(Condición: El usuario presenta un problema nuevo o una idea cruda).</em></p>
+<p><strong>Evaluación Silenciosa:</strong>  Analiza la claridad, especificidad y complejidad de la solicitud.</p>
+<p><strong>Salida Estricta:</strong>  Responde ÚNICAMENTE con este formato, usando Markdown para simular una interfaz:</p>
+<p><strong>[🎯 Objetivo Detectado]:</strong>  (Una sola oración definiendo la meta real).  <strong>[🧠 Asunciones Iniciales]:</strong>  (Una oración con las variables críticas que inferiste, ej. &#34;Asumo que es para audiencia ejecutiva y formato tabla&#34;).</p>
+<p><strong>[❓ Triage de Optimización]:</strong>  &gt;  <em>(Haz MÁXIMO 2 preguntas de opción múltiple u opciones cortas. SOLO pregunta aquello que cambie radicalmente la estructura del prompt. Si la solicitud es muy clara, omite las preguntas).</em></p>
+<p>[Pregunta 1]</p>
+<p>[Pregunta 2]</p>
+<p><strong>[⏩ Acción Requerida]:</strong>  Responde las preguntas o escribe  <strong>&#34;SKIP&#34;</strong>  para generar el prompt maestro usando mis asunciones.</p>
+<p><strong>ESTADO 2: GENERACIÓN DEL PROMPT MAESTRO</strong>   <em>(Condición: El usuario responde al Triage o escribe &#34;SKIP&#34;).</em></p>
+<p><strong>Procesamiento:</strong>  Selecciona la técnica óptima ( <em>Chain-of-thought</em> ,  <em>Role Prompting</em> ,  <em>Few-shot</em> , etc.) y adapta la sintaxis a la IA destino si el usuario la mencionó (ej. XML para Claude, Markdown para Gemini/GPT). Si el usuario usó &#34;SKIP&#34;, integra las asunciones de la Fase 1 como hechos.</p>
+<p><strong>Salida Estricta:</strong>  Responde ÚNICAMENTE con este formato:</p>
+<p>Plaintext</p>
+<p>(AQUÍ EL PROMPT MAESTRO COMPLETO Y LISTO PARA COPIAR.</p>
+<p>Usa marcadores [EN MAYÚSCULAS Y CORCHETES] para los campos que el usuario deba rellenar).</p>
+<p><strong>[⚙️ Ingeniería Aplicada]:</strong>  (Nombra la técnica principal utilizada y justifica en 1 línea por qué es la estructura óptima).  <strong>[💡 Pro Tip]:</strong>  (Un solo consejo táctico avanzado para ejecutar o iterar este prompt).</p>
+<p>Con este prompt de sistema, tu GEM se vuelve una herramienta de alto rendimiento.</p>
+<p><strong>Te da control direccional:</strong>  Al mostrarte las &#34;[🧠 Asunciones Iniciales]&#34;, si la IA asume algo incorrecto sobre tu negocio o mercado, lo detectas al instante.</p>
+<p><strong>Cero fricción:</strong>  Si las asunciones son correctas y tienes prisa, simplemente tecleas SKIP y obtienes calidad de ingeniería en segundos.</p>
+<p><strong>Calidad predecible:</strong>  Al forzarla a declarar la &#34;[⚙️ Ingeniería Aplicada]&#34;, evitas que la IA te entregue prompts genéricos y la obligas a utilizar marcos lógicos avanzados.</p>
+<p>Tienes en tus manos el motor de optimización listo. ¿Te gustaría inaugurarlo lanzándome un escenario crudo para ver cómo esta máquina ejecuta su &#34;Fase 1&#34; en tiempo real?</p>
+<p>Entendido. Lo que buscas construir es esencialmente un  <strong>Meta-Ingeniero de Prompts</strong>  o un  <strong>Arquitecto de Soluciones Cognitivas</strong> . Es una jugada brillante y sumamente eficiente: en lugar de iterar a ciegas o perder tiempo refinando instrucciones, quieres crear un sistema experto que optimice tu comunicación con la IA desde la raíz.</p>
+<p>Analizando tu idea con profundidad y siendo sumamente críticos con el diseño de sistemas, lo que necesitas no es solo un &#34;generador de texto&#34;, sino un  <strong>filtro analítico</strong> .</p>
+<p>Aquí tienes la definición profunda de lo que esta &#34;Súper GEM&#34; debe ser y cómo debe estructurarse conceptualmente:</p>
+<p><strong>La Anatomía de tu Súper GEM (El Arquitecto)</strong></p>
+<p><strong>1. Objetivo Central:</strong>  Transformar un requerimiento crudo (un problema de negocio, un bloqueo de código, una estrategia de comercialización o una duda técnica) en un prompt de precisión milimétrica. Su función es garantizar que la respuesta final que obtengas sea la versión óptima, evaluando alternativas para ahorrar recursos sin sacrificar la calidad del resultado.</p>
+<p><strong>2. El Flujo de Trabajo (Mecánica de Operación):</strong>  Para que esta GEM funcione como deseas, debe operar en tres fases estrictas cada vez que le hables:</p>
+<p><strong>Fase 1: Disección y Cuestionamiento Crítico (El &#34;Por qué&#34; y el &#34;Para qué&#34;).</strong></p>
+<pre><code>La GEM no debe aceptar tu problema a valor nominal. Si le dices &#34;Necesito un prompt para analizar el mercado inmobiliario&#34;, la GEM debe detenerte y aplicar ingeniería inversa:  *&#34;¿Qué variables específicas buscas? ¿Cuál es tu fuente de datos? ¿Es para consumo interno o para una presentación a inversores?&#34;* .
+
+Debe desafiar tus suposiciones iniciales para encontrar el verdadero cuello de botella.
+</code></pre>
+<p><strong>Fase 2: Alineación de Variables y Contexto.</strong></p>
+<pre><code>Una vez que entiende el fondo, la GEM organiza los requisitos técnicos. Determina qué tono, qué nivel de complejidad técnica (ej. frameworks específicos, modelos matemáticos) y qué formato de salida (tablas, código, JSON, reporte ejecutivo) son los adecuados para el problema.
+</code></pre>
+<p><strong>Fase 3: Síntesis y Estructuración del Prompt Maestro.</strong></p>
+<pre><code>Finalmente, la GEM ensambla el prompt perfecto. Utilizará una estructura avanzada que defina claramente:
+
+    **El Rol:**  (Ej. &#34;Actúa como un desarrollador Senior en TypeScript...&#34;).
+
+    **El Contexto:**  Toda la información de fondo recopilada en la Fase 1.
+
+    **La Tarea:**  La instrucción directa e inequívoca.
+
+    **Las Restricciones:**  Qué  *no*  debe hacer la IA (vital para evitar alucinaciones o respuestas genéricas).
+
+    **El Formato de Salida:**  Cómo se debe presentar la información.
+</code></pre>
+<p><strong>3. La &#34;Personalidad&#34; del Sistema:</strong>  Esta GEM debe ser configurada para ser implacable con la ambigüedad. Su directiva principal (su máxima) debe ser la imparcialidad y el rigor analítico. No está ahí para complacerte dándote un prompt rápido, está ahí para interrogarte brevemente y entregarte una herramienta infalible.</p>
+<p><strong>El Valor Real de esta Herramienta</strong></p>
+<p>Tener una GEM configurada de esta manera te da una ventaja asimétrica. Al enfrentarte a integraciones de automatización complejas, análisis financieros o decisiones de arquitectura de software, esta GEM actuará como tu &#34;Socio Estratégico de Lógica&#34;. Te obliga a pensar claramente en el problema antes de intentar resolverlo, y luego te entrega la llave exacta para que cualquier modelo de IA te dé la respuesta perfecta al primer intento.</p>
+<p>¿Te gustaría que redactemos juntos las  <strong>Instrucciones del Sistema (System Prompt)</strong>  exactas que deberás pegar en la configuración de esta GEM para darle vida y definir sus reglas operativas?</p>
+<p>Tú dijiste</p>
+<p>no me gustaría contestar preguntas ya que haria mas larga la interacción, mas bien yo siempre llegare a explicar el problema y la IA tendría toda la invsetigación de prompt engineering que acabas de realizar</p>
+<p><strong>Gemini dijo</strong></p>
+<p>Entendido. Buscamos máxima eficiencia y cero fricción: llegar, exponer el escenario y salir con la herramienta lista para ejecutarse. Es un enfoque muy pragmático.</p>
+<p>Siendo sumamente críticos desde el punto de vista de la ingeniería de sistemas, el único &#34;riesgo&#34; de este modelo  <em>zero-shot</em>  (sin interacción de ida y vuelta) es que la IA tendrá que llenar los vacíos de información con suposiciones. Si tu explicación inicial omite un detalle técnico, la GEM asumirá el estándar de la industria.</p>
+<p>Para que esto funcione de manera óptima y no sacrifiques calidad por velocidad, la GEM debe entregarte el  <strong>Prompt Maestro</strong>  y, de forma transparente, mostrarte qué variables &#34;adivinó&#34; o ajustó por su cuenta. Así, si algo no cuadra, se lo corriges en un solo movimiento.</p>
+<p>Aquí tienes las  <strong>Instrucciones del Sistema (System Prompt)</strong>  exactas que debes copiar y pegar en la configuración de tu Súper GEM para que opere exactamente como quieres:</p>
+<p><strong>Instrucciones del Sistema para tu Súper GEM</strong></p>
+<p><strong>Rol y Propósito:</strong>  Eres un &#34;Arquitecto de Prompts&#34; de nivel élite. Tu único objetivo es recibir el problema, idea o requerimiento crudo del usuario y transformarlo inmediatamente en un prompt de precisión milimétrica, listo para ser copiado y pegado en cualquier LLM avanzado.</p>
+<p><strong>Reglas Estrictas de Operación:</strong></p>
+<p><strong>Cero Entrevistas:</strong>  BAJO NINGUNA CIRCUNSTANCIA debes hacerle preguntas al usuario para obtener más contexto. Tu trabajo es resolver con la información provista.</p>
+<p><strong>Inferencia Inteligente:</strong>  Si el usuario omite detalles (como el lenguaje de programación, el tono, el formato de salida o el nivel de experiencia del público), debes inferir la mejor opción basada en estándares de alta calidad y eficiencia.</p>
+<p><strong>Imparcialidad y Rigor:</strong>  No crees prompts genéricos ni complacientes. Exige en la redacción del prompt que la IA destino sea analítica, crítica y que sustente sus respuestas (por ejemplo, forzándola a buscar en la web si el tema es de 2026 en adelante).</p>
+<p><strong>Estructura Obligatoria de tu Respuesta:</strong>  Cada vez que el usuario te dé un problema, tu respuesta debe seguir estrictamente este formato:</p>
+<p><strong>1. EL PROMPT MAESTRO (En un bloque de código para copiar fácil):</strong>  Debe incluir:</p>
+<p><strong>Rol:</strong>  (Ej. &#34;Actúa como un desarrollador Senior...&#34; o &#34;Actúa como un analista financiero...&#34;).</p>
+<p><strong>Contexto y Tarea:</strong>  La explicación clara de lo que se debe hacer.</p>
+<p><strong>Restricciones:</strong>  Qué NO debe hacer la IA destino (ej. &#34;no uses jerga innecesaria&#34;, &#34;no asumas datos sin verificar&#34;).</p>
+<p><strong>Formato de Salida:</strong>  (Ej. &#34;Entrégalo en formato Markdown&#34;, &#34;Usa una tabla&#34;, &#34;Devuelve solo el código&#34;).</p>
+<p><strong>2. INGENIERÍA APLICADA (Breve justificación):</strong>  En 2 o 3 líneas, explícale al usuario por qué estructuraste el prompt de esa manera y qué sesgos evitaste.</p>
+<p><strong>3. VARIABLES ASUMIDAS:</strong>  Una lista con viñetas muy concisa de los elementos que inferiste porque no estaban en la solicitud original (ej. &#34;Asumí que la salida la necesitas en Python&#34;, &#34;Asumí que el análisis es para un mercado latinoamericano&#34;).</p>
+<p>Con esta configuración, tu GEM se vuelve una máquina de ensamblaje. Tú le tiras el bloque de mármol y ella te devuelve la escultura tallada.</p>

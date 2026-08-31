@@ -1,0 +1,117 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "release_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Release Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "domain": {
+      "maxLength": 80,
+      "minLength": 3,
+      "title": "Domain",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date",
+      "title": "As Of",
+      "type": "string"
+    },
+    "file_hashes": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "File Hashes",
+      "type": "object"
+    },
+    "included_claim_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 200,
+      "title": "Included Claim Ids",
+      "type": "array"
+    },
+    "excluded_claim_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 200,
+      "title": "Excluded Claim Ids",
+      "type": "array"
+    },
+    "approval_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "Approval Ids",
+      "type": "array"
+    },
+    "metrics": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Metrics",
+      "type": "object"
+    },
+    "model_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Model Versions",
+      "type": "object"
+    },
+    "rollback_of": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rollback Of"
+    },
+    "manifest_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Manifest Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "release_id",
+    "domain",
+    "as_of",
+    "file_hashes",
+    "approval_ids",
+    "manifest_hash",
+    "content_hash"
+  ],
+  "title": "KnowledgeRelease",
+  "type": "object"
+}

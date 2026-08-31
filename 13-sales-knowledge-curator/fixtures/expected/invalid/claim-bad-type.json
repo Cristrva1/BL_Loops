@@ -1,0 +1,31 @@
+{
+  "claim_id": "clm-bad-type",
+  "canonical_text": "Una afirmacion con tipo inventado no debe pasar el contrato.",
+  "claim_type": "truth",
+  "topic": "discovery",
+  "population": "demo",
+  "context": null,
+  "jurisdiction": "MX-demo",
+  "valid_from": "2026-01-01",
+  "valid_until": null,
+  "method": null,
+  "sample": null,
+  "status": "candidate",
+  "version": 1,
+  "supersedes": null,
+  "created_by": "test",
+  "created_at": "2026-08-30T12:00:00Z",
+  "updated_at": "2026-08-30T12:00:00Z",
+  "quality": {
+    "authority": 3,
+    "evidence_proximity": 3,
+    "recency": 3,
+    "independence": 3,
+    "applicability": 3,
+    "extraction_integrity": 3,
+    "rights_clarity": 3
+  },
+  "evidence": [],
+  "challenge_note": null,
+  "content_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

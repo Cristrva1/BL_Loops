@@ -1,0 +1,95 @@
+<p>Aquí tienes un borrador del documento de briefing, extrayendo los temas principales e ideas clave de las fuentes proporcionadas.</p>
+<h2 id="documento-de-briefing-langfuse-plataforma-de-ingenier-a-de-llm">Documento de Briefing: Langfuse - Plataforma de Ingeniería de LLM</h2>
+<p><strong>Fuente:</strong> Excerpts from &#34;Langfuse: más allá del versionado de prompts y del traceo de LLMs.&#34; (Webinar de José María del equipo de Tatia en Paradigma Digital)</p>
+<hr>
+<h3 id="1-introducci-n-a-langfuse">1. Introducción a Langfuse</h3>
+<p>Langfuse es una <strong>plataforma de ingeniería de LLM (Large Language Model) abierta y colaborativa</strong> diseñada para ayudar a depurar e iterar sobre aplicaciones basadas en modelos de lenguaje grandes.</p>
+<ul>
+<li><strong>Definición:</strong> &#34;Langfuse es una plataforma de ingeniería del lm abierta que ayuda de manera colaborativa debugar reiterar sobre aplicaciones basadas en los grandes modelos de lenguaje.&#34;</li>
+<li><strong>Modelo de Precios:</strong> Ofrece una versión gratuita (&#34;hasta 50.000 observaciones mensuales por proyecto&#34;), una versión Pro (&#34;59 mensuales y llega hasta 100.000 observaciones mensuales por proyecto&#34;), y una versión Team personalizada.</li>
+<li><strong>Comparación con LangSmith:</strong> El orador compara Langfuse con LangSmith, otra plataforma similar.
+<ul>
+<li><strong>Proyectos vs. Organizaciones:</strong> Langfuse se centra en proyectos directamente, permitiendo añadir miembros del equipo para colaborar. LangSmith usa organizaciones que contienen proyectos.</li>
+<li><strong>Creación de Datasets:</strong> En LangSmith es &#34;más sencillo dentro de la interfaz crear dataset&#34;, permitiendo la subida de archivos CSV. En Langfuse es &#34;mucho más tedioso crearlos en en lsmi&#34; [sic, debería ser Langfuse], aunque programáticamente es más fácil.</li>
+<li><strong>Prompts de Terceros:</strong> LangSmith permite acceder a prompts públicos de otros usuarios, mientras que en Langfuse &#34;solo se puede crear prs dentro de tu organización&#34;.</li>
+<li><strong>Cumplimiento GDPR:</strong> Una ventaja clave de Langfuse es que &#34;cumple con gdpr&#34;, lo que lo hace adecuado para su uso en Europa, a diferencia de LangSmith que no lo hace.</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-caracter-sticas-clave-de-langfuse">2. Características Clave de Langfuse</h3>
+<p>Langfuse ofrece un conjunto robusto de funcionalidades para el ciclo de vida del desarrollo de aplicaciones basadas en LLMs:</p>
+<h4 id="2-1-gesti-n-de-proyectos-y-api-keys">2.1 Gestión de Proyectos y API Keys</h4>
+<ul>
+<li>Los usuarios deben crear un proyecto para interactuar con Langfuse.</li>
+<li>La sección de configuración del proyecto permite &#34;Añadir a miembros de tu equipo&#34; y crear &#34;API keys&#34; (Secret Key y Public Key) para la interacción programática.</li>
+<li>Langfuse cuenta con un &#34;playground similar al que tiene Open&#34; para experimentar con prompts y modelos.</li>
+</ul>
+<h4 id="2-2-creaci-n-y-versionado-de-prompts">2.2 Creación y Versionado de Prompts</h4>
+<ul>
+<li><strong>Tipos de Prompts:</strong> Hasta hace poco solo existía el tipo &#34;texto&#34;. Ahora existen dos:
+<ul>
+<li><strong>Text Prompt:</strong> Un solo mensaje, admite variables, usualmente usado como &#34;System prompt&#34; que guía la conversación.</li>
+<li><strong>Chat Prompt:</strong> Permite múltiples mensajes, &#34;se empieza obligatoriamente por un System prompt y después podemos Añadir tantos assistant o user message como como queramos&#34;. Se parece a la interacción de un chatbot.</li>
+</ul>
+</li>
+<li><strong>Variables:</strong> Los prompts pueden incluir variables dentro de dobles corchetes <code>{{variable_name}}</code>.</li>
+<li><strong>Versionado:</strong> Se pueden crear nuevas versiones de un prompt para modificar su configuración (ej. <code>max_tokens</code>, <code>temperature</code>, <code>model</code>). El nombre del prompt actúa como su ID y no es versionable; cambiar el nombre crea un prompt nuevo.</li>
+<li><strong>Configuración:</strong> Los prompts pueden configurarse con parámetros como <code>model</code>, <code>temperature</code>, <code>max_tokens</code> y <code>top_p</code>.</li>
+<li><strong>Activación:</strong> Un prompt puede estar activo o inactivo.</li>
+</ul>
+<h4 id="2-3-monitoreo-traceo">2.3 Monitoreo (Traceo)</h4>
+<ul>
+<li><strong>Propósito:</strong> Langfuse se utiliza para &#34;supervisar aplicaciones del llms&#34; y &#34;registra las trazas&#34;.</li>
+<li><strong>Funcionamiento:</strong> El traceo es el proceso de &#34;seguir qué pasos ha ido tomando el LLM desde que envías el mensaje hasta que lo recibes de vuelta&#34;.</li>
+<li><strong>Datos Registrados:</strong> Incluye &#34;latencia&#34; (tiempo), &#34;cuántos tokens ha utilizado y Consecuentemente el precio&#34;. También puede registrar la sesión y el usuario.</li>
+<li><strong>Implementación:</strong> Se usa el decorador <code>@traceable</code> (o <code>observe</code>) en las funciones que interactúan con el LLM para capturar la traza.</li>
+<li><strong>Visualización:</strong> Las trazas se visualizan en la interfaz de Langfuse, mostrando los pasos, tiempos, costes, y permitiendo añadir scoring o etiquetas.</li>
+</ul>
+<h4 id="2-4-depuraci-n-debugging">2.4 Depuración (Debugging)</h4>
+<ul>
+<li>&#34;Proporciona de manera visual el texto que se le ha indicado y el resultado que tenemos y vemos y podemos observar los cambios entre pequeñas modificaciones del prom que enviamos y y y el resultado que obtenemos del del modelo de lenguaje.&#34; Permite comparar iteraciones y resultados.</li>
+</ul>
+<h4 id="2-5-generaci-n-y-evaluaci-n-de-datasets">2.5 Generación y Evaluación de Datasets</h4>
+<ul>
+<li><strong>Importancia:</strong> Uno de los &#34;aspectos más importantes&#34; de Langfuse.</li>
+<li><strong>Tipos de Datasets:</strong>
+<ul>
+<li><strong>Automático:</strong> &#34;Podemos ir añadiendo todas estas llamadas [al LLM] a un dataset para tenerla registrada y ordenadas.&#34;</li>
+<li><strong>Manual/Evaluación:</strong> &#34;Podemos tener un dataset creado previamente de manera manual&#34; con datos predefinidos, incluyendo &#34;input y como output o como como resultado esperado&#34;.</li>
+</ul>
+</li>
+<li><strong>Funcionalidad:</strong> Permiten &#34;lanzárselos al modelo y obtener la comparación&#34; entre la predicción correcta (definida por el experto humano) y la predicción del modelo para &#34;evaluar si un modelo es válido un prom es válido para ejercer una tarea que previamente ha sido realizada por un humano&#34;.</li>
+<li><strong>Limitaciones:</strong> La interfaz de Langfuse no permite subir archivos CSV para datasets, deben crearse programáticamente o uno a uno.</li>
+</ul>
+<h4 id="2-6-scoring-y-evaluaciones-basadas-en-modelo-mbe">2.6 Scoring y Evaluaciones Basadas en Modelo (MBE)</h4>
+<ul>
+<li><strong>Scoring:</strong> Permite &#34;asignar manual [o programáticamente] un float un número o una nota&#34; al resultado de un prompt. En Langfuse, va &#34;de -1 a 1&#34; y admite comentarios.</li>
+<li><strong>Evaluaciones Basadas en Modelo (MBE):</strong> Implica &#34;llamar al al a un modelo de lenguaje... para evaluar un mensaje anterior de ese mismo modelo&#34;. Esto permite automatizar la asignación de scoring, por ejemplo, basándose en reglas predefinidas (ej. si el contrato incluye un precio, asignar 1; si no, asignar -1).</li>
+<li><strong>Experimentos:</strong> Los datasets de prueba permiten lanzar un &#34;experimento completo&#34; donde el modelo evalúa cada ítem del dataset, y Langfuse compara el juicio del modelo con el &#34;expected output&#34; definido manualmente, generando un score general del rendimiento del prompt.</li>
+</ul>
+<h4 id="2-7-metadatos-adicionales">2.7 Metadatos Adicionales</h4>
+<ul>
+<li><strong>Usuarios:</strong> Permite identificar quién realizó una llamada al LLM (ej. correo de empresa, entorno de desarrollo). Un &#34;usuario&#34; es diferente de un &#34;miembro&#34; del proyecto.</li>
+<li><strong>Etiquetas (Tags):</strong> Permiten añadir metadatos arbitrarios (ej. <code>modelo_empleado</code>, <code>entorno</code>). Son &#34;muy útiles porque luego desde la interfaz de lfus podemos filtrar por estas etiquetas&#34;.</li>
+<li><strong>Sesiones:</strong> Permite agrupar &#34;trazas relacionadas&#34; de una misma conversación, útil para chatbots.</li>
+</ul>
+<h3 id="3-workflow-de-iteraci-n-de-prompts-en-langfuse">3. Workflow de Iteración de Prompts en Langfuse</h3>
+<p>El proceso de trabajo con Langfuse implica:</p>
+<ol>
+<li><strong>Creación de Prompts:</strong> Definir prompts tipo texto o chat con sus configuraciones y variables.</li>
+<li><strong>Llamada al Modelo:</strong> Integrar la llamada al LLM (ej. OpenAI) utilizando el prompt creado, compilando las variables si es un chat prompt.</li>
+<li><strong>Traza:</strong> Usar el decorador <code>@traceable</code> para registrar automáticamente los detalles de cada interacción con el LLM.</li>
+<li><strong>Añadir Contexto:</strong> Incluir metadatos como usuarios, tags y sesiones a las trazas para mejor organización y filtrado.</li>
+<li><strong>Scoring y Evaluación:</strong> Asignar scores manualmente o automáticamente (via MBE) a los resultados para evaluar la calidad.</li>
+<li><strong>Creación de Datasets:</strong> Acumular interacciones en datasets o crear datasets de prueba con salidas esperadas.</li>
+<li><strong>Ejecutar Experimentos:</strong> Lanzar el prompt contra el dataset de prueba para obtener un score de rendimiento (ej. &#34;71% de acierto&#34;).</li>
+<li><strong>Iteración y Mejora:</strong> Analizar los resultados del experimento para identificar dónde falla el prompt. &#34;Mejorar el prom&#34; añadiendo nuevas reglas o refinando las existentes, creando una &#34;nueva versión del prom&#34;.</li>
+<li><strong>Repetir:</strong> Volver a ejecutar el experimento con la nueva versión del prompt para ver si el rendimiento ha mejorado. &#34;Esto es iterar esto es el el el jugo de lfus que te permite iterar sobre un prom ver los resultados.&#34;</li>
+</ol>
+<h3 id="4-ltimas-actualizaciones-y-beneficios">4. Últimas Actualizaciones y Beneficios</h3>
+<ul>
+<li>Langfuse está en constante evolución, con actualizaciones frecuentes (ej. &#34;a diario lanzando cosas nuevas&#34;).</li>
+<li>El &#34;launch week&#34; es un evento donde presentan nuevas funcionalidades.</li>
+<li><strong>Ventaja Principal:</strong> Su cumplimiento con GDPR es crucial para su adopción en Europa, haciendo de Langfuse &#34;la herramienta que estamos usando [en Paradigma Digital] para el desarrollo de de de aplicaciones LLM&#34;.</li>
+<li>Aunque LangSmith tenga más funcionalidades o procesos más ligeros, el GDPR es un diferenciador clave.</li>
+</ul>

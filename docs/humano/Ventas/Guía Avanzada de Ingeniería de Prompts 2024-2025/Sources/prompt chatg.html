@@ -1,0 +1,281 @@
+<h1 id="tab-1">Tab 1</h1>
+<p>Voy a tratar esto como un mapa del cerebro colectivo de los LLMs modernos 🧠⚙️. El “prompt engineering” ya no es solo escribir instrucciones: es diseñar  <strong>interfaces cognitivas</strong>  entre humanos y modelos.</p>
+<p>He consultado múltiples fuentes académicas (arXiv, papers recientes), whitepapers (Google 2025), documentación técnica y análisis contemporáneos. A continuación tienes un estado del arte real (2024–2025), sin romantizar.</p>
+<h3 id="1-taxonom-a-de-m-todos"><strong>1. TAXONOMÍA DE MÉTODOS</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>Técnica</strong></th>
+<th><strong>Categoría</strong></th>
+<th><strong>Modelo óptimo</strong></th>
+<th><strong>Caso de uso</strong></th>
+<th><strong>Eficacia reportada</strong></th>
+<th><strong>Fuente</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zero-shot</td>
+<td>Básico</td>
+<td>GPT-4, Gemini</td>
+<td>tareas simples</td>
+<td>baseline</td>
+<td></td>
+</tr>
+<tr>
+<td>Few-shot</td>
+<td>Básico</td>
+<td>GPT-4, Claude</td>
+<td>aprendizaje contextual</td>
+<td>mejora significativa vs zero-shot</td>
+<td></td>
+</tr>
+<tr>
+<td>Chain-of-Thought</td>
+<td>Razonamiento</td>
+<td>modelos &gt;10B params</td>
+<td>matemáticas, lógica</td>
+<td>↑ accuracy en GSM8K</td>
+<td></td>
+</tr>
+<tr>
+<td>Self-consistency</td>
+<td>Razonamiento</td>
+<td>modelos estocásticos</td>
+<td>tareas complejas</td>
+<td>reduce varianza</td>
+<td></td>
+</tr>
+<tr>
+<td>Tree-of-Thought</td>
+<td>Exploración</td>
+<td>modelos reasoning</td>
+<td>problemas multi-step</td>
+<td>outperform CoT en tareas complejas</td>
+<td></td>
+</tr>
+<tr>
+<td>Graph-of-Thought</td>
+<td>Exploración avanzada</td>
+<td>modelos grandes</td>
+<td>reasoning complejo</td>
+<td>mejora estructural</td>
+<td></td>
+</tr>
+<tr>
+<td>ReAct</td>
+<td>Agentic</td>
+<td>GPT-4 + tools</td>
+<td>agentes, APIs</td>
+<td>mejora performance en tasks reales</td>
+<td></td>
+</tr>
+<tr>
+<td>APE</td>
+<td>Automatización</td>
+<td>LLM + RL</td>
+<td>generación de prompts</td>
+<td>optimización automática</td>
+<td></td>
+</tr>
+<tr>
+<td>DSP</td>
+<td>Control</td>
+<td>LLM + policy model</td>
+<td>tareas dirigidas</td>
+<td>+41.4% en MultiWOZ</td>
+<td></td>
+</tr>
+<tr>
+<td>Skeleton-of-Thought</td>
+<td>Estructuración</td>
+<td>modelos reasoning</td>
+<td>outputs largos</td>
+<td>mejora coherencia</td>
+<td>(papers arXiv 2024–25)</td>
+</tr>
+<tr>
+<td>Program-of-Thought</td>
+<td>Neuro-symbolic</td>
+<td>modelos con code</td>
+<td>cálculo, lógica</td>
+<td>mejora exactitud</td>
+<td>(PoT literature)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-t-cnicas-fundamentales"><strong>2. TÉCNICAS FUNDAMENTALES</strong></h3>
+<p>Aquí es donde empieza el “lenguaje secreto” entre humano y modelo.</p>
+<h4 id="zero-shot-few-shot-many-shot"><strong>Zero-shot / Few-shot / Many-shot</strong></h4>
+<p><strong>Idea:</strong>  usar ejemplos como “micro-entrenamiento”.</p>
+<p><strong>Ejemplo (few-shot):</strong></p>
+<p>Clasifica el sentimiento:</p>
+<p>Texto: &#34;Me encantó el servicio&#34;</p>
+<p>Sentimiento: Positivo</p>
+<p>Texto: &#34;Fue terrible&#34;</p>
+<p>Sentimiento: Negativo</p>
+<p>Texto: &#34;Está bien&#34;</p>
+<p>Sentimiento:</p>
+<p><strong>Insight:</strong>  el modelo no “aprende”, pero  <strong>simula aprendizaje in-context</strong> .</p>
+<h4 id="chain-of-thought-cot"><strong>Chain-of-Thought (CoT)</strong></h4>
+<p><strong>Idea:</strong>  obligar al modelo a razonar paso a paso.</p>
+<p>Resuelve: 23 × 17</p>
+<p>Piensa paso a paso antes de responder.</p>
+<p>📌 Mejora fuerte en matemáticas y lógica</p>
+<h5 id="variantes"><strong>Variantes</strong></h5>
+<p><strong>Auto-CoT:</strong>  el modelo genera ejemplos automáticamente</p>
+<p><strong>Tree-of-Thought (ToT):</strong>  explora múltiples caminos</p>
+<p><strong>Graph-of-Thought:</strong>  reasoning no lineal</p>
+<p>👉 ToT permite explorar múltiples soluciones en paralelo</p>
+<h4 id="role-prompting"><strong>Role Prompting</strong></h4>
+<p>Actúa como un analista financiero senior.</p>
+<p>Evalúa esta inversión:</p>
+<p>⚠️ Funciona, pero en 2025 su impacto es menor que antes (modelos ya internalizan roles).</p>
+<h4 id="react-reason-act"><strong>ReAct (Reason + Act)</strong></h4>
+<p>Pregunta: ¿Cuál es la capital de Japón?</p>
+<p>Pensamiento: necesito buscar información</p>
+<p>Acción: buscar(&#34;capital Japón&#34;)</p>
+<p>Observación: Tokio</p>
+<p>Respuesta: Tokio</p>
+<p>👉 Clave en sistemas agentes y RAG</p>
+<h4 id="self-consistency"><strong>Self-Consistency</strong></h4>
+<p>Genera 5 soluciones y elige la más consistente.</p>
+<p>📌 Reduce errores aleatorios</p>
+<h4 id="skeleton-of-thought"><strong>Skeleton-of-Thought</strong></h4>
+<p>Primero genera la estructura del artículo.</p>
+<p>Luego desarrolla cada sección.</p>
+<p>👉 Evita outputs caóticos largos.</p>
+<h3 id="3-t-cnicas-avanzadas-2024-2025"><strong>3. TÉCNICAS AVANZADAS (2024–2025)</strong></h3>
+<p>Aquí empieza lo interesante: el prompt deja de ser texto… y se vuelve sistema.</p>
+<h4 id="meta-prompting-ape"><strong>Meta-Prompting / APE</strong></h4>
+<p>El modelo escribe el prompt óptimo.</p>
+<p>📌 Automatiza optimización de prompts</p>
+<h4 id="directional-stimulus-prompting-dsp"><strong>Directional Stimulus Prompting (DSP)</strong></h4>
+<p>Usa un modelo pequeño para guiar otro.</p>
+<p>📌 Mejora de  <strong>+41.4%</strong>  en diálogo (MultiWOZ)</p>
+<h4 id="program-of-thought-pot"><strong>Program-of-Thought (PoT)</strong></h4>
+<p>Resuelve usando código Python:</p>
+<p>👉 Convierte reasoning en ejecución.</p>
+<h4 id="emotion-prompting-psychological-priming"><strong>Emotion Prompting / Psychological Priming</strong></h4>
+<p>Responde con extremo cuidado y precisión, esto es crítico.</p>
+<p>🧠 Activa heurísticas internas del modelo.</p>
+<p>⚠️ Evidencia mixta (no siempre consistente).</p>
+<h4 id="multimodal-prompting"><strong>Multimodal Prompting</strong></h4>
+<p>[imagen] Describe y analiza riesgos estructurales</p>
+<p>👉 CoT + visión = salto cualitativo (multimodal CoT).</p>
+<h4 id="structured-output-prompting"><strong>Structured Output Prompting</strong></h4>
+<p>Devuelve JSON:</p>
+<p>{</p>
+<p>&#34;precio&#34;: number,</p>
+<p>&#34;riesgo&#34;: string</p>
+<p>}</p>
+<p>👉 Clave en producción.</p>
+<h4 id="system-prompting-constitutional-ai"><strong>System Prompting / Constitutional AI</strong></h4>
+<p>Define reglas globales:</p>
+<p>Nunca inventes datos.</p>
+<p>Verifica antes de responder.</p>
+<p>👉 Base de modelos tipo Claude.</p>
+<h3 id="4-anti-patrones-top-10"><strong>4. ANTI-PATRONES (TOP 10)</strong></h3>
+<p>Prompt vago❌ “Analiza esto”✅ “Analiza rentabilidad, riesgo y liquidez”</p>
+<p>Sin formato de salida❌ texto libre✅ JSON estructurado</p>
+<p>Mezclar múltiples tareas❌ todo en uno✅ dividir en pasos</p>
+<p>Overprompting❌ 1000 líneas✅ minimalismo estructurado</p>
+<p>Ignorar contexto👉 hoy el contexto &gt; prompt (RAG shift)</p>
+<p>No usar ejemplos👉 few-shot sigue siendo poderoso</p>
+<p>No validar outputs👉 usar self-consistency</p>
+<p>No iterar👉 prompting es proceso, no evento</p>
+<p>Confiar en persona prompts👉 efecto decreciente 2025</p>
+<p>No usar herramientas (tools)👉 el futuro es agentic</p>
+<h3 id="5-frameworks-reutilizables"><strong>5. FRAMEWORKS REUTILIZABLES</strong></h3>
+<h4 id="plantilla-1-an-lisis-estructurado"><strong>Plantilla 1 (Análisis estructurado)</strong></h4>
+<p>Contexto: [CONTEXTO]</p>
+<p>Objetivo: [OBJETIVO]</p>
+<p>Instrucciones:</p>
+<ol>
+<li>
+<p>Analiza [VARIABLE]</p>
+</li>
+<li>
+<p>Evalúa [VARIABLE]</p>
+</li>
+<li>
+<p>Concluye</p>
+</li>
+</ol>
+<p>Formato:</p>
+<p>[FORMATO]</p>
+<h4 id="plantilla-2-reasoning-avanzado"><strong>Plantilla 2 (Reasoning avanzado)</strong></h4>
+<p>Resuelve el problema siguiendo:</p>
+<ol>
+<li>
+<p>Comprensión</p>
+</li>
+<li>
+<p>Descomposición</p>
+</li>
+<li>
+<p>Razonamiento</p>
+</li>
+<li>
+<p>Verificación</p>
+</li>
+</ol>
+<p>Problema: [INPUT]</p>
+<h4 id="plantilla-3-producci-n-json"><strong>Plantilla 3 (Producción JSON)</strong></h4>
+<p>Devuelve SOLO JSON válido:</p>
+<p>{</p>
+<p>&#34;resultado&#34;: &#34;&#34;,</p>
+<p>&#34;confianza&#34;: 0-1,</p>
+<p>&#34;justificacion&#34;: &#34;&#34;</p>
+<p>}</p>
+<p>Entrada: [INPUT]</p>
+<h3 id="6-benchmarks-y-m-tricas"><strong>6. BENCHMARKS Y MÉTRICAS</strong></h3>
+<h4 id="m-tricas"><strong>Métricas</strong></h4>
+<p><strong>Accuracy</strong></p>
+<p><strong>Pass@k</strong>  (code generation)</p>
+<p><strong>BLEU / ROUGE</strong>  (NLP clásico)</p>
+<p><strong>Exact Match</strong></p>
+<p><strong>Consistency score</strong></p>
+<h4 id="benchmarks"><strong>Benchmarks</strong></h4>
+<p><strong>BIG-Bench</strong></p>
+<p><strong>MMLU</strong></p>
+<p><strong>HellaSwag</strong></p>
+<p><strong>GSM8K</strong>  (math reasoning)</p>
+<p>📌 CoT mejora significativamente en GSM8K</p>
+<h3 id="7-recursos-curados"><strong>7. RECURSOS CURADOS</strong></h3>
+<h4 id="papers-clave"><strong>Papers clave</strong></h4>
+<p>Chain-of-Thought Prompting<a href="https://arxiv.org/abs/2201.11903%0B%E2%86%92">https://arxiv.org/abs/2201.11903→</a> Introduce reasoning explícito</p>
+<p>Tree of Thoughts<a href="https://arxiv.org/abs/2305.10601%0B%E2%86%92">https://arxiv.org/abs/2305.10601→</a> reasoning exploratorio</p>
+<p>Graph of Thoughts<a href="https://arxiv.org/abs/2308.09687%0B%E2%86%92">https://arxiv.org/abs/2308.09687→</a> generaliza ToT</p>
+<p>Automatic Prompt Engineer<a href="https://arxiv.org/abs/2211.01910%0B%E2%86%92">https://arxiv.org/abs/2211.01910→</a> prompts automáticos</p>
+<p>Large Language Models are Zero-Shot Reasoners<a href="https://arxiv.org/abs/2205.11916%0B%E2%86%92">https://arxiv.org/abs/2205.11916→</a> CoT emergente</p>
+<h4 id="github"><strong>GitHub</strong></h4>
+<p><a href="https://github.com/princeton-nlp/tree-of-thought">https://github.com/princeton-nlp/tree-of-thought</a></p>
+<p><a href="https://github.com/microsoft/prompt-engineering">https://github.com/microsoft/prompt-engineering</a></p>
+<p><a href="https://github.com/openai/evals">https://github.com/openai/evals</a></p>
+<h4 id="cursos-gu-as"><strong>Cursos / Guías</strong></h4>
+<p>Google Prompt Engineering Whitepaper (2025)</p>
+<p>DeepLearning.AI Prompt Engineering course</p>
+<h4 id="comunidades"><strong>Comunidades</strong></h4>
+<p>Reddit r/PromptEngineering</p>
+<p>HuggingFace forums</p>
+<p>Discords de AI builders</p>
+<h3 id="contradicciones-actuales-importante"><strong>CONTRADICCIONES ACTUALES (IMPORTANTE)</strong></h3>
+<p>Hay una tensión real en el campo:</p>
+<h5 id="postura-1-prompt-engineering-es-clave"><strong>Postura 1: Prompt Engineering es clave</strong></h5>
+<p>Mejora performance (CoT, DSP)</p>
+<p>Evidencia empírica fuerte</p>
+<h5 id="postura-2-est-perdiendo-relevancia"><strong>Postura 2: Está perdiendo relevancia</strong></h5>
+<p>Modelos entienden mejor instrucciones</p>
+<p>Contexto (RAG) &gt; prompt</p>
+<p>Agentes reemplazan prompts largos</p>
+<p>👉 Esto ya se observa en práctica industrial</p>
+<h3 id="conclusi-n"><strong>CONCLUSIÓN</strong></h3>
+<p>El prompt engineering evolucionó de:</p>
+<p><strong>“escribir instrucciones” → “diseñar sistemas cognitivos”</strong></p>
+<p>La frontera 2025 no está en el prompt… está en:</p>
+<p><strong>Agentic systems</strong></p>
+<p><strong>RAG</strong></p>
+<p><strong>Tool use</strong></p>
+<p><strong>Self-improving loops</strong></p>
+<p>El prompt ahora es solo la capa visible de algo más profundo:  <strong>arquitectura de interacción con inteligencia artificial</strong> .</p>

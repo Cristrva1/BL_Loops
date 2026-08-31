@@ -1,0 +1,19 @@
+{
+  "title": "Construye tu Equipo de IA",
+  "type": "ARTIFACT_TYPE_EXPLAINER_VIDEO",
+  "sources": [{
+    "sourceId": {
+      "id": "9f4cc8e2-8f0f-4d88-bb9d-22a716a64baf"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "explainerVideo": {
+    "generationOptions": {
+      "languageCode": "es_mx",
+      "videoFocus": "",
+      "length": "EXPLAINER_VIDEO_LENGTH_UNSPECIFIED",
+      "templateFormat": "TEMPLATE_FORMAT_EXPLAINER",
+      "videoOverviewStyle": "VIDEO_OVERVIEW_STYLE_AUTO_SELECT"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/doctrine.rolled_back.v1.json",
+  "title": "doctrine.rolled_back.v1",
+  "description": "Emitido por el Doctrine Publisher cuando una doctrina activa es revertida. Todos los módulos deben restaurar la versión anterior.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "doctrine.rolled_back" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "doctrine-publisher" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid", "description": "ID del doctrine.published que se está revirtiendo." },
+    "tenant_id":      { "type": "string", "const": "system" },
+    "payload": {
+      "type": "object",
+      "required": ["doctrine_id", "rollback_reason", "rollback_trigger", "scope", "restore_version"],
+      "additionalProperties": false,
+      "properties": {
+        "doctrine_id": {
+          "type": "string", "format": "uuid",
+          "description": "ID de la doctrina que se revierte."
+        },
+        "rollback_reason": {
+          "type": "string",
+          "description": "Descripción de por qué se revierte la doctrina."
+        },
+        "rollback_trigger": {
+          "type": "string",
+          "enum": ["experiment_lost", "kpi_degradation", "audit_finding", "manual"],
+          "description": "Qué desencadenó el rollback."
+        },
+        "scope": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Módulos afectados que deben restaurar la versión anterior."
+        },
+        "restore_version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Versión de doctrina a la que se restaura."
+        },
+        "kpi_delta": {
+          "type": "object",
+          "description": "Cambio observado en los KPIs que motivó el rollback.",
+          "additionalProperties": { "type": "number" }
+        },
+        "experiment_id": {
+          "type": "string", "format": "uuid",
+          "description": "ID del experimento asociado si el trigger fue experiment_lost."
+        }
+      }
+    },
+    "metadata": { "type": "object", "default": {} }
+  }
+}

@@ -1,0 +1,62 @@
+MODEL: <p>Esta es una propuesta detallada para configurar tu <strong>&#34;Super GEM&#34;</strong> en Gemini 3 Pro, diseñada para actuar como un <strong>Arquitecto de Interacción Cognitiva</strong> y <strong>Meta-Ingeniero de Prompts</strong> [1, 2].</p>
+<p>Basándome en el estado del arte de la ingeniería de prompts de 2024-2025, aquí tienes el análisis y la definición técnica de lo que quieres construir.</p>
+<h3 id="1-an-lisis-de-tu-super-gem">1. Análisis de tu &#34;Super GEM&#34;</h3>
+<p>Tu idea se clasifica técnicamente como un sistema de <strong>Meta-Prompting</strong> o <strong>APE (Automatic Prompt Engineer)</strong> [3-6]. No es un simple generador de texto, sino un optimizador que trata el prompt como una <strong>interfaz cognitiva</strong> [1].</p>
+<p>Para lograr la &#34;máxima calidad&#34; que buscas, el GEM debe integrar cuatro capacidades críticas extraídas de las fuentes:</p>
+<ul>
+<li><strong>Exploración de la Intención (Reasoning):</strong> Antes de escribir, debe usar <strong>Chain-of-Thought (CoT)</strong> para entender el &#34;porqué&#34; detrás de tu problema [7, 8].</li>
+<li><strong>Selección de Taxonomía:</strong> Debe decidir si el caso requiere <strong>Few-shot</strong> (ejemplos), <strong>ToT</strong> (búsqueda de soluciones), <strong>ReAct</strong> (uso de herramientas) o <strong>PoT</strong> (cálculo mediante código) [1, 9, 10].</li>
+<li><strong>Estructuración Sistémica:</strong> Debe usar <strong>etiquetas XML</strong> y delimitadores para evitar la degradación de la atención en contextos largos [11-13].</li>
+<li><strong>Bucle de Auto-Refinamiento:</strong> Debe realizar una <strong>crítica interna</strong> del prompt generado antes de entregártelo [14-16].</li>
+</ul>
+<hr>
+<h3 id="2-definici-n-en-profundidad-estructura-del-gem">2. Definición en Profundidad: Estructura del GEM</h3>
+<p>Para configurar este GEM, debes definir sus instrucciones siguiendo una <strong>Plantilla de Descomposición de Tareas Universales</strong> [17, 18].</p>
+<h4 id="a-definici-n-del-rol-persona">A. Definición del Rol (Persona)</h4>
+<p>El GEM debe actuar como un <strong>Ingeniero Senior de IA y Psicólogo Cognitivo</strong>. Su objetivo no es solo redactar, sino &#34;extraer la arquitectura latente&#34; de tu necesidad [19-21].</p>
+<h4 id="b-el-proceso-de-pensamiento-workflow">B. El Proceso de Pensamiento (Workflow)</h4>
+<p>El GEM seguirá estos pasos antes de responder:</p>
+<ol>
+<li><strong>Fase de Diagnóstico (Comprensión):</strong> Aplicará un <strong>Zero-shot CoT</strong> (&#34;pensemos paso a paso&#34;) para desglosar tu problema, identificando variables ocultas y el público objetivo [7, 22].</li>
+<li><strong>Fase de Mapeo (Estrategia):</strong> Seleccionará la mejor técnica de la <strong>taxonomía de métodos</strong> (por ejemplo, si es un problema matemático, elegirá <strong>Program-of-Thought</strong>; si es planificación, <strong>Tree-of-Thoughts</strong>) [9, 10, 23, 24].</li>
+<li><strong>Fase de Construcción (Generación):</strong> Redactará el prompt final utilizando <strong>etiquetas XML</strong> (<code>&lt;context&gt;</code>, <code>&lt;task&gt;</code>, <code>&lt;constraints&gt;</code>, <code>&lt;output_format&gt;</code>) para garantizar que el modelo que reciba el prompt no se confunda [11, 18, 25, 26].</li>
+<li><strong>Fase de Validación (Self-Refine):</strong> Evaluará el prompt contra los <strong>10 anti-patrones comunes</strong> (instrucciones vagas, falta de formato, exceso de restricciones negativas) y lo corregirá [12, 25, 27, 28].</li>
+</ol>
+<hr>
+<h3 id="3-instrucciones-de-configuraci-n-para-tu-gem-system-prompt">3. Instrucciones de Configuración para tu GEM (System Prompt)</h3>
+<p>Puedes copiar y adaptar esta estructura en la configuración de tu GEM:</p>
+<pre><code class="language-xml lang-xml no-auto-prettify">&lt;role&gt;
+Eres un Meta-Ingeniero de Prompts experto. Tu función es transformar problemas vagos en &#34;Interfaces Cognitivas&#34; de alta fidelidad para modelos de lenguaje.
+&lt;/role&gt;
+
+&lt;task_protocol&gt;
+Cuando reciba un problema o prompt inicial, DEBES seguir este proceso:
+
+1. &lt;thinking&gt;: Analiza por qué el usuario necesita este prompt. ¿Cuál es el objetivo final real? Identifica el dominio (médico, técnico, creativo, etc.).
+2. &lt;strategy_selection&gt;: Selecciona la técnica óptima del &#34;Prompt Report 2024&#34; (CoT, ToT, Many-shot, ReAct, o PoT). Justifica por qué esa técnica es la mejor.
+3. &lt;drafting&gt;: Crea el prompt utilizando una estructura modular con etiquetas XML. Incluye siempre una sección de &lt;contexto&gt;, &lt;instrucciones_detalladas&gt;, &lt;ejemplos_pocos_pasos&gt; (si aplica) y &lt;formato_de_salida&gt;.
+4. &lt;critique&gt;: Revisa el prompt buscando instrucciones contradictorias o falta de especificidad.
+&lt;/task_protocol&gt;
+
+&lt;principles&gt;
+- Evita instrucciones negativas (&#34;No hagas X&#34;); prefiere alternativas positivas (&#34;Haz Y en su lugar&#34;).
+- Usa &#34;Psychological Priming&#34; (EmotionPrompt) como: &#34;Esta tarea es vital para mi carrera, esfuérzate al máximo&#34;.
+- Para tareas complejas, desglosa el output en pasos numerados.
+- Si el usuario no da contexto, PÍDELO antes de generar el prompt final.
+&lt;/principles&gt;
+
+&lt;output_spec&gt;
+Devuelve primero tu análisis de pensamiento y luego el prompt final dentro de un bloque de código para que el usuario pueda copiarlo fácilmente.
+&lt;/output_spec&gt;
+</code></pre>
+<h3 id="4-por-qu-esto-es-una-super-gem">4. Por qué esto es una &#34;Super GEM&#34;</h3>
+<ul>
+<li><strong>Supera el &#34;Efecto de Rol Genérico&#34;:</strong> Al no solo &#34;actuar como experto&#34; sino aplicar técnicas de <strong>optimización programática (como DSPy)</strong>, la calidad del output es consistentemente superior [10, 29-31].</li>
+<li><strong>Resiliencia a Modelos:</strong> El uso de <strong>etiquetas XML</strong> y <strong>delimitadores</strong> asegura que el prompt funcione no solo en Gemini 3 Pro, sino que sea robusto frente a otros modelos de frontera [11, 32, 33].</li>
+<li><strong>Reducción de Alucinaciones:</strong> Al obligar al GEM a pasar por una fase de <strong>Self-Consistency</strong> (generar y validar), los prompts resultantes tienen una tasa de cumplimiento de formato cercana al 100% [14, 31, 34, 35].</li>
+</ul>
+<p>¿Te gustaría que cree un <strong>informe detallado</strong> con plantillas específicas para distintos tipos de problemas (matemáticos, creativos, técnicos) que podrías integrar en este GEM, o prefieres que genere una <strong>guía rápida de uso</strong>?</p>
+
+USER: <p>Quiero hacer una super &#34;GEM&#34; de Gemini 3 Pro, primero te explico lo que quiero hacer y luego tú lo analizas y defines en profundidad lo que quiero hacer.
+Quiero tener una GEM que pueda estar consultando, con la que pueda llegar con un prompt o un problema y esta explore la idea del porque necesito el prompt, y genere el mejor prompt posible con mucha calidad para el caso o el problema.</p>
+

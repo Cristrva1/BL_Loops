@@ -1,0 +1,26 @@
+{
+  "title": "Valuing Tomorrow",
+  "type": "ARTIFACT_TYPE_EXPLAINER_VIDEO",
+  "sources": [{
+    "sourceId": {
+      "id": "e123d8be-4c84-43d0-8cd2-5ff9ae55c7c8"
+    }
+  }, {
+    "sourceId": {
+      "id": "12fa1cda-86cb-4053-abad-377c7ad6198b"
+    }
+  }, {
+    "sourceId": {
+      "id": "49c7793c-bbb4-4f14-a36f-26e7c5c3d92d"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "explainerVideo": {
+    "generationOptions": {
+      "videoFocus": "",
+      "length": "EXPLAINER_VIDEO_LENGTH_UNSPECIFIED",
+      "templateFormat": "TEMPLATE_FORMAT_UNSPECIFIED",
+      "videoOverviewStyle": "VIDEO_OVERVIEW_STYLE_UNSPECIFIED"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "case_id": "B-CODE-003@0.1.0",
+  "fixture_id": "pricing-boundary-v1",
+  "files": {
+    "README.md": "750e8badac25961dedd7aaa26c7b5492f8fbefe7408f043e114ae907cf487f23",
+    "src/pricing.py": "0c1eed02bdd4231abdb69a1da8823c9035ddb813b2ade270597d9ec206975a44",
+    "tests/test_pricing.py": "9ca6d0c1296383547aaf2b0ff45794df3f8a07d0ade54945cc5a122d974e7463"
+  },
+  "allowed_changes": [
+    "src/pricing.py",
+    "tests/test_pricing.py"
+  ],
+  "required_test_methods": [
+    "test_zero_discount_keeps_total",
+    "test_quarter_discount",
+    "test_full_discount_is_zero",
+    "test_discount_above_100_is_rejected"
+  ]
+}

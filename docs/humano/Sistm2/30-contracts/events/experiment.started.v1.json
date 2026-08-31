@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/experiment.started.v1.json",
+  "title": "experiment.started.v1",
+  "description": "Emitido por el Doctrine Publisher cuando inicia un experimento A/B con una doctrina candidata.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "experiment.started" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "doctrine-publisher" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string", "const": "system" },
+    "payload": {
+      "type": "object",
+      "required": ["experiment_id", "doctrine_id", "treatment_cohort_pct", "min_duration_days", "significance_target", "baseline_kpis", "scheduled_conclude_at"],
+      "additionalProperties": false,
+      "properties": {
+        "experiment_id":   { "type": "string", "format": "uuid" },
+        "doctrine_id":     { "type": "string", "format": "uuid" },
+        "treatment_cohort_pct": {
+          "type": "number", "minimum": 1.0, "maximum": 50.0,
+          "description": "Porcentaje del tráfico en el grupo tratamiento."
+        },
+        "min_duration_days": { "type": "integer", "minimum": 1 },
+        "significance_target": { "type": "number", "minimum": 0.001, "maximum": 0.1 },
+        "baseline_kpis": {
+          "type": "object",
+          "description": "KPIs medidos en el período de referencia pre-experimento.",
+          "additionalProperties": true
+        },
+        "scheduled_conclude_at": {
+          "type": "string", "format": "date-time",
+          "description": "Fecha mínima de conclusión del experimento."
+        },
+        "cohort_hash_salt": {
+          "type": "string",
+          "description": "Salt usado para la asignación determinista de cohortes."
+        }
+      }
+    },
+    "metadata": { "type": "object", "default": {} }
+  }
+}

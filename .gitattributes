@@ -1,0 +1,17 @@
+# Mantener el texto del repositorio estable entre Windows y otros sistemas.
+* text=auto eol=lf
+
+# Los artefactos binarios conservan su contenido y no se normalizan como texto.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.docx binary
+*.pptx binary
+*.mp4 binary
+*.wav binary
+*.zip binary
+*.exe binary
+*.node binary

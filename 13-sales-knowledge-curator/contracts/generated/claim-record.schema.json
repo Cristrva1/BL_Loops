@@ -1,0 +1,360 @@
+{
+  "$defs": {
+    "ClaimStatus": {
+      "enum": [
+        "candidate",
+        "supported_single_source",
+        "corroborated",
+        "human_approved",
+        "published",
+        "disputed",
+        "outdated",
+        "unsupported",
+        "rejected",
+        "superseded",
+        "quarantined"
+      ],
+      "title": "ClaimStatus",
+      "type": "string"
+    },
+    "ClaimType": {
+      "enum": [
+        "empirical",
+        "prescriptive",
+        "definition",
+        "vendor_self_claim",
+        "legal_or_policy",
+        "anecdotal"
+      ],
+      "title": "ClaimType",
+      "type": "string"
+    },
+    "EvidenceLink": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 80,
+          "minLength": 2,
+          "title": "Locator",
+          "type": "string"
+        },
+        "relation": {
+          "$ref": "#/$defs/EvidenceRelation"
+        },
+        "fragment_min": {
+          "maxLength": 800,
+          "minLength": 8,
+          "title": "Fragment Min",
+          "type": "string"
+        },
+        "fragment_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Fragment Hash",
+          "type": "string"
+        },
+        "support_assessment": {
+          "$ref": "#/$defs/SupportAssessment"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id",
+        "source_id",
+        "locator",
+        "relation",
+        "fragment_min",
+        "fragment_hash",
+        "support_assessment",
+        "content_hash"
+      ],
+      "title": "EvidenceLink",
+      "type": "object"
+    },
+    "EvidenceRelation": {
+      "enum": [
+        "supports",
+        "refutes",
+        "qualifies"
+      ],
+      "title": "EvidenceRelation",
+      "type": "string"
+    },
+    "QualityScores": {
+      "additionalProperties": false,
+      "description": "Dimensiones 0-4. Un promedio no publica nada por sí solo.",
+      "properties": {
+        "authority": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Authority",
+          "type": "integer"
+        },
+        "evidence_proximity": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Evidence Proximity",
+          "type": "integer"
+        },
+        "recency": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Recency",
+          "type": "integer"
+        },
+        "independence": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Independence",
+          "type": "integer"
+        },
+        "applicability": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Applicability",
+          "type": "integer"
+        },
+        "extraction_integrity": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Extraction Integrity",
+          "type": "integer"
+        },
+        "rights_clarity": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Rights Clarity",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "authority",
+        "evidence_proximity",
+        "recency",
+        "independence",
+        "applicability",
+        "extraction_integrity",
+        "rights_clarity"
+      ],
+      "title": "QualityScores",
+      "type": "object"
+    },
+    "SupportAssessment": {
+      "enum": [
+        "supports",
+        "does_not_support",
+        "unclear"
+      ],
+      "title": "SupportAssessment",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "canonical_text": {
+      "maxLength": 800,
+      "minLength": 8,
+      "title": "Canonical Text",
+      "type": "string"
+    },
+    "claim_type": {
+      "$ref": "#/$defs/ClaimType"
+    },
+    "topic": {
+      "pattern": "^[a-z][a-z0-9-]{1,40}$",
+      "title": "Topic",
+      "type": "string"
+    },
+    "population": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Population"
+    },
+    "context": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Context"
+    },
+    "jurisdiction": {
+      "anyOf": [
+        {
+          "maxLength": 40,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Jurisdiction"
+    },
+    "valid_from": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid From"
+    },
+    "valid_until": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid Until"
+    },
+    "method": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Method"
+    },
+    "sample": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sample"
+    },
+    "status": {
+      "$ref": "#/$defs/ClaimStatus"
+    },
+    "version": {
+      "maximum": 99,
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Supersedes"
+    },
+    "created_by": {
+      "maxLength": 80,
+      "minLength": 3,
+      "title": "Created By",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "quality": {
+      "$ref": "#/$defs/QualityScores"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceLink"
+      },
+      "maxItems": 30,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "challenge_note": {
+      "anyOf": [
+        {
+          "maxLength": 400,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Challenge Note"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claim_id",
+    "canonical_text",
+    "claim_type",
+    "topic",
+    "status",
+    "version",
+    "created_by",
+    "created_at",
+    "updated_at",
+    "quality",
+    "content_hash"
+  ],
+  "title": "ClaimRecord",
+  "type": "object"
+}

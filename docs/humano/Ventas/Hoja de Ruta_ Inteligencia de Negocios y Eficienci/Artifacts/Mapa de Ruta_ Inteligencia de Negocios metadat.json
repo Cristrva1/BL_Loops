@@ -1,0 +1,19 @@
+{
+  "title": "Mapa de Ruta: Inteligencia de Negocios",
+  "type": "ARTIFACT_TYPE_EXPLAINER_VIDEO",
+  "sources": [{
+    "sourceId": {
+      "id": "f55e6d62-be34-4761-a305-0f20e98524b2"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "explainerVideo": {
+    "generationOptions": {
+      "languageCode": "es_mx",
+      "videoFocus": "",
+      "length": "EXPLAINER_VIDEO_LENGTH_UNSPECIFIED",
+      "templateFormat": "TEMPLATE_FORMAT_EXPLAINER",
+      "videoOverviewStyle": "VIDEO_OVERVIEW_STYLE_AUTO_SELECT"
+    }
+  }
+}

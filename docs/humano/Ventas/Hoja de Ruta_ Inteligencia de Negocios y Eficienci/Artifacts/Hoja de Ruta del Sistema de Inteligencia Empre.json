@@ -1,0 +1,15 @@
+{
+  "title": "Hoja de Ruta del Sistema de Inteligencia Empresarial Construrama",
+  "type": "ARTIFACT_TYPE_TABLE",
+  "sources": [{
+    "sourceId": {
+      "id": "f55e6d62-be34-4761-a305-0f20e98524b2"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "table": {
+    "generationOptions": {
+      "languageCode": "es-MX"
+    }
+  }
+}

@@ -1,0 +1,3 @@
+Hola. Recuerda que mi color de prueba es verde.
+¿Cual es mi color de prueba?
+/salir

@@ -1,0 +1,951 @@
+<h3 id="gu-a-maestra-9-proyectos-de-ia-an-lisis-completo">GUÍA MAESTRA: 9 PROYECTOS DE IA — ANÁLISIS COMPLETO</h3>
+<h4 id="para-christian-century-21-si-now-esdata">Para Christian | Century 21 Si-Now / ESDATA</h4>
+<h5 id="hardware-base-rtx-3080-ti-12gb-vram-32gb-ram-windows-11">Hardware Base: RTX 3080 Ti 12GB VRAM | 32GB RAM | Windows 11</h5>
+<h5 id="suscripciones-claude-pro-gemini-pro-chatgpt-go">Suscripciones: Claude Pro, Gemini Pro, ChatGPT Go</h5>
+<h5 id="fecha-marzo-2026">Fecha: Marzo 2026</h5>
+<hr>
+<h3 id="proyecto-1-pipeline-de-trabajo-multi-ia">PROYECTO 1: PIPELINE DE TRABAJO MULTI-IA</h3>
+<p><strong>Concepto:</strong>  Una IA planifica → otra ejecuta → otra revisa el resultado.</p>
+<h4 id="qu-es-esto-en-t-rminos-simples">¿Qué es esto en términos simples?</h4>
+<p>Imagina una línea de ensamblaje en una fábrica: una persona diseña el plan, otra construye la pieza, y una tercera revisa la calidad. Aquí cada &#34;persona&#34; es una IA especializada. En el mundo técnico esto se llama &#34;orquestación de agentes&#34;.</p>
+<hr>
+<h5 id="tier-1-low-cost-5-usd-mes">TIER 1: LOW COST (&lt; $5 USD/mes)</h5>
+<p><strong>Stack recomendado:</strong></p>
+<ul>
+<li><strong>Ollama</strong>  (gratis, local) como motor de modelos</li>
+<li><strong>CrewAI</strong>  (open source, gratis) como orquestador</li>
+<li><strong>Modelos locales:</strong>  Qwen 2.5 7B (razonamiento) + Qwen 3.5 7B (velocidad)
+<strong>¿Qué es cada cosa?</strong></li>
+<li><strong>Ollama:</strong>  Un programa que descargas en tu PC que te permite correr modelos de IA sin internet y sin pagar. Funciona como un servidor local. Lo instalas, descargas un modelo, y ya puedes hablarle desde código.</li>
+<li><strong>CrewAI:</strong>  Un framework (conjunto de herramientas) en Python donde defines &#34;agentes&#34; con roles, metas y tareas. Le dices: &#34;Tú eres el planificador&#34;, &#34;Tú eres el ejecutor&#34;, &#34;Tú eres el revisor&#34; y automáticamente se pasan el trabajo entre ellos.</li>
+<li><strong>Qwen 2.5 7B:</strong>  Modelo de Alibaba que alcanza 76.8% en MMLU (benchmark de conocimiento general). Corre en tu RTX 3080 Ti sin problemas con 12GB VRAM.
+<strong>Instrucciones paso a paso:</strong></li>
+</ul>
+<ol>
+<li><strong>Instalar Ollama:</strong>
+<ul>
+<li>Ve a <a href="https://ollama.com/download">https://ollama.com/download</a></li>
+<li>Descarga para Windows, instala</li>
+<li>Abre terminal (CMD o PowerShell):</li>
+</ul>
+</li>
+<li><strong>Instalar CrewAI:</strong></li>
+<li><strong>Crear tu pipeline (archivo crew_pipeline.py):</strong></li>
+<li><strong>Ejecutar:</strong>
+<strong>Limitaciones del Tier 1:</strong></li>
+</ol>
+<ul>
+<li>Los modelos de 7B son buenos para tareas simples, pero cometen errores en razonamiento complejo</li>
+<li>Velocidad: ~15-25 tokens/segundo en tu GPU</li>
+<li>No tendrás la calidad de GPT-4o o Claude Opus
+<strong>Costo total: $0 USD/mes</strong>  (todo local)</li>
+</ul>
+<hr>
+<h5 id="tier-2-h-brido-10-30-usd-mes">TIER 2: HÍBRIDO ($10-30 USD/mes)</h5>
+<p><strong>Stack recomendado:</strong></p>
+<ul>
+<li><strong>n8n</strong>  (self-hosted, gratis) como orquestador visual</li>
+<li><strong>Ollama</strong>  local para tareas simples/repetitivas (clasificación, resúmenes rápidos)</li>
+<li><strong>APIs de modelos top</strong>  para tareas complejas (razonamiento, escritura de calidad):
+<ul>
+<li>Google AI Studio (Gemini 2.5 Pro, gratis con límites generosos)</li>
+<li>Claude API via tu suscripción Pro</li>
+<li>OpenRouter (agrega múltiples modelos, pagas solo lo que usas)
+<strong>¿Qué es n8n?</strong>  Es como Zapier pero gratuito y lo puedes instalar en tu computadora. Tiene una interfaz visual donde arrastras y conectas nodos. Cada nodo puede ser: &#34;llamar a una IA&#34;, &#34;leer un archivo&#34;, &#34;enviar un email&#34;, &#34;guardar en Google Sheets&#34;, etc.
+<strong>Instrucciones paso a paso:</strong></li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>Instalar n8n con Docker:</strong></li>
+<li>Abre <a href="http://localhost:5678">http://localhost:5678</a> en tu navegador.</li>
+<li><strong>Configurar el pipeline en n8n:</strong>
+<ul>
+<li>Nodo 1: &#34;Trigger Manual&#34; (o webhook para automatizar)</li>
+<li>Nodo 2: &#34;AI Agent&#34; con Gemini 2.5 Pro → rol de planificador</li>
+<li>Nodo 3: &#34;AI Agent&#34; con Claude (API) → rol de ejecutor</li>
+<li>Nodo 4: &#34;Ollama&#34; local → rol de revisor rápido</li>
+<li>Nodo 5: &#34;Google Sheets&#34; → guardar resultado</li>
+</ul>
+</li>
+<li><strong>Configurar Google AI Studio como API gratuita:</strong>
+<ul>
+<li>Ve a <a href="https://aistudio.google.com">https://aistudio.google.com</a></li>
+<li>Genera una API key</li>
+<li>En n8n, configura como HTTP Request a la API de Gemini</li>
+<li>Límite gratuito: ~1,500 solicitudes/día con Gemini 2.5 Flash</li>
+</ul>
+</li>
+<li><strong>Configurar OpenRouter (opcional, para variedad de modelos):</strong>
+<ul>
+<li>Regístrate en <a href="https://openrouter.ai">https://openrouter.ai</a></li>
+<li>Algunos modelos tienen tier gratuito</li>
+<li>Deposita $5-10 USD y te dura semanas en uso normal
+<strong>Arquitectura del pipeline:</strong></li>
+</ul>
+</li>
+</ol>
+<pre><code>Input → Gemini 2.5 Pro (planifica, gratis) → Claude API (ejecuta, mejor calidad escritura) → Ollama local (revisa, costo $0) → Output
+
+</code></pre>
+<p><strong>Costo: ~$0-15 USD/mes</strong>  dependiendo de volumen de llamadas API</p>
+<hr>
+<h5 id="tier-3-premium-sin-l-mite-de-presupuesto">TIER 3: PREMIUM (Sin límite de presupuesto)</h5>
+<p><strong>Stack recomendado:</strong></p>
+<ul>
+<li><strong>LangGraph</strong>  (framework profesional de LangChain) para orquestación con estado</li>
+<li><strong>Claude Opus 4.6 API</strong>  para planificación y razonamiento complejo</li>
+<li><strong>GPT-4o</strong>  para ejecución creativa</li>
+<li><strong>Claude Sonnet 4.6</strong>  para revisión rápida y económica</li>
+<li><strong>LangSmith</strong>  para monitoreo y debugging ($39/mes)
+<strong>¿Qué es LangGraph?</strong>  Es la evolución profesional de LangChain. En vez de una cadena lineal, creas un &#34;grafo&#34; donde cada nodo es una IA, y las conexiones definen cómo fluye la información. Puedes tener ramas condicionales: &#34;si el revisor califica menos de 8/10, regresa al ejecutor&#34;.
+<strong>Ventajas sobre Tier 1 y 2:</strong></li>
+<li>Reintentos automáticos si una tarea falla</li>
+<li>Estado persistente (puedes pausar y retomar)</li>
+<li>Observabilidad completa (ves qué hizo cada agente, cuánto gastó, qué tokens usó)</li>
+<li>Calidad de output significativamente superior</li>
+<li>Routing inteligente: tareas fáciles van a modelos baratos, tareas difíciles a modelos premium
+<strong>Costo estimado por pipeline: $0.05-0.50 USD</strong>  (depende de complejidad)  <strong>Costo mensual con uso intensivo: $50-200 USD</strong></li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-2-comunicaci-n-entre-2-ias-con-documentos">PROYECTO 2: COMUNICACIÓN ENTRE 2 IAs CON DOCUMENTOS</h3>
+<p><strong>Concepto:</strong>  IA-Abogado con sus documentos legales + IA-CEO con sus documentos de negocio. Dialogan y llegan a conclusiones.</p>
+<h4 id="qu-es-esto-en-t-rminos-simples-2">¿Qué es esto en términos simples?</h4>
+<p>Tienes dos expertos virtuales. Cada uno ha leído carpetas diferentes de documentos. Los pones a conversar. El abogado dice &#34;este contrato tiene riesgo X&#34;, el CEO responde &#34;pero necesitamos ese deal por Y&#34;, y van negociando hasta llegar a una conclusión.
+La clave técnica es  <strong>RAG</strong>  (Retrieval-Augmented Generation): antes de responder, cada IA busca en sus documentos la información relevante.</p>
+<hr>
+<h5 id="tier-1-low-cost-0">TIER 1: LOW COST ($0)</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Ollama</strong>  +  <strong>Qwen 2.5 14B</strong>  (usa ~10GB VRAM, cabe en tu 3080 Ti)</li>
+<li><strong>ChromaDB</strong>  (base de datos vectorial gratuita, local)</li>
+<li><strong>LangChain</strong>  para conectar todo
+<strong>¿Qué es RAG?</strong>  Imagina que le das a la IA una biblioteca. Antes de responder cualquier pregunta, la IA va corriendo a buscar los libros relevantes y los lee rápido. ChromaDB es esa biblioteca — convierte tus documentos en números (vectores) que la IA puede buscar súper rápido.
+<strong>Instrucciones:</strong></li>
+</ul>
+<ol>
+<li><strong>Instalar dependencias:</strong></li>
+<li><strong>Preparar documentos:</strong>  Pon los docs del abogado en una carpeta (/docs/legal/) y los del CEO en otra (/docs/negocio/).</li>
+<li><strong>Script de comunicación (dual_ai_chat.py):</strong>
+<strong>Limitaciones:</strong>  Qwen 14B es competente pero no brillante en razonamiento legal complejo. Los documentos deben estar en texto plano o PDF extraíble.</li>
+</ol>
+<hr>
+<h5 id="tier-2-h-brido-5-20-mes">TIER 2: HÍBRIDO ($5-20/mes)</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>n8n</strong>  o  <strong>Flowise</strong>  (visual, open source) como orquestador</li>
+<li><strong>Ollama</strong>  para embeddings locales (gratis)</li>
+<li><strong>Gemini 2.5 Pro</strong>  (Google AI Studio, gratis) para el agente principal</li>
+<li><strong>Claude Pro</strong>  (tu suscripción existente) para validación de calidad
+<strong>Mejora clave:</strong>  Usa Gemini 2.5 Pro que tiene ventana de contexto de 1 millón de tokens. Puedes literalmente meter 50 documentos completos en una sola llamada, sin necesidad de RAG para documentos pequeños.
+<strong>Alternativa rápida sin código:</strong></li>
+</ul>
+<ol>
+<li>Abre dos ventanas de Claude Pro</li>
+<li>En una sube los docs legales con el system prompt de abogado</li>
+<li>En la otra sube los docs de negocio con el system prompt de CEO</li>
+<li>Copia-pega las respuestas entre ventanas manualmente</li>
+<li>Esto funciona sorprendentemente bien y cuesta $0 extra</li>
+</ol>
+<hr>
+<h5 id="tier-3-premium">TIER 3: PREMIUM</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Claude Opus 4.6</strong>  para ambos agentes (mejor razonamiento del mercado)</li>
+<li><strong>Pinecone</strong>  o  <strong>Weaviate</strong>  (bases vectoriales cloud, escalables)</li>
+<li>Protocolo  <strong>A2A</strong>  (Agent-to-Agent de Google) para comunicación estandarizada</li>
+<li><strong>MCP</strong>  (Model Context Protocol) para acceso a herramientas
+<strong>Ventaja real:</strong>  Claude Opus 4.6 con MCP puede conectarse directamente a tu Google Drive, leer documentos en tiempo real, y mantener memoria persistente de conversaciones previas.</li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-3-ia-para-analizar-im-genes-de-propiedades">PROYECTO 3: IA PARA ANALIZAR IMÁGENES DE PROPIEDADES</h3>
+<p><strong>Concepto:</strong>  Subes fotos de casas/departamentos → obtenes paleta de colores, estilo arquitectónico, atributos, estado de conservación.</p>
+<h4 id="qu-es-esto-en-t-rminos-simples-3">¿Qué es esto en términos simples?</h4>
+<p>Le das fotos a una IA con &#34;ojos&#34; (modelo multimodal) y te dice: &#34;Este departamento es estilo contemporáneo, la paleta es gris-blanco-madera natural, tiene acabados de nivel medio-alto, la cocina se ve nueva pero el baño necesita remodelación.&#34;</p>
+<hr>
+<h5 id="tier-1-low-cost-0-2">TIER 1: LOW COST ($0)</h5>
+<p><strong>Opción A: Modelos multimodales locales con Ollama</strong></p>
+<pre><code>ollama pull llava:13b
+
+</code></pre>
+<p>LLaVA es un modelo que &#34;ve&#34; imágenes. Con 13B parámetros y tu 3080 Ti, corre bien.
+<strong>Script de análisis (analizar_propiedad.py):</strong></p>
+<pre><code class="language-python lang-python no-auto-prettify">import ollama
+import json
+
+def analizar_propiedad(ruta_imagen):
+    prompt = &#34;&#34;&#34;Analiza esta imagen de propiedad inmobiliaria y responde en JSON:
+    {
+      &#34;estilo_arquitectonico&#34;: &#34;contemporáneo/colonial/minimalista/etc&#34;,
+      &#34;paleta_colores&#34;: [&#34;color1&#34;, &#34;color2&#34;, &#34;color3&#34;],
+      &#34;colores_hex&#34;: [&#34;#xxx&#34;, &#34;#xxx&#34;, &#34;#xxx&#34;],
+      &#34;atributos_destacados&#34;: [&#34;atributo1&#34;, &#34;atributo2&#34;],
+      &#34;estado_conservacion&#34;: &#34;excelente/bueno/regular/necesita remodelación&#34;,
+      &#34;nivel_acabados&#34;: &#34;lujo/medio-alto/medio/económico&#34;,
+      &#34;tipo_espacio&#34;: &#34;sala/recámara/cocina/exterior/fachada&#34;,
+      &#34;iluminacion&#34;: &#34;natural abundante/moderada/artificial&#34;,
+      &#34;puntos_venta&#34;: [&#34;punto1&#34;, &#34;punto2&#34;],
+      &#34;areas_mejora&#34;: [&#34;area1&#34;, &#34;area2&#34;]
+    }&#34;&#34;&#34;
+    
+    response = ollama.chat(
+        model=&#39;llava:13b&#39;,
+        messages=[{
+            &#39;role&#39;: &#39;user&#39;,
+            &#39;content&#39;: prompt,
+            &#39;images&#39;: [ruta_imagen]
+        }]
+    )
+    return response[&#39;message&#39;][&#39;content&#39;]
+
+# Uso
+resultado = analizar_propiedad(&#34;foto_departamento.jpg&#34;)
+print(resultado)
+
+</code></pre>
+<p><strong>Opción B: Google AI Studio (gratis)</strong></p>
+<ul>
+<li>Gemini 2.5 Pro acepta imágenes</li>
+<li>Sube hasta 20 fotos en una sola consulta</li>
+<li>Pide el análisis detallado</li>
+<li>Límite: ~1,500 requests/día gratis
+<strong>Para paleta de colores precisa (código Python local, gratis):</strong></li>
+</ul>
+<pre><code class="language-python lang-python no-auto-prettify">from PIL import Image
+from collections import Counter
+import numpy as np
+
+def extraer_paleta(imagen_path, n_colores=5):
+    img = Image.open(imagen_path).resize((150, 150))
+    pixels = np.array(img).reshape(-1, 3)
+    # Cuantización simple
+    pixels = (pixels // 32) * 32  # Agrupar colores similares
+    counter = Counter(map(tuple, pixels))
+    return [f&#34;#{r:02x}{g:02x}{b:02x}&#34; for (r,g,b), _ in counter.most_common(n_colores)]
+
+</code></pre>
+<hr>
+<h5 id="tier-2-h-brido-5-20-mes-2">TIER 2: HÍBRIDO ($5-20/mes)</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Gemini 2.5 Pro</strong>  (gratis via AI Studio) para análisis general</li>
+<li><strong>Restb.ai</strong>  (API especializada en real estate) — tiene trial gratuito</li>
+<li><strong>Ollama + LLaVA</strong>  local para volumen alto
+<strong>Restb.ai es la joya para ti:</strong>  Es una API de computer vision diseñada ESPECÍFICAMENTE para bienes raíces. Detecta:</li>
+<li>Tipo de habitación automáticamente</li>
+<li>Estilo arquitectónico</li>
+<li>Condición y calidad de la propiedad</li>
+<li>Características interiores y exteriores
+Website: <a href="https://restb.ai">https://restb.ai</a> — Contacta para pricing de API.
+<strong>Workflow práctico:</strong></li>
+</ul>
+<ol>
+<li>Fotos entran a Restb.ai → clasificación automática de habitaciones</li>
+<li>Pasan a Gemini → análisis detallado + descripción para listing</li>
+<li>Script Python local → extracción de paleta de colores precisa</li>
+<li>Todo se consolida en un reporte por propiedad</li>
+</ol>
+<hr>
+<h5 id="tier-3-premium-2">TIER 3: PREMIUM</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Claude Opus 4.6</strong>  con visión (el mejor en análisis detallado de imágenes según benchmarks)</li>
+<li><strong>GPT-4o</strong>  como segunda opinión</li>
+<li><strong>Restb.ai</strong>  Enterprise</li>
+<li><strong>Custom Vision model</strong>  entrenado con fotos de tu portafolio (Azure Custom Vision o Google Vertex AI)
+<strong>Ventaja exclusiva:</strong>  Puedes hacer fine-tuning de un modelo de visión con las miles de fotos de propiedades que ya tienes en Century 21, enseñándole los estándares exactos de tu mercado en Guadalajara.</li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-4-rebote-de-ideas-entre-2-ias">PROYECTO 4: REBOTE DE IDEAS ENTRE 2 IAs</h3>
+<p><strong>Concepto:</strong>  Dos IAs debaten, enriquecen y refinan ideas entre sí.</p>
+<h4 id="qu-es-esto-en-t-rminos-simples-4">¿Qué es esto en términos simples?</h4>
+<p>En vez de tú hablar con UNA IA, pones a DOS IAs a conversar. Una propone, la otra critica y mejora, la primera responde. Después de varias rondas, las ideas son más refinadas que lo que una sola IA produce.</p>
+<hr>
+<h5 id="tier-1-low-cost-0-3">TIER 1: LOW COST ($0)</h5>
+<p><strong>Método más simple y efectivo — SIN código:</strong></p>
+<ol>
+<li>Abre  <strong>Claude Pro</strong>  en una pestaña</li>
+<li>Abre  <strong>Gemini Pro</strong>  en otra pestaña</li>
+<li>Dale a cada uno un rol y personalidad diferente</li>
+<li>Copia la respuesta de uno y pégala como input del otro</li>
+<li>Repite 5-10 rondas
+<strong>Esto no es broma — es altamente efectivo porque:</strong></li>
+</ol>
+<ul>
+<li>Modelos diferentes tienen sesgos diferentes → se complementan</li>
+<li>Claude es más analítico, Gemini más creativo</li>
+<li>ChatGPT Go te da una tercera perspectiva
+<strong>Para automatizarlo localmente (gratis):</strong></li>
+</ul>
+<pre><code class="language-python lang-python no-auto-prettify">import ollama
+
+def debate(tema, rondas=5):
+    historial = f&#34;TEMA: {tema}\n&#34;
+    
+    for i in range(rondas):
+        # IA Optimista (Qwen)
+        resp1 = ollama.chat(model=&#39;qwen2.5:7b&#39;, messages=[{
+            &#39;role&#39;: &#39;user&#39;,
+            &#39;content&#39;: f&#34;&#34;&#34;Eres un estratega optimista y visionario.
+            {historial}
+            Propón ideas audaces y defiéndelas:&#34;&#34;&#34;
+        }])[&#39;message&#39;][&#39;content&#39;]
+        historial += f&#34;\nOPTIMISTA: {resp1}&#34;
+        
+        # IA Crítica (Mistral)
+        resp2 = ollama.chat(model=&#39;mistral:7b&#39;, messages=[{
+            &#39;role&#39;: &#39;user&#39;,
+            &#39;content&#39;: f&#34;&#34;&#34;Eres un analista crítico y pragmático.
+            {historial}
+            Identifica debilidades y propón mejoras realistas:&#34;&#34;&#34;
+        }])[&#39;message&#39;][&#39;content&#39;]
+        historial += f&#34;\nCRÍTICO: {resp2}&#34;
+        
+        print(f&#34;\n--- Ronda {i+1} ---&#34;)
+        print(f&#34;OPTIMISTA: {resp1}&#34;)
+        print(f&#34;CRÍTICO: {resp2}&#34;)
+    
+    return historial
+
+debate(&#34;¿Cómo debería ESDATA diferenciarse de Inmuebles24 en el mercado de PropTech mexicano?&#34;)
+
+</code></pre>
+<hr>
+<h5 id="tier-2-h-brido-0-10-mes">TIER 2: HÍBRIDO ($0-10/mes)</h5>
+<p><strong>Método con Antigravity (Gemini 3.1 Pro High):</strong></p>
+<ul>
+<li>Antigravity te da acceso a Gemini 3.1 Pro con contexto extendido</li>
+<li>Puedes simular debate multi-perspectiva en un solo prompt largo</li>
+<li>Combina con Claude Pro para la segunda voz
+<strong>Herramienta gratuita recomendada: ChatArena / LMSYS Chatbot Arena</strong></li>
+<li><a href="https://chat.lmsys.org">https://chat.lmsys.org</a></li>
+<li>Gratis, te da acceso a modelos top side-by-side</li>
+<li>Perfecto para comparar respuestas</li>
+</ul>
+<hr>
+<h5 id="tier-3-premium-3">TIER 3: PREMIUM</h5>
+<p><strong>Claude Opus 4.6 + GPT-o3 + Gemini 2.5 Pro Ultra:</strong></p>
+<ul>
+<li>Tres perspectivas de los mejores modelos del mundo</li>
+<li>Usa LangGraph para orquestar el debate automáticamente</li>
+<li>Implementa &#34;jueces&#34; que evalúan cada ronda</li>
+<li>Genera síntesis final con los mejores argumentos</li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-5-ia-para-minutas-de-reuniones">PROYECTO 5: IA PARA MINUTAS DE REUNIONES</h3>
+<p><strong>Concepto:</strong>  Transcribir audio → extraer temas, tareas, compromisos → enviar emails, crear eventos calendario, Google Meet.</p>
+<hr>
+<h5 id="tier-1-low-cost-0-4">TIER 1: LOW COST ($0)</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>tl;dv</strong>  (plan gratuito ilimitado para transcripción en Google Meet/Zoom/Teams)</li>
+<li><strong>Whisper de OpenAI</strong>  (modelo local, gratis) para audio offline</li>
+<li><strong>Claude Pro</strong>  para generar minutas desde transcripciones
+<strong>tl;dv es tu mejor opción gratuita:</strong></li>
+<li>Transcripción ilimitada en 40+ idiomas (incluido español)</li>
+<li>Resúmenes automáticos con IA</li>
+<li>Se integra con Google Calendar y Slack</li>
+<li>Plan gratuito genuinamente generoso
+<strong>Para audio grabado offline (reuniones presenciales):</strong></li>
+</ul>
+<pre><code>pip install openai-whisper
+whisper reunion_equipo.mp3 --language Spanish --model medium
+
+</code></pre>
+<p>Esto te genera un archivo .txt con la transcripción. El modelo medium corre bien en tu 3080 Ti.
+<strong>Luego pegas la transcripción en Claude Pro con este prompt:</strong></p>
+<pre><code>Analiza esta transcripción de reunión de equipo y genera:
+1. MINUTA: Resumen ejecutivo de 200 palabras
+2. TEMAS CLAVE: Lista de los temas principales discutidos
+3. TAREAS: Lista con formato [Responsable] - [Tarea] - [Fecha límite]
+4. COMPROMISOS: Acuerdos tomados
+5. PARTICIPANTES: Lista de quién habló y sus intervenciones clave
+6. BORRADOR DE EMAIL: Email de seguimiento para enviar a todos los participantes
+
+Transcripción:
+[PEGAR AQUÍ]
+
+</code></pre>
+<hr>
+<h5 id="tier-2-h-brido-10-25-mes">TIER 2: HÍBRIDO ($10-25/mes)</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Fireflies.ai</strong>  (Plan Pro $10/mes por usuario): transcripción + resúmenes automáticos + integración CRM</li>
+<li>O  <strong>Jamie</strong>  (plan gratuito + premium): sin bots visibles, graba audio del dispositivo</li>
+<li><strong>n8n</strong>  (gratis, self-hosted) para automatización post-reunión</li>
+<li><strong>Google Calendar API</strong>  +  <strong>Gmail API</strong>  (gratis)
+<strong>Workflow automatizado con n8n:</strong></li>
+</ul>
+<ol>
+<li>Fireflies transcribe la reunión automáticamente</li>
+<li>Webhook envía transcripción a n8n</li>
+<li>n8n pasa transcripción a Gemini 2.5 Pro (gratis) → extrae tareas</li>
+<li>n8n crea eventos en Google Calendar para cada tarea</li>
+<li>n8n crea Google Meet para la siguiente reunión</li>
+<li>n8n envía email de seguimiento via Gmail API
+<strong>Alternativa con tus suscripciones existentes:</strong></li>
+</ol>
+<ul>
+<li>Usa Claude Pro con el nuevo MCP que conecta a Google Calendar y Gmail</li>
+<li>Puedes decirle: &#34;Lee esta transcripción, crea los eventos en mi calendario y envía los emails&#34;</li>
+<li>Claude ya tiene integración nativa con Google Calendar y Gmail</li>
+</ul>
+<hr>
+<h5 id="tier-3-premium-4">TIER 3: PREMIUM</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Read AI</strong>  ($19-22/mes): el más completo, busca en reuniones pasadas, conecta emails/Slack/docs</li>
+<li><strong>Fellow.ai</strong>  (enterprise): agendas colaborativas + acción items + integración Salesforce/HubSpot</li>
+<li><strong>Claude Code</strong>  con MCP servers para Google Calendar, Gmail, Google Meet</li>
+<li>Pipeline automatizado end-to-end sin intervención humana</li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-6-ia-para-generar-im-genes-tipo-flyer">PROYECTO 6: IA PARA GENERAR IMÁGENES TIPO FLYER</h3>
+<p><strong>Concepto:</strong>  Agregar texto (precios, descuentos, direcciones) sobre fotos de propiedades sin modificar la foto original. También crear imágenes para redes sociales, mapas, renders.</p>
+<hr>
+<h5 id="tier-1-low-cost-0-5">TIER 1: LOW COST ($0)</h5>
+<p><strong>Para overlays de texto sobre fotos (NO necesitas IA generativa):</strong>
+La solución más práctica es  <strong>Python + Pillow</strong>  (librería de imágenes gratuita):</p>
+<pre><code class="language-python lang-python no-auto-prettify">from PIL import Image, ImageDraw, ImageFont
+import os
+
+def crear_flyer(foto_path, precio, descuento, direccion, output_path):
+    img = Image.open(foto_path)
+    draw = ImageDraw.Draw(img)
+    w, h = img.size
+    
+    # Banner de precio (esquina superior derecha)
+    banner_w, banner_h = 300, 80
+    draw.rectangle([w-banner_w-20, 20, w-20, 20+banner_h], fill=&#39;#C41E3A&#39;)
+    font_precio = ImageFont.truetype(&#34;arial.ttf&#34;, 36)
+    draw.text((w-banner_w+10, 30), precio, fill=&#39;white&#39;, font=font_precio)
+    
+    # Banner de descuento
+    if descuento:
+        draw.rectangle([20, 20, 250, 70], fill=&#39;#FFD700&#39;)
+        font_desc = ImageFont.truetype(&#34;arial.ttf&#34;, 24)
+        draw.text((30, 28), descuento, fill=&#39;black&#39;, font=font_desc)
+    
+    # Banner inferior con dirección
+    draw.rectangle([0, h-80, w, h], fill=(0,0,0,180))
+    font_dir = ImageFont.truetype(&#34;arial.ttf&#34;, 20)
+    draw.text((20, h-60), direccion, fill=&#39;white&#39;, font=font_dir)
+    
+    img.save(output_path)
+
+crear_flyer(
+    &#34;foto_depa.jpg&#34;,
+    &#34;$2,850,000&#34;,
+    &#34;10% PREVENTA&#34;,
+    &#34;Col. Providencia, Guadalajara&#34;,
+    &#34;flyer_final.jpg&#34;
+)
+
+</code></pre>
+<p><strong>Para algo más bonito sin código:</strong>  Usa  <strong>Canva</strong>  (plan gratuito):</p>
+<ul>
+<li>Sube tu foto</li>
+<li>Agrega elementos de texto</li>
+<li>Guarda como plantilla</li>
+<li>Duplica y cambia datos para cada propiedad
+<strong>Para imágenes de redes sociales con IA:</strong></li>
+<li><strong>Ideogram v3</strong>  (gratis, créditos semanales): el MEJOR para texto legible dentro de imágenes (90-95% precisión)</li>
+<li><strong>Flux.1 Schnell</strong>  (gratis, local o via fal.ai): fotorrealismo + algo de texto</li>
+<li><strong>Canva AI</strong>  (con tu conexión MCP aquí en Claude)</li>
+</ul>
+<hr>
+<h5 id="tier-2-h-brido-10-30-mes">TIER 2: HÍBRIDO ($10-30/mes)</h5>
+<p><strong>Stack combinado:</strong></p>
+<ul>
+<li><strong>Canva Pro</strong>  ($13/mes): templates profesionales + Brand Kit para Century 21</li>
+<li><strong>Flux.1 Pro</strong>  via fal.ai (~$0.03/imagen): generación de imágenes fotorrealistas</li>
+<li><strong>Ideogram v3</strong>  para banners con texto</li>
+<li><strong>ComfyUI</strong>  (gratis, local) + Stable Diffusion XL para renders 2D
+<strong>Para renders 2D/3D de propiedades:</strong>  ComfyUI es una herramienta visual (como n8n pero para imágenes) donde conectas nodos:</li>
+</ul>
+<ol>
+<li>Input: foto de la propiedad</li>
+<li>ControlNet: mantiene la estructura de la foto</li>
+<li>Stable Diffusion: aplica estilo (ej: &#34;luxury modern interior, golden hour lighting&#34;)</li>
+<li>Output: render estilizado
+<strong>Instalación de ComfyUI:</strong></li>
+</ol>
+<pre><code>git clone https://github.com/comfyanonymous/ComfyUI
+cd ComfyUI
+pip install -r requirements.txt
+python main.py
+
+</code></pre>
+<p>Abre <a href="http://localhost:8188">http://localhost:8188</a>
+<strong>Para mapas:</strong>  Usa las APIs gratuitas de Google Maps Static o Mapbox con Python para generar mapas de ubicación personalizados.</p>
+<hr>
+<h5 id="tier-3-premium-5">TIER 3: PREMIUM</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Midjourney V8</strong>  ($30/mes): arte de la más alta calidad, renders arquitectónicos impresionantes</li>
+<li><strong>Flux 2 Pro</strong>  para fotorrealismo preciso con consistencia multi-vista</li>
+<li><strong>Adobe Firefly 4</strong>  para uso comercial con protección legal IP</li>
+<li><strong>Architect AI</strong>  (<a href="https://ai-architect.net">https://ai-architect.net</a>): especializado en renders arquitectónicos, convierte fotos en renders en 10 segundos</li>
+<li><strong>IA de texto + diseño:</strong>  GPT Image 1.5 para composiciones complejas con texto perfecto</li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-7-ia-que-escriba-por-ti-en-whatsapp">PROYECTO 7: IA QUE ESCRIBA POR TI EN WHATSAPP</h3>
+<p><strong>Concepto:</strong>  IA que lee tus conversaciones, aprende tu estilo, y contesta por ti. También envía mensajes programados.</p>
+<hr>
+<h5 id="tier-1-low-cost-0-6-mes">TIER 1: LOW COST ($0-6/mes)</h5>
+<p><strong>ADVERTENCIA IMPORTANTE:</strong>  WhatsApp NO tiene API oficial gratuita para cuentas personales. Todas las soluciones usan ingeniería inversa de WhatsApp Web. Esto técnicamente viola los términos de servicio de Meta. El riesgo es bajo si no haces spam masivo, pero existe.
+<strong>Opción A: BuilderBot (Open Source, gratis)</strong></p>
+<ul>
+<li>Framework en Node.js para chatbots WhatsApp</li>
+<li>Usa la librería Baileys (conexión via WhatsApp Web)</li>
+<li><a href="https://www.builderbot.app/en">https://www.builderbot.app/en</a></li>
+</ul>
+<pre><code class="language-bash lang-bash no-auto-prettify">npm create builderbot@latest
+
+</code></pre>
+<ul>
+<li>Configuras flujos de respuesta con código simple</li>
+<li>Conectas con Ollama local para respuestas inteligentes
+<strong>Opción B: WAHA (WhatsApp HTTP API)</strong></li>
+<li>Self-hosted, open source</li>
+<li>Docker: docker run -it -p 3000:3000 devlikeapro/waha</li>
+<li>Te da una API REST para enviar/recibir mensajes</li>
+<li>Conecta con cualquier IA via HTTP
+<strong>Opción C: Evolution API (gratis, self-hosted)</strong></li>
+<li>Basada en Baileys</li>
+<li>Más estable que WAHA para uso continuo</li>
+<li>Tiene webhooks → conecta con n8n para automatización
+<strong>Para mensajes programados:</strong></li>
+</ul>
+<pre><code class="language-python lang-python no-auto-prettify">import schedule
+import time
+from evolutionapi import EvolutionAPI
+
+api = EvolutionAPI(&#34;http://localhost:8080&#34;)
+
+def enviar_seguimiento():
+    api.send_message(&#34;5213312345678&#34;, &#34;Buenos días, ¿tuvo oportunidad de revisar la propuesta?&#34;)
+
+schedule.every().day.at(&#34;09:00&#34;).do(enviar_seguimiento)
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)
+
+</code></pre>
+<p><strong>Para que aprenda tu estilo:</strong></p>
+<ol>
+<li>Exporta tus chats de WhatsApp (Ajustes &gt; Chats &gt; Exportar chat)</li>
+<li>Alimenta esos textos como contexto a Ollama:</li>
+</ol>
+<pre><code>Eres Christian, dueño de Century 21 Si-Now en Guadalajara. 
+Tu estilo de escritura es [directo/profesional/amigable].
+Aquí hay ejemplos de cómo escribes:
+[PEGAR MENSAJES EXPORTADOS]
+Ahora responde este mensaje como lo haría Christian:
+
+</code></pre>
+<hr>
+<h5 id="tier-2-h-brido-6-25-mes">TIER 2: HÍBRIDO ($6-25/mes)</h5>
+<p><strong>Stack recomendado:</strong></p>
+<ul>
+<li><strong>NanoClaw</strong>  (open source): agente autónomo diseñado para WhatsApp
+<ul>
+<li>Usa Baileys para conexión</li>
+<li>Cada grupo tiene su propio contenedor aislado</li>
+<li>Memoria persistente por grupo</li>
+<li>Puede usar Claude API u Ollama local</li>
+</ul>
+</li>
+<li><strong>WaSenderAPI</strong>  ($6/mes): gateway WhatsApp económico
+<ul>
+<li>API REST simple</li>
+<li>Webhook para mensajes entrantes</li>
+<li>Combinar con Gemini API (gratis) para respuestas inteligentes
+<strong>Configuración NanoClaw:</strong></li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-bash lang-bash no-auto-prettify">git clone https://github.com/nanoclaw/nanoclaw
+cd nanoclaw
+cp .env.example .env
+# Editar .env con tu API key de Anthropic (o configurar Ollama)
+docker-compose up
+
+</code></pre>
+<p>Escanea el QR → listo, la IA contesta en tus grupos de WhatsApp.</p>
+<hr>
+<h5 id="tier-3-premium-6">TIER 3: PREMIUM</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>WhatsApp Business API oficial</strong>  ($, requiere aprobación de Meta)</li>
+<li><strong>Claude Opus 4.6</strong>  como cerebro</li>
+<li><strong>OpenClaw</strong>  (113K+ stars en GitHub): agente autónomo completo que se conecta a WhatsApp, Telegram, calendario, email</li>
+<li><strong>n8n Enterprise</strong>  para orquestación compleja
+<strong>OpenClaw es lo más cercano a un asistente personal completo:</strong></li>
+<li>Corre continuamente en tu PC/servidor</li>
+<li>Se conecta a WhatsApp, email, calendario</li>
+<li>Memoria persistente (archivo Soul.md)</li>
+<li>Puede usar Claude API o Ollama local</li>
+<li>113,000+ estrellas en GitHub en su primera semana (enero 2026)
+<strong>RIESGO:</strong>  Investigadores de Cisco y Palo Alto Networks encontraron que 22-26% de los plugins del marketplace de OpenClaw contienen código malicioso. Usar solo plugins verificados.</li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-8-entrenar-ia-crear-red-neuronal-propia">PROYECTO 8: ENTRENAR IA / CREAR RED NEURONAL PROPIA</h3>
+<p><strong>Concepto:</strong>  Entrenar un modelo con tus conversaciones o crear una red neuronal con aprendizaje automático.</p>
+<h4 id="aclaraciones-importantes-antes-de-empezar">Aclaraciones importantes antes de empezar:</h4>
+<ol>
+<li><strong>Fine-tuning ≠ Entrenar desde cero.</strong>  Entrenar un LLM desde cero cuesta millones de dólares. Lo que tú quieres es  <strong>fine-tuning</strong> : tomar un modelo existente y ajustarlo con tus datos.</li>
+<li><strong>Con tu hardware (3080 Ti 12GB):</strong>  Puedes hacer fine-tuning de modelos de hasta ~7-8B parámetros usando técnicas de eficiencia (LoRA/QLoRA).</li>
+<li><strong>¿Vale la pena?</strong>  En la mayoría de los casos, un buen prompt con RAG (Proyecto 2) da mejores resultados que fine-tuning, con mucho menos esfuerzo. Fine-tuning tiene sentido cuando:
+<ul>
+<li>Necesitas un estilo de respuesta muy específico y consistente</li>
+<li>Tienes miles de ejemplos de conversaciones</li>
+<li>Vas a usar el modelo miles de veces al día</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h5 id="tier-1-low-cost-0-6">TIER 1: LOW COST ($0)</h5>
+<p><strong>Fine-tuning con Unsloth (gratis, optimizado para tu GPU):</strong>
+Unsloth es una librería que hace fine-tuning 2x más rápido y usa 60% menos memoria que los métodos tradicionales.</p>
+<pre><code class="language-bash lang-bash no-auto-prettify">pip install unsloth
+
+</code></pre>
+<p><strong>Preparar datos (formato de conversaciones):</strong></p>
+<pre><code class="language-json lang-json no-auto-prettify">[
+  {
+    &#34;instruction&#34;: &#34;Un cliente pregunta sobre precio de departamento en Providencia&#34;,
+    &#34;input&#34;: &#34;¿Cuánto cuesta el depa de 2 recámaras?&#34;,
+    &#34;output&#34;: &#34;¡Hola! El departamento de 2 recámaras en Col. Providencia arranca desde $2,850,000 MXN en preventa con 10% de descuento. ¿Te gustaría agendar una visita? Tengo disponibilidad esta semana.&#34;
+  },
+  // ... cientos de ejemplos más
+]
+
+</code></pre>
+<p><strong>Script de fine-tuning:</strong></p>
+<pre><code class="language-python lang-python no-auto-prettify">from unsloth import FastLanguageModel
+
+model, tokenizer = FastLanguageModel.from_pretrained(
+    model_name=&#34;unsloth/Qwen2.5-7B-Instruct&#34;,
+    max_seq_length=2048,
+    dtype=None,  # Auto-detecta
+    load_in_4bit=True  # QLoRA - reduce VRAM de 14GB a ~6GB
+)
+
+model = FastLanguageModel.get_peft_model(
+    model,
+    r=16,  # Rank de LoRA
+    target_modules=[&#34;q_proj&#34;, &#34;k_proj&#34;, &#34;v_proj&#34;, &#34;o_proj&#34;],
+    lora_alpha=16,
+    lora_dropout=0,
+    bias=&#34;none&#34;,
+)
+
+# Entrenar
+from trl import SFTTrainer
+from transformers import TrainingArguments
+
+trainer = SFTTrainer(
+    model=model,
+    tokenizer=tokenizer,
+    train_dataset=dataset,  # Tu dataset preparado
+    args=TrainingArguments(
+        per_device_train_batch_size=2,
+        gradient_accumulation_steps=4,
+        warmup_steps=5,
+        max_steps=100,
+        learning_rate=2e-4,
+        fp16=True,
+        output_dir=&#34;outputs&#34;,
+    ),
+)
+
+trainer.train()
+model.save_pretrained_gguf(&#34;modelo_century21&#34;, tokenizer, quantization_method=&#34;q4_k_m&#34;)
+
+</code></pre>
+<p><strong>Resultado:</strong>  Un archivo .gguf que puedes cargar en Ollama:</p>
+<pre><code>ollama create century21 -f Modelfile
+ollama run century21
+
+</code></pre>
+<p><strong>Tiempo estimado:</strong>  ~1-3 horas de entrenamiento en tu 3080 Ti para 500 ejemplos.</p>
+<hr>
+<h5 id="tier-2-h-brido-5-50-mes">TIER 2: HÍBRIDO ($5-50/mes)</h5>
+<p><strong>Opción A: Fine-tuning en la nube (más rápido, modelos más grandes)</strong></p>
+<ul>
+<li><strong>Google Vertex AI</strong>  tiene créditos gratuitos para empezar ($300 free trial)</li>
+<li><strong>Together.ai</strong>  ofrece fine-tuning desde $2/hora</li>
+<li>Puedes fine-tunear Llama 3.3 70B (imposible en tu GPU local)
+<strong>Opción B: OpenAI Fine-tuning API</strong></li>
+<li>Fine-tunear GPT-4o-mini: ~$3 por millón de tokens de entrenamiento</li>
+<li>El modelo resultante es privado y accesible via API</li>
+<li>Mejor calidad que modelos locales
+<strong>Opción C: Plataformas no-code</strong></li>
+<li><strong>Hugging Face AutoTrain</strong> : sube un CSV, selecciona modelo base, entrena</li>
+<li><strong>Replicate</strong> : fine-tuning con una línea de código</li>
+</ul>
+<hr>
+<h5 id="tier-3-premium-7">TIER 3: PREMIUM</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Claude Fine-tuning</strong>  (si/cuando Anthropic lo abra al público)</li>
+<li><strong>AWS SageMaker</strong>  o  <strong>Google Vertex AI</strong>  para entrenamiento distribuido</li>
+<li><strong>Llama 3.3 70B o 405B</strong>  fine-tuneado en GPU cloud (A100/H100)</li>
+<li><strong>RLHF</strong>  (Reinforcement Learning from Human Feedback) para máxima calidad</li>
+<li><strong>MLflow</strong>  para tracking de experimentos
+<strong>Costo realista:</strong>  $200-2,000 USD por sesión de entrenamiento, dependiendo del tamaño del modelo y cantidad de datos.</li>
+</ul>
+<hr>
+<hr>
+<h3 id="proyecto-9-ia-trabajando-horas-sin-intervenci-n-humana">PROYECTO 9: IA TRABAJANDO HORAS SIN INTERVENCIÓN HUMANA</h3>
+<p><strong>Concepto:</strong>  Lanzar una IA y que trabaje sola por horas completando tareas complejas.</p>
+<h4 id="qu-es-esto-en-t-rminos-simples-5">¿Qué es esto en términos simples?</h4>
+<p>Normalmente chateas con la IA pregunta por pregunta. Aquí le das un objetivo grande (&#34;analiza estas 50 propiedades y genera un reporte comparativo&#34;) y la IA trabaja sola durante horas sin que tengas que estar presente.
+<strong>NOTICIA DE HOY (24 marzo 2026):</strong>  Anthropic acaba de lanzar Claude Computer Use - Claude puede controlar tu computadora directamente (mover mouse, abrir apps, navegar web). Esto es literalmente lo que necesitas.</p>
+<hr>
+<h5 id="tier-1-low-cost-0-7">TIER 1: LOW COST ($0)</h5>
+<p><strong>Método del loop infinito con Ollama (inspirado en el experimento del compilador C de Anthropic):</strong>
+El investigador Nicholas Carlini de Anthropic usó 16 agentes Claude corriendo en paralelo durante 2,000 sesiones sin intervención humana para construir un compilador de C. La técnica es simple: meter la IA en un loop.</p>
+<pre><code class="language-bash lang-bash no-auto-prettify">#!/bin/bash
+# loop_agente.sh
+while true; do
+    LOGFILE=&#34;logs/agent_$(date +%Y%m%d_%H%M%S).log&#34;
+    ollama run qwen2.5:14b &#34;$(cat TAREA_AGENTE.md)&#34; &gt; &#34;$LOGFILE&#34; 2&gt;&amp;1
+    echo &#34;Tarea completada, buscando siguiente...&#34;
+    sleep 5
+done
+
+</code></pre>
+<p><strong>TAREA_AGENTE.md:</strong></p>
+<pre><code>Eres un agente autónomo de análisis inmobiliario.
+
+TU TAREA ACTUAL:
+1. Lee el archivo tareas_pendientes.txt
+2. Toma la primera tarea no completada
+3. Ejecuta el análisis
+4. Guarda el resultado en resultados/
+5. Marca la tarea como completada
+6. Si hay más tareas, continúa. Si no, escribe &#34;TODAS_COMPLETADAS&#34;
+
+REGLAS:
+- Si algo falla, documenta el error y pasa a la siguiente tarea
+- Nunca te detengas a preguntar, toma decisiones razonables
+- Registra todo en el log
+
+</code></pre>
+<p><strong>Limitación:</strong>  Ollama local es más lento y menos inteligente que los modelos cloud. Para tareas simples y repetitivas funciona bien, pero para razonamiento complejo necesitas Tier 2 o 3.</p>
+<hr>
+<h5 id="tier-2-h-brido-20-100-mes">TIER 2: HÍBRIDO ($20-100/mes)</h5>
+<p><strong>Opción A: Claude Code con /loop</strong></p>
+<ul>
+<li><strong>Claude Code</strong>  (incluido en Claude Pro/Max) tiene la función /loop</li>
+<li>Le das una tarea + un criterio de verificación</li>
+<li>Claude trabaja en loop hasta completarla</li>
+<li>Puede correr en background mientras haces otra cosa</li>
+<li>La función de Remote Control te permite monitorearlo desde tu celular
+<strong>Instalación de Claude Code:</strong></li>
+</ul>
+<pre><code class="language-bash lang-bash no-auto-prettify">npm install -g @anthropic-ai/claude-code
+claude  # Inicia sesión
+
+</code></pre>
+<p>Dentro de Claude Code:</p>
+<pre><code>/loop Analiza cada archivo en /docs/propiedades/ y genera un reporte de mercado para cada uno. Verifica que cada reporte tenga mínimo 500 palabras y cubra: precio estimado, comparables, fortalezas y debilidades.
+
+</code></pre>
+<p><strong>Opción B: n8n con ejecución programada (Cron)</strong></p>
+<ul>
+<li>Configura workflows que se ejecutan cada hora/día</li>
+<li>Ejemplo: cada mañana a las 7am:
+<ol>
+<li>Busca nuevas propiedades en portales</li>
+<li>Analiza con IA</li>
+<li>Genera reportes</li>
+<li>Envía email con resumen</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h5 id="tier-3-premium-8">TIER 3: PREMIUM</h5>
+<p><strong>Stack:</strong></p>
+<ul>
+<li><strong>Claude Computer Use</strong>  (lanzado hoy, 24 marzo 2026)
+<ul>
+<li>Claude controla tu computadora directamente</li>
+<li>Abre apps, navega web, llena formularios, maneja archivos</li>
+<li>Lo mandas a trabajar desde tu celular con Dispatch/Cowork</li>
+<li>Disponible para Claude Pro y Max</li>
+</ul>
+</li>
+<li><strong>Agent Teams</strong>  (patrón de Anthropic):
+<ul>
+<li>Múltiples instancias de Claude corriendo en paralelo</li>
+<li>Cada una en su propio contenedor Docker</li>
+<li>Comparten un repositorio Git para coordinarse</li>
+<li>Sistema de locks para evitar conflictos</li>
+<li>El benchmark de Anthropic: tareas de 5 horas de humano completadas autónomamente</li>
+</ul>
+</li>
+<li><strong>OpenClaw</strong>  como plataforma de agente autónomo:
+<ul>
+<li>Corre 24/7 en tu PC o servidor</li>
+<li>Conecta con todos tus servicios (email, calendar, WhatsApp)</li>
+<li>Memoria persistente</li>
+<li>Puede usar Claude API (mejor calidad) u Ollama (gratis)
+<strong>Costo estimado:</strong></li>
+</ul>
+</li>
+<li>Claude Max: ~$100-200/mes (uso ilimitado*)</li>
+<li>API costs para Agent Teams: variable, el compilador C costó $20,000 en 2,000 sesiones</li>
+<li>Para uso empresarial normal: $50-500/mes</li>
+</ul>
+<hr>
+<hr>
+<h3 id="resumen-ejecutivo-ruta-recomendada-por-prioridad">RESUMEN EJECUTIVO: RUTA RECOMENDADA POR PRIORIDAD</h3>
+<h4 id="implementar-primero-impacto-inmediato-bajo-esfuerzo">Implementar PRIMERO (impacto inmediato, bajo esfuerzo):</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Proyecto</th>
+<th>Recomendación</th>
+<th>Costo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>Minutas de reuniones</td>
+<td>tl;dv gratis + Claude Pro</td>
+<td>$0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Rebote de ideas</td>
+<td>Claude Pro + Gemini Pro manual</td>
+<td>$0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Análisis de imágenes</td>
+<td>Gemini AI Studio + Claude Pro</td>
+<td>$0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="implementar-segundo-requiere-setup-t-cnico">Implementar SEGUNDO (requiere setup técnico):</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Proyecto</th>
+<th>Recomendación</th>
+<th>Costo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Pipeline multi-IA</td>
+<td>CrewAI + Ollama local</td>
+<td>$0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>WhatsApp Bot</td>
+<td>Evolution API + Ollama</td>
+<td>$0-6/mes</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Flyers/Imágenes</td>
+<td>Canva + Ideogram + Python/Pillow</td>
+<td>$0-13/mes</td>
+</tr>
+</tbody>
+</table>
+<h4 id="implementar-tercero-requiere-m-s-datos-tiempo">Implementar TERCERO (requiere más datos/tiempo):</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Proyecto</th>
+<th>Recomendación</th>
+<th>Costo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>2 IAs con documentos</td>
+<td>ChromaDB + Ollama + Gemini</td>
+<td>$0</td>
+</tr>
+<tr>
+<td>9</td>
+<td>IA autónoma</td>
+<td>Claude Code /loop + Computer Use</td>
+<td>Tu Claude Pro</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Entrenar modelo propio</td>
+<td>Unsloth + QLoRA local</td>
+<td>$0</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="stack-tecnol-gico-central-recomendado">STACK TECNOLÓGICO CENTRAL RECOMENDADO</h4>
+<p><strong>Instala estas herramientas base y las usarás en TODOS los proyectos:</strong></p>
+<ol>
+<li><strong>Ollama</strong>  — Motor de modelos locales (gratis)</li>
+<li><strong>Docker Desktop</strong>  — Para contenedores (gratis)</li>
+<li><strong>n8n</strong>  (self-hosted via Docker) — Automatización visual (gratis)</li>
+<li><strong>Python 3.11+</strong>  con pip — Lenguaje de programación base</li>
+<li><strong>VS Code o Cursor</strong>  — Editor de código</li>
+<li><strong>Claude Code</strong>  — Agente de código autónomo (incluido en Claude Pro)</li>
+<li><strong>Git</strong>  — Control de versiones
+<strong>Modelos locales recomendados para tu hardware (RTX 3080 Ti 12GB):</strong></li>
+</ol>
+<ul>
+<li><strong>Qwen 2.5 7B</strong>  — Mejor balance velocidad/calidad general</li>
+<li><strong>Qwen 3.5 7B</strong>  — Más rápido, 76.8% MMLU</li>
+<li><strong>Qwen 2.5 14B (Q4)</strong>  — Mejor calidad, más lento, usa ~10GB VRAM</li>
+<li><strong>LLaVA 13B</strong>  — Para análisis de imágenes</li>
+<li><strong>Mistral 7B</strong>  — Bueno para tareas rápidas y routing
+<strong>APIs gratuitas que debes tener configuradas:</strong></li>
+<li><strong>Google AI Studio</strong>  (Gemini 2.5 Pro/Flash) — 1,500+ requests/día gratis</li>
+<li><strong>OpenRouter</strong>  — Algunos modelos con tier gratuito</li>
+<li><strong>Hugging Face</strong>  — Modelos + Spaces gratuitos</li>
+<li><strong>fal.ai</strong>  — Créditos gratuitos al registrarte para generación de imágenes</li>
+</ul>
+<hr>
+<h4 id="glosario-de-t-rminos">GLOSARIO DE TÉRMINOS</h4>
+<ul>
+<li><strong>LLM:</strong>  Large Language Model — modelo de IA que entiende y genera texto</li>
+<li><strong>VRAM:</strong>  Memoria de tu tarjeta gráfica, determina qué tan grande puede ser el modelo</li>
+<li><strong>Token:</strong>  Unidad de texto (~4 caracteres). Los modelos cobran por token procesado</li>
+<li><strong>RAG:</strong>  Retrieval-Augmented Generation — la IA busca en documentos antes de responder</li>
+<li><strong>Fine-tuning:</strong>  Ajustar un modelo existente con tus propios datos</li>
+<li><strong>LoRA/QLoRA:</strong>  Técnicas para hacer fine-tuning usando poca memoria</li>
+<li><strong>Embeddings:</strong>  Representación numérica de texto que permite buscar por similitud</li>
+<li><strong>Vector DB:</strong>  Base de datos que almacena embeddings para búsqueda rápida</li>
+<li><strong>MCP:</strong>  Model Context Protocol — estándar para que IAs se conecten a herramientas</li>
+<li><strong>Agente:</strong>  IA que puede tomar acciones (no solo chatear), como ejecutar código o navegar web</li>
+<li><strong>Orquestación:</strong>  Coordinar múltiples IAs/herramientas para completar una tarea compleja</li>
+<li><strong>Docker:</strong>  Software que empaqueta aplicaciones en contenedores aislados</li>
+<li><strong>Webhook:</strong>  URL que recibe datos automáticamente cuando ocurre un evento</li>
+<li><strong>API:</strong>  Interfaz para que programas se comuniquen entre sí</li>
+<li><strong>GGUF:</strong>  Formato de archivo para modelos optimizados para correr localmente</li>
+<li><strong>Quantización:</strong>  Comprimir un modelo para que use menos memoria (a cambio de algo de calidad)</li>
+</ul>

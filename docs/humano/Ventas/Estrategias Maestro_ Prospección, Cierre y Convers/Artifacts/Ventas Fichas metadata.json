@@ -1,0 +1,238 @@
+{
+  "title": "Ventas Fichas",
+  "type": "ARTIFACT_TYPE_APP",
+  "sources": [{
+    "sourceId": {
+      "id": "afcb12a2-be2a-49cf-ae09-0e95617fe737"
+    }
+  }, {
+    "sourceId": {
+      "id": "7f3934c2-3659-4558-b687-c57e305d238c"
+    }
+  }, {
+    "sourceId": {
+      "id": "f278d086-6600-4401-9f4e-e4e0f0d2eafb"
+    }
+  }, {
+    "sourceId": {
+      "id": "11238e93-8075-480f-9957-fbabee165364"
+    }
+  }, {
+    "sourceId": {
+      "id": "d84db7e0-0e5d-4118-a819-dfb6820486f3"
+    }
+  }, {
+    "sourceId": {
+      "id": "c1a075c3-d704-4d17-b5e3-ab889f4013cf"
+    }
+  }, {
+    "sourceId": {
+      "id": "28638716-a3b5-45d6-a275-928d7fc4a758"
+    }
+  }, {
+    "sourceId": {
+      "id": "654d0bf4-0d1e-4ddc-bf73-22897ed30558"
+    }
+  }, {
+    "sourceId": {
+      "id": "651ebb9e-ca9d-4d2a-a850-c68045ea137f"
+    }
+  }, {
+    "sourceId": {
+      "id": "2bdc82d2-b5f7-4c67-af0d-043892b7d8ec"
+    }
+  }, {
+    "sourceId": {
+      "id": "0a482120-7458-4dfa-b02d-c8669a338b7b"
+    }
+  }, {
+    "sourceId": {
+      "id": "b8b9622f-6e96-44e2-a3b9-70d134d99b69"
+    }
+  }, {
+    "sourceId": {
+      "id": "43f2e1c0-1d37-47e1-b2ba-23a799ec552b"
+    }
+  }, {
+    "sourceId": {
+      "id": "14087304-71bd-4413-a952-4f05ffd4dfd6"
+    }
+  }, {
+    "sourceId": {
+      "id": "9eb04164-8d85-41aa-bd72-a5be8a4aee43"
+    }
+  }, {
+    "sourceId": {
+      "id": "7126d89c-9830-4797-9808-069b99c8029e"
+    }
+  }, {
+    "sourceId": {
+      "id": "e0c52398-998e-44a7-a08a-c428696aab16"
+    }
+  }, {
+    "sourceId": {
+      "id": "4f1bea05-1455-4ae6-9ac3-c6306f02e1b5"
+    }
+  }, {
+    "sourceId": {
+      "id": "46b04365-d010-4eb6-b59e-0fdfafc6d90a"
+    }
+  }, {
+    "sourceId": {
+      "id": "736bb323-25c2-4153-b376-d1b5ff6342e3"
+    }
+  }, {
+    "sourceId": {
+      "id": "3e5470a2-80c4-40eb-91f4-a6c9b35f7410"
+    }
+  }, {
+    "sourceId": {
+      "id": "0eefd159-1cbb-4aa9-9b6d-5fe30e65b419"
+    }
+  }, {
+    "sourceId": {
+      "id": "769a6f28-4b7c-4482-8a05-2e7731145222"
+    }
+  }, {
+    "sourceId": {
+      "id": "a4f68fe6-aade-4c27-9779-abe2420cfb98"
+    }
+  }, {
+    "sourceId": {
+      "id": "4cf2743f-33dd-466d-9a45-d151c2d4c812"
+    }
+  }, {
+    "sourceId": {
+      "id": "fd806efc-6bcf-45b2-8b06-e41b1005c1e1"
+    }
+  }, {
+    "sourceId": {
+      "id": "136ac130-d32c-4f26-9a02-dba46f5d9b7f"
+    }
+  }, {
+    "sourceId": {
+      "id": "80089283-7bc2-4d81-9979-b5687f7dae13"
+    }
+  }, {
+    "sourceId": {
+      "id": "1b1bce0a-bfb8-45ef-9687-2ccabfeadf14"
+    }
+  }, {
+    "sourceId": {
+      "id": "68c34bba-3449-43ca-8fc8-a80e42529e60"
+    }
+  }, {
+    "sourceId": {
+      "id": "d6035992-ec0a-4163-87c3-ebc61f65b667"
+    }
+  }, {
+    "sourceId": {
+      "id": "75dab6fa-58d4-4da1-9044-ceca559020b1"
+    }
+  }, {
+    "sourceId": {
+      "id": "deecf34c-7a0b-4987-ba19-b6294e674bf2"
+    }
+  }, {
+    "sourceId": {
+      "id": "f6cf13b5-19c4-44a1-b080-9c77073fbc37"
+    }
+  }, {
+    "sourceId": {
+      "id": "312a9067-644a-450a-8fc6-005e49499ef6"
+    }
+  }, {
+    "sourceId": {
+      "id": "3909b8e1-6341-4157-a60f-bb68d6ee4192"
+    }
+  }, {
+    "sourceId": {
+      "id": "ecdd5a3e-c22b-407d-8b49-f7a412cd4bde"
+    }
+  }, {
+    "sourceId": {
+      "id": "9090b598-7c63-4765-bbcf-d2fd1267a0eb"
+    }
+  }, {
+    "sourceId": {
+      "id": "e098a59a-be55-4e56-b41c-b8ec67407d41"
+    }
+  }, {
+    "sourceId": {
+      "id": "9c9ebd68-4d80-4929-9fa4-d3862bc4cdbe"
+    }
+  }, {
+    "sourceId": {
+      "id": "eb6ffeb9-389e-42ea-b4d6-9cdae590d608"
+    }
+  }, {
+    "sourceId": {
+      "id": "ba188047-1ef7-44c8-81b3-7c8759ed5505"
+    }
+  }, {
+    "sourceId": {
+      "id": "7e63ffc6-17ec-4766-839d-9408a3572b07"
+    }
+  }, {
+    "sourceId": {
+      "id": "7a2a0bf0-f406-4bd9-b9af-825306fb1dba"
+    }
+  }, {
+    "sourceId": {
+      "id": "847d888d-871a-4072-b9f4-96a5964dd1de"
+    }
+  }, {
+    "sourceId": {
+      "id": "9d040872-80ef-4230-b8d1-debf08d24da5"
+    }
+  }, {
+    "sourceId": {
+      "id": "455fe364-f9d0-4bc6-8b34-e078f09ec779"
+    }
+  }, {
+    "sourceId": {
+      "id": "cd8a068a-949e-4391-b26a-5f2a93d804c9"
+    }
+  }, {
+    "sourceId": {
+      "id": "bdb4ca51-fd4d-43df-9a6f-3d5f8795de72"
+    }
+  }, {
+    "sourceId": {
+      "id": "f90f3377-6ea8-46e3-b24f-aebf45253603"
+    }
+  }, {
+    "sourceId": {
+      "id": "650aef68-e6ff-4ae5-a91e-4fe4253b1c55"
+    }
+  }, {
+    "sourceId": {
+      "id": "fa9bc649-5a9e-406c-aa6d-7b7eece4cf64"
+    }
+  }, {
+    "sourceId": {
+      "id": "793b6fa7-d526-4c58-b429-e004a5be9552"
+    }
+  }, {
+    "sourceId": {
+      "id": "bf24fc9c-22c1-4ba7-a155-3cfdaf50d0a8"
+    }
+  }, {
+    "sourceId": {
+      "id": "4d6bdcec-fb85-42a4-8940-0a156f2b311c"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "app": {
+    "appHtml": "",
+    "generationOptions": {
+      "appType": "APP_TYPE_FLASHCARDS",
+      "languageCode": "es-MX",
+      "flashcardsGenerationOptions": {
+        "cardQuantity": "CARD_QUANTITY_STANDARD",
+        "flashcardsDifficulty": "FLASHCARDS_DIFFICULTY_MEDIUM"
+      },
+      "enableU18Classifier": true
+    }
+  }
+}

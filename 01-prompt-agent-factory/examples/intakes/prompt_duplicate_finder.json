@@ -1,0 +1,26 @@
+{
+  "artifact_type": "prompt",
+  "idea": "Crear una instrucción que identifique posibles archivos duplicados sin modificar el sistema de archivos.",
+  "title": "Detector seguro de duplicados",
+  "audience": "Persona con conocimientos básicos de PowerShell",
+  "context": "Se analizará un inventario sintético de archivos locales y la revisión será exclusivamente de lectura.",
+  "input_name": "folder_inventory",
+  "output_format": "json",
+  "success_criteria": [
+    "Cada candidato incluye sus rutas y la evidencia de coincidencia",
+    "Los casos inciertos quedan marcados para revisión humana",
+    "La salida no propone borrar ni mover archivos"
+  ],
+  "constraints": [
+    "Solo lectura",
+    "No borrar, mover ni sobrescribir",
+    "No asumir que dos nombres iguales implican contenido igual"
+  ],
+  "source_refs": [
+    "docs/CASOS_DE_EVALUACION.md#F-PROMPT-001"
+  ],
+  "allowed_tools": [],
+  "tools_confirmed": false,
+  "requires_human_approval": true
+}
+

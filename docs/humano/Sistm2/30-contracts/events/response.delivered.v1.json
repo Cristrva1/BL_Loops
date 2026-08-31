@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/response.delivered.v1.json",
+  "title": "response.delivered.v1",
+  "description": "Emitido por el Meta-Orchestrator cuando la respuesta es entregada al usuario. Cierra el ciclo de la petición.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "response.delivered" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "meta-orchestrator" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["response_type", "qa_passed", "total_tokens", "total_latency_ms", "guilds_used", "fallback_used"],
+      "additionalProperties": false,
+      "properties": {
+        "response_type": {
+          "type": "string",
+          "enum": ["full", "partial", "fallback", "error"],
+          "description": "Tipo de respuesta entregada."
+        },
+        "qa_passed": {
+          "type": "boolean",
+          "description": "Si la respuesta aprobó la evaluación de QA."
+        },
+        "qa_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Score de calidad asignado por el Guild QA (0.0–1.0)."
+        },
+        "total_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tokens totales consumidos en toda la petición."
+        },
+        "total_latency_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Latencia total de punta a punta en milisegundos."
+        },
+        "guilds_used": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Lista de guilds que participaron en la respuesta."
+        },
+        "fallback_used": {
+          "type": "boolean",
+          "default": false,
+          "description": "Indica si se activó un modo degradado o fallback."
+        },
+        "fallback_reason": {
+          "type": "string",
+          "description": "Razón del fallback si fallback_used es true."
+        },
+        "compliance_cleared": {
+          "type": "boolean",
+          "default": true,
+          "description": "Indica si el Compliance Officer aprobó el output."
+        },
+        "doctrine_ids_applied": {
+          "type": "array",
+          "items": { "type": "string", "format": "uuid" },
+          "description": "IDs de doctrinas activas que se aplicaron en esta petición.",
+          "default": []
+        },
+        "response_format": {
+          "type": "string",
+          "description": "Formato de la respuesta entregada (markdown, json, text, html, etc.)."
+        },
+        "response_language": {
+          "type": "string",
+          "description": "Idioma del output entregado (BCP 47, ej: 'es', 'en', 'pt-BR')."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  }
+}

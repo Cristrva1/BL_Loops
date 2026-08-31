@@ -1,0 +1,258 @@
+# Manual de Operaciones: Fábrica de Orquestaciones de Agentes IA
+
+> **Nota de versión:** Documento operativo v1.0 (2025/2026). Diseñado para ser copiado, versionado y mantenido en repositorios internos. Todas las recomendaciones se basan en prácticas verificadas de LLMOps/AIOps, estándares ISO/IEC 42001:2023, NIST AI RMF 1.0 y marcos de gobernanza de IA en vigor. Cuando una práctica sea experimental o dependa de evolución rápida de modelos, se indicará explícitamente.
+
+---
+
+## 1. Propósito y Alcance
+
+| Elemento | Descripción |
+|---|---|
+| **Objetivo** | Estandarizar la creación, despliegue, medición y automejora de sistemas de agentes IA que operan en conjunto (ensembles) y se auto-optimizan bajo control. |
+| **Alcance** | Estrategia, gobierno, desarrollo ágil, operación continua, observabilidad, innovación y protocolos de mejora autónoma. |
+| **Usuarios** | Arquitectos de IA, MLOps/LLMOps, Product Owners, Evaluadores, Compliance, Liderazgo ejecutivo. |
+| **Principio rector** | Reducir costos operativos (tokens, latencia, infraestructura, revisión manual) sin sacrificar precisión, seguridad ni trazabilidad. Validar antes de escalar. |
+
+---
+
+## 2. Taxonomía Operativa y Arquitectura de Referencia
+
+El catálogo metodológico se organiza en 6 capas aplicadas al contexto de agentes:
+
+| Capa | Función en la Fábrica | Herramientas/Métodos Base |
+|---|---|---|
+| **1. Estrategia** | Definir portafolio de agentes, roadmaps, alineación con negocio y prioridades de inversión. | OKRs, Hoshin Kanri, Business Model Canvas |
+| **2. Gobierno** | Asegurar cumplimiento, trazabilidad, seguridad de datos y control de versiones. | ISO 42001, NIST AI RMF, RACI, COBIT adaptado a IA |
+| **3. Operación** | Ejecución diaria: orquestación, routing, escalado, fallbacks, monitorización. | Kanban, ITIL adaptado, Service Blueprint |
+| **4. Mejora Continua** | Corregir, optimizar prompts, reducir variación, cerrar ciclos de feedback. | Lean, Six Sigma (DMAIC), 5 Whys, VSM |
+| **5. Innovación** | Diseñar nuevos patrones, validar mercados, prototipar ensembles. | Lean Startup, Design Thinking, JTBD |
+| **6. Medición** | Observabilidad, evaluación automática, dashboards, alertas. | Balanced Scorecard, KPI Tree, LLM-as-Judge + eval determinista |
+
+**Arquitectura de referencia mínima:**
+- `Orquestación`: LangGraph / AutoGen / CrewAI (según complejidad)
+- `Enrutamiento Dinámico`: Router por costo/latencia/precisión (modelo open + fallback closed)
+- `Memoria/Estado`: Vector DB + caché de respuestas frecuentes
+- `Herramientas`: APIs, RAG, código sandbox, web search controlado
+- `Evaluación & Observabilidad`: Pipeline de evaluación automatizada + métricas de negocio
+- `Gobierno`: Registro de versiones, auditoría de decisiones, políticas de seguridad
+
+---
+
+## 3. Ciclo de Vida y Gestión del Cambio (Adizes + Kotter)
+
+### 3.1 Adizes aplicado a productos IA
+| Etapa | Característica | Acción requerida |
+|---|---|---|
+| **Concepción/Prototipo** | Validación de problema, MVP en sandbox | Equipo E (Emprendedor) + P (Productor) |
+| **Go-Go/Validación** | Iteración rápida, altas tasas de cambio | Balancear E con A (Administrador) para trazabilidad |
+| **Adolescencia/Escalado** | Crecimiento de tráfico, necesidad de gobierno | Introducir I (Integrador) + procesos de evaluación |
+| **Plenitud/Plataforma** | Estabilidad, ensembles maduros, costos optimizados | Enfoque en A + I, medición continua |
+| **Aristocracia/Declive** | Rigidez, deuda técnica, obsolescencia de prompts/modelos | Reinvención controlada o desmantelamiento planificado |
+
+**Señales tempranas de burocratización silenciosa en IA:** 
+- Aumento de aprobaciones manuales para cambios de prompt
+- Evaluaciones trimestrales en lugar de pipelines continuos
+- Métricas centradas en "horas de desarrollo" en lugar de "tasa de éxito de tarea"
+
+### 3.2 Kotter adaptado a adopción interna de agentes
+1. **Urgencia:** Demostrar costo manual vs automatizado con datos reales.
+2. **Coalición guía:** Líder técnico + experto de dominio + compliance.
+3. **Visión:** "Agentes autónomos con supervisión humana solo en excepciones".
+4. **Comunicación:** Dashboards públicos de precisión, costo y latencia.
+5. **Empoderar:** Eliminar fricciones de acceso a APIs, datos y entornos sandbox.
+6. **Victorias tempranas:** Automatizar 3 procesos de alto volumen y bajo riesgo.
+7. **No retroceder:** Medir adopción real, no solo despliegue técnico.
+8. **Anclar:** Integrar métricas de agentes en evaluaciones de desempeño.
+
+**Crítica:** Kotter es lineal y lento para entornos ágiles de IA. Úselo solo para transformaciones culturales o de cumplimiento. Para validación iterativa, combine con Lean Startup + Dual-Track Agile.
+
+---
+
+## 4. Ejecución Estratégica y Gobierno de IA (Deloitte EVD + McKinsey 7S)
+
+### 4.1 Deloitte EVD → AI Value Delivery
+| Fase | Aplicación en Fábrica de Agentes |
+|---|---|
+| **Estrategia** | Business case por agente: ROI esperado, límite de costo/tarea, tolerancia a error |
+| **Diseño** | Arquitectura de orquestación, patrones de ensemble, guardrails, fallbacks |
+| **Implementación** | CI/CD para prompts/modelos, pipelines de evaluación, despliegue canary |
+| **Operación** | AIOps, monitorización de drift, gestión de incidentes, SLAs internos |
+| **Gobierno** | Registro de versiones, auditoría de decisiones, cumplimiento ISO 42001 / NIST |
+
+**Regla de costo-beneficio:** Si el costo de fallar es alto (financiero, regulatorio, reputacional), exija EVD completo. Si el riesgo es bajo, use enfoque Lean + validación en shadow mode.
+
+### 4.2 McKinsey 7S para diagnóstico de desalineación
+- **Hard:** Estrategia (qué agentes priorizar), Estructura (equipos cross-funcionales), Sistemas (pipeline de eval, observabilidad).
+- **Soft:** Valores compartidos (transparencia, seguridad), Estilo (experimental pero disciplinado), Personal (perfil técnico + dominio), Habilidades (evaluación, debugging, prompt engineering).
+- **Indicador de falla:** Cuando la estrategia exige precisión >98% pero el sistema de evaluación solo mide latencia y costo. Corregir antes de escalar.
+
+---
+
+## 5. Desarrollo Ágil y Operación Continua (Scrum + Kanban + SAFe)
+
+| Marco | Cuándo usar | Cuándo evitar | Métrica clave |
+|---|---|---|---|
+| **Scrum** | Desarrollo de agentes discretos con hitos claros (2-3 semanas). | Entornos de operación continua o tuning de prompts diario. | Velocidad real vs ceremonial, Lead time de feature a producción |
+| **Kanban** | Monitorización, incidentes, optimización de rutas, ajuste de WIP. | Proyectos con dependencias complejas y deadlines fijos. | Cycle time, throughput, tasa de bloqueo |
+| **SAFe** | >50 agentes, múltiples divisiones, integración con sistemas legacy. | Equipos <10 personas o startups validando producto. | PI planning adherence, dependencia resuelta/tiempo |
+
+**Recomendación operativa:** 
+- Use **Dual-Track Agile** (Discovery + Delivery) para nuevos agentes.
+- Use **Kanban** para operación y mejora continua.
+- Evite SAFe a menos que tenga dependencias estructurales reales. La burocracia de PI Planning reduce velocidad de iteración en IA.
+
+---
+
+## 6. Medición, Observabilidad y Mejora Continua (OKRs + BSC + Lean + Six Sigma)
+
+### 6.1 OKRs (Trimestrales)
+- **Ejemplo válido:** `O: Reducir costo por orquestación un 40% manteniendo precisión ≥95%`
+  - `KR1: Reducir tokens promedio por tarea de 8.2k a 4.5k`
+  - `KR2: Aumentar tasa de routing correcto a modelo óptimo de 78% a 92%`
+  - `KR3: Reducir fallos críticos (fallback a humano) de 4.2% a 1.5%`
+- **Error frecuente:** Confundir KRs con tareas. "Implementar caché" es tarea; "Reducir tokens un 25%" es KR.
+
+### 6.2 Balanced Scorecard adaptado a IA
+| Perspectiva | Indicadores líderes/rezagados |
+|---|---|
+| Financiera | Costo/tarea, ROI por agente, utilización de infraestructura |
+| Cliente/Usuario | Tasa de completitud de tarea, latencia p95, NPS de experiencia |
+| Procesos Internos | Tiempo de despliegue, cobertura de evaluación, tasa de incidentes |
+| Aprendizaje/Crecimiento | Frecuencia de actualización de prompts, % de automatización de eval, madurez de guardrails |
+
+### 6.3 Lean Management → Eliminación de desperdicio en IA
+- **8 desperdicios aplicados:** Tokens sobrantes, contexto innecesario, llamadas redundantes a herramientas, esperas por cold starts, re-procesamiento por mal routing, sobre-ingeniería de prompts, inventario de modelos no usados, talento subutilizado en tareas manuales.
+- **Acciones:** Caché semántico, compresión de contexto, routing selectivo, prompts modulares, pull-based activation (no poll constante).
+
+### 6.4 Six Sigma (DMAIC) → Para ensembles críticos
+- **D:** Definir tolerancia de error y impacto de falla.
+- **M:** Medir tasas de alucinación, variación de salida, fallos de herramientas.
+- **A:** Analizar causa raíz (ambigüedad de prompt, limitación de modelo, drift de datos).
+- **M:** Mejorar (votación por confianza, guardrails estructurados, fallbacks, fine-tuning selectivo).
+- **C:** Control (dashboards de regresión automática, alertas de drift, tests sintéticos continuos).
+- **Costo-beneficio:** Alto costo de formación (Black Belts / evaluadores especializados). Justificado solo en casos regulados, financieros o de alto impacto reputacional. Para uso general, Lean + eval automatizada ofrece ROI más rápido.
+
+---
+
+## 7. Innovación y Diseño Centrado en el Usuario (Lean Startup + Design Thinking)
+
+### 7.1 Lean Startup para agentes
+- **Ciclo:** Construir (MVP/MMP) → Medir (eval pipeline + métricas de negocio) → Aprender (pivot/persevere).
+- **Validación:** Smoke tests con tráfico sintético, shadow mode contra sistemas existentes, cohorts de usuarios reales.
+- **Riesgo:** MVPs de baja calidad dañan confianza. Mitigación: sandbox aislado, disclaimers claros, human-in-the-loop inicial, métricas de éxito antes de exposición pública.
+
+### 7.2 Design Thinking para flujos humano-agente
+- Empatizar con operadores/clientes finales.
+- Journey mapping de interacciones y handoffs.
+- Prototipos de baja fidelidad (diagramas de flujo de agentes, mockups de prompts).
+- Co-creación con expertos de dominio para validar lógica de negocio.
+
+---
+
+## 8. Protocolos de Automejora y Ensembles Autónomos
+
+### 8.1 Ciclo de automejora controlada
+```
+[Telemetría] → [Evaluación Automática] → [Análisis de Brechas] → [Optimización (Prompt/Routing/Modelo)] → [Validación en Sandbox] → [Despliegue Canary] → [Monitorización]
+```
+
+### 8.2 Reglas de operación autónoma
+| Aspecto | Política |
+|---|---|
+| **Modificación de prompts** | Permitida si pasa eval automatizada + umbral de mejora ≥5% |
+| **Cambio de modelo/routing** | Requiere aprobación automática por métricas de costo/precisión + rollback automático si caída >2% |
+| **Fine-tuning / ajuste de pesos** | Solo en entorno sandbox, con dataset versionado y auditoría de drift |
+| **Generación de código por agentes** | Sandbox estricto, sin acceso a producción, revisión automática de seguridad |
+| **Feedback loop** | User ratings + error logs + LLM-as-judge calibrado + tests deterministas |
+
+### 8.3 Patrones de ensemble recomendados
+- **Votación por confianza:** Cada agente pondera su salida; el router selecciona o combina.
+- **Fallback escalonado:** Open model → modelo cerrado optimizado → humano.
+- **Especialización por dominio:** Agentes distintos por tarea (extracción, razonamiento, generación, validación).
+- **Evitar:** Ensembles homogéneos sin diferenciación de capacidad (incrementa costo sin mejora real).
+
+---
+
+## 9. Matriz de Decisiones: Costo-Beneficio-Riesgo
+
+| Decisión | Alternativa A | Alternativa B | Costo | Beneficio | Riesgo | Recomendación |
+|---|---|---|---|---|---|---|
+| **Modelo base** | Closed API (pago por token) | Open-weight + fine-tuning | A: Alto variable, B: Alto fijo inicial | A: Rápido, B: Control total | A: Vendor lock, B: Mantenimiento | Hybrid routing: open para tareas rutinarias, closed para críticas |
+| **Orquestación** | Framework pesado (SAFe-like) | Custom ligero + LangGraph | A: Alto overhead, B: Moderado | A: Estructura, B: Velocidad | A: Lentitud, B: Deuda técnica si escala mal | Custom ligero para <50 agentes; framework solo si hay dependencias enterprise |
+| **Evaluación** | LLM-as-Judge solo | Determinista + humano en muestreo | A: Bajo costo, alto riesgo de sesgo | B: Mayor costo inicial, alta confiabilidad | A: Hallucinaciones en evaluador, B: Cuello de botella humano | Combinación: LLM-as-judge calibrado + 10% muestra humana + tests deterministas |
+| **Mejora continua** | Revisión manual mensual | Pipeline automatizado + canary | A: Bajo costo, lento | B: Costo infraestructura, rápida iteración | A: Drift no detectado, B: Fallos en pipeline | Automatizar desde día 1; costo inicial amortizado en <3 meses por reducción de errores |
+
+---
+
+## 10. Fichas Metodológicas Operativas
+
+### Ficha: OKRs para Agentes IA
+- **Propósito:** Alinear metas de impacto, no actividad.
+- **Problema que resuelve:** Desconexión entre desarrollo técnico y valor de negocio.
+- **Cuándo usar:** Planificación trimestral, revisión de portafolio de agentes.
+- **Cuándo no usar:** Operación diaria o tuning de prompts.
+- **Entradas:** Métricas base, límites de costo, tolerancia de error.
+- **Pasos:** 1) Definir O ambicioso 2) Crear 2-4 KRs medibles 3) Vincular a dashboards 4) Revisar semanalmente 5) Ajustar si drift.
+- **Indicadores de éxito:** KR alcanzados sin sacrificar precisión, reducción de costo/tarea, menor dependencia de revisión manual.
+- **Riesgos:** KRs como tareas, metas irreales, cascada rígida.
+- **Costo:** Bajo (disciplina y dashboards).
+- **Beneficio:** Enfoque en impacto, transparencia, priorización clara.
+- **Herramientas afines:** BSC, KPI Tree, Hoshin Kanri.
+- **Ejemplo:** `O: Automatizar 80% de consultas de nivel 1 con agentes ensembles. KR1: Precisión ≥94%. KR2: Costo ≤$0.04/tarea. KR3: Escalamiento a humano ≤3%.`
+
+### Ficha: Lean Management aplicado a IA
+- **Propósito:** Eliminar desperdicio en orquestaciones.
+- **Problema que resuelve:** Costos inflados por tokens, latencia, llamadas redundantes.
+- **Cuándo usar:** Fase de operación o post-escalado.
+- **Cuándo no usar:** MVPs en validación temprana.
+- **Entradas:** Telemetría de tokens, latencia, rutas, fallos.
+- **Pasos:** 1) Mapear flujo actual 2) Identificar 8 desperdicios 3) Implementar caché/compresión/routing 4) Estandarizar prompts 5) Medir impacto.
+- **Indicadores:** Reducción tokens, mejora p95 latency, aumento throughput.
+- **Riesgos:** Sobre-optimización fragiliza respuestas complejas.
+- **Costo:** Bajo a medio.
+- **Beneficio:** Ahorro directo, escalabilidad.
+- **Herramientas afines:** Value Stream Mapping, 5S de prompts, Kanban.
+- **Ejemplo:** Implementar caché semántico para queries repetitivas reduce costo 35% sin afectar precisión en tareas estándar.
+
+---
+
+## 11. Anexos: KPIs, Checklists y Gobernanza de Datos
+
+### 11.1 KPIs mínimos obligatorios
+| Categoría | Métrica | Umbral recomendado |
+|---|---|---|
+| Precisión | Tasa de éxito de tarea | ≥95% (crítico), ≥85% (general) |
+| Costo | Costo por orquestación | Variable por dominio; objetivo: reducción continua 5-10%/trimestre |
+| Latencia | p50 / p95 | p95 < 3s (interactivo), < 15s (batch) |
+| Confiabilidad | Tasa de fallback a humano | ≤3% (general), ≤1% (crítico) |
+| Calidad | Tasa de alucinación detectada | ≤2% |
+| Ops | MTTR (Mean Time To Recovery) | < 1h |
+| Evaluación | Cobertura de pipeline | ≥90% de rutas evaluadas |
+
+### 11.2 Checklist de pre-despliegue
+- [ ] Evaluación automatizada aprobada (precisión, seguridad, costo)
+- [ ] Guardrails activos y probados contra inyecciones/adversarios
+- [ ] Fallbacks configurados y probados
+- [ ] Versionado de prompts/modelos registrado
+- [ ] Dashboards de observabilidad enlazados
+- [ ] Plan de rollback definido
+- [ ] Auditoría de cumplimiento (PII, regulaciones sectoriales)
+
+### 11.3 Gobernanza de datos para IA
+- **Single Source of Truth:** Repositorio centralizado de datasets de evaluación, prompts y logs.
+- **Calidad:** Validación automática de schema, detección de drift, muestreo estratificado.
+- **Privacidad:** Enmascaramiento de PII, cifrado en tránsito/reposo, retención definida.
+- **Trazabilidad:** Cada decisión de agente vinculable a versión de prompt, modelo, y contexto.
+
+---
+
+## 12. Recomendación Crítica y Alternativas Fundamentadas
+
+- **Si el equipo prioriza velocidad sobre precisión:** Kanban + Lean Startup + routing híbrido. Evite Six Sigma y SAFe hasta que haya estabilidad operativa.
+- **Si el dominio es regulado (finanzas, salud, legal):** EVD + Six Sigma (DMAIC) + ISO 42001 + evaluación determinista pesada. El costo inicial es alto, pero el riesgo de falla es inaceptable.
+- **Si el objetivo es automejora autónoma segura:** Pipeline de evaluación automatizada + canary deployments + guardrails estructurados + feedback loop con muestreo humano. No permita modificación de código o lógica de negocio sin validación sandbox.
+- **Contradicción común:** "Queremos agentes 100% autónomos desde el día 1". Evidencia actual indica que los sistemas más confiables usan **autonomía progresiva** con supervisión humana decreciente basada en métricas, no en promesas técnicas. Implemente fases: shadow → asistido → autónomo con alertas → autónomo con auto-corrección limitada.
+
+---
+
+> **Próximo paso operativo:** Defina 3 agentes prioritarios, establezca sus OKRs trimestrales, configure el pipeline de evaluación mínimo (determinista + LLM-as-judge calibrado + 10% humano) y despliegue en canary. Revise métricas cada 2 semanas. Ajuste routing y prompts antes de escalar. Mantenga este manual versionado y actualícelo con lecciones aprendidas tras cada ciclo.

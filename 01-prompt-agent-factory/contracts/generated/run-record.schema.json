@@ -1,0 +1,356 @@
+{
+  "$defs": {
+    "FlowStatus": {
+      "enum": [
+        "idle",
+        "queued",
+        "running",
+        "waiting",
+        "retrying",
+        "done",
+        "failed",
+        "blocked"
+      ],
+      "title": "FlowStatus",
+      "type": "string"
+    },
+    "MetricScore": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "task_success",
+            "quality",
+            "fidelity",
+            "tool_use",
+            "latency_efficiency",
+            "token_efficiency",
+            "resource_efficiency",
+            "stability",
+            "human_rating"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "applicable": {
+          "default": true,
+          "title": "Applicable",
+          "type": "boolean"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "MetricScore",
+      "type": "object"
+    },
+    "ResourceUsage": {
+      "additionalProperties": false,
+      "properties": {
+        "latency_ms": {
+          "minimum": 0,
+          "title": "Latency Ms",
+          "type": "number"
+        },
+        "input_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Tokens"
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Tokens"
+        },
+        "ram_peak_mb": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ram Peak Mb"
+        },
+        "vram_peak_mb": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vram Peak Mb"
+        }
+      },
+      "required": [
+        "latency_ms"
+      ],
+      "title": "ResourceUsage",
+      "type": "object"
+    },
+    "RunEvent": {
+      "additionalProperties": false,
+      "description": "Un cambio de estado observable durante una corrida.",
+      "properties": {
+        "sequence": {
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "event_id": {
+          "pattern": "^evt_[0-9a-f]{12}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "node_id": {
+          "maxLength": 100,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Node Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/FlowStatus"
+        },
+        "message": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "payload_sanitized": {
+          "additionalProperties": true,
+          "title": "Payload Sanitized",
+          "type": "object"
+        }
+      },
+      "required": [
+        "sequence",
+        "event_id",
+        "occurred_at",
+        "node_id",
+        "status",
+        "message"
+      ],
+      "title": "RunEvent",
+      "type": "object"
+    },
+    "RunStatus": {
+      "enum": [
+        "passed",
+        "failed",
+        "blocked"
+      ],
+      "title": "RunStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Sobre JSONL autocontenido que consumirá el evaluador central.",
+  "properties": {
+    "run_id": {
+      "pattern": "^run_[0-9a-f]{12}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "lab_id": {
+      "const": "01-prompt-agent-factory",
+      "default": "01-prompt-agent-factory",
+      "title": "Lab Id",
+      "type": "string"
+    },
+    "variant": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Variant",
+      "type": "string"
+    },
+    "commit_sha": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{7,40}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Commit Sha"
+    },
+    "model_ref": {
+      "title": "Model Ref",
+      "type": "string"
+    },
+    "evaluation_case": {
+      "title": "Evaluation Case",
+      "type": "string"
+    },
+    "case_version": {
+      "title": "Case Version",
+      "type": "string"
+    },
+    "artifact_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Artifact Refs",
+      "type": "array"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/RunEvent"
+      },
+      "minItems": 1,
+      "title": "Events",
+      "type": "array"
+    },
+    "inputs_sanitized": {
+      "additionalProperties": true,
+      "title": "Inputs Sanitized",
+      "type": "object"
+    },
+    "outputs_sanitized": {
+      "additionalProperties": true,
+      "title": "Outputs Sanitized",
+      "type": "object"
+    },
+    "tool_calls": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Tool Calls",
+      "type": "array"
+    },
+    "errors": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
+    "resource_usage": {
+      "$ref": "#/$defs/ResourceUsage"
+    },
+    "scores": {
+      "items": {
+        "$ref": "#/$defs/MetricScore"
+      },
+      "title": "Scores",
+      "type": "array"
+    },
+    "aggregate_score": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Aggregate Score"
+    },
+    "status": {
+      "$ref": "#/$defs/RunStatus"
+    },
+    "failure_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Failure Reasons",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "variant",
+    "model_ref",
+    "evaluation_case",
+    "case_version",
+    "events",
+    "inputs_sanitized",
+    "outputs_sanitized",
+    "resource_usage",
+    "scores",
+    "status",
+    "created_at",
+    "content_hash"
+  ],
+  "title": "RunRecord",
+  "type": "object"
+}

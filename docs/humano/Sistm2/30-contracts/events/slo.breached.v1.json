@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/slo.breached.v1.json",
+  "title": "slo.breached.v1",
+  "description": "Emitido por Telemetry/SRE cuando un SLO es incumplido. El Meta-Orchestrator puede activar modo degradado.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "slo.breached" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "telemetry-sre" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string", "const": "system" },
+    "payload": {
+      "type": "object",
+      "required": ["slo_name", "slo_target", "current_value", "window_minutes", "severity"],
+      "additionalProperties": false,
+      "properties": {
+        "slo_name": {
+          "type": "string",
+          "enum": ["latency.p95", "latency.p99", "error_rate", "availability", "qa_pass_rate"],
+          "description": "SLO que fue incumplido."
+        },
+        "slo_target": {
+          "type": "number",
+          "description": "Valor objetivo del SLO (ej: 8000 para latencia en ms, 1.0 para error rate en %)."
+        },
+        "current_value": {
+          "type": "number",
+          "description": "Valor actual medido que excede el target."
+        },
+        "window_minutes": {
+          "type": "integer", "minimum": 1,
+          "description": "Ventana de tiempo sobre la que se calculó el breach."
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["warning", "critical"],
+          "description": "warning = degradado leve; critical = modo severo o escalación."
+        },
+        "affected_module": {
+          "type": "string",
+          "description": "Módulo o guild donde se originó el breach (si se puede identificar)."
+        },
+        "recommended_action": {
+          "type": "string",
+          "enum": ["degrade_light", "degrade_severe", "fallback_total", "alert_operator", "none"],
+          "description": "Acción recomendada para el Meta-Orchestrator."
+        }
+      }
+    },
+    "metadata": { "type": "object", "default": {} }
+  }
+}

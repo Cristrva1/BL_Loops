@@ -1,0 +1,15 @@
+{
+  "title": "Comparativa de Proyectos de Inteligencia Artificial para Bienes Raíces",
+  "type": "ARTIFACT_TYPE_TABLE",
+  "sources": [{
+    "sourceId": {
+      "id": "9f4cc8e2-8f0f-4d88-bb9d-22a716a64baf"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "table": {
+    "generationOptions": {
+      "languageCode": "es_mx"
+    }
+  }
+}

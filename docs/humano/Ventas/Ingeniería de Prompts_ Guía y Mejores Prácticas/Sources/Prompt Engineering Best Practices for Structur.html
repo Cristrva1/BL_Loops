@@ -1,0 +1,253 @@
+<ul>
+<li>IndustriesRetail</li>
+<li>Consumer Packaged Goods (CPG)</li>
+<li>Technology, Media and Telecom (TMT)</li>
+<li>Travel and Hospitality</li>
+<li>Industrials</li>
+<li>Financial Services</li>
+<li>Healthcare &amp; Life Sciences</li>
+<li>ServicesAI Consulting</li>
+<li>Generative AI</li>
+<li>Supply Chain</li>
+<li>CX Management</li>
+<li>MLOps</li>
+<li>Data Engineering</li>
+<li>Data Modernization</li>
+<li>Customer Analytics
+ATOM.AI</li>
+<li>Life at TredenceHer at Tredence</li>
+<li>InsightsData &amp; AI Primers</li>
+<li>Data &amp; AI 101</li>
+<li>Case Studies</li>
+<li>Customer Testimonials</li>
+<li>Thought Leadership</li>
+<li>Blog</li>
+<li>Data Science Insights</li>
+<li>Databricks Champions</li>
+<li>Podcast</li>
+<li>CompanyOur Story</li>
+<li>Our Team</li>
+<li>Our Advisors</li>
+<li>Brand</li>
+<li>ACE Framework</li>
+<li>Partners</li>
+<li>Awards
+TREDENCE AT A GLANCELatest newsEventsWe&#39;re hiring
+Industries Retail Move ideas from experimentation to reality with our accelerators.
+TMT Move ideas from experimentation to reality with our accelerators.
+Industrials Move ideas from experimentation to reality with our accelerators.
+Healthcare &amp; Life Sciences Move ideas from experimentation to reality with our accelerators.
+CPG Move ideas from experimentation to reality with our accelerators.
+Travel and HospitalityMove ideas from experimentation to reality with our accelerators.
+Banking &amp; Financial Services Move ideas from experimentation to reality with our accelerators.
+Services AI Consulting Move ideas from experimentation to reality with our accelerators.
+Supply Chain Move ideas from experimentation to reality with our accelerators.
+CX Management Move ideas from experimentation to reality with our accelerators.
+MLOps Move ideas from experimentation to reality with our accelerators.
+Generative AI Move ideas from experimentation to reality with our accelerators.
+Data Engineering Move ideas from experimentation to reality with our accelerators.
+Data Modernization Move ideas from experimentation to reality with our accelerators.
+Customer Analytics Move ideas from experimentation to reality with our accelerators.</li>
+<li>ATOM.AI</li>
+<li>Life at TredenceHer at Tredence</li>
+<li>InsightsData &amp; AI Primers</li>
+<li>Data &amp; AI 101</li>
+<li>Case Studies</li>
+<li>Customer Testimonials</li>
+<li>Thought Leadership</li>
+<li>Blog</li>
+<li>Data Science Insights</li>
+<li>Databricks Champions</li>
+<li>Podcast</li>
+<li>CompanyOur Story</li>
+<li>Our Team</li>
+<li>Our Advisors</li>
+<li>Brand</li>
+<li>ACE Framework</li>
+<li>Partners</li>
+<li>Awards
+Prompt Engineering Best Practices for Structured AI Outputs
+Data Science
+Date : 10/23/2024
+Data Science
+Date : 10/23/2024</li>
+</ul>
+<h3 id="prompt-engineering-best-practices-for-structured-ai-outputs">Prompt Engineering Best Practices for Structured AI Outputs</h3>
+<p>Learn more about prompt engineering best practices to generate structured, accurate AI outputs and improve the performance of LLMs across enterprise use cases.
+AUTHOR - FOLLOWK C Prakash
+Associate Manager, Data Science</p>
+<h6 id="like-the-blog">Like the blog</h6>
+<h5 id="table-of-contents">Table of contents</h5>
+<p>Prompt Engineering Best Practices for Structured AI Outputs</p>
+<ul>
+<li>Prompt Engineering</li>
+<li>Best Practices of Prompt Engineering</li>
+</ul>
+<h6 id="like-the-blog-2">Like the blog</h6>
+<h5 id="table-of-contents-2">Table of contents</h5>
+<p>Prompt Engineering Best Practices for Structured AI Outputs</p>
+<ul>
+<li>Prompt Engineering</li>
+<li>Best Practices of Prompt Engineering
+Prompt engineering emerged with the release of OpenAI’s GPT. The world has heavily experimented with LLM prompts, ranging from simple queries to cool innovative prompts, to test the capabilities of LLMs. But for more domain-specific tasks, we often need the output in a certain format to save cost on API calls (or system memory).
+It is often easier and cheaper to get the desired output from LMs by prompting them rather than fine-tuning. This blog will look at some prompt engineering techniques to get better-structured outputs from LMs.</li>
+</ul>
+<h4 id="prompt-engineering">Prompt Engineering</h4>
+<p>Prompt Engineering, also known as In-Context Prompting, refers to methods for communicating with LLM to steer its behavior toward desired outcomes without updating the model weights. It is an empirical science, and the effect of prompt engineering methods can vary widely among models, thus requiring heavy experimentation and heuristics.</p>
+<h4 id="best-practices-of-prompt-engineering">Best Practices of Prompt Engineering</h4>
+<h5 id="zero-shot-learning">Zero-Shot Learning</h5>
+<p>Zero-shot learning prompts the model with your question and asks for results.
+E.g., Sentiment Analysis example
+text: i&#39;ll bet sushi tastes better than ramen.
+sentiment:</p>
+<h5 id="clear-and-specific-instructions"><strong>Clear and specific instructions</strong></h5>
+<p>Providing clear and specific instructions within the prompt helps the model to generate the desired output. Try to remove any ambiguity from the prompts because if present model might generate unexpected output.
+Prompt: Describe the order of Olympic circles
+Response: The order of the Olympic rings, from left to right, is:Blue, Yellow, Black, Green, Red
+<strong>Using explicit constraints</strong>
+In some cases, it might be required to get output in a specific format, length, or scope. You can specify your constraints in your prompt, and it will help the models generate responses that adhere to the desired limitations.
+Prompt: Summarize the working of air conditioner in three sentences
+Response: An air conditioner acts like a heat pump, moving unwanted warmth outdoors. Inside, warm air is drawn across a cold coil filled with refrigerant, absorbing heat and making the air cool. The refrigerant itself then travels outside, where it releases the heat and condenses back into a liquid before returning inside to repeat the cycle.
+<strong>Controlling output verbosity</strong>
+Adjusting the verbosity of model’s responses can be beneficial for obtaining information at the desired level of detail. You can control verbosity by explicitly requesting responses of a specific length or by asking the model to provide more or less information.
+Prompt: Briefly explain working of a car engine
+Response: Car engines rely on repeated controlled explosions. Inside each cylinder, a piston sucks in a mix of air and fuel (intake stroke). This mixture is then compressed (compression stroke) for a stronger bang. A spark plug ignites the mixture, causing a small explosion that pushes the piston down (power stroke). Finally, the burned gas is expelled (exhaust stroke) and the cycle repeats. This up-and-down motion of the pistons translates to rotation via a crankshaft, which ultimately powers the car&#39;s wheels.
+<strong>Iterative testing and refining</strong>
+One of the most effective ways to improve prompt engineering is through an iterative process of testing and refining. Continuously refining your prompts based on the generated responses helps to identify areas that require improvement and fine-tune the model’s behavior.
+Initial Prompt: Briefly explain about working of a car engine
+Initial Response: Car engines rely on repeated controlled explosions. Inside each cylinder, a piston sucks in a mix of air and fuel …
+Refined Prompt: Provide a detailed explanation on working of car engine, including its various stages and processes.
+Refined Response: Car engines are marvels of controlled explosions, meticulously converting fuel and air into the power that drives your car. Let&#39;s delve into the four-stroke cycle, the heart of this process …
+<strong>Temperature and token control</strong>
+Adjusting the temperature and token count of the model’s responses can significantly impact the generated content. Lower temperature values result in more focused and deterministic outputs, while higher values lead to more diverse and random/creative responses.
+<strong>Adapting prompts for domain-specific applications</strong>
+You can set the domain or industry and tailor it in your prompt to get more accurate and relevant information from the model.
+Example:  Domain: Web development
+Prompt: “Explain the concept of cookies and its importance in modern web development.”
+Response: Cookies are small pieces of data stored on the user&#39;s device by the web browser while they are browsing a website. They are used to remember information about the user, such as login status, preferences, and other session details. Here’s a brief overview of their importance in modern web development:</p>
+<ul>
+<li>Session Management</li>
+<li>Personalization</li>
+<li>Tracking and Analytics</li>
+<li>Targeted Advertising</li>
+</ul>
+<h5 id="few-shot-learning">Few-shot Learning.</h5>
+<p>Few-shot learning allows you to show high quality examples to the model so it understand the intent and generate desired output for the task. It often leads to better performance than zero-shot learning. One drawback of this technique is high consumption of tokens. If after adding examples and the actual task in the prompt, you might exceed token limit.
+Text: as a singular character study, the drama was perfect
+Sentiment: positive
+Text: once you get through the accents, all the performances becomes abysmal and pain to watch
+Sentiment: negative
+Text: the paintings provide a beauty, conquer over fear, exposed as history corners them
+Sentiment: positive
+Text: this is one for the ages &amp; great things to come
+Sentiment:
+In few-shot learning, the LM can get biased with the provided examples due to the following reasons:</p>
+<ul>
+<li>Majority label bias - It exists if there is an unbalanced distribution of labels among the examples</li>
+<li>Recency bias - When the model repeats the labels from the last/recent examples</li>
+<li>Common token bias occurs when LMs tend to produce common tokens due to their high frequency in the text, while rare tokens are often ignored.
+To avoid such bias, you can calibrate the label probabilities output by the model to be uniform when the input string is N/A.
+<strong>Tips, for example, selection &amp; ordering</strong>
+You can use k-nn clustering in the embedding space to test output of semantically similar examples.
+You can use graph-based approaches to select a diverse and representative set of examples by not selecting the nodes&#39; many neighbors.
+A good practice would be to keep the examples random and diverse to avoid majority label bias and recency bias.
+You can order the examples to have a balanced distribution of labels.</li>
+</ul>
+<h5 id="instruction-prompting">Instruction Prompting</h5>
+<p>Few-shot can be expensive in token usage and may restrict the length of the input token, which can cause a loss of context.
+When interacting with instruction models, we should describe the task in detail, covering every constraint and specifying what to do in case of out-of-context data.
+[Instruction + Task]: Given a sentence, translate it from English to French.
+[Example 1]:
+Input: The cat is on the table.
+Output: Le chat est sur la table.
+[Example 2]:
+Input: I am going to the market.
+Output: Je vais au marché.
+[Question]:
+Input: She loves reading books.
+Output: [Your model&#39;s response here]</p>
+<h5 id="chain-of-thought-cot">Chain-of-Thought (CoT)</h5>
+<p>The model generates reasoning logic step by step, known as reasoning chains or rationales in the sequence of sentences, to eventually lead to the final answer.
+Two main types of CoT prompting:
+<strong>Few-shot CoT prompts the model with a few demonstrations of high-quality reasoning chains and manually explicitly shows</strong>  steps to solve a problem.
+Prompt: Mary has 10 candies. She eats 3 candies and then buys 7 more. How many candies does Mary have now? Let&#39;s think step by step.
+Response:
+Mary starts with 10 candies.
+She eats 3 candies.
+So, she has, 10−3=7 candies left.
+Then she buys 7 more candies.
+Now she has 7+7=14 candies.
+So, Mary has 14 candies.
+Prompt: John has 15 books. He gives 5 books to his friend and then receives 8 more books as a gift. How many books does John have now? Let&#39;s think step by step.
+Response: ...
+<strong>Zero shot CoT</strong>
+In zero-shot prompting, the model is asked to solve a problem with reasoning steps without being provided with examples.
+Prompt: Mary travels 5 miles. She reaches the destination in 10 mins. What is the speed of Mary? Let&#39;s think step by step.
+Optimize your AI outputs with best practices in prompt engineering! Explore practical data science services that enhance AI performance. Reach out for more information!
+AUTHOR - FOLLOWK C Prakash
+Associate Manager, Data Science
+Topic Tags
+Prompt Engineering Natural Language Processing (NLP) Large Language Models (LLMs)Next Topic</p>
+<h6 id="mitigating-hallucination-in-large-language-models">Mitigating Hallucination in Large Language Models</h6>
+<p>Continue readingNext Topic</p>
+<h6 id="mitigating-hallucination-in-large-language-models-2">Mitigating Hallucination in Large Language Models</h6>
+<p>Continue readingour categories
+Retail
+Consumer Goods
+Industrials
+Telecom, Media, Technology
+Travel &amp; Hospitality
+Healthcare &amp; Life Sciences
+Banking &amp; Financial Services
+Ready to talk?
+Join forces with our data science and AI leaders to navigate your toughest challenges.</p>
+<h6 id="recommended-articles">recommended articles</h6>
+<p>Blog
+Data driven decision making: Turning Data Science Insights into Measurable Business Impact
+Blog
+Data Engineering Automation : An In-Depth Guide
+Blog
+Quantifying Customer Spending Uplift from Loyalty Programs via Causal Analysis
+×</p>
+<h6 id="thank-you-for-a-like">Thank you for a like!</h6>
+<p>Stay informed and up-to-date with the most recent trends in data science and AI.</p>
+<h6 id="share-this-article">Share this article</h6>
+<p>×
+Ready to talk?
+Join forces with our data science and AI leaders to navigate your toughest challenges.
+We use cookies for the best user experience on our website, including to personalize content &amp; offerings. By clicking “Accept Cookies” you agree to our use of cookies. For further details please visit our Privacy Policy and Cookies Policy</p>
+<h6 id="industries">Industries</h6>
+<p>Retail
+CPG
+Industrials
+Healthcare
+TMT
+Financial Services
+Travel and Hospitality</p>
+<h6 id="services">Services</h6>
+<p>AI Consulting
+Data Engineering
+Supply Chain
+Customer Analytics
+CX Management
+Industry X.0
+Support Solutions</p>
+<h6 id="solutions">Solutions</h6>
+<p>Supply Chain Control Tower
+Test and Learn Platform (TALP)
+On-shelf Availability (OSA)
+Customer Cosmos
+Sancus – AI-led Data Quality Management
+Revenue Growth Management (RGM)
+MLWorks
+UnityGO</p>
+<h6 id="blogs">Blogs</h6>
+<h6 id="data-ai-101">Data &amp; AI 101</h6>
+<h6 id="client-success">Client Success</h6>
+<h6 id="life-at-tredence">Life at Tredence</h6>
+<h6 id="careers">Careers</h6>
+<h6 id="contact-us">Contact us</h6>
+<h6 id="csr-framework">CSR Framework</h6>
+<h6 id="certifications">Certifications</h6>
+<h6 id="follow-us-on">Follow us on</h6>
+<p>Terms of UsePrivacy PolicyCookies PolicyThird Party Security &amp; Privacy Policy© Copyright  . Tredence.Inc. All rights reserved</p>

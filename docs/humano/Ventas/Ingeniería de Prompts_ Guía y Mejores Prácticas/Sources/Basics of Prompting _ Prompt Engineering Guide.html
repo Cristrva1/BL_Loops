@@ -1,0 +1,130 @@
+<ul>
+<li>🚀 Master Prompt Engineering and building AI Agents in our NEW courses! Use  <strong>PROMPTING20</strong>  for 20% off ➜  Enroll nowAbout AboutGitHub GitHub  (opens in a new tab)Discord Discord  (opens in a new tab)Prompt Engineering</li>
+<li>IntroductionLLM Settings</li>
+<li>Basics of Prompting</li>
+<li>Prompt Elements</li>
+<li>General Tips for Designing Prompts</li>
+<li>Examples of Prompts</li>
+<li>Prompting TechniquesZero-shot Prompting</li>
+<li>Few-shot Prompting</li>
+<li>Chain-of-Thought Prompting</li>
+<li>Meta Prompting</li>
+<li>Self-Consistency</li>
+<li>Generate Knowledge Prompting</li>
+<li>Prompt Chaining</li>
+<li>Tree of Thoughts</li>
+<li>Retrieval Augmented Generation</li>
+<li>Automatic Reasoning and Tool-use</li>
+<li>Automatic Prompt Engineer</li>
+<li>Active-Prompt</li>
+<li>Directional Stimulus Prompting</li>
+<li>Program-Aided Language Models</li>
+<li>ReAct</li>
+<li>Reflexion</li>
+<li>Multimodal CoT</li>
+<li>Graph Prompting</li>
+<li>AgentsIntroduction to Agents</li>
+<li>Agent Components</li>
+<li>Optimizing Prompts</li>
+<li>OpenAI Deep Research</li>
+<li>Reasoning LLMs</li>
+<li>4o Image Generation</li>
+<li>Context Engineering Guide</li>
+<li>ApplicationsFine-tuning GPT-4o</li>
+<li>Function Calling</li>
+<li>Context Caching with LLMs</li>
+<li>Generating Data</li>
+<li>Generating Synthetic Dataset for RAG</li>
+<li>Tackling Generated Datasets Diversity</li>
+<li>Generating Code</li>
+<li>Graduate Job Classification Case Study</li>
+<li>Prompt Function</li>
+<li>Prompt HubClassificationSentiment Classification</li>
+<li>Few-Shot Sentiment Classification</li>
+<li>CodingGenerate Code Snippet</li>
+<li>Generate MySQL Query</li>
+<li>Draw TiKZ Diagram</li>
+<li>CreativityRhymes</li>
+<li>Infinite Primes</li>
+<li>Interdisciplinary</li>
+<li>Inventing New Words</li>
+<li>EvaluationEvaluate Plato&#39;s Dialogue</li>
+<li>Information ExtractionExtract Model Names</li>
+<li>Image GenerationDraw a Person Using Alphabet</li>
+<li>MathematicsEvaluating Composite Functions</li>
+<li>Adding Odd Numbers</li>
+<li>Question AnsweringClosed Domain Question Answering</li>
+<li>Open Domain Question Answering</li>
+<li>Science Question Answering</li>
+<li>ReasoningIndirect Reasoning</li>
+<li>Physical Reasoning</li>
+<li>Text SummarizationExplain A Concept</li>
+<li>TruthfulnessHallucination Identification</li>
+<li>Adversarial PromptingPrompt Injection</li>
+<li>Prompt Leaking</li>
+<li>Jailbreaking</li>
+<li>ModelsChatGPT</li>
+<li>Claude 3</li>
+<li>Code Llama</li>
+<li>Flan</li>
+<li>Gemini</li>
+<li>Gemini Advanced</li>
+<li>Gemini 1.5 Pro</li>
+<li>Gemma</li>
+<li>GPT-4</li>
+<li>Grok-1</li>
+<li>LLaMA</li>
+<li>Llama 3</li>
+<li>Mistral 7B</li>
+<li>Mistral Large</li>
+<li>Mixtral</li>
+<li>Mixtral 8x22B</li>
+<li>OLMo</li>
+<li>Phi-2</li>
+<li>Sora</li>
+<li>LLM Collection</li>
+<li>Risks &amp; MisusesAdversarial Prompting</li>
+<li>Factuality</li>
+<li>Biases</li>
+<li>LLM Research FindingsLLM Agents</li>
+<li>RAG for LLMs</li>
+<li>LLM Reasoning</li>
+<li>RAG Faithfulness</li>
+<li>LLM In-Context Recall</li>
+<li>RAG Reduces Hallucination</li>
+<li>Synthetic Data</li>
+<li>ThoughtSculpt</li>
+<li>Infini-Attention</li>
+<li>LM-Guided CoT</li>
+<li>Trustworthiness in LLMs</li>
+<li>LLM Tokenization</li>
+<li>What is Groq?
+Papers
+Tools
+Notebooks
+Datasets
+Additional Readings
+IntroductionBasics of Prompting</li>
+</ul>
+<h3 id="basics-of-prompting">Basics of Prompting</h3>
+<h4 id="prompting-an-llm">Prompting an LLM</h4>
+<p>You can achieve a lot with simple prompts, but the quality of results depends on how much information you provide it and how well-crafted the prompt is. A prompt can contain information like the  <em>instruction</em>  or  <em>question</em>  you are passing to the model and include other details such as  <em>context</em> ,  <em>inputs</em> , or  <em>examples</em> . You can use these elements to instruct the model more effectively to improve the quality of results.
+Let&#39;s get started by going over a basic example of a simple prompt:
+<em>Prompt</em>
+The sky is
+<em>Output:</em>
+blue.
+If you are using the OpenAI Playground or any other LLM playground, you can prompt the model as shown in the following screenshot:
+Here is a tutorial on how to get started with the OpenAI Playground:
+Something to note is that when using the OpenAI chat models like  gpt-3.5-turbo  or  gpt-4 , you can structure your prompt using three different roles:  system ,  user , and  assistant . The system message is not required but helps to set the overall behavior of the assistant. The example above only includes a user message which you can use to directly prompt the model. For simplicity, all of the examples, except when it&#39;s explicitly mentioned, will use only the  user  message to prompt the  gpt-3.5-turbo  model. The  assistant  message in the example above corresponds to the model response. You can also define an assistant message to pass examples of the desired behavior you want. You can learn more about working with chat models here  (opens in a new tab).
+You can observe from the prompt example above that the language model responds with a sequence of tokens that make sense given the context  &#34;The sky is&#34; . The output might be unexpected or far from the task you want to accomplish. In fact, this basic example highlights the necessity to provide more context or instructions on what specifically you want to achieve with the system. This is what prompt engineering is all about.
+Let&#39;s try to improve it a bit:
+<em>Prompt:</em>
+Complete the sentence:  The sky is
+<em>Output:</em>
+blue during the day and dark at night.
+Is that better? Well, with the prompt above you are instructing the model to complete the sentence so the result looks a lot better as it follows exactly what you told it to do (&#34;complete the sentence&#34;). This approach of designing effective prompts to instruct the model to perform a desired task is what&#39;s referred to as  <strong>prompt engineering</strong>  in this guide.
+The example above is a basic illustration of what&#39;s possible with LLMs today. Today&#39;s LLMs are able to perform all kinds of advanced tasks that range from text summarization to mathematical reasoning to code generation.</p>
+<h4 id="prompt-formatting">Prompt Formatting</h4>
+<p>You have tried a very simple prompt above. A standard prompt has the following format:
+</p>

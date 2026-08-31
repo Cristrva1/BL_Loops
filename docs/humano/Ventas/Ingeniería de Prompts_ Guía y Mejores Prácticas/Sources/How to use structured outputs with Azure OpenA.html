@@ -1,0 +1,150 @@
+<p>Skip to main content  Skip to Ask Learn chat experience This browser is no longer supported.
+Upgrade to Microsoft Edge to take advantage of the latest features, security updates, and technical support.</p>
+<h6 id="download-microsoft-edge-more-info-about-internet-explorer-and-microsoft-edge-read-in-english-edit-share-via">Download Microsoft Edge  More info about Internet Explorer and Microsoft Edge Read in English  Edit  Share via</h6>
+<p>Facebook  x.com  LinkedIn  Email  Note
+Access to this page requires authorization. You can try signing in or changing directories.
+Access to this page requires authorization. You can try changing directories.</p>
+<h3 id="structured-outputs">Structured outputs</h3>
+<ul>
+<li>2025-08-07
+Structured outputs make a model follow a JSON Schema definition that you provide as part of your inference API call. This is in contrast to the older JSON mode feature, which guaranteed valid JSON would be generated, but was unable to ensure strict adherence to the supplied schema. Structured outputs are recommended for function calling, extracting structured data, and building complex multi-step workflows.
+Note
+Currently structured outputs are not supported with:</li>
+<li>Bring your own data scenarios.</li>
+<li>Assistants or Azure AI Agents Service.</li>
+<li>gpt-4o-audio-preview  and  gpt-4o-mini-audio-preview  version:  2024-12-17 .</li>
+</ul>
+<h4 id="supported-models">Supported models</h4>
+<ul>
+<li>gpt-5  version  2025-08-07</li>
+<li>gpt-5-mini  version  2025-08-07</li>
+<li>gpt-5-nano  version  2025-08-07</li>
+<li>codex-mini  version  2025-05-16</li>
+<li>o3-pro  version  2025-06-10</li>
+<li>o3-mini  version  2025-01-31</li>
+<li>o1  version:  2024-12-17</li>
+<li>gpt-4o-mini  version:  2024-07-18</li>
+<li>gpt-4o  version:  2024-08-06</li>
+<li>gpt-4o  version:  2024-11-20</li>
+<li>gpt-4.1  version  2025-04-14</li>
+<li>gpt-4.1-nano  version  2025-04-14</li>
+<li>gpt-4.1-mini  version:  2025-04-14</li>
+<li>o4-mini  version:  2025-04-16</li>
+<li>o3  version:  2025-04-16</li>
+</ul>
+<h4 id="api-support">API support</h4>
+<p>Support for structured outputs was first added in API version  2024-08-01-preview . It is available in the latest preview APIs as well as the latest GA API:  2024-10-21 .</p>
+<h4 id="getting-started">Getting started</h4>
+<ul>
+<li>Python (Microsoft Entra ID)</li>
+<li>Python (key-based auth)
+You can use Pydantic to define object schemas in Python. Depending on what version of the OpenAI and Pydantic  libraries you&#39;re running you might need to upgrade to a newer version. These examples were tested against  openai 1.42.0  and  pydantic 2.8.2 .
+pip install openai pydantic --upgrade
+If you are new to using Microsoft Entra ID for authentication see How to configure Azure OpenAI in Azure AI Foundry Models with Microsoft Entra ID authentication.
+import os from pydantic import BaseModel from openai import AzureOpenAI from azure.identity import DefaultAzureCredential, get_bearer_token_provider token_provider = get_bearer_token_provider( DefaultAzureCredential(), &#34;<a href="https://cognitiveservices.azure.com/.default">https://cognitiveservices.azure.com/.default</a>&#34; ) client = AzureOpenAI( azure_endpoint = os.getenv(&#34;AZURE_OPENAI_ENDPOINT&#34;), azure_ad_token_provider=token_provider, api_version=&#34;2024-10-21&#34; ) class CalendarEvent(BaseModel): name: str date: str participants: list[str] completion = client.beta.chat.completions.parse( model=&#34;MODEL_DEPLOYMENT_NAME&#34;, # replace with the model deployment name of your gpt-4o 2024-08-06 deployment messages=[ {&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;Extract the event information.&#34;}, {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;Alice and Bob are going to a science fair on Friday.&#34;}, ], response_format=CalendarEvent, ) event = completion.choices[0].message.parsed print(event) print(completion.model_dump_json(indent=2))</li>
+</ul>
+<h5 id="output">Output</h5>
+<p>name=&#39;Science Fair&#39; date=&#39;Friday&#39; participants=[&#39;Alice&#39;, &#39;Bob&#39;] { &#34;id&#34;: &#34;chatcmpl-A1EUP2fAmL4SeB1lVMinwM7I2vcqG&#34;, &#34;choices&#34;: [ { &#34;finish_reason&#34;: &#34;stop&#34;, &#34;index&#34;: 0, &#34;logprobs&#34;: null, &#34;message&#34;: { &#34;content&#34;: &#34;{\n &#34;name&#34;: &#34;Science Fair&#34;,\n &#34;date&#34;: &#34;Friday&#34;,\n &#34;participants&#34;: [&#34;Alice&#34;, &#34;Bob&#34;]\n}&#34;, &#34;refusal&#34;: null, &#34;role&#34;: &#34;assistant&#34;, &#34;function_call&#34;: null, &#34;tool_calls&#34;: [], &#34;parsed&#34;: { &#34;name&#34;: &#34;Science Fair&#34;, &#34;date&#34;: &#34;Friday&#34;, &#34;participants&#34;: [ &#34;Alice&#34;, &#34;Bob&#34; ] } } } ], &#34;created&#34;: 1724857389, &#34;model&#34;: &#34;gpt-4o-2024-08-06&#34;, &#34;object&#34;: &#34;chat.completion&#34;, &#34;service_tier&#34;: null, &#34;system_fingerprint&#34;: &#34;fp_1c2eaec9fe&#34;, &#34;usage&#34;: { &#34;completion_tokens&#34;: 27, &#34;prompt_tokens&#34;: 32, &#34;total_tokens&#34;: 59 } }
+You can use Pydantic to define object schemas in Python. Depending on what version of the OpenAI and Pydantic  libraries you&#39;re running you might need to upgrade to a newer version. These examples were tested against  openai 1.42.0  and  pydantic 2.8.2 .
+pip install openai pydantic --upgrade  import os from pydantic import BaseModel from openai import AzureOpenAI client = AzureOpenAI( azure_endpoint = os.getenv(&#34;AZURE_OPENAI_ENDPOINT&#34;), api_key=os.getenv(&#34;AZURE_OPENAI_API_KEY&#34;), api_version=&#34;2024-10-21&#34; ) class CalendarEvent(BaseModel): name: str date: str participants: list[str] completion = client.beta.chat.completions.parse( model=&#34;MODEL_DEPLOYMENT_NAME&#34;, # replace with the model deployment name of your gpt-4o 2024-08-06 deployment messages=[ {&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;Extract the event information.&#34;}, {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;Alice and Bob are going to a science fair on Friday.&#34;}, ], response_format=CalendarEvent, ) event = completion.choices[0].message.parsed print(event) print(completion.model_dump_json(indent=2))</p>
+<h5 id="output-2">Output</h5>
+<p>name=&#39;Science Fair&#39; date=&#39;Friday&#39; participants=[&#39;Alice&#39;, &#39;Bob&#39;] { &#34;id&#34;: &#34;chatcmpl-A1EUP2fAmL4SeB1lVMinwM7I2vcqG&#34;, &#34;choices&#34;: [ { &#34;finish_reason&#34;: &#34;stop&#34;, &#34;index&#34;: 0, &#34;logprobs&#34;: null, &#34;message&#34;: { &#34;content&#34;: &#34;{\n &#34;name&#34;: &#34;Science Fair&#34;,\n &#34;date&#34;: &#34;Friday&#34;,\n &#34;participants&#34;: [&#34;Alice&#34;, &#34;Bob&#34;]\n}&#34;, &#34;refusal&#34;: null, &#34;role&#34;: &#34;assistant&#34;, &#34;function_call&#34;: null, &#34;tool_calls&#34;: [], &#34;parsed&#34;: { &#34;name&#34;: &#34;Science Fair&#34;, &#34;date&#34;: &#34;Friday&#34;, &#34;participants&#34;: [ &#34;Alice&#34;, &#34;Bob&#34; ] } } } ], &#34;created&#34;: 1724857389, &#34;model&#34;: &#34;gpt-4o-2024-08-06&#34;, &#34;object&#34;: &#34;chat.completion&#34;, &#34;service_tier&#34;: null, &#34;system_fingerprint&#34;: &#34;fp_1c2eaec9fe&#34;, &#34;usage&#34;: { &#34;completion_tokens&#34;: 27, &#34;prompt_tokens&#34;: 32, &#34;total_tokens&#34;: 59 } }</p>
+<h4 id="function-calling-with-structured-outputs">Function calling with structured outputs</h4>
+<p>Structured Outputs for function calling can be enabled with a single parameter, by supplying  strict: true .
+Note
+Structured outputs are not supported with parallel function calls. When using structured outputs set  parallel_tool_calls  to  false .</p>
+<ul>
+<li>Python (Microsoft Entra ID)</li>
+<li>Python (key-based auth)
+from enum import Enum from typing import Union from pydantic import BaseModel import openai from openai import AzureOpenAI client = AzureOpenAI( azure_endpoint = os.getenv(&#34;AZURE_OPENAI_ENDPOINT&#34;), api_key=os.getenv(&#34;AZURE_OPENAI_API_KEY&#34;), api_version=&#34;2024-10-21&#34; ) class GetDeliveryDate(BaseModel): order_id: str tools = [openai.pydantic_function_tool(GetDeliveryDate)] messages = [] messages.append({&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;You are a helpful customer support assistant. Use the supplied tools to assist the user.&#34;}) messages.append({&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;Hi, can you tell me the delivery date for my order #12345?&#34;}) response = client.chat.completions.create( model=&#34;MODEL_DEPLOYMENT_NAME&#34;, # replace with the model deployment name of your gpt-4o 2024-08-06 deployment messages=messages, tools=tools ) print(response.choices[0].message.tool_calls[0].function) print(response.model_dump_json(indent=2))  from enum import Enum from typing import Union from pydantic import BaseModel import openai from openai import AzureOpenAI client = AzureOpenAI( azure_endpoint = os.getenv(&#34;AZURE_OPENAI_ENDPOINT&#34;), api_key=os.getenv(&#34;AZURE_OPENAI_API_KEY&#34;), api_version=&#34;2024-10-21&#34; ) class GetDeliveryDate(BaseModel): order_id: str tools = [openai.pydantic_function_tool(GetDeliveryDate)] messages = [] messages.append({&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;You are a helpful customer support assistant. Use the supplied tools to assist the user.&#34;}) messages.append({&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;Hi, can you tell me the delivery date for my order #12345?&#34;}) response = client.chat.completions.create( model=&#34;MODEL_DEPLOYMENT_NAME&#34;, # replace with the model deployment name of your gpt-4o 2024-08-06 deployment messages=messages, tools=tools ) print(response.choices[0].message.tool_calls[0].function) print(response.model_dump_json(indent=2))</li>
+</ul>
+<h4 id="getting-started-2">Getting started</h4>
+<p>Add the following packages to your project to work with Azure OpenAI:</p>
+<ul>
+<li>Azure.AI.OpenAI: Provides an Azure OpenAI client with Azure specific functionality that builds on top of the standard OpenAI library dependency.</li>
+<li>Azure.Identity: Provides Microsoft Entra ID token authentication support across the Azure SDK libraries.</li>
+<li>Newtonsoft.Json.Schema: Provides helpful utilities for working with JSON schemas.
+dotnet add package Azure.AI.OpenAI --prerelease dotnet add package Azure.Identity dotnet add package Newtonsoft.Json.Schema</li>
+<li>Microsoft Entra ID</li>
+<li>Key-based auth
+If you are new to using Microsoft Entra ID for authentication see How to configure Azure OpenAI in Azure AI Foundry Models with Microsoft Entra ID authentication.
+using Azure.AI.OpenAI; using Azure.Identity; using Newtonsoft.Json.Schema.Generation; using OpenAI.Chat; using System.ClientModel; // Create the clients string endpoint = GetEnvironmentVariable(&#34;AZURE_OPENAI_ENDPOINT&#34;); AzureOpenAIClient openAIClient = new( new Uri(endpoint), new DefaultAzureCredential()); var client = openAIClient.GetChatClient(&#34;gpt-4o&#34;); // Create a chat with initial prompts var chat = new List</li>
+</ul>
+<h4 id="function-calling-with-structured-outputs-2">Function calling with structured outputs</h4>
+<p>Structured Outputs for function calling can be enabled with a single parameter, by supplying  strict: true .</p>
+<ul>
+<li>Microsoft Entra ID</li>
+<li>Key-based auth
+using Azure.AI.OpenAI; using Newtonsoft.Json.Schema.Generation; using OpenAI.Chat; using System.ClientModel; // Create the clients string endpoint = GetEnvironmentVariable(&#34;AZURE_OPENAI_ENDPOINT&#34;); AzureOpenAIClient openAIClient = new( new Uri(endpoint), new DefaultAzureCredential()); var chatClient = openAIClient.GetChatClient(&#34;gpt-4o&#34;); // Local function to be used by the assistant tooling string GetTemperature(string location, string date) { // Placeholder for Weather API if(location == &#34;Seattle&#34; &amp;&amp; date == &#34;2025-06-01&#34;) { return &#34;75&#34;; } return &#34;50&#34;; } // Create a tool to get the temperature ChatTool GetTemperatureTool = ChatTool.CreateFunctionTool( functionName: nameof(GetTemperature), functionSchemaIsStrict: true, functionDescription: &#34;Get the projected temperature by date and location.&#34;, functionParameters: BinaryData.FromBytes(&#34;&#34;&#34; { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;location&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The location of the weather.&#34; }, &#34;date&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The date of the projected weather.&#34; } }, &#34;required&#34;: [&#34;location&#34;, &#34;date&#34;], &#34;additionalProperties&#34;: false } &#34;&#34;&#34;u8.ToArray()) ); // Create a chat with prompts var chat = new List</li>
+</ul>
+<h4 id="getting-started-3">Getting started</h4>
+<p>response_format  is set to  json_schema  with  strict: true  set.
+curl -X POST <a href="https://YOUR_RESOURCE_NAME.openai.azure.com/openai/deployments/YOUR_MODEL_DEPLOYMENT_NAME/chat/completions?api-version=2024-10-21">https://YOUR_RESOURCE_NAME.openai.azure.com/openai/deployments/YOUR_MODEL_DEPLOYMENT_NAME/chat/completions?api-version=2024-10-21</a> \ -H &#34;api-key: $AZURE_OPENAI_API_KEY&#34; \ -H &#34;Content-Type: application/json&#34; \ -d &#39;{ &#34;messages&#34;: [ {&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;Extract the event information.&#34;}, {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;Alice and Bob are going to a science fair on Friday.&#34;} ], &#34;response_format&#34;: { &#34;type&#34;: &#34;json_schema&#34;, &#34;json_schema&#34;: { &#34;name&#34;: &#34;CalendarEventResponse&#34;, &#34;strict&#34;: true, &#34;schema&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;name&#34;: { &#34;type&#34;: &#34;string&#34; }, &#34;date&#34;: { &#34;type&#34;: &#34;string&#34; }, &#34;participants&#34;: { &#34;type&#34;: &#34;array&#34;, &#34;items&#34;: { &#34;type&#34;: &#34;string&#34; } } }, &#34;required&#34;: [ &#34;name&#34;, &#34;date&#34;, &#34;participants&#34; ], &#34;additionalProperties&#34;: false } } } }&#39;
+Output:
+{ &#34;id&#34;: &#34;chatcmpl-A1HKsHAe2hH9MEooYslRn9UmEwsag&#34;, &#34;object&#34;: &#34;chat.completion&#34;, &#34;created&#34;: 1724868330, &#34;model&#34;: &#34;gpt-4o-2024-08-06&#34;, &#34;choices&#34;: [ { &#34;index&#34;: 0, &#34;message&#34;: { &#34;role&#34;: &#34;assistant&#34;, &#34;content&#34;: &#34;{\n &#34;name&#34;: &#34;Science Fair&#34;,\n &#34;date&#34;: &#34;Friday&#34;,\n &#34;participants&#34;: [&#34;Alice&#34;, &#34;Bob&#34;]\n}&#34; }, &#34;logprobs&#34;: null, &#34;finish_reason&#34;: &#34;stop&#34; } ], &#34;usage&#34;: { &#34;prompt_tokens&#34;: 33, &#34;completion_tokens&#34;: 27, &#34;total_tokens&#34;: 60 }, &#34;system_fingerprint&#34;: &#34;fp_1c2eaec9fe&#34; }</p>
+<h4 id="function-calling-with-structured-outputs-3">Function calling with structured outputs</h4>
+<p>curl -X POST <a href="https://YOUR_RESOURCE_NAME.openai.azure.com/openai/deployments/YOUR_MODEL_DEPLOYMENT_NAME/chat/completions?api-version=2024-10-21">https://YOUR_RESOURCE_NAME.openai.azure.com/openai/deployments/YOUR_MODEL_DEPLOYMENT_NAME/chat/completions?api-version=2024-10-21</a> \ -H &#34;api-key: $AZURE_OPENAI_API_KEY&#34; \ -H &#34;Content-Type: application/json&#34; \ -d &#39;{ &#34;messages&#34;: [ { &#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;You are a helpful assistant. The current date is August 6, 2024. You help users query for the data they are looking for by calling the query function.&#34; }, { &#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;look up all my orders in may of last year that were fulfilled but not delivered on time&#34; } ], &#34;tools&#34;: [ { &#34;type&#34;: &#34;function&#34;, &#34;function&#34;: { &#34;name&#34;: &#34;query&#34;, &#34;description&#34;: &#34;Execute a query.&#34;, &#34;strict&#34;: true, &#34;parameters&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;table_name&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;enum&#34;: [&#34;orders&#34;] }, &#34;columns&#34;: { &#34;type&#34;: &#34;array&#34;, &#34;items&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;enum&#34;: [ &#34;id&#34;, &#34;status&#34;, &#34;expected_delivery_date&#34;, &#34;delivered_at&#34;, &#34;shipped_at&#34;, &#34;ordered_at&#34;, &#34;canceled_at&#34; ] } }, &#34;conditions&#34;: { &#34;type&#34;: &#34;array&#34;, &#34;items&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;column&#34;: { &#34;type&#34;: &#34;string&#34; }, &#34;operator&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;enum&#34;: [&#34;=&#34;, &#34;&gt;&#34;, &#34;&lt;&#34;, &#34;&gt;=&#34;, &#34;&lt;=&#34;, &#34;!=&#34;] }, &#34;value&#34;: { &#34;anyOf&#34;: [ { &#34;type&#34;: &#34;string&#34; }, { &#34;type&#34;: &#34;number&#34; }, { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;column_name&#34;: { &#34;type&#34;: &#34;string&#34; } }, &#34;required&#34;: [&#34;column_name&#34;], &#34;additionalProperties&#34;: false } ] } }, &#34;required&#34;: [&#34;column&#34;, &#34;operator&#34;, &#34;value&#34;], &#34;additionalProperties&#34;: false } }, &#34;order_by&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;enum&#34;: [&#34;asc&#34;, &#34;desc&#34;] } }, &#34;required&#34;: [&#34;table_name&#34;, &#34;columns&#34;, &#34;conditions&#34;, &#34;order_by&#34;], &#34;additionalProperties&#34;: false } } } ] }&#39;</p>
+<h4 id="supported-schemas-and-limitations">Supported schemas and limitations</h4>
+<p>Azure OpenAI structured outputs support the same subset of the JSON Schema as OpenAI.</p>
+<h5 id="supported-types">Supported types</h5>
+<ul>
+<li>String</li>
+<li>Number</li>
+<li>Boolean</li>
+<li>Integer</li>
+<li>Object</li>
+<li>Array</li>
+<li>Enum</li>
+<li>anyOf
+Note
+Root objects cannot be the  anyOf  type.</li>
+</ul>
+<h5 id="all-fields-must-be-required">All fields must be required</h5>
+<p>All fields or function parameters must be included as required. In the example below  location , and  unit  are both specified under  &#34;required&#34;: [&#34;location&#34;, &#34;unit&#34;] .
+{ &#34;name&#34;: &#34;get_weather&#34;, &#34;description&#34;: &#34;Fetches the weather in the given location&#34;, &#34;strict&#34;: true, &#34;parameters&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;location&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The location to get the weather for&#34; }, &#34;unit&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The unit to return the temperature in&#34;, &#34;enum&#34;: [&#34;F&#34;, &#34;C&#34;] } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [&#34;location&#34;, &#34;unit&#34;] }
+If needed, it&#39;s possible to emulate an optional parameter by using a union type with  null . In this example, this is achieved with the line  &#34;type&#34;: [&#34;string&#34;, &#34;null&#34;], .
+{ &#34;name&#34;: &#34;get_weather&#34;, &#34;description&#34;: &#34;Fetches the weather in the given location&#34;, &#34;strict&#34;: true, &#34;parameters&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;location&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The location to get the weather for&#34; }, &#34;unit&#34;: { &#34;type&#34;: [&#34;string&#34;, &#34;null&#34;], &#34;description&#34;: &#34;The unit to return the temperature in&#34;, &#34;enum&#34;: [&#34;F&#34;, &#34;C&#34;] } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [ &#34;location&#34;, &#34;unit&#34; ] } }</p>
+<h5 id="nesting-depth">Nesting depth</h5>
+<p>A schema may have up to 100 object properties total, with up to five levels of nesting</p>
+<h5 id="additionalproperties-false-must-always-be-set-in-objects">additionalProperties: false must always be set in objects</h5>
+<p>This property controls if an object can have additional key value pairs that weren&#39;t defined in the JSON Schema. In order to use structured outputs, you must set this value to false.</p>
+<h5 id="key-ordering">Key ordering</h5>
+<p>Structured outputs are ordered the same as the provided schema. To change the output order, modify the order of the schema that you send as part of your inference request.</p>
+<h5 id="unsupported-type-specific-keywords">Unsupported type-specific keywords</h5>
+<p>Type   Unsupported Keyword   String   minlength
+maxLength
+pattern
+format   Number   minimum
+maximum
+multipleOf   Objects   patternProperties
+unevaluatedProperties
+propertyNames
+minProperties
+maxProperties   Arrays   unevaluatedItems   contains   minContains   maxContains   minItems
+maxItems
+uniqueItems</p>
+<h5 id="nested-schemas-using-anyof-must-adhere-to-the-overall-json-schema-subset">Nested schemas using anyOf must adhere to the overall JSON Schema subset</h5>
+<p>Example supported  anyOf  schema:
+{ &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;item&#34;: { &#34;anyOf&#34;: [ { &#34;type&#34;: &#34;object&#34;, &#34;description&#34;: &#34;The user object to insert into the database&#34;, &#34;properties&#34;: { &#34;name&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The name of the user&#34; }, &#34;age&#34;: { &#34;type&#34;: &#34;number&#34;, &#34;description&#34;: &#34;The age of the user&#34; } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [ &#34;name&#34;, &#34;age&#34; ] }, { &#34;type&#34;: &#34;object&#34;, &#34;description&#34;: &#34;The address object to insert into the database&#34;, &#34;properties&#34;: { &#34;number&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The number of the address. Eg. for 123 main st, this would be 123&#34; }, &#34;street&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The street name. Eg. for 123 main st, this would be main st&#34; }, &#34;city&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The city of the address&#34; } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [ &#34;number&#34;, &#34;street&#34;, &#34;city&#34; ] } ] } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [ &#34;item&#34; ] }</p>
+<h5 id="definitions-are-supported">Definitions are supported</h5>
+<p>Supported example:
+{ &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;steps&#34;: { &#34;type&#34;: &#34;array&#34;, &#34;items&#34;: { &#34;$ref&#34;: &#34;#/$defs/step&#34; } }, &#34;final_answer&#34;: { &#34;type&#34;: &#34;string&#34; } }, &#34;$defs&#34;: { &#34;step&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;explanation&#34;: { &#34;type&#34;: &#34;string&#34; }, &#34;output&#34;: { &#34;type&#34;: &#34;string&#34; } }, &#34;required&#34;: [ &#34;explanation&#34;, &#34;output&#34; ], &#34;additionalProperties&#34;: false } }, &#34;required&#34;: [ &#34;steps&#34;, &#34;final_answer&#34; ], &#34;additionalProperties&#34;: false }</p>
+<h5 id="recursive-schemas-are-supported">Recursive schemas are supported</h5>
+<p>Example using # for root recursion:
+{ &#34;name&#34;: &#34;ui&#34;, &#34;description&#34;: &#34;Dynamically generated UI&#34;, &#34;strict&#34;: true, &#34;schema&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;type&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The type of the UI component&#34;, &#34;enum&#34;: [&#34;div&#34;, &#34;button&#34;, &#34;header&#34;, &#34;section&#34;, &#34;field&#34;, &#34;form&#34;] }, &#34;label&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The label of the UI component, used for buttons or form fields&#34; }, &#34;children&#34;: { &#34;type&#34;: &#34;array&#34;, &#34;description&#34;: &#34;Nested UI components&#34;, &#34;items&#34;: { &#34;$ref&#34;: &#34;#&#34; } }, &#34;attributes&#34;: { &#34;type&#34;: &#34;array&#34;, &#34;description&#34;: &#34;Arbitrary attributes for the UI component, suitable for any element&#34;, &#34;items&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;name&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The name of the attribute, for example onClick or className&#34; }, &#34;value&#34;: { &#34;type&#34;: &#34;string&#34;, &#34;description&#34;: &#34;The value of the attribute&#34; } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [&#34;name&#34;, &#34;value&#34;] } } }, &#34;required&#34;: [&#34;type&#34;, &#34;label&#34;, &#34;children&#34;, &#34;attributes&#34;], &#34;additionalProperties&#34;: false } }
+Example of explicit recursion:
+{ &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;linked_list&#34;: { &#34;$ref&#34;: &#34;#/$defs/linked_list_node&#34; } }, &#34;$defs&#34;: { &#34;linked_list_node&#34;: { &#34;type&#34;: &#34;object&#34;, &#34;properties&#34;: { &#34;value&#34;: { &#34;type&#34;: &#34;number&#34; }, &#34;next&#34;: { &#34;anyOf&#34;: [ { &#34;$ref&#34;: &#34;#/$defs/linked_list_node&#34; }, { &#34;type&#34;: &#34;null&#34; } ] } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [ &#34;next&#34;, &#34;value&#34; ] } }, &#34;additionalProperties&#34;: false, &#34;required&#34;: [ &#34;linked_list&#34; ] }</p>
+<h4 id="feedback">Feedback</h4>
+<p>Was this page helpful?</p>
+<h4 id="additional-resources">Additional resources</h4>
+<p>Was this page helpful?</p>
+<ul>
+<li>AI Disclaimer</li>
+<li>Previous Versions</li>
+<li>Blog</li>
+<li>Contribute</li>
+<li>Privacy</li>
+<li>Terms of Use</li>
+<li>Trademarks</li>
+<li>© Microsoft 2025</li>
+</ul>

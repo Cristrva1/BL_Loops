@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bl-loops.local/09-agentic-rag/run-event.schema.json",
+  "title": "SalesAgentRunEvent",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "run_id",
+    "sequence",
+    "timestamp",
+    "event_type",
+    "lab_id",
+    "variant_id",
+    "case_id",
+    "model",
+    "node",
+    "payload",
+    "metrics",
+    "artifact_refs"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "event_id": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "event_type": {"type": "string", "minLength": 1},
+    "lab_id": {"const": "09-agentic-rag"},
+    "variant_id": {"const": "sales-expert-hybrid"},
+    "case_id": {"const": "I-AGENT-SALES-001@0.1.0"},
+    "model": {"type": "object"},
+    "node": {"type": ["object", "null"]},
+    "payload": {"type": "object"},
+    "metrics": {"type": "object"},
+    "artifact_refs": {"type": "array"}
+  },
+  "additionalProperties": false
+}
+

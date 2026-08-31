@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/response.synthesized.v1.json",
+  "title": "response.synthesized.v1",
+  "description": "Emitido por el Meta-Orchestrator cuando sintetiza los resultados de los guilds, antes de QA y Compliance.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "response.synthesized" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "meta-orchestrator" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["synthesis_strategy", "tasks_completed", "tasks_failed", "content_length_chars"],
+      "additionalProperties": false,
+      "properties": {
+        "synthesis_strategy": {
+          "type": "string",
+          "enum": ["merge", "cascade", "best_of", "structured"],
+          "description": "Estrategia usada para combinar los resultados de los guilds."
+        },
+        "tasks_completed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Número de tareas completadas exitosamente."
+        },
+        "tasks_failed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Número de tareas que fallaron (el plan puede haber degradado)."
+        },
+        "content_length_chars": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Longitud del contenido sintetizado en caracteres."
+        },
+        "guilds_contributed": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Guilds cuyos resultados se incluyen en la síntesis."
+        },
+        "guilds_excluded": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Guilds que fallaron y fueron excluidos de la síntesis.",
+          "default": []
+        },
+        "is_partial": {
+          "type": "boolean",
+          "default": false,
+          "description": "Si la síntesis es parcial (algún guild falló y se degradó el plan)."
+        },
+        "qa_requested": {
+          "type": "boolean",
+          "default": true,
+          "description": "Si el siguiente paso es evaluación por QA (siempre true en condiciones normales)."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  }
+}

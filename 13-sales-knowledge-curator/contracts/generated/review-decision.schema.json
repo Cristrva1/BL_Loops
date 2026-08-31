@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "ReviewVerdict": {
+      "enum": [
+        "approved",
+        "rejected",
+        "changes_requested"
+      ],
+      "title": "ReviewVerdict",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "decision_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "object_type": {
+      "enum": [
+        "claim",
+        "release_candidate"
+      ],
+      "title": "Object Type",
+      "type": "string"
+    },
+    "object_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Object Id",
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "#/$defs/ReviewVerdict"
+    },
+    "reviewer": {
+      "maxLength": 80,
+      "minLength": 2,
+      "title": "Reviewer",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 500,
+      "minLength": 8,
+      "title": "Reason",
+      "type": "string"
+    },
+    "decided_at": {
+      "format": "date-time",
+      "title": "Decided At",
+      "type": "string"
+    },
+    "conditions": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "title": "Conditions",
+      "type": "array"
+    },
+    "approved_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Approved Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "decision_id",
+    "object_type",
+    "object_id",
+    "decision",
+    "reviewer",
+    "reason",
+    "decided_at",
+    "approved_hash",
+    "content_hash"
+  ],
+  "title": "ReviewDecision",
+  "type": "object"
+}

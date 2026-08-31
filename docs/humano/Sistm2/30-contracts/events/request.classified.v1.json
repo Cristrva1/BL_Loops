@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/request.classified.v1.json",
+  "title": "request.classified.v1",
+  "description": "Emitido por el Router/Triage cuando clasifica el tipo y destino de una petición.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "request.classified" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "router-triage" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid", "description": "ID del evento request.received que causó esta clasificación." },
+    "tenant_id":      { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["classification", "guilds_suggested", "priority", "complexity", "routing_policy"],
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": ["simple", "complex", "research", "analysis", "creative", "code", "conversation", "mixed"],
+          "description": "Categoría semántica de la petición."
+        },
+        "guilds_suggested": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Guilds recomendados para atender la petición, en orden de prioridad."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "critical"],
+          "default": "normal"
+        },
+        "complexity": {
+          "type": "string",
+          "enum": ["single_guild", "multi_guild_sequential", "multi_guild_parallel", "hybrid"],
+          "description": "Complejidad del plan necesario para resolver la petición."
+        },
+        "routing_policy": {
+          "type": "string",
+          "description": "Nombre de la política de routing aplicada (referencia al KV Store de NATS)."
+        },
+        "estimated_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Estimación de tokens totales necesarios (opcional, puede ser 0 si no se calcula)."
+        },
+        "flags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Flags especiales de clasificación (ej: 'needs_search', 'math_heavy', 'multilingual').",
+          "default": []
+        },
+        "classifier_confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Confianza del clasificador (0.0–1.0). Por debajo de 0.6 se escala al Meta-Orchestrator."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadatos operativos opcionales.",
+      "default": {}
+    }
+  }
+}

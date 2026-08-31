@@ -1,0 +1,30 @@
+{
+  "title": "Modern Prompt Engineering",
+  "type": "ARTIFACT_TYPE_SLIDES",
+  "sources": [{
+    "sourceId": {
+      "id": "2720d740-439f-4b2d-97bb-647574ca8ed0"
+    }
+  }, {
+    "sourceId": {
+      "id": "e130d618-96dd-4e18-8afd-a773d3042df3"
+    }
+  }, {
+    "sourceId": {
+      "id": "4b5978b2-1dd7-4e8c-9091-c78e95febff3"
+    }
+  }, {
+    "sourceId": {
+      "id": "f34702a1-2ba0-4aec-a416-3875e71602a8"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "slides": {
+    "generationOptions": {
+      "languageCode": "es_mx",
+      "deckType": "DECK_TYPE_READING",
+      "length": "SLIDE_DECK_LENGTH_MEDIUM"
+    },
+    "title": "Modern Prompt Engineering"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/plan.created.v1.json",
+  "title": "plan.created.v1",
+  "description": "Emitido por el Meta-Orchestrator cuando construye el plan de ejecución para una petición.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "plan.created" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "meta-orchestrator" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid", "description": "ID del evento request.classified que causó este plan." },
+    "tenant_id":      { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["plan_id", "steps", "budget", "deadline_at"],
+      "additionalProperties": false,
+      "properties": {
+        "plan_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID único del plan (para relacionar tasks con su plan)."
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Pasos del plan en orden de ejecución. Pasos con el mismo 'group' se ejecutan en paralelo.",
+          "items": {
+            "type": "object",
+            "required": ["step_id", "group", "guild", "instructions"],
+            "additionalProperties": false,
+            "properties": {
+              "step_id": { "type": "string", "format": "uuid" },
+              "group": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Número de grupo. Pasos del mismo grupo se ejecutan en paralelo."
+              },
+              "guild": { "type": "string", "description": "Guild responsable de este paso." },
+              "instructions": { "type": "string", "description": "Instrucciones específicas para el guild." },
+              "depends_on": {
+                "type": "array",
+                "items": { "type": "string", "format": "uuid" },
+                "description": "IDs de step_id de los que depende este paso.",
+                "default": []
+              }
+            }
+          }
+        },
+        "budget": {
+          "type": "object",
+          "required": ["max_tokens_total", "max_latency_ms"],
+          "additionalProperties": false,
+          "properties": {
+            "max_tokens_total":   { "type": "integer", "minimum": 0 },
+            "max_latency_ms":     { "type": "integer", "minimum": 0 },
+            "max_cost_usd":       { "type": "number", "minimum": 0 },
+            "tokens_per_guild":   {
+              "type": "object",
+              "additionalProperties": { "type": "integer" },
+              "description": "Presupuesto de tokens por guild (guild_name → max_tokens)."
+            }
+          }
+        },
+        "deadline_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp límite para la entrega del plan completo."
+        },
+        "context_injected": {
+          "type": "boolean",
+          "default": false,
+          "description": "Indica si se inyectó contexto de memoria al construir el plan."
+        },
+        "plan_type": {
+          "type": "string",
+          "enum": ["sequential", "parallel", "pipeline", "hybrid", "single"],
+          "description": "Tipo de plan según la complejidad de la clasificación."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  }
+}

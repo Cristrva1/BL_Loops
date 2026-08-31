@@ -1,0 +1,43 @@
+"""Contratos Pydantic del curador. Reexporta el modelo público."""
+
+from .models import (
+    AdversarialFinding,
+    ClaimCandidate,
+    ClaimRecord,
+    ConflictRecord,
+    DocumentArtifact,
+    EvidenceLink,
+    GapRecord,
+    KnowledgeDraft,
+    KnowledgeRelease,
+    QualityScores,
+    ResearchFinding,
+    ResearchTask,
+    ReviewDecision,
+    RunEvent,
+    RunRecord,
+    SourceAssessment,
+    SourceRecord,
+    WorkflowState,
+)
+
+__all__ = [
+    "AdversarialFinding",
+    "ClaimCandidate",
+    "ClaimRecord",
+    "ConflictRecord",
+    "DocumentArtifact",
+    "EvidenceLink",
+    "GapRecord",
+    "KnowledgeDraft",
+    "KnowledgeRelease",
+    "QualityScores",
+    "ResearchFinding",
+    "ResearchTask",
+    "ReviewDecision",
+    "RunEvent",
+    "RunRecord",
+    "SourceAssessment",
+    "SourceRecord",
+    "WorkflowState",
+]

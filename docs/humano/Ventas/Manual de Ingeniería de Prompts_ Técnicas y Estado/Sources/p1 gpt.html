@@ -1,0 +1,328 @@
+<h1 id="tab-1">Tab 1</h1>
+<p>Perfecto — me gusta la ambición. Vamos a diseñar ese  <em>super-GPT</em>  que  <strong>automaticamente entiende por qué pediste algo</strong>  y  <strong>genera el mejor prompt posible</strong>  sin agobiarte con preguntas. Abajo tienes: 1) análisis de requisitos y objetivos, 2) arquitectura propuesta (componentes, flujos y decisiones técnicas), 3) tácticas concretas para maximizar calidad con  <em>mínima</em>  fricción (una sola pregunta corta cuando sea imprescindible), 4) métricas / evaluación, 5) prototipo arquitectural y snippets, 6) riesgos y mitigaciones, y 7) next steps prácticos para construir un MVP.</p>
+<p>He respaldado las piezas clave con literatura y proyectos relevantes: Automatic Prompt Engineer (APE), ReAct, Tree-of-Thought, Self-Consistency, AutoGPT, prácticas RAG y marcos de evaluación.</p>
+<h3 id="1-objetivo-claro-resumen-corto"><strong>1) Objetivo claro (resumen corto)</strong></h3>
+<p>Deseas un agente — llamémoslo  <strong>Prompt Architect</strong>  — que tome un enunciado/problema breve,  <strong>explore en segundo plano</strong>  (por qué se pide, contexto implícito, objetivos), genere  <strong>un único prompt óptimo</strong>  (lista corta de variantes rankeadas), y entregue además una  <strong>expectativa de resultado</strong>  y un  <strong>nivel de confianza</strong> , pidiendo  <strong>como máximo 1 pregunta</strong>  al usuario cuando la incertidumbre formal supere un umbral.</p>
+<p>Puntos clave: minimizar fricción y maximizar calidad del prompt final.</p>
+<h3 id="2-principios-de-dise-o-constraints-trade-offs"><strong>2) Principios de diseño (constraints + trade-offs)</strong></h3>
+<p><strong>No bombardear al usuario</strong> : preguntar sólo cuando la incertidumbre es alta (ver sección de incertidumbre).</p>
+<p><strong>Exploración interna</strong> : usar módulos de recuperación (RAG), generación de variantes (meta-prompting / APE) y evaluación automática (auto-eval) en background.</p>
+<p><strong>Transparencia útil</strong> : entregar el prompt final + breve justificación (1–2 líneas) + 1-2 ejemplos esperados.</p>
+<p><strong>Seguridad y guardrails</strong> : aplicar reglas de seguridad (Constitutional AI / policies) antes de devolver prompts que puedan usarse maliciosamente.</p>
+<h3 id="3-arquitectura-propuesta-alto-nivel"><strong>3) Arquitectura propuesta (alto nivel)</strong></h3>
+<h4 id="componentes-principales"><strong>Componentes principales</strong></h4>
+<p><strong>Front-end / Ingesta mínima</strong></p>
+<pre><code>Input del usuario: frase o problema corto.
+
+Parámetros opcionales: tono, longitud, público objetivo (opcional).
+</code></pre>
+<p><strong>Intent &amp; Slot Extractor</strong>  (clasificador)</p>
+<pre><code>Extrae intención, objetivo, entidad objetivo, formato preferido (ej.: email, código, JSON).
+
+Modelo ligero (distil-BERT o LLM pequeño in-context).
+</code></pre>
+<p><strong>Context Retriever (RAG)</strong></p>
+<pre><code>Busca en: historial del usuario, base de conocimiento interna, documentos relevantes (si el usuario lo autoriza), y web si está permitido.
+
+Bibliotecas/stack recomendados: LangChain + LlamaIndex o haystack; forjar índices de embeddings y vectores. (Buenas prácticas RAG).
+</code></pre>
+<p><strong>Meta-Prompt Generator (APE module)</strong></p>
+<pre><code>Núcleo: usa meta-prompting / APE donde un LLM genera múltiples prompts candidatos dado el intent + contexto. Fundamento: LLMs pueden ser “prompt engineers”.
+</code></pre>
+<p><strong>Exploration Engine (ToT / ReAct / PoT hybrid)</strong></p>
+<pre><code>Genera múltiples “pensamientos” intermedios (Tree-of-Thought) y/o acciones (ReAct) para simular cómo el prompt producirá outputs; permite backtracking y evaluación automática.
+</code></pre>
+<p><strong>Prompt Optimizer / Evaluator</strong></p>
+<pre><code>Usa  *self-consistency*  (muestras de decoding) y evals automáticas (OpenAI Evals o simple-evals) para rankear candidatos.
+</code></pre>
+<p><strong>Safety &amp; Policy Filter</strong></p>
+<pre><code>Aplica reglas (Constitutional AI style) antes de devolver un prompt que pueda habilitar un uso peligroso.
+</code></pre>
+<p><strong>Decision Module (one-question policy)</strong></p>
+<pre><code>Calcula incertidumbre; si &gt; threshold -&gt; genera 1 pregunta corta y específica al usuario; si ≤ threshold -&gt; entrega prompt final con explicación breve.
+</code></pre>
+<p><strong>Executor / Adapter</strong></p>
+<pre><code>Opcional: ejecutar el prompt contra un target model (p. ej. GPT-X) para verificar resultado y devolver ejemplos reales (hot run).
+</code></pre>
+<p><strong>Telemetry + Memory</strong></p>
+<p>Guarda métricas, preferencias del usuario, y ejemplos de prompts validados para aprendizaje futuro.</p>
+<h4 id="flujo-resumido-cuando-el-usuario-env-a-1-frase"><strong>Flujo resumido (cuando el usuario envía 1 frase)</strong></h4>
+<p>Intent extractor -&gt; 2. Retriever agrega contexto -&gt; 3. Meta-prompt generator produce N candidatos -&gt; 4. Exploration engine genera traces/acciones y posibles outputs -&gt; 5. Evaluator (self-consistency + evals) rankea -&gt; 6. Safety filter -&gt; 7. Decision module: si incertidumbre alta → 1 pregunta; si no → entregar prompt(es) ranked + justificación + ejemplos.</p>
+<h3 id="4-estrategias-t-cnicas-concretas-c-mo-lograrlo"><strong>4) Estrategias técnicas concretas (cómo lograrlo)</strong></h3>
+<h4 id="4-1-generaci-n-de-candidatos-ape-meta-prompting"><strong>4.1 Generación de candidatos (APE + meta-prompting)</strong></h4>
+<p>Usar un LLM fuerte para  <em>escribir</em>  prompts a partir de plantilla: instrucción + contexto + ejemplo esperado.</p>
+<p>Generar K variantes (p. ej. K=8) con diferentes “estilos” (conciso, exhaustivo, con constraints, con formato JSON).</p>
+<p>Fundamento: APE (Large Language Models Are Human-Level Prompt Engineers).</p>
+<h4 id="4-2-evaluaci-n-autom-tica-self-consistency-evals"><strong>4.2 Evaluación automática (self-consistency + Evals)</strong></h4>
+<p>Para cada candidato,  <strong>sample M outputs</strong>  (diversidad por temperatura).</p>
+<p>Aplicar  <em>self-consistency</em>  para ver cuál candidato produce respuestas más consistentes y correctas en la tarea objetivo.</p>
+<p>Ejecutar suites de tests/metrics con  <strong>OpenAI Evals / simple-evals</strong>  para puntuación automática (exact match, semántic similarity, reglas de negocio).</p>
+<h4 id="4-3-exploraci-n-deliberativa-tree-of-thought-react"><strong>4.3 Exploración deliberativa (Tree-of-Thought + ReAct)</strong></h4>
+<p>Para tareas que requieren creatividad o búsqueda estratégica, permitir que el generator use ToT para proponer varias “líneas” de prompts y evaluar por lookahead.</p>
+<h4 id="4-4-minimizar-preguntas-al-usuario"><strong>4.4 Minimizar preguntas al usuario</strong></h4>
+<p><strong>Un solo clarificador</strong>  cuando la  <em>incertidumbre epistemica</em>  (p. ej. entropía sobre la intención &gt; τ) y la mejora esperada (valor de información) sea alta.</p>
+<p>Calcular incertidumbre con: diversidad semántica entre outputs candidatos + baja puntuación de evaluator. Si ambas indican ambigüedad, preguntar.</p>
+<p>Pregunta punteada: máxima one-liner, ejemplo: “¿El público objetivo es [consumidor/profesional] o ambos?” — corta y con opciones.</p>
+<h4 id="4-5-validaci-n-en-vivo-hot-run-opcional"><strong>4.5 Validación en vivo (hot run opcional)</strong></h4>
+<p>Ejecutar el prompt ganador contra el target model y mostrar 1 ejemplo final. Si el resultado no cumple mínimos, re-iterar automáticamente (autorefine) hasta N iteraciones o umbral de costo.</p>
+<h3 id="5-m-tricas-y-evaluaci-n-c-mo-sabr-s-que-funciona"><strong>5) Métricas y evaluación (cómo sabrás que funciona)</strong></h3>
+<p><strong>Automáticas</strong> : exact match, pass@k (para código), BLEU/ROUGE/SacreBLEU para outputs comparables, embedding-similarity con respuestas gold, self-consistency score (varianza de respuestas).</p>
+<p><strong>Calidad humana</strong> : A/B tests con evaluadores (útil para copy, ventas, prompts creativos).</p>
+<p><strong>Costo/latencia</strong> : tokens consumidos por ronda de optimización.</p>
+<p><strong>Friction metric</strong> : % de interacciones que requirieron la “1 pregunta” (debe ser &lt; X%, p. ej. &lt;15%).</p>
+<p><strong>Adoption metric</strong> : porcentaje de prompts aceptados sin modificación.</p>
+<h3 id="6-plantillas-y-ejemplos-workflow-real"><strong>6) Plantillas y ejemplos (workflow real)</strong></h3>
+<h5 id="ejemplo-input-del-usuario"><strong>Ejemplo: input del usuario</strong></h5>
+<p>“Necesito un correo breve para prospectar un departamento en la Colonia Americana, tono profesional.”</p>
+<h5 id="pipeline-simplificado-qu-har-a-el-sistema"><strong>Pipeline simplificado (qué haría el sistema)</strong></h5>
+<p>Intent extractor -&gt; detecta: prospecting_email, target=compradores/residentes</p>
+<p>Retriever -&gt; obtiene: histórico del usuario (plantillas previas), datos de la zona (si hay)</p>
+<p>APE -&gt; genera 6 variantes: Asunto+Cuerpo+CTA en formatos: (short, detail, social proof)</p>
+<p>Evaluator -&gt; simula envíos, evalúa tasa esperada de respuesta con modelo entrenado en datasets de email opens (auto-eval heuristic)</p>
+<p>Decision -&gt; incertidumbre baja =&gt; devuelve prompt ganador + 2 alternativas + 1 ejemplo final.</p>
+<h5 id="prompt-final-lo-que-te-entrega"><strong>Prompt final (lo que te entrega)</strong></h5>
+<p>Eres un agente de ventas inmobiliarias. Escribe un correo de prospección breve (3–4 frases), profesional y centrado en beneficios, para un departamento en Colonia Americana, Guadalajara. Público objetivo: comprador primerizo de 30–45 años. Incluye asunto (máx 8 palabras) y CTA claro (sugerir cita). No menciones precio ni jergas técnicas. Estilo: cordial, directo.</p>
+<p>(Además: el sistema entrega un ejemplo de salida producido por ese prompt y un score de confianza).</p>
+<h3 id="7-snippet-arquitectura-t-cnica-mvp-pila-recomendada"><strong>7) Snippet/arquitectura técnica (MVP) — pila recomendada</strong></h3>
+<p><strong>Orquestador</strong> : Python + FastAPI</p>
+<p><strong>RAG / retrieval</strong> : LangChain + LlamaIndex / FAISS / Pinecone</p>
+<p><strong>LLM API</strong> : adaptador genérico (OpenAI / Anthropic / otro)</p>
+<p><strong>Agent logic</strong> : implement ToT/ReAct loops en Python (inspirado en AutoGPT workflows).</p>
+<p><strong>Evaluation</strong> : openai/evals o simple-evals (auto) para scoring.</p>
+<h5 id="pseudoc-digo-simplificado-python"><strong>Pseudocódigo simplificado (Python)</strong></h5>
+<h1 id="flujo-simplificado-pseudoc-digo">flujo simplificado (pseudocódigo)</h1>
+<p>user_input = &#34;Necesito un correo breve para prospectar un departamento...&#34;</p>
+<p>intent = intent_extractor(user_input)</p>
+<p>context = retrieve_context(intent)  # RAG</p>
+<p>candidates = meta_prompt_generator(intent, context, k=8)  # APE</p>
+<p>scores = {}</p>
+<p>for p in candidates:</p>
+<p>samples = sample_outputs(p, model, n=6)</p>
+<p>scores[p] = evaluator(samples)  # self-consistency + heuristics</p>
+<p>best = argmax(scores)</p>
+<p>if uncertainty(best, scores) &gt; THRESHOLD:</p>
+<p>question = generate_clarifying_question(best)</p>
+<p>ask_user(question)   # only if necessary</p>
+<p>else:</p>
+<p>final_prompt = polish_prompt(best)</p>
+<p>example = run_hot_prompt(final_prompt)</p>
+<p>return { &#34;prompt&#34;: final_prompt, &#34;example&#34;: example, &#34;confidence&#34;: scores[best] }</p>
+<h3 id="8-pol-tica-de-una-sola-pregunta-formal"><strong>8) Política de “una sola pregunta” (formal)</strong></h3>
+<p><strong>Calcula</strong> : U = entropy of candidate outputs + (1 − max_score) where max_score is normalized evaluator score.</p>
+<p><strong>Si</strong>  U &gt; τ (por ejemplo 0.45)  <strong>y</strong>  Value-of-Information (VoI) &gt; cost, preguntar 1 Q.</p>
+<p>La  <strong>pregunta</strong>  debe ser  <em>multi-choice</em>  o de selección rápida para minimizar fricción.</p>
+<h3 id="9-riesgos-limitaciones-y-mitigaciones"><strong>9) Riesgos, limitaciones y mitigaciones</strong></h3>
+<p><strong>Costo</strong> : optimización interna (K candidates × M samples) consume tokens.  <em>Mitigación</em> : prefilter candidates con cheap model; poner top-k small LLM then evaluate final with big LLM.</p>
+<p><strong>Latencia</strong> : puede tardar.  <em>Mitigación</em> : devolver resultado provisional rápido + versión optimizada en background (opcional).  <strong>Nota crítica</strong> : no puedo pedirte que &#34;esperes&#34;; si quieres background refinement el sistema debe notificar al usuario que habrá una iteración automática — aquí se ofrece la versión óptima inicial sin esperar.</p>
+<p><strong>Hallucination / seguridad</strong> : aplicar filters y Constitutional AI rules.</p>
+<p><strong>Overfitting to internal evals</strong> : validar con humanos periódicamente.</p>
+<h3 id="10-implementaci-n-incremental-roadmap-mvp-prod"><strong>10) Implementación incremental (roadmap MVP -&gt; Prod)</strong></h3>
+<p><strong>MVP (2–4 semanas)</strong></p>
+<pre><code>Endpoint FastAPI con: intent extractor + meta-prompt generator (1 LLM call) + simple evaluator (self-consistency sampling n=3) + return prompt + example. Use LangChain for orchestration.
+</code></pre>
+<p><strong>MVP+ (6–10 semanas)</strong></p>
+<pre><code>Añadir RAG (index user docs), APE multiple candidates K=8, safety filter, hot run.
+</code></pre>
+<p><strong>Prod (3–6 meses)</strong></p>
+<pre><code>ToT/ReAct hybrid para exploración, RL-based prompt optimizer (si conviene), telemetry, human feedback loop y UI refinada.
+</code></pre>
+<h3 id="11-ejemplo-de-caso-real-mini-demo-mental"><strong>11) Ejemplo de caso real (mini-demo mental)</strong></h3>
+<p>Usuario: “Necesito un prompt para generar un resumen ejecutivo de 1 página sobre la factibilidad de venta de un departamento (60m²) en Americana.”</p>
+<p>Sistema: extrae intención, recupera últimos análisis previos, genera 6 prompts, evalúa con self-consistency usando GSM-style metrics, devuelve prompt óptimo + ejemplo y un score 0.82. No pregunta porque U&lt;threshold. Resultado: prompt listo para ejecutar contra GPT-X.</p>
+<h3 id="12-recursos-y-referencias-clave-para-implementaci-n"><strong>12) Recursos y referencias clave (para implementación)</strong></h3>
+<p><em>Automatic Prompt Engineer (APE)</em>  — “Large Language Models Are Human-Level Prompt Engineers”.</p>
+<p><em>ReAct</em>  — reasoning + acting.</p>
+<p><em>Tree of Thoughts</em>  — deliberative search.</p>
+<p><em>Self-Consistency</em>  — decoding strategy to improve CoT.</p>
+<p><em>AutoGPT (repositorio)</em>  — agente continuo ejemplo.</p>
+<p><em>OpenAI Evals / simple-evals</em>  — framework para evals automáticas.</p>
+<p><em>Constitutional AI (Anthropic)</em>  — guía de seguridad y auto-supervisión.</p>
+<p>(Si quieres, te paso enlaces directos a cualquiera de estos repositorios/papers y preparo un checklist técnico.)</p>
+<h3 id="13-recomendaci-n-final-y-decisi-n-sobre-modelo-objetivo"><strong>13) Recomendación final y decisión sobre “modelo objetivo”</strong></h3>
+<p>No hay que casarse con un nombre de modelo (p. ej. “ChatGPT-5”): diseña la capa como  <em>adapter-agnostic</em>  (puede usar OpenAI, Anthropic, Claude, o cualquier LLM que prefieras). Esto permite probar múltiples backends y elegir el mejor tradeoff coste/latencia/seguridad.</p>
+<p>Para APE y evaluación inicial, usa un LLM grande y estable (ej. variante instrucción-tuned) y re-rankea con el modelo de producción que vayas a usar.</p>
+<h3 id="14-qu-hago-ahora-por-ti"><strong>14) ¿Qué hago ahora por ti?</strong></h3>
+<p>Te propongo dos opciones rápidas — elige una y empiezo a entregar material ya listo:</p>
+<p>A)  <strong>Diseño ejecutivo + checklist técnico</strong>  (entrega: arquitectura con endpoints, esquema de DB para memoria y políticas de seguridad, y lista de dependencias). B)  <strong>Prototipo mínimo funcional</strong> : te doy el código (FastAPI + LangChain skeleton) que implementa el MVP (intention extractor + APE generator + evaluator + one-question policy), listo para probar con tu API key.</p>
+<p>Dime cuál prefieres y lo entrego ahora. 🚀</p>
+<p>—------------------------------</p>
+<p>Voy a darte un prompt que no es “bonito”… es  <strong>efectivo</strong> . Está diseñado para que el modelo:</p>
+<p>Entienda el  <em>por qué</em>  detrás de tu input</p>
+<p>Explore internamente (sin saturarte)</p>
+<p>Genere múltiples candidatos de prompt</p>
+<p>Evalúe calidad</p>
+<p>Te entregue SOLO lo mejor</p>
+<p>Y haga  <strong>máximo 1 pregunta</strong>  solo si es crítico</p>
+<h3 id="prompt-maestro-prompt-architect-gpt"><strong>🧠 PROMPT MAESTRO — “Prompt Architect GPT”</strong></h3>
+<p>Cópialo tal cual en tu GPT personalizado (System Prompt):</p>
+<p>Eres un &#34;Prompt Architect&#34;, un experto en diseño y optimización de prompts para modelos de lenguaje avanzados.</p>
+<p>Tu objetivo NO es responder directamente al usuario. Tu objetivo es:</p>
+<p>→ Entender profundamente la intención real detrás de su solicitud</p>
+<p>→ Diseñar el mejor prompt posible para resolver su problema</p>
+<p>→ Maximizar calidad de output con mínima fricción</p>
+<hr>
+<h2 id="proceso-interno-no-mostrar">PROCESO INTERNO (NO MOSTRAR)</h2>
+<ol>
+<li>
+<p>Analiza la intención real (qué quiere lograr, no solo lo que dice)</p>
+</li>
+<li>
+<p>Identifica:</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>objetivo final</p>
+</li>
+<li>
+<p>tipo de output esperado</p>
+</li>
+<li>
+<p>audiencia objetivo</p>
+</li>
+<li>
+<p>restricciones implícitas</p>
+</li>
+</ul>
+<ol start="3">
+<li>
+<p>Si hay ambigüedad crítica, genera SOLO 1 pregunta clara y breve</p>
+</li>
+<li>
+<p>Genera entre 3 y 5 prompts candidatos con enfoques distintos</p>
+</li>
+<li>
+<p>Evalúa internamente cada prompt según:</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>claridad</p>
+</li>
+<li>
+<p>especificidad</p>
+</li>
+<li>
+<p>control de output</p>
+</li>
+<li>
+<p>alineación con el objetivo</p>
+</li>
+</ul>
+<ol start="6">
+<li>
+<p>Selecciona el mejor prompt</p>
+</li>
+<li>
+<p>Mejora el prompt final (optimización de estructura, constraints, formato)</p>
+</li>
+</ol>
+<hr>
+<h2 id="reglas-de-interacci-n">REGLAS DE INTERACCIÓN</h2>
+<ul>
+<li>
+<p>NO hagas múltiples preguntas</p>
+</li>
+<li>
+<p>SOLO haz una pregunta si es absolutamente necesario</p>
+</li>
+<li>
+<p>Si puedes asumir razonablemente, NO preguntes</p>
+</li>
+<li>
+<p>NO expliques todo tu razonamiento</p>
+</li>
+<li>
+<p>NO abrumes al usuario</p>
+</li>
+</ul>
+<hr>
+<h2 id="formato-de-salida">FORMATO DE SALIDA</h2>
+<p>Si NO necesitas preguntar:</p>
+<h3 id="prompt-optimizado">🎯 Prompt Optimizado</h3>
+<p>[Prompt final listo para copiar/usar]</p>
+<h3 id="por-qu-funciona-m-x-3-l-neas">⚡ Por qué funciona (máx 3 líneas)</h3>
+<p>[Explicación breve y directa]</p>
+<h3 id="ejemplo-de-resultado-esperado">🧪 Ejemplo de resultado esperado</h3>
+<p>[Simulación corta del output]</p>
+<h3 id="variante-alternativa-opcional">🔄 Variante alternativa (opcional)</h3>
+<p>[Segundo prompt si aporta valor]</p>
+<hr>
+<p>Si NECESITAS preguntar:</p>
+<h3 id="pregunta-clave">❓ Pregunta clave</h3>
+<p>[UNA sola pregunta cerrada o de opción múltiple]</p>
+<hr>
+<h2 id="principios-de-optimizaci-n">PRINCIPIOS DE OPTIMIZACIÓN</h2>
+<p>Aplica según el caso:</p>
+<ul>
+<li>
+<p>Role prompting (asignar experto adecuado)</p>
+</li>
+<li>
+<p>Constraints claros (longitud, formato, estilo)</p>
+</li>
+<li>
+<p>Output estructurado (JSON, bullets, pasos)</p>
+</li>
+<li>
+<p>Chain-of-thought implícito (sin exponer razonamiento)</p>
+</li>
+<li>
+<p>Instrucciones específicas, no vagas</p>
+</li>
+<li>
+<p>Evitar ambigüedad</p>
+</li>
+<li>
+<p>Maximizar control del resultado</p>
+</li>
+</ul>
+<hr>
+<h2 id="objetivo-final">OBJETIVO FINAL</h2>
+<p>Entregar prompts que:</p>
+<ul>
+<li>
+<p>reduzcan iteraciones</p>
+</li>
+<li>
+<p>aumenten precisión</p>
+</li>
+<li>
+<p>produzcan resultados utilizables directamente</p>
+</li>
+<li>
+<p>sean superiores a lo que el usuario escribiría por sí solo</p>
+</li>
+</ul>
+<p>Tu éxito se mide por:</p>
+<p>→ que el usuario copie el prompt y funcione a la primera</p>
+<h3 id="qu-acabas-de-construir-sin-darte-cuenta"><strong>🧪 Qué acabas de construir (sin darte cuenta)</strong></h3>
+<p>Esto no es solo un prompt… es una  <strong>simulación comprimida</strong>  de técnicas reales:</p>
+<p>Meta-prompting (el modelo crea prompts)</p>
+<p>Self-evaluation (elige el mejor)</p>
+<p>Role prompting (define experto)</p>
+<p>Output structuring</p>
+<p>Control de incertidumbre (la regla de 1 pregunta)</p>
+<p>No es perfecto — ningún sistema sin iteración externa lo es — pero es sorprendentemente potente para estar “encerrado” en un solo prompt.</p>
+<h3 id="mejora-opcional-modo-m-s-agresivo"><strong>⚙️ Mejora opcional (modo más agresivo)</strong></h3>
+<p>Si quieres que sea aún más “pro”, añade esto al final del prompt:</p>
+<h2 id="modo-avanzado-si-aplica">MODO AVANZADO (si aplica)</h2>
+<p>Antes de entregar el prompt final:</p>
+<ul>
+<li>
+<p>Simula mentalmente cómo respondería un LLM a ese prompt</p>
+</li>
+<li>
+<p>Detecta posibles fallos o ambigüedades</p>
+</li>
+<li>
+<p>Corrige el prompt antes de mostrarlo</p>
+</li>
+</ul>
+<p>Eso activa una especie de  <strong>auto-test interno</strong>  (inspirado en Self-Consistency).</p>
+<h3 id="insight-importante-esto-es-clave"><strong>🧠 Insight importante (esto es clave)</strong></h3>
+<p>Lo que estás haciendo es crear un sistema que:</p>
+<p>Reduce fricción cognitiva (no pensar cómo pedir)</p>
+<p>Externaliza expertise (prompt engineering automático)</p>
+<p>Aumenta ROI por interacción (mejor output en menos intentos)</p>
+<p>En términos más crudos: estás convirtiendo a ChatGPT en un  <strong>multiplicador de calidad</strong> , no solo en un generador de respuestas.</p>

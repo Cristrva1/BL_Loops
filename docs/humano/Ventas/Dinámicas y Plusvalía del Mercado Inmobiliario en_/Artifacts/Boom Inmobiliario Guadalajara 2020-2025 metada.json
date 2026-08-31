@@ -1,0 +1,18 @@
+{
+  "title": "Boom Inmobiliario Guadalajara 2020-2025",
+  "type": "ARTIFACT_TYPE_INFOGRAPHIC",
+  "sources": [{
+    "sourceId": {
+      "id": "c773ab49-aa32-48e3-a63b-c629b6ee20cc"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "infographic": {
+    "generationOptions": {
+      "languageCode": "es-MX",
+      "aspectRatio": "ASPECT_RATIO_LANDSCAPE",
+      "informationDensity": "INFORMATION_DENSITY_STANDARD"
+    },
+    "title": "Boom Inmobiliario Guadalajara 2020-2025"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "artifact_type": "agent",
+  "idea": "Definir un agente que lea un inventario sintético y redacte un informe de hallazgos sin efectuar cambios.",
+  "title": "Agente lector local",
+  "audience": "Estudiante que está aprendiendo los componentes de un agente",
+  "context": "El laboratorio usa únicamente datos sintéticos y herramientas simuladas dentro de su propia carpeta.",
+  "input_name": "inventory_path",
+  "output_format": "markdown",
+  "success_criteria": [
+    "Distingue hechos, inferencias y datos faltantes",
+    "Registra qué herramienta simulada habría utilizado",
+    "Se detiene al alcanzar el presupuesto de pasos"
+  ],
+  "constraints": [
+    "No acceder a rutas reales",
+    "No usar red",
+    "No conservar datos después de la corrida"
+  ],
+  "source_refs": [
+    "docs/CASOS_DE_EVALUACION.md#F-AGENT-002"
+  ],
+  "allowed_tools": [
+    "local_file_reader"
+  ],
+  "tools_confirmed": true,
+  "requires_human_approval": true
+}
+

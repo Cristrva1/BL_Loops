@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "ConflictType": {
+      "enum": [
+        "direct_contradiction",
+        "scope_mismatch",
+        "date_collision"
+      ],
+      "title": "ConflictType",
+      "type": "string"
+    },
+    "Materiality": {
+      "enum": [
+        "material",
+        "minor"
+      ],
+      "title": "Materiality",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "conflict_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Conflict Id",
+      "type": "string"
+    },
+    "claim_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 2,
+      "title": "Claim Ids",
+      "type": "array"
+    },
+    "conflict_type": {
+      "$ref": "#/$defs/ConflictType"
+    },
+    "topic": {
+      "maxLength": 40,
+      "minLength": 2,
+      "title": "Topic",
+      "type": "string"
+    },
+    "evidence_by_side": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Evidence By Side",
+      "type": "object"
+    },
+    "materiality": {
+      "$ref": "#/$defs/Materiality"
+    },
+    "resolution": {
+      "anyOf": [
+        {
+          "maxLength": 400,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resolution"
+    },
+    "owner": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Owner"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "conflict_id",
+    "claim_ids",
+    "conflict_type",
+    "topic",
+    "evidence_by_side",
+    "materiality",
+    "content_hash"
+  ],
+  "title": "ConflictRecord",
+  "type": "object"
+}

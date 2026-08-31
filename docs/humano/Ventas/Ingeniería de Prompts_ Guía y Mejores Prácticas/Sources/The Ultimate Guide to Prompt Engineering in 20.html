@@ -1,0 +1,340 @@
+<p>Heading to Black Hat this year? Come meet the Lakera team!Cookie Consent Hi, this website uses essential cookies to ensure its proper operation and tracking cookies to understand how you interact with it. The latter will be set only after consent.Accept allDenySettingsRead our Privacy Policy
+Essential Personalization cookies
+Preferencee cookies enable website to remember infomartion that changes the way thewebsite behaves or looks, like your preffered language or the region that you are in.
+Essential Analytics cookies
+Statistic cookies help website owners to understand how visitors interact with websitesby collecting and reporting information anonymously.
+EssentialReject all cookiesAllow allSave
+Book a demoStart for freeResearchResources  Prompt Attacks: What They Are and What They&#39;re Not Download now  Building AI Security Awareness Through Red Teaming with Gandalf Download now  Company</p>
+<h3 id="join-momentumgandalfcareers-hiringlog-inbook-a-demobacklarge-language-modelsthe-ultimate-guide-to-prompt-engineering-in-2025">Join MomentumGandalfCareers HiringLog inBook a demoBackLarge Language ModelsThe Ultimate Guide to Prompt Engineering in 2025</h3>
+<p>A deep dive into prompt engineering techniques that improve how large language models reason, respond, and stay secure.
+Lakera TeamOctober 20, 2023 Last updated:  June 2, 2025  Copied to clipboard
+‍ <strong>From crafting better outputs to understanding LLM vulnerabilities—this is prompt engineering as it really works today.</strong>
+Prompt engineering isn’t just a trendy skill—it’s the key to making generative AI systems useful, reliable, and safe.
+In 2023, you could get away with simple tricks to get better answers from ChatGPT. But in 2025, the game has changed. With models like GPT-4o, Claude 4, and Gemini 1.5 Pro, prompt engineering now spans everything from formatting techniques to reasoning scaffolds, role assignments, and even adversarial exploits.
+<strong>This guide brings everything together:</strong></p>
+<ul>
+<li>You’ll learn how to write prompts that consistently improve output across top models.</li>
+<li>You’ll see how prompt engineering helps you control tone, structure, and safety.</li>
+<li>And you’ll explore how adversaries use prompts to break models—plus how to defend against them.
+Whether you’re here to build better apps, improve team workflows, or test security guardrails, this guide covers prompt engineering from the basics to the edge cases. Not with outdated advice—but with up-to-date, model-specific insights from real-world practice.</li>
+</ul>
+<h4 id="tl-dr">TL;DR</h4>
+<p>-db1-</p>
+<ul>
+<li>Clear structure and context matter more than clever wording—most prompt failures come from ambiguity, not model limitations.</li>
+<li>Different models (GPT-4o, Claude 4, Gemini 2.5) respond better to different formatting patterns—there’s no universal best practice.</li>
+<li>Prompt engineering isn’t just a usability tool—it’s also a potential security risk when exploited through adversarial techniques.</li>
+<li>You can often bypass LLM guardrails by simply reframing a question—the line between aligned and adversarial behavior is thinner than most people think.
+-db1-
+On this page Table of ContentsHide table of contents Show table of contents
+<strong>Download the Red Teaming Guide to Gandalf.</strong>
+A hands-on look at how adversarial prompts break LLM defenses—and how to test your own systems against them.
+‍
+‍
+<strong>The Lakera team has accelerated Dropbox’s GenAI journey.</strong>
+“Dropbox uses Lakera Guard as a security solution to help safeguard our LLM-powered applications, secure and protect user data, and uphold the reliability and trustworthiness of our intelligent features.”
+-db1-
+If you’re experimenting with prompts or trying to improve LLM outputs, here are some follow-up reads to sharpen your strategy:</li>
+<li>Learn how in-context learning supports prompt engineering by dynamically shaping responses at runtime in this intro to in-context learning.</li>
+<li>Understand why some prompts cause hallucinations—and how to avoid them—with this guide to LLM hallucinations.</li>
+<li>For an attacker’s-eye view of prompting, see how prompt injection works and how to defend against it in our guide to prompt injections.</li>
+<li>Curious how attackers get around prompt-based guardrails? This post on jailbreaking LLMs shows you how it’s done.</li>
+<li>Prompt engineering is only half the story—here’s how LLM fine-tuning can give you better control over model behavior.</li>
+<li>See how broader AI security practices shape the success of prompt-based systems in our practical guide to GenAI defense.</li>
+<li>If your app serves end users, make sure prompt outputs are filtered responsibly—this content moderation primer explains how to build that layer into your stack.
+-db1-</li>
+</ul>
+<h4 id="what-is-prompt-engineering">What Is Prompt Engineering?</h4>
+<p>Prompt engineering is the practice of crafting inputs—called  <em>prompts</em> —to get the best possible results from a large language model (LLM). It’s the difference between a vague request and a sharp, goal-oriented instruction that delivers exactly what you need.
+In simple terms, prompt engineering means telling the model what to do in a way it truly understands.
+But unlike traditional programming, where code controls behavior, prompt engineering works through natural language. It’s a soft skill with hard consequences: the quality of your prompts directly affects the usefulness, safety, and reliability of AI outputs.</p>
+<h5 id="a-quick-example">A Quick Example</h5>
+<p><strong>❌  Vague prompt:  <em>&#34;Write a summary.&#34;</em></strong>
+<strong>✅  Effective prompt:  <em>&#34;Summarize the following customer support chat in three bullet points, focusing on the issue, customer sentiment, and resolution. Use clear, concise language.&#34;</em></strong></p>
+<h5 id="why-it-matters-now">Why It Matters Now</h5>
+<p>Prompt engineering became essential when generative AI models like ChatGPT, Claude, and Gemini shifted from novelties to tools embedded in real products. Whether you’re building an internal assistant, summarizing legal documents, or generating secure code, you can’t rely on default behavior.
+You need precision. And that’s where prompt engineering comes in.</p>
+<h5 id="not-just-for-coders">Not Just for Coders</h5>
+<p>You don’t need a computer science degree to write a good prompt. In fact, some of the best prompt engineers are product managers, UX writers, or subject matter experts. Why? Because they know how to ask the right question—and how to test the answer.
+Prompt engineering is often the fastest and most accessible way to improve output—no retraining or infrastructure needed.</p>
+<h5 id="prompt-engineering-vs-other-techniques">Prompt Engineering vs. Other Techniques</h5>
+<div class="table_component" role="region">
+<table>
+<caption><br></caption>
+<thead>
+<tr>
+<th><p><b>Technique</b></p></th>
+<th><p><b>Description</b></p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prompt Engineering</td>
+<td>Tailoring model behavior via input phrasing</td>
+</tr>
+<tr>
+<td>Fine-Tuning</td>
+<td>Retraining the model on domain-specific data</td>
+</tr>
+<tr>
+<td>Retrieval-Augmented Generation (RAG)</td>
+<td>Supplying relevant context from external sources</td>
+</tr>
+</tbody>
+</table>
+</div>
+#### Why Prompt Engineering Matters
+Prompt engineering isn’t just a clever way to phrase your input—it’s the foundation of reliable, secure, and high-performance interactions with generative AI systems.
+The better your prompts, the better your outcomes.
+##### Unlocking Better Performance Without Touching the Model
+Many teams still treat large language models like black boxes. If they don’t get a great result, they assume the model is at fault—or that they need to fine-tune it. But in most cases, fine-tuning isn’t the answer.
+Good prompt engineering can dramatically improve the output quality of even the most capable models— **without retraining or adding more data** . It’s fast, cost-effective, and requires nothing more than rethinking how you ask the question.
+##### Aligning the Model with Human Intent
+LLMs are powerful, but not mind readers. Even simple instructions like “summarize this” or “make it shorter” can lead to wildly different results depending on how they’re framed.
+Prompt engineering helps bridge the gap between what you  *meant*  and what the model  *understood* . It turns vague goals into actionable instructions—and helps avoid misalignment that could otherwise lead to hallucinations, toxicity, or irrelevant results.
+##### Controlling for Safety, Tone, and Structure
+Prompts aren’t just about content. They shape:
+*   **Tone** : formal, playful, neutral
+*   **Structure** : bullets, JSON, tables, prose
+*   **Safety** : whether the model avoids sensitive or restricted topics
+This makes prompt engineering a crucial layer in AI risk mitigation, especially for enterprise and regulated use cases.
+##### Real Business Impact
+Prompt engineering is already driving competitive advantage across industries:
+*  Legal tech teams reduce review time with context-aware summarization prompts.
+*  Customer support platforms improve triage accuracy with classification prompts.
+*  Healthcare systems boost diagnostic precision with tailored urgency-assessment prompts.
+*  Security teams use adversarial prompts to test LLM guardrails and spot weak spots.
+In each case, better prompting means better performance—without changing the model.
+##### Prompt Engineering as a First-Class Skill
+As GenAI gets baked into more workflows, the ability to craft great prompts will become as important as writing clean code or designing intuitive interfaces. It’s not just a technical trick. It’s a core capability for building trustworthy AI systems.
+#### Types of Prompts (with Examples and Advanced Insights)
+Prompt engineering isn’t just about phrasing—it’s about understanding how the  **structure**  of your input shapes the model’s response. Here’s an expanded look at the most common prompt types, when to use them, what to avoid, and how to level them up.
+<div class="table_component" role="region">
+<table>
+<caption><br></caption>
+<thead>
+<tr>
+<th><p><b>Prompt Type</b></p></th>
+<th><p><b>Description</b></p></th>
+<th><p><b>Basic Example</b></p></th>
+<th><p><b>Advanced Technique</b></p></th>
+<th><p><b>When to Use</b></p></th>
+<th><p><b>Common Mistake</b></p></th>
+<th><p><b>Model-Specific Notes</b></p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zero-shot</td>
+<td>Direct task instruction with no examples.</td>
+<td>“Write a product description for a Bluetooth speaker.”</td>
+<td>Use explicit structure and goals: “Write a 50-word bullet-point list describing key benefits for teens.”</td>
+<td>Simple, general tasks where the model has high confidence.</td>
+<td>Too vague or general, e.g. “Describe this.”</td>
+<td>GPT-4o: Handles clean instructions well. Claude 4: Strong with precise, unambiguous tasks. Gemini 1.5 Pro (2025): Clear formatting improves reliability.</td>
+</tr>
+<tr>
+<td>One-shot</td>
+<td>One example that sets output format or tone.</td>
+<td>“Translate: Bonjour → Hello. Merci →”</td>
+<td>Use structured prompt format to simulate learning: Input: [text] → Output: [translation]</td>
+<td>When format or tone matters, but examples are limited.</td>
+<td>Failing to clearly separate the example from the task.</td>
+<td>GPT-4o: Mimics format accurately. Claude 4: Consistent with example structure. Gemini 1.5 Pro (2025): Performs best when example is clearly separated from task.</td>
+</tr>
+<tr>
+<td>Few-shot</td>
+<td>Multiple examples used to teach a pattern or behavior.</td>
+<td>“Summarize these customer complaints… [3 examples]”</td>
+<td>Mix input variety with consistent output formatting. Use delimiters to highlight examples vs. the actual task.</td>
+<td>Teaching tone, reasoning, classification, or output format.</td>
+<td>Using inconsistent or overly complex examples.</td>
+<td>GPT-4o: Learns structure effectively. Claude 4: Accurate with concise, clean examples. Gemini 1.5 Pro (2025): Consistency and formatting are key.</td>
+</tr>
+<tr>
+<td>Chain-of-thought</td>
+<td>Ask the model to reason step by step.</td>
+<td>“Let’s solve this step by step. First…”</td>
+<td>Add thinking tags: &lt;thinking&gt;Reasoning here&lt;/thinking&gt; followed by &lt;answer&gt; for clarity and format separation.</td>
+<td>Math, logic, decisions, troubleshooting, security analysis.</td>
+<td>Skipping the scaffold—going straight to the answer.</td>
+<td>GPT-4o: Great out of the box. Claude 4: Performs best with tags like &lt;thinking&gt; and &lt;answer&gt;. Gemini 1.5 Pro (2025): Responds well with explicit reasoning cues.</td>
+</tr>
+<tr>
+<td>Role-based</td>
+<td>Assigns a persona, context, or behavioral framing to the model.</td>
+<td>“You are an AI policy advisor. Draft a summary.”</td>
+<td>Combine with system message: “You are a skeptical analyst… Focus on risk and controversy in all outputs.”</td>
+<td>Tasks requiring tone control, domain expertise, or simulated perspective.</td>
+<td>Not specifying how the role should influence behavior.</td>
+<td>GPT-4o: System messages define roles effectively. Claude 4: Highly steerable through role prompts. Gemini 1.5 Pro (2025): Role clarity helps guide tone and content.</td>
+</tr>
+<tr>
+<td>Context-rich</td>
+<td>Includes background (e.g., transcripts, documents) for summarization or QA.</td>
+<td>“Based on the text below, generate a proposal.”</td>
+<td>Use hierarchical structure: summary first, context second, task last. Add headings like ### Context and ### Task.</td>
+<td>Summarization, long-text analysis, document-based reasoning.</td>
+<td>Giving context without structuring it clearly.</td>
+<td>GPT-4o: Supports up to 128K tokens. Claude 4: Handles up to 200K tokens with good recall. Gemini 1.5 Pro (2025): Excels with &gt;1M tokens; ideal for long-doc tasks.</td>
+</tr>
+<tr>
+<td>Completion-style</td>
+<td>Starts a sentence or structure for the model to finish.</td>
+<td>“Once upon a time…”</td>
+<td>Use scaffolding phrases for controlled generation: “Report Summary: Issue: … Impact: … Resolution: …”</td>
+<td>Story generation, brainstorming, templated formats.</td>
+<td>Leaving completion too open-ended without format hints.</td>
+<td>GPT-4o: Natural fluency, may need delimiters to constrain. Claude 4: On-topic with implicit structure. Gemini 1.5 Pro (2025): Performs best with strong framing or format hints.</td>
+</tr>
+</tbody>
+</table>
+</div>
+##### When to Use Each Type (and How to Combine Them)
+*  Use  **zero-shot**  prompts for well-known, straightforward tasks where the model’s built-in knowledge is usually enough—like writing summaries, answering FAQs, or translating simple phrases.
+*  Reach for  **one-shot**  or  **few-shot**  prompts when output formatting matters, or when you want the model to mimic a certain tone, structure, or behavior.
+*  Choose  **chain-of-thought**  prompts for tasks that require logic, analysis, or step-by-step reasoning—like math, troubleshooting, or decision-making.
+*  Use  **role-based**  prompts to align the model’s voice and behavior with a specific context, like a legal advisor, data analyst, or customer support agent.
+*  Lean on  **context-rich**  prompts when your input includes long documents, transcripts, or structured information the model needs to analyze or work with.
+*  Rely on  **completion-style**  prompts when you’re exploring creative text generation or testing how a model continues a story or description.
+These types aren’t mutually exclusive—you can combine them. Advanced prompt engineers often mix types to increase precision, especially in high-stakes environments. For example:
+-db1-
+**Combo Example: Role-based + Few-shot + Chain-of-thought**
+“You are a cybersecurity analyst. Below are two examples of incident reports. Think step by step before proposing a resolution. Then handle the new report below.”
+-db1-
+This combines domain framing, structured examples, and logical reasoning for robust performance.
+##### Takeaway
+Not every task needs a complex prompt. But knowing how to use each structure—and when to combine them—is the fastest way to:
+*  Improve accuracy
+*  Prevent hallucinations
+*  Reduce post-processing overhead
+*  Align outputs with user expectations
+#### Prompt Components and Input Types
+A prompt isn’t just a block of text—it’s a structured input with multiple moving parts. Understanding how to organize those parts helps ensure your prompts remain clear, steerable, and robust across different models.
+Here are the core components of a well-structured prompt:
+<div class="table_component" role="region">
+<table>
+<caption><br></caption>
+<thead>
+<tr>
+<th><p><b>Component</b></p></th>
+<th><p><b>Purpose</b></p></th>
+<th><p><b>Example</b></p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System message</td>
+<td>Sets the model’s behavior, tone, or role. Especially useful in API calls, multi-turn chats, or when configuring custom GPTs.</td>
+<td>“You are a helpful and concise legal assistant.”</td>
+</tr>
+<tr>
+<td>Instruction</td>
+<td>Directly tells the model what to do. Should be clear, specific, and goal-oriented.</td>
+<td>“Summarize the text below in two bullet points.”</td>
+</tr>
+<tr>
+<td>Context</td>
+<td>Supplies any background information the model needs. Often a document, conversation history, or structured input.</td>
+<td>“Here is the user transcript from the last support call…”</td>
+</tr>
+<tr>
+<td>Examples</td>
+<td>Demonstrates how to perform the task. Few-shot or one-shot examples can guide tone and formatting.</td>
+<td>“Input: ‘Hi, I lost my order.’ → Output: ‘We’re sorry to hear that…’”</td>
+</tr>
+<tr>
+<td>Output constraints</td>
+<td>Limits or guides the response format—length, structure, or type.</td>
+<td>“Respond only in JSON format: {‘summary’: ‘’}”</td>
+</tr>
+<tr>
+<td>Delimiters</td>
+<td>Visually or structurally separate prompt sections. Useful for clarity in long or mixed-content prompts.</td>
+<td>“### Instruction”, “— Context Below —”, or triple quotes &#39;&#39;&#39;</td>
+</tr>
+</tbody>
+</table>
+</div>
+-db1-
+**For model specific guidance, we recommend these guides:**
+*  Prompt engineering best practices for ChatGPT
+*  Prompt design strategies for Gemini API
+*  Prompt engineering overview for Claude - Anthropic
+-db1-
+#### Prompting Techniques
+Whether you’re working with GPT-4o, Claude 4, or Gemini 1.5 Pro, a well-structured prompt is only the beginning. The way you phrase your instructions, guide the model’s behavior, and scaffold its reasoning makes all the difference in performance.
+Here are essential prompting techniques that consistently improve results:
+##### Be Clear, Direct, and Specific
+**What it is:**
+Ambiguity is one of the most common causes of poor LLM output. Instead of issuing vague instructions, use precise, structured, and goal-oriented phrasing. Include the desired format, scope, tone, or length whenever relevant.
+**Why it matters:**
+Models like GPT-4o and Claude 4 can guess what you mean, but guesses aren’t reliable—especially in production. The more specific your prompt, the more consistent and usable the output becomes.
+**Examples:**
+<div class="table_component" role="region">
+<table>
+<caption><br></caption>
+<thead>
+<tr>
+<th><p><b>❌ Vague Prompt</b></p></th>
+<th><p><b>✅ Refined Prompt</b></p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“Write something about cybersecurity.”</td>
+<td>“Write a 100-word summary of the top 3 cybersecurity threats facing financial services in 2025. Use clear, concise language for a non-technical audience.”</td>
+</tr>
+<tr>
+<td>“Summarize the report.”</td>
+<td>“Summarize the following compliance report in 3 bullet points: main risk identified, mitigation plan, and timeline. Target an executive audience.”</td>
+</tr>
+</tbody>
+</table>
+</div>
+**Model-Specific Guidance:**
+*   **GPT-4o**  performs well with crisp numeric constraints (e.g., “3 bullets,” “under 50 words”) and formatting hints (“in JSON”).
+*   **Claude 4**  tends to over-explain unless boundaries are clearly defined—explicit goals and tone cues help.
+*   **Gemini 1.5 Pro**  is best with hierarchy in structure; headings and stepwise formatting improve output fidelity.
+<p><strong>Real-World Scenario:</strong>
+You’re drafting a board-level summary of a cyber incident. A vague prompt like “Summarize this incident” may yield technical detail or irrelevant background. But something like:
+-db1-
+“Summarize this cyber incident for board review in 2 bullets: (1) Business impact, (2) Next steps. Avoid technical jargon.”
+-db1-
+…delivers actionable output immediately usable by stakeholders.
+<strong>Pitfalls to Avoid:</strong></p>
+<ul>
+<li>Leaving out key context (“this” or “that” without referring to specific data)</li>
+<li>Skipping role or audience guidance (e.g., “as if speaking to a lawyer, not an engineer”)</li>
+<li>Failing to define output length, tone, or structure</li>
+</ul>
+<h5 id="use-chain-of-thought-reasoning">Use Chain-of-Thought Reasoning</h5>
+<p><strong>What it is:</strong>
+Chain-of-thought (CoT) prompting guides the model to reason step by step, rather than jumping to an answer. It works by encouraging intermediate steps: “First… then… therefore…”
+<strong>Why it matters:</strong>
+LLMs often get the  <em>final</em>  answer wrong not because they lack knowledge—but because they skip reasoning steps. CoT helps expose the model’s thought process, making outputs more accurate, auditable, and reliable, especially in logic-heavy tasks.
+<strong>Examples:</strong></p>
+<div class="table_component" role="region">
+<table>
+<caption><br></caption>
+<thead>
+<tr>
+<th><p><b>❌ Without CoT</b></p></th>
+<th><p><b>✅ With CoT Prompt</b></p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“Why is this login system insecure?”</td>
+<td>“Let’s solve this step by step. First, identify potential weaknesses in the login process. Then, explain how an attacker could exploit them. Finally, suggest a mitigation.”</td>
+</tr>
+<tr>
+<td>“Fix the bug.”</td>
+<td>“Let’s debug this together. First, explain what the error message means. Then identify the likely cause in the code. Finally, rewrite the faulty line.”</td>
+</tr>
+</tbody>
+</table>
+</div>
+**Model-Specific Guidance:**
+*   **GPT-4o**  excels at CoT prompting with clear scaffolding: “First… then… finally…”
+*   **Claude 4**  responds well to XML-style tags like 

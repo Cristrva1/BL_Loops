@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/guardrail.triggered.v1.json",
+  "title": "guardrail.triggered.v1",
+  "description": "Emitido por el Compliance Officer cuando una regla de guardrail se activa. Puede ocurrir en la entrada o en la salida.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "guardrail.triggered" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "compliance-officer" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["rule_id", "rule_name", "trigger_phase", "action_taken", "severity"],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID de la regla de compliance que se activó."
+        },
+        "rule_name": {
+          "type": "string",
+          "description": "Nombre legible de la regla (ej: 'block_harmful_content', 'pii_in_output')."
+        },
+        "trigger_phase": {
+          "type": "string",
+          "enum": ["input", "output", "doctrine"],
+          "description": "Fase del ciclo donde se activó el guardrail."
+        },
+        "action_taken": {
+          "type": "string",
+          "enum": ["block", "modify", "flag"],
+          "description": "Acción tomada por el Compliance Officer. 'block' termina el flujo; 'modify' cambia el contenido; 'flag' registra sin bloquear."
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["info", "warning", "critical"],
+          "description": "Severidad de la violación detectada."
+        },
+        "violation_category": {
+          "type": "string",
+          "description": "Categoría de la violación (ej: 'harmful_content', 'pii_exposure', 'policy_violation', 'prompt_injection')."
+        },
+        "affected_content_hash": {
+          "type": "string",
+          "description": "Hash SHA-256 del contenido afectado (para auditoría sin almacenar el contenido completo)."
+        },
+        "fallback_response_used": {
+          "type": "boolean",
+          "default": false,
+          "description": "Si se usó una respuesta de fallback en lugar del output bloqueado."
+        },
+        "modification_applied": {
+          "type": "string",
+          "description": "Descripción de la modificación aplicada si action_taken = 'modify'."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  }
+}

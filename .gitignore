@@ -1,0 +1,52 @@
+# Configuracion local y secretos
+.env
+.env.*
+!.env.example
+
+# Estado generado por BL_Loops
+.local/
+logs/
+runs/
+indexes/
+models/
+datasets/private/
+
+# Python
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# Node / frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+**/coverage/
+.vite/
+
+# Repositorios externos y artefactos pesados
+external/
+vendor/
+*.gguf
+*.safetensors
+*.onnx
+*.bin
+
+# IDE / sistema operativo
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+

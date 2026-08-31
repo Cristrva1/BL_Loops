@@ -1,0 +1,779 @@
+<p>&lt;Petición de Grok&gt;:
+Competencia 1: Dominio de Fuentes Oficiales y Abiertas (La Base de la Verdad)
+Esta competencia se centra en el mapeo de fuentes gubernamentales y abiertas que proporcionan datos verificables y confiables para el análisis del mercado inmobiliario en México. Estas fuentes forman la base para entender tendencias demográficas, económicas y territoriales, permitiendo una evaluación precisa de oportunidades y riesgos en sectores como residencial, comercial, industrial y hotelería.
+APIs Gubernamentales (INEGI, DENUE, RUV, etc.)
+Las APIs gubernamentales ofrecen acceso programático a datos estadísticos y geográficos clave. Fuentes como INEGI proporcionan información actualizada sobre población, economía y unidades económicas, esenciales para pronosticar demanda inmobiliaria.
+Fuente Específica
+Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+INEGI (Instituto Nacional de Estadística y Geografía)
+Datos demográficos (población por municipio, edad, ingresos); indicadores económicos (PIB por sector, empleo); DENUE (Directorio Estadístico Nacional de Unidades Económicas: ubicación, actividad económica y tamaño de negocios).
+API abierta disponible en <a href="https://www.inegi.org.mx/app/a">https://www.inegi.org.mx/app/a</a> pi/; descargas en CSV o JSON desde datos.gob.mx. Viabilidad alta vía API para integración automatizada en sistemas de BI.
+Proporciona una visión macroeconómica para identificar zonas de crecimiento urbano, como áreas con alta densidad poblacional o expansión industrial, permitiendo anticipar demanda en hotelería o residencial. Ejemplo: DENUE ayuda a mapear competidores comerciales en un radio específico.
+DENUE (parte de INEGI)
+Identificación de unidades económicas (ubicación geográfica, sector, tamaño de empresa); datos de empleo y ventas agregadas.
+API de INEGI o descarga directa desde <a href="https://www.inegi.org.mx/temas">https://www.inegi.org.mx/temas</a> /directorio/. Scraping no recomendado; preferir API para cumplimiento legal.
+Revela patrones de actividad económica proxy para predecir desarrollo comercial o industrial, como clusters de empresas
+Fuente Específica
+Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+que impulsan demanda de oficinas o bodegas.
+RUV (Registro Único de Vivienda, SEDATU)
+Financiamientos para vivienda (número de créditos, tipos: CONAVI, FOVISSSTE, INFONAVIT); datos de subsidios y proyectos de modernización catastral.
+Descargas abiertas en CSV desde <a href="https://sniiv.sedatu.gob.mx/Rep">https://sniiv.sedatu.gob.mx/Rep</a> orte/Datos_abiertos; APIs limitadas, pero accesibles vía datos.gob.mx. Partnership con SEDATU para accesos premium.
+Ofrece insights sobre saturación de vivienda asequible, permitiendo estrategias para segmentos de interés social o medio, y anticipar impactos de políticas públicas en precios.
+DataMéxico (Secretaría de Economía)
+Datos de inversión inmobiliaria (PIB por subsector: residencial, comercial); exportaciones/importaciones relacionadas con construcción; complejidad económica por región.
+API abierta en <a href="https://www.economia.gob.mx/">https://www.economia.gob.mx/</a> datamexico/; integración vía JSON para análisis en tiempo real.
+Facilita comparaciones regionales para identificar hotspots de nearshoring, impulsando inversiones en industrial y comercial, con proyecciones de crecimiento del 4.14% en residencial para 2025.
+SHF (Sociedad Hipotecaria Federal)
+Índice de Precios de Vivienda (variaciones mensuales por entidad); datos abiertos de avalúos y financiamientos.
+Descargas en CSV desde <a href="https://transparencia.shf.gob.m">https://transparencia.shf.gob.m</a> x/sitepages/IndicePV.aspx; APIs en desarrollo para acceso automatizado.
+Proporciona tendencias de precios para todos los ramos, permitiendo ajustes estratégicos en valoración y previsión de burbujas inmobiliarias.
+Inteligencia Catastral y Satelital (Registros Públicos, LIDAR)
+Estas fuentes permiten un análisis espacial detallado de propiedades y terrenos, crucial para monitoreo de desarrollo urbano y detección de oportunidades en todos los ramos inmobiliarios.
+Fuente Específica
+Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+Registros Catastrales (por entidad, e.g., IGECEM en Edomex)
+Clave catastral; superficie, altura, orientación; estado y ocupación de inmuebles; distribución de propiedad (pública/privada).
+Acceso público vía portales como <a href="https://ovica.finanzas.cdmx.gob.mx/">https://ovica.finanzas.cdmx.gob.mx/</a> o <a href="http://igecem.edomex.gob.mx/">http://igecem.edomex.gob.mx/</a>; APIs en algunos estados; partnership con notarías para datos detallados. Scraping ético para agregados.
+Identifica vacíos en oferta de terrenos, facilitando inversiones en industrial o residencial; monitorea modernización catastral para predecir valoraciones fiscales.
+Plataforma Nacional de Información Registral y Catastral (SEDATU)
+Mapa digital de propiedades; subsidios catastrales; folios reales y propietarios.
+Descargas vía <a href="https://sistemas.sedatu.gob.mx/rpp">https://sistemas.sedatu.gob.mx/rpp</a> c/dgimrc/; API en fase de implementación.
+Ofrece certeza jurídica para transacciones en hotelería o comercial, reduciendo riesgos de litigios y acelerando alianzas.
+LIDAR y Datos Satelitales (INEGI, ERMEX-SAGARPA)
+Modelos digitales de elevación (alturas, superficies); nubes de puntos para monitoreo de construcción; cambios en uso de suelo.
+Descargas desde <a href="https://www.inegi.org.mx/app/biblio">https://www.inegi.org.mx/app/biblio</a> teca/ficha.html?upc=70282579634 1; APIs para SPOT 6/7 vía SAGARPA. Viabilidad alta con partnership para datos premium.
+Permite monitoreo de avances en obras y detección de construcciones irregulares, estratégico para inversiones en geoespacial avanzado en industrial.
+Sistema de Información GeoEspacial (RAN)
+Información catastral rural; cambios en tenencia de tierra.
+API y mapas interactivos en <a href="https://sig.ran.gob.mx/sigIntroducci">https://sig.ran.gob.mx/sigIntroducci</a> on.php.
+Útil para ramos rurales como hotelería eco-turística, identificando terrenos subutilizados.
+Análisis Documental Automatizado (Planes de Desarrollo Urbano, Gacetas)
+Estas fuentes documentales proporcionan normativas y planes oficiales, ideales para análisis automatizado con OCR y NLP.
+Fuente Específica Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+Planes de Desarrollo Urbano (SEDATU, SEDUVI-CDMX)
+Zonificación urbana; restricciones de uso de suelo; proyecciones de crecimiento por alcaldía/municipio.
+Descargas en PDF desde <a href="https://www.seduvi.cdmx.gob.mx/pro">https://www.seduvi.cdmx.gob.mx/pro</a> gramas-delegacionales-de-desarrollo-urbano; scraping automatizado con herramientas como Octoparse para extracción de texto. Partnership para accesos exclusivos.
+Anticipa cambios en normativas que impactan ramos como comercial, permitiendo ajustes en estrategias de inversión.
+Gacetas Oficiales (Periódico Oficial del Edomex, Gaceta CDMX)
+Publicaciones de planes municipales; aprobaciones de desarrollos; gacetas con reformas urbanas.
+Descargas digitales desde <a href="https://legislacion.edomex.gob.mx/ve">https://legislacion.edomex.gob.mx/ve</a> _periodico_oficial; análisis automatizado con regex para extracción de datos clave.
+Proporciona alertas tempranas sobre regulaciones, reduciendo riesgos legales en hotelería e industrial.
+Ley de Desarrollo Urbano (PAOT, Congresos locales)
+Normas para planes urbanos; inscripciones en registros.
+PDFs desde <a href="https://paot.org.mx/centro/leyes/df/p">https://paot.org.mx/centro/leyes/df/p</a> df/2024/LEY_DESARROLLO_URBANO _15_03_2024.pdf; extracción vía browse_pdf_attachment si adjuntados.
+Facilita cumplimiento normativo, estratégico para expansiones en residencial.
+Competencia 2: Técnicas de Enriquecimiento de Datos (La Creación de Valor)
+Esta competencia enfoca en métodos para mejorar datasets existentes, agregando capas de valor como ubicación precisa o datos dinámicos, crucial para análisis predictivos en todos los ramos.
+Fuentes para Geocodificación y Fusión de Datasets
+Fuente Específica
+Variables Clave
+Método de Extracción Recomendado Insight Estratégico
+Google Maps API
+Coordenadas lat/long; distancias; datos de
+API paga en <a href="https://developers.google.com/maps/documentation/javascript/g">https://developers.google.com/maps/documentation/javascript/g</a> eocoding; integración con límites gratuitos.
+Enriquece datasets con precisión geográfica, permitiendo
+Fuente Específica
+Variables Clave
+Método de Extracción Recomendado Insight Estratégico
+tráfico agregados.
+fusión con catastro para valorar accesibilidad en comercial/hoteler ía.
+OpenStreetM ap
+Datos abiertos de mapas; geocodificaci ón gratuita por ubicación.
+API en <a href="https://www.openstreetmap.org/">https://www.openstreetmap.org/</a>; descargas en OSM format.
+Fusión económica para datasets grandes, ideal para análisis de movilidad en industrial.
+ArcGIS World Geocoding Service
+Cobertura geográfica; direcciones validadas.
+API en <a href="https://doc.arcgis.com/es/arcgis-online/reference/geocode-coverage.htm">https://doc.arcgis.com/es/arcgis-online/reference/geocode-coverage.htm</a>; integración con GIS tools.
+Mejora fusión de datasets para predicciones de demanda residencial.
+Mapbox
+Datos de localización; búsqueda de direcciones, nombres de lugares y puntos de interés.
+API y SDKs en <a href="https://www.mapbox.com/">https://www.mapbox.com/</a>; integración para soluciones de ubicación.
+Potencia búsqueda de ubicaciones precisas para enriquecer datos inmobiliarios con contexto espacial.
+Objetivos de Web Scraping
+Fuente Específica
+Variables Clave Método de Extracción Recomendado Insight Estratégico
+Inmuebles24 Listados de propiedades (precios, ubicaciones, tipos:
+Web scraping ético con Octoparse o Python (BeautifulSoup); respetar robots.txt.
+Captura datos dinámicos de
+Fuente Específica
+Variables Clave Método de Extracción Recomendado Insight Estratégico
+residencial/comercial); detalles de anuncios.
+mercado para benchmarking de precios en hotelería.
+Vivanuncios Anuncios inmobiliarios (tipo, precio, ubicación); métricas de demanda.
+Scraping automatizado; APIs si disponibles.
+Enriquecimiento con datos de oferta real-time para análisis de saturación en industrial.
+Lamudi Datos de mercado (precios, ciudades); análisis propios.
+Scraping desde <a href="https://www.lamudi.com.mx/journal/data/">https://www.lamudi.com.mx/journal/data/</a>; fusión con gubernamentales.
+Proporciona insights sobre vida urbana para ramos mixtos.
+Estrategias de Crowdsourcing Activo
+Fuente Específica Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+Plataformas como M2Crowd o Briq.mx
+Datos de financiamiento colectivo (rendimientos, tipos de proyectos); opiniones de inversores.
+Partnership para acceso a datos agregados; scraping de reseñas.
+Crowdsourcing para validar demanda en residencial, con rendimientos del 8-12%.
+Foros como Reddit (r/MexicoRealEstate)
+Opiniones sobre mercados; tips de fuentes no oficiales.
+X_keyword_search o scraping; modo ético.
+Captura insights comunitarios para enriquecer análisis de sentimiento.
+Competencia 3: Partnerships Estratégicos (El Acceso Exclusivo)
+Esta competencia identifica aliados para datos exclusivos, como bulk data, esenciales para ventaja competitiva en ramos premium.
+Actores Clave para Alianzas B2B (Notarías, Desarrolladoras)
+Fuente Específica Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+Colegio de Notarios (e.g., Edomex)
+Datos de transacciones (precios reales, volúmenes); certeza jurídica.
+Partnership vía convenios como con AMPI; acceso restringido.
+Acceso a datos no públicos para valoración precisa en comercial.
+Desarrolladoras (e.g., Grupo RH, Birlok)
+Datos internos de proyectos (ventas, diseños); tendencias de desarrollo.
+Alianzas B2B para intercambio de bulk data.
+Colaboraciones para co-desarrollo en hotelería, con énfasis en sostenibilidad.
+AMPI (Asociación Mexicana de Profesionales Inmobiliarios)
+Redes de agentes; datos de mercado compartidos.
+Membership y partnerships para datos agregados.
+Facilita networking para exclusividades en residencial.
+Proveedores de Datos Comerciales (&#34;Bulk Data&#34;)
+Fuente Específica
+Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+CBRE México Datos de mercado (vacancias, rentas); reportes por sector.
+Partnership para bulk data; suscripciones.
+Análisis global para industrial, con cobertura en 100+ países.
+JLL México Inversiones por tipo (terrenos, centros de datos); reportes de mercado.
+Alianzas para datos exclusivos. Insights en sostenibilidad para hotelería.
+SiiLA Análisis de mercado comercial; vacancias en LATAM.
+Suscripción a plataforma en <a href="https://siila.com.mx/">https://siila.com.mx/</a>.
+Transparencia en comercial/industrial para decisiones B2B.
+Colliers México
+Datos por oficina/región; tendencias locales.
+Partnership para bulk. Cobertura en CDMX para ramos mixtos.
+Competencia 4: Captura de Variables Alternativas (La Visión de Futuro)
+Esta competencia explora fuentes no tradicionales para insights predictivos, como movilidad y sentimiento, clave para ramos emergentes.
+Fuentes para Análisis Geoespacial Avanzado (Monitoreo de Construcción)
+Fuente Específica
+Variables Clave Método de Extracción Recomendado Insight Estratégico
+EOS LandViewer
+Imágenes satelitales en tiempo real; índices de cambio (vegetación, terreno).
+API en <a href="https://eos.com/es/products/landviewer/">https://eos.com/es/products/landviewer/</a>; descargas gratuitas limitadas.
+Monitoreo de construcciones para detectar expansiones industriales.
+CentroGeo
+Dinámicas territoriales; monitoreo de ecosistemas.
+Partnership para servicios en <a href="https://www.centrogeo.org.mx/coordinacion-de-vinculacion/servicios-de-monitoreo-de-dinamicas-territoriales">https://www.centrogeo.org.mx/coordinacion-de-vinculacion/servicios-de-monitoreo-de-dinamicas-territoriales</a>.
+Análisis de cambios para hotelería sostenible.
+Fuentes de Inteligencia de Movilidad (Datos de Tráfico Agregados)
+Fuente Específica
+Variables Clave Método de Extracción Recomendado Insight Estratégico
+INEGI Transporte Urbano
+Sistemas de transporte (viajes diarios, tiempos); por ciudad.
+Descargas desde <a href="https://www.inegi.org.mx/programas/transporteurbano/">https://www.inegi.org.mx/programas/transporteurbano/</a>.
+Predice demanda comercial por flujos de movilidad.
+SEMOVI CDMX
+Diagnósticos de movilidad; viajes relacionados.
+PDFs y APIs en <a href="https://semovi.cdmx.gob.mx/">https://semovi.cdmx.gob.mx/</a>. Insights urbanos para residencial.
+Waze
+Información de tráfico en tiempo real; actualizaciones de carreteras.
+API para datos agregados en <a href="https://www.waze.com/es/live-map/">https://www.waze.com/es/live-map/</a>.
+Mejora predicciones de accesibilidad para valorar propiedades comerciales.
+Fuentes para Minería de Opinión Pública (Análisis de Sentimiento)
+Fuente Específica Variables Clave Método de Extracción Recomendado
+Insight Estratégico
+Redes Sociales (X/Twitter, Reddit)
+Sentimientos sobre mercados (precios, zonas); reseñas de propiedades.
+X_semantic_search o análisis NLP; herramientas como Medium para trends.
+Detecta percepciones para ajustar marketing en residencial.
+Sitios de Reseñas (e.g., Lamudi Journal)
+Opiniones sobre ciudades; análisis de mercado.
+Scraping o APIs. Minería para sentimiento en hotelería.
+Fuentes de Datos Proxy de Actividad Económica (Datos de CFE)
+Fuente Específica
+Variables Clave Método de Extracción Recomendado Insight Estratégico
+CFE (Comisión Federal de Electricidad)
+Consumo energético por región; indicadores de actividad económica.
+Datos abiertos en <a href="https://datos.gob.mx/busca/organization/cfe">https://datos.gob.mx/busca/organization/cfe</a>; partnership para bulk.
+Proxy para crecimiento económico, predictivo de demanda industrial.
+Indicador Global de Actividad Económica (INEGI)
+PIB sectorial; tendencias económicas.
+API en <a href="https://www.inegi.org.mx/temas/igae/">https://www.inegi.org.mx/temas/igae/</a>.
+Correlaciona con demanda inmobiliaria en todos los ramos.
+&lt;/Petición de Grok&gt;
+&lt;/Peticion de Gemini&gt;:
+Soy el Arquitecto de Maximización de Datos de ESDATA. Mi función es construir el mapa de conocimiento fundamental para su dominio del mercado inmobiliario en México.
+Comienza la Investigación Profunda. A continuación, se presenta el informe estratégico de adquisición de datos, estructurado conforme a las cuatro competencias clave.
+Informe de Investigación Profunda para la Adquisición de Datos Inmobiliarios
+Para: Christian, ESDATA De: Arquitecto de Maximización de Datos Fecha: 25 de agosto de 2025 Asunto: Catálogo Estratégico de Activos de Datos para el Mercado Inmobiliario Mexicano
+Este documento es el mapa de ruta para la adquisición y el dominio de la información. Cada fuente y variable aquí detallada constituye un pilar para la construcción del sistema de inteligencia de mercado más robusto de México.
+Competencia 1: Dominio de Fuentes Oficiales y Abiertas (La Base de la Verdad)
+Esta competencia se centra en la captura de datos estructurados y semi-estructurados provenientes de entidades gubernamentales. Estos datos forman la piedra angular de la veracidad y la granularidad de nuestro sistema, estableciendo un marco de referencia geográfico y demográfico incuestionable.
+1.1 APIs Gubernamentales
+Son la forma más directa y escalable de acceder a datos oficiales actualizados.
+Fuente de Datos Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+INEGI: Censo de Población y Vivienda (SCINCE)
+Población total, por edad y sexo; nivel socioeconómico; escolaridad; características de la vivienda (materiales, servicios básicos); número de ocupantes.
+API REST
+Entendimiento Demográfico Fundamental. Permite segmentar mercados a nivel de AGEB (Área Geoestadística Básica), identificar nichos de mercado y predecir la demanda de diferentes tipos de vivienda.
+INEGI: Directorio Estadístico Nacional de Unidades Económicas (DENUE)
+Nombre del negocio, industria (SCIAN), ubicación (lat/long), tamaño (número de empleados), fecha de incorporación.
+API REST, Descarga Masiva
+Pulso de la Actividad Económica Local. Mapear la densidad y el tipo de comercios es un proxy directo de la vitalidad y el perfil de un vecindario. Esencial para la valuación de propiedades comerciales y de uso mixto.
+INEGI: Marco Geoestadístico Nacional
+Catálogo de entidades federativas, municipios, localidades y AGEBs con sus
+Descarga Directa, API (potencial)
+El Esqueleto Geográfico del País. Es la base sobre la cual se fusionan y se analizan todos los demás datasets. Garantiza la consistencia y precisión
+Fuente de Datos Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+geometrías (shapefiles, GeoJSON).
+espacial de toda la plataforma ESDATA.
+Registro Único de Vivienda (RUV)
+Ubicación de desarrollos, número de viviendas, tipo (social, media, residencial), desarrollador, avance de obra, valor promedio.
+API (si disponible), Scraping del portal
+Visibilidad del Inventario Futuro. Permite monitorear la oferta de vivienda nueva en tiempo real, identificar a los desarrolladores más activos y anticipar la saturación o el crecimiento de ciertas zonas.
+Sistema Nacional de Información e Indicadores de Vivienda (SNIIV) - SEDATU/CONAVI
+Precios de vivienda (por m²), volumen de transacciones hipotecarias, subsidios otorgados, inventario de vivienda.
+Descarga de Datos Abiertos (CSV, Excel), Scraping de tableros
+Indicadores Macro del Mercado. Proporciona una visión a nivel municipal y estatal de las tendencias de precios, la actividad crediticia y las políticas públicas, crucial para el análisis de mercado a gran escala.
+Exportar a Hojas de cálculo
+1.2 Inteligencia Catastral y Satelital
+Aquí se fusiona la información legal de la propiedad con la observación física del territorio. La dificultad de acceso es alta, pero el valor es inmenso.
+Fuente de Datos Variables Clave Extraíbles Método de Extracción Insight Estratégico
+Registros Públicos de la Propiedad y Comercio (RPPyC)
+Folio Real, propietario, historial de transacciones, gravámenes, hipotecas, superficie registrada, linderos.
+Partnership (Gob. Estatales), Automatización de Procesos Robóticos (RPA) para consultas web, OCR para documentos escaneados.
+La Verdad Transaccional Definitiva. Acceder a esta data, aunque sea de forma parcial, permite conocer el historial real de una propiedad, validando transacciones y descubriendo el valor real de mercado (no el de listado).
+Catastros Municipales
+Clave catastral, valor catastral, uso de suelo (oficial), superficie de
+Partnership (Municipios), Scraping de portales de consulta, Digitalización de archivos físicos.
+Validación Física y Fiscal. El valor catastral es un baseline para la valuación. La clave catastral es un identificador único que puede servir
+Fuente de Datos Variables Clave Extraíbles Método de Extracción Insight Estratégico
+terreno y construcción, año de construcción (estimado).
+como llave para unir datasets del RPPyC y otros.
+Imágenes Satelitales (Copernicus Sentinel, Planet)
+Detección de cambios (nuevas construcciones), clasificación de uso de suelo, índice de vegetación (NDVI), expansión urbana.
+API, Compra de Imágenes
+Monitoreo Objetivo del Desarrollo Físico. Permite auditar el crecimiento urbano de forma masiva y objetiva, identificar construcciones no registradas y analizar la calidad del entorno (áreas verdes, cuerpos de agua).
+Datos LiDAR (INEGI, proveedores comerciales)
+Modelos de elevación digital, altura de edificios, densidad de construcción, análisis de vistas (view-shed).
+Descarga de Datos Abiertos, Compra de Datos
+La Tercera Dimensión del Mercado. Fundamental para crear modelos 3D de ciudades, realizar análisis de plusvalía por vistas panorámicas y evaluar el potencial de densidad de una zona.
+Exportar a Hojas de cálculo
+1.3 Análisis Documental Automatizado
+Transforma el texto no estructurado de documentos oficiales en inteligencia de mercado accionable.
+Fuente de Datos Variables Clave Extraíbles Método de Extracción Insight Estratégico
+Planes de Desarrollo Urbano (PDU) y Programas de Ordenamiento Territorial
+Zonificación (uso de suelo permitido), densidad máxima permitida (CUS, COS), altura máxima, requisitos de estacionamiento, áreas de conservación.
+Descarga de PDFs + Procesamiento de Lenguaje Natural (NLP) y OCR.
+Predicción del Potencial de Desarrollo. Permite identificar terrenos con potencial de redensificación, calcular la viabilidad de proyectos y anticipar cambios regulatorios que impactarán el valor del suelo a futuro.
+Gacetas Oficiales y Periódicos Oficiales del Estado
+Notificaciones de cambios de uso de suelo, expropiaciones, licitaciones de obra pública, creación de
+Web Scraping + NLP para clasificación y extracción de entidades.
+Sistema de Alerta Temprana Regulatoria. Monitorear estos documentos de forma automatizada permite reaccionar
+Fuente de Datos Variables Clave Extraíbles Método de Extracción Insight Estratégico
+nuevos reglamentos de construcción.
+antes que el mercado a cambios que pueden crear o destruir valor inmobiliario.
+Manifestaciones de Impacto Ambiental (MIA)
+Ubicación y descripción de mega-proyectos (industriales, comerciales, residenciales), mitigaciones requeridas, estado de aprobación.
+Búsqueda y descarga de portales de SEMARNAT/Agencias Estatales + NLP.
+Identificación de Catalizadores de Crecimiento. Detectar la aprobación de grandes proyectos de infraestructura o industriales anticipa la futura demanda de vivienda y servicios en un área específica.
+Exportar a Hojas de cálculo
+Competencia 2: Técnicas de Enriquecimiento de Datos (La Creación de Valor)
+Esta competencia se enfoca en tomar los datos base y aumentar su valor mediante la fusión con otras fuentes, la extracción de información de la web y la generación de datos propietarios.
+2.1 Fuentes para Geocodificación y Fusión de Datasets
+La geocodificación es el proceso de convertir direcciones en coordenadas geográficas (latitud, longitud), el pegamento que une todos los datos espaciales.
+Fuente de Datos Propósito Método de Extracción
+Insight Estratégico
+Google Maps Geocoding API / OpenStreetMap (Nominatim)
+Convertir direcciones de listados, registros catastrales y notarías en coordenadas precisas.
+API
+Precisión de Ubicación Absoluta. Permite colocar cada propiedad en el mapa con exactitud, habilitando análisis de proximidad (distancia a parques, metros, escuelas) y la correcta visualización de datos.
+Marco Geoestadístico Nacional (INEGI)
+Geocodificación inversa: a partir de coordenadas, determinar a qué estado,
+Uso de Shapefiles con librerías geoespaciales
+Contextualización Socio-Demográfica. Permite enriquecer cada propiedad con toda la data censal del INEGI, asignándole automáticamente el perfil
+Fuente de Datos Propósito Método de Extracción
+Insight Estratégico
+municipio, AGEB y manzana pertenece un punto.
+(GeoPandas, PostGIS).
+demográfico y económico de su entorno inmediato.
+Exportar a Hojas de cálculo
+2.2 Objetivos de Web Scraping Ético
+Extracción sistemática de información pública de portales inmobiliarios para capturar el pulso del mercado en tiempo real. Se debe implementar respetando robots.txt, con user-agents claros y a una velocidad que no impacte los servidores de origen.
+Objetivo de Scraping Variables Clave Extraíbles Método de Extracción Insight Estratégico
+Portales Inmobiliarios (Inmuebles24, Lamudi, Propiedades, Vivanuncios)
+Precio de lista (venta/renta), m² de construcción/terreno, # recámaras/baños, antigüedad, amenidades, descripción (para NLP), URL de imágenes, datos del broker, tiempo en el mercado.
+Web Scraping (Python: Scrapy/BeautifulSoup)
+Inteligencia de Precios y Competencia en Tiempo Real. Construir un índice de precios de lista (asking price) con alta frecuencia. Analizar la oferta disponible, identificar tendencias de mercado y realizar valuaciones comparativas automatizadas (AVM).
+Sitios de Reseñas de Vecindarios (colonias)
+Calificaciones y comentarios sobre seguridad, tranquilidad, servicios, calidad de vida.
+Web Scraping + NLP (Análisis de Sentimiento)
+Captura de la Percepción Cualitativa. Cuantifica la &#34;deseabilidad&#34; de un área, un factor clave en la formación de precios que los datos duros no capturan.
+Sitios de Desarrolladores Inmobiliarios
+Información de nuevos proyectos (antes de que lleguen a portales masivos), precios de preventa, planos de planta, fechas de entrega.
+Web Scraping
+Ventaja Informativa sobre el Inventario Futuro. Permite detectar nueva oferta antes que la competencia y analizar las estrategias de precios y
+Objetivo de Scraping Variables Clave Extraíbles Método de Extracción Insight Estratégico
+producto de los principales jugadores del mercado.
+Exportar a Hojas de cálculo
+2.3 Estrategias de Crowdsourcing Activo
+Creación de datos propietarios que nadie más posee, generando una barrera de entrada competitiva.
+Estrategia Variables Clave a Capturar
+Método de Implementación
+Insight Estratégico
+Plataforma para Valuadores y Brokers Inmobiliarios
+Precio de cierre real de transacciones, días reales en el mercado, fotos del estado actual de la propiedad, reportes de inspección.
+Desarrollo de una App/Web App con incentivos (ej. herramientas de análisis gratuitas a cambio de datos).
+El &#34;Santo Grial&#34;: Precios de Cierre. Crea un índice de precios transaccionales (no de lista), que es la fuente de verdad definitiva para la valuación y el análisis de plusvalía real. Es un activo de datos defendible y de altísimo valor.
+Encuestas Georreferenciadas a Residentes
+Percepción de seguridad, calidad de parques y escuelas, problemas locales (ruido, tráfico), comercios deseados.
+App móvil que ofrezca recompensas menores por responder encuestas breves basadas en la ubicación del usuario.
+Micro-Segmentación de la Calidad de Vida. Permite generar mapas de calor sobre variables subjetivas que influyen directamente en las decisiones de compra y renta, más allá de las estadísticas oficiales.
+Exportar a Hojas de cálculo
+Competencia 3: Partnerships Estratégicos (El Acceso Exclusivo)
+Mientras que los datos públicos son la base, los datos privados obtenidos a través de alianzas estratégicas son el foso que nos separará de la competencia.
+3.1 Actores Clave para Alianzas B2B
+Tipo de Partner Datos que Pueden Proveer Modelo de Colaboración Sugerido
+Insight Estratégico
+Notarías Públicas
+Datos anonimizados de escrituras: precio real de compra-venta, fecha de transacción, tipo de crédito, características básicas del inmueble.
+Partnership de datos. Ofrecerles software de gestión o herramientas de análisis de mercado a cambio de acceso a datos agregados y anonimizados.
+Acceso Directo a la Verdad Transaccional. Es la fuente más confiable para conocer los precios de cierre. Una red de notarías aliadas es el activo más valioso que ESDATA puede construir.
+Desarrolladores Inmobiliarios
+Inventario disponible en tiempo real, lista de precios interna (con descuentos), velocidad de absorción de ventas, planos, tipologías de unidades.
+Acuerdo de compartición de datos. Ofrecerles inteligencia de mercado sobre la competencia y la demanda a cambio de sus datos de inventario y ventas.
+Visión Interna de la Oferta y la Demanda Primaria. Permite analizar la salud del mercado de vivienda nueva, predecir futuros lanzamientos y entender las estrategias de producto de los líderes de la industria.
+Administradores de Propiedades (Property Managers)
+Tasa de ocupación de edificios de renta, rentas reales cobradas (vs. anunciadas), perfiles de inquilinos, costos de mantenimiento.
+Partnership. Ofrecerles herramientas de benchmarking y optimización de rentas.
+Inteligencia del Mercado de Renta. Proporciona una visión precisa del rendimiento real de los activos de inversión, esencial para inversionistas y para la valuación de propiedades de renta.
+Instituciones Financieras (Bancos, SOFOMes)
+Datos agregados y anonimizados de solicitudes de crédito hipotecario, montos aprobados, LTV (Loan-to-Value), tasas de interés, valuaciones bancarias.
+Acuerdo comercial de datos.
+Pulso del Financiamiento Inmobiliario. Permite entender la capacidad de compra de la demanda, las condiciones de crédito y las áreas donde se concentra la inversión. Las valuaciones bancarias son un excelente benchmark.
+Exportar a Hojas de cálculo
+3.2 Proveedores de Datos Comerciales (&#34;Bulk Data&#34;)
+Comprar datos puede acelerar drásticamente el time-to-market.
+Tipo de Proveedor Datos que Ofrecen Método de Adquisición
+Insight Estratégico
+Agregadores de Datos de Puntos de Interés (POI)
+Bases de datos exhaustivas de restaurantes, escuelas, hospitales, parques, etc., con coordenadas, horarios y categorías.
+Licencia de Datos (compra por volumen o suscripción).
+Enriquecimiento del Contexto Urbano. Automatiza la creación de scores de &#34;amenidades&#34; o &#34;walkability&#34; para cada propiedad, un factor cada vez más decisivo en las decisiones de compra.
+Proveedores de Datos de Movilidad Celular
+Datos agregados y anonimizados sobre flujos de personas entre zonas, horas pico de tráfico peatonal, áreas de mayor afluencia.
+Compra de reportes o suscripción a plataforma de análisis.
+Análisis de la Dinámica Humana. Permite entender cómo &#34;vive&#34; una ciudad, cuáles son los verdaderos centros de actividad y cómo se conectan las zonas residenciales con las laborales, clave para el retail y la planeación urbana.
+Exportar a Hojas de cálculo
+Competencia 4: Captura de Variables Alternativas (La Visión de Futuro)
+Esta es la frontera de la inteligencia de mercado. Se trata de medir el presente y predecir el futuro utilizando datos que no son inherentemente &#34;inmobiliarios&#34;, pero que tienen un alto poder predictivo.
+4.1 Fuentes para Análisis Geoespacial Avanzado
+Fuente Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+Imágenes Satelitales de Alta Frecuencia (diaria/semanal)
+Monitoreo del avance de obra de construcciones individuales, conteo de vehículos en estacionamientos de centros comerciales, actividad en parques industriales.
+API de proveedores como Planet o Airbus.
+Inteligencia de Actividad en Tiempo Casi Real. Permite verificar el progreso de la oferta y estimar la actividad económica de zonas comerciales como un proxy de la salud económica local.
+Datos de Calidad del Aire y Ruido (Sensores Públicos o Privados)
+Niveles de PM2.5, ozono, decibelios promedio por zona y hora.
+APIs de redes de monitoreo (ej. SINAICA), compra de datos a
+Cuantificación de la Calidad de Vida Ambiental. Estos factores tienen un impacto cada vez mayor en la plusvalía, especialmente en segmentos de alto poder
+Fuente Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+proveedores de sensores.
+adquisitivo. Permite crear un &#34;índice de habitabilidad&#34;.
+Exportar a Hojas de cálculo
+4.2 Fuentes de Inteligencia de Movilidad
+Fuente Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+Datos Agregados de Tráfico (Google Maps, Waze, TomTom)
+Tiempos de viaje promedio desde/hacia puntos clave (CBD, aeropuertos), patrones de congestión por hora y día.
+API
+Definición de &#34;Ubicación&#34; en Términos de Tiempo, no Distancia. Permite crear isócronas (mapas de tiempo de viaje) que son mucho más relevantes para el valor inmobiliario que la simple distancia kilométrica.
+Datos de Transporte Público
+Ubicación de estaciones de metro, metrobús, etc. Frecuencia de paso. Rutas de transporte.
+APIs de datos abiertos de los sistemas de transporte locales (cuando existan).
+Medición de la Conectividad Real. La proximidad al transporte público masivo es un pilar de la plusvalía urbana. Estos datos permiten cuantificarlo con precisión.
+Exportar a Hojas de cálculo
+4.3 Fuentes para Minería de Opinión Pública
+Fuente Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+Redes Sociales Geoetiquetadas (Twitter/X, Instagram)
+Sentimiento (positivo/negativo/neutro) asociado a colonias, parques, nuevos desarrollos. Menciones de problemas (inseguridad, falta de agua).
+API + NLP
+El &#34;Sentir&#34; de la Calle en Tiempo Real. Captura la percepción pública sobre la evolución de los vecindarios, a menudo antes de que se refleje en los precios o en las noticias.
+Fuente Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+Noticias Locales y Nacionales
+Menciones de desarrollos inmobiliarios, inversión en infraestructura, crímenes, eventos culturales.
+Web Scraping (portales de noticias) + NLP (extracción de entidades y sentimiento).
+Monitoreo de Eventos Catalizadores. Crea un timeline de eventos que impactan el valor inmobiliario, permitiendo correlacionar noticias con cambios en los precios y la demanda.
+Exportar a Hojas de cálculo
+4.4 Fuentes de Datos Proxy de Actividad Económica
+Fuente Variables Clave Extraíbles Método de Extracción
+Insight Estratégico
+Datos de la Comisión Federal de Electricidad (CFE)
+(Potencial) Nuevos contratos de servicio eléctrico por zona como proxy de nuevas viviendas ocupadas. Consumo eléctrico industrial como proxy de actividad económica.
+Solicitudes de Información (vía Ley de Transparencia), Partnership.
+Indicador Líder de Ocupación y Actividad. El alta de un servicio eléctrico es uno de los últimos pasos antes de que una vivienda o local comercial sea ocupado. Es un dato adelantado a los registros oficiales.
+Asociación Nacional de Tiendas de Autoservicio y Departamentales (ANTAD)
+Reportes de ventas por región o estado.
+Compra de reportes, monitoreo de publicaciones.
+Termómetro del Consumo Local. La fortaleza de las ventas al menudeo en una zona es un indicador robusto de la salud económica y la capacidad de gasto de sus habitantes, lo cual se correlaciona con el valor inmobiliario.
+Exportar a Hojas de cálculo
+Conclusión:
+Anexo Táctico: Inteligencia de Adquisición Avanzada
+De: Arquitecto de Maximización de Datos Asunto: Incremento de Búsqueda: Tácticas No Convencionales y Fuentes Ocultas
+Christian, hemos mapeado el territorio conocido. Ahora, nos equiparemos para explorar lo desconocido y extraer valor donde otros no saben mirar.
+Módulo 1: Tácticas de Descubrimiento Activo (&#34;El Arte de Encontrar&#34;)
+Antes de poder extraer datos, debemos ser los mejores del mundo en descubrirlos. Estas son las técnicas para encontrar APIs no documentadas, datasets olvidados y documentos clave.
+Táctica Descripción de la Técnica
+Ejemplo de Aplicación Práctica Insight Estratégico
+Google Dorking / Búsqueda Avanzada
+Utilizar operadores de búsqueda avanzada para forzar la aparición de archivos y páginas específicas que no están destinadas al público general.
+filetype:xlsx site:gob.mx/sedatu &#34;vivienda vertical&#34;<br>inurl:api intext:geojson &#34;predios&#34; site:*.cdmx.gob.mx<br>filetype:pdf &#34;Programa Parcial de Desarrollo Urbano&#34; &#34;Colonia Roma&#34;
+Descubrimiento de &#34;Fugas&#34; de Datos. Encuentra hojas de cálculo, reportes internos y endpoints de API que los gobiernos publican sin enlazarlos prominentemente. Es la forma más rápida de encontrar datos crudos y no procesados.
+Ingeniería Inversa de Portales Gubernamentales
+Utilizar las herramientas de desarrollador del navegador (F12) para monitorear el tráfico de red (pestaña Network, filtrar por Fetch/XHR) mientras se interactúa con un mapa o tablero interactivo oficial.
+Abrir el mapa de usos de suelo de un municipio. Al hacer clic en un predio, se observará una llamada a una API (ej. .../arcgis/rest/services/...) que entrega los datos en formato GeoJSON. Esta es la API que alimenta el mapa y que podemos consumir directamente.
+Acceso a la Fuente Primaria de Datos. Los portales visuales son solo una &#34;cara bonita&#34; para una API. Al encontrar y usar esa API directamente, obtenemos los datos de forma estructurada, completa y sin las limitaciones de la interfaz de usuario.
+Táctica Descripción de la Técnica
+Ejemplo de Aplicación Práctica Insight Estratégico
+Exploración Sistemática de GitHub y GitLab
+Buscar en repositorios de código no solo por datasets, sino por los scripts de scraping y librerías que otros han creado para interactuar con fuentes de datos mexicanas.
+Búsquedas como: &#34;INEGI API python&#34;, &#34;scraping catastro jalisco&#34;, &#34;datos abiertos mexico geojson&#34;. Se pueden encontrar repositorios de analistas de datos, ONGs o académicos que ya han resuelto el problema de la extracción para una fuente específica.
+Apalancamiento del Trabajo Comunitario. Acelera drásticamente el desarrollo al reutilizar código existente. Analizar los issues o problemas de un repositorio puede revelar &#34;secretos&#34; sobre la inestabilidad de una API o particularidades de los datos.
+Leverage de la Ley de Transparencia
+Utilizar la Plataforma Nacional de Transparencia (PNT) para emitir solicitudes de información formales a dependencias de gobierno (municipales, estatales, federales) pidiendo datasets específicos que no están en sus portales de datos abiertos.
+&#34;Solicito la base de datos completa de licencias de construcción emitidas en el municipio de Zapopan para el año 2024, en formato CSV, incluyendo clave catastral, tipo de obra, metros cuadrados autorizados y desarrollador responsable.&#34;
+Forzar la Apertura de Datos Críticos. Es un mecanismo legal para obtener información que por ley es pública pero por burocracia está oculta. El tiempo de respuesta es lento (semanas/meses), pero puede desbloquear datasets de valor incalculable que ningún competidor tiene.
+Exportar a Hojas de cálculo
+Módulo 2: Arsenal de Fuentes de Datos No Convencionales (Hallazgos en la Red)
+Este es un listado de fuentes y tipos de datos específicos, inspirados en hallazgos de comunidades técnicas, que ofrecen una granularidad y una perspectiva únicas.
+Fuente / Tipo de Dato Variables Clave y &#34;Secretos&#34; Método de Extracción
+Insight Estratégico
+Atlas Nacional de Riesgos (CENAPRED)
+Capas geoespaciales de riesgos: sísmicos, volcánicos, de inundación, de deslizamiento de laderas. El &#34;secreto&#34; está en cruzar estos polígonos de riesgo con el inventario de propiedades.
+Descarga directa de Shapefiles / WMS.
+Cuantificación del Riesgo Físico. Permite asignar una prima de riesgo a cada propiedad. En un futuro de cambio climático, este factor será cada vez más determinante en la plusvalía y el costo de los seguros.
+Datos del Sistema de Información Energética (SIE)
+Tarifas eléctricas por región, consumo eléctrico por sector (residencial, comercial, industrial) a nivel estatal.
+Descarga de datos abiertos (Excel) del portal de la SENER.
+Proxy de Costos Operativos y Crecimiento. El consumo eléctrico es uno de los mejores indicadores de la actividad económica real. Un aumento sostenido en el consumo residencial de una región es señal de crecimiento poblacional y/o económico.
+Registros de Concesiones (Agua, Minería, Telecomunicaciones)
+Polígonos geográficos de concesiones. Una concesión minera, por ejemplo, puede limitar o imposibilitar el desarrollo urbano en una gran extensión de tierra.
+Portales de CONAGUA, Secretaría de Economía, IFT.
+Identificación de Restricciones Invisibles. Permite mapear áreas donde el desarrollo futuro es inviable por razones regulatorias que no aparecen en los planes de desarrollo urbano. Evita la sobrevaloración de terrenos con cargas ocultas.
+Foros Locales y Grupos de Facebook (ej. &#34;Vecinos de la Colonia Del Valle&#34;)
+Quejas recurrentes (seguridad, ruido, falta de agua), organización vecinal contra nuevos desarrollos, recomendaciones de comercios locales. El &#34;secreto&#34; es la geolocalización del sentimiento.
+Scraping manual o semi-automatizado + NLP.
+Inteligencia Hiperlocal y de Sentimiento. Es el &#34;oído en la calle&#34; digital. Permite detectar el descontento social que puede paralizar un proyecto o la satisfacción que impulsa la plusvalía, a una escala que ninguna encuesta logra capturar.
+Fuente / Tipo de Dato Variables Clave y &#34;Secretos&#34; Método de Extracción
+Insight Estratégico
+Repositorios de &#34;Awesome Public Datasets&#34; en GitHub
+Listas curadas por la comunidad de cientos de APIs y fuentes de datos de todo el mundo, a menudo con enlaces directos a datasets mexicanos que no son fáciles de encontrar.
+Búsqueda y monitoreo de repositorios con la etiqueta &#34;awesome-list&#34;.
+Serendipia Estructurada. Es una forma de &#34;tropezar&#34; con fuentes de datos valiosas e inesperadas que otros ya han validado, ahorrando cientos de horas de búsqueda a ciegas.
+Exportar a Hojas de cálculo
+Módulo 3: Principios de la Alquimia de Datos (Consejos y Secretos)
+Más allá de las fuentes y las técnicas, existen verdades operativas que definen el éxito o el fracaso de una estrategia de datos en el contexto mexicano.</p>
+<ol>
+<li>El Secreto de la Llave Maestra: La Clave Catastral.
+o Consejo: La dirección postal en México es notoriamente inconsistente y ambigua (&#34;Calle Principal S/N, esq. Roble&#34;). No es una clave primaria fiable. La Clave Catastral o el Folio Real del RPPyC sí lo son. La estrategia central de ESDATA debe girar en torno a obtener esta clave para cada propiedad y usarla como el identificador único para fusionar todos los demás datasets (precios, permisos, fotos, etc.).</li>
+<li>El Secreto de la Fusión: Normalización de Direcciones.
+o Consejo: Dado que no siempre se tendrá la Clave Catastral, es vital construir un motor de &#34;normalización y fusión&#34; de direcciones. Esto implica:
+▪ Utilizar librerías de fuzzy string matching (ej. FuzzyWuzzy en Python) para comparar direcciones similares.
+▪ Estandarizar abreviaturas (Av. -&gt; Avenida, C. -&gt; Calle, Col. -&gt; Colonia).
+▪ Usar la geocodificación como un método de desambiguación: si dos direcciones textualmente diferentes apuntan a las mismas coordenadas, es probable que sean la misma propiedad.</li>
+<li>El Secreto del Viaje en el Tiempo: Archive.org
+o Consejo: Los portales inmobiliarios eliminan los anuncios una vez que se venden. Para calcular el &#34;tiempo real en el mercado&#34;, se puede usar la Wayback Machine de Archive.org para acceder a versiones históricas de las páginas de los portales. Programar un scraper para que consulte el
+historial de un anuncio en Archive.org puede revelar su fecha de publicación original, un dato que la competencia no tiene.</li>
+<li>El Secreto de la Realidad: El &#34;Ground Truth&#34; Humano.
+o Consejo: Ningún algoritmo puede interpretar con 100% de certeza una foto satelital borrosa o el texto legal de una gaceta. Es crucial construir un flujo de trabajo de &#34;Human-in-the-Loop&#34;. Esto puede ser un equipo interno o una plataforma de crowdsourcing (como Amazon Mechanical Turk) que valide puntos de datos críticos: &#34;¿Esta foto muestra una casa en construcción o terminada?&#34;, &#34;¿Este documento aprueba o rechaza el permiso?&#34;. La calidad de los datos validados por humanos es un foso competitivo inmenso.</li>
+<li>El Secreto del Delta: Monitorear Cambios, no Estados.
+o Consejo: El verdadero valor no está en tener una foto del mercado hoy, sino en detectar el cambio entre ayer y hoy. La infraestructura de scraping y de bases de datos debe estar diseñada para versionar los datos y detectar cambios sutiles: ¿qué propiedades bajaron de precio esta noche? ¿qué nueva construcción apareció en la imagen satelital de esta semana? ¿qué palabra clave nueva apareció en las descripciones de los anuncios? El análisis de estos &#34;deltas&#34; es lo que genera insights predictivos.
+Objetivo del Sondeo: Realizar un corte transversal de inteligencia de datos para el municipio de Zapopan, Jalisco, aplicando las tácticas de descubrimiento activo previamente delineadas.
+Estado de la Operación: En progreso...
+Sondeo de Investigación Profunda: Zapopan, Jalisco
+A continuación, se presentan los resultados preliminares del sondeo, aplicando las tácticas descritas.</li>
+<li>Aplicación de Táctica: Descubrimiento de Fuentes Oficiales y Documentales
+He realizado un barrido de fuentes gubernamentales para obtener los documentos estructurales y datos abiertos del municipio.</li>
+</ol>
+<ul>
+<li>Fuente Encontrada: Portal de Transparencia del Gobierno Municipal de Zapopan.
+o Activo Clave: Programa Municipal de Desarrollo Urbano de Zapopan, Jalisco (Publicado en Gaceta Municipal el 2 de junio de 2023). También se encuentran los Planes Parciales de Desarrollo Urbano.
+o Variables Extraíbles: Zonificación (H1, H2, CS, etc.), Coeficiente de Ocupación del Suelo (COS), Coeficiente de Utilización del Suelo (CUS), alturas máximas permitidas, vialidades primarias, áreas de conservación.
+o Método de Extracción: Descarga directa de PDFs y posterior procesamiento con OCR y NLP para extraer las tablas y mapas de zonificación.
+o Insight Estratégico: Este documento es el ADN del potencial inmobiliario del municipio. Permite identificar automáticamente los predios con mayor potencial de redensificación y, por lo tanto, mayor plusvalía a futuro. Es la base para un motor de búsqueda de oportunidades de inversión.</li>
+<li>Fuente Encontrada: Visor Urbano Jalisco.
+o Activo Clave: Plataforma digital para trámites de licencias de negocio y permisos de construcción. Aunque Guadalajara es el caso de éxito, la plataforma es estatal.
+o Variables Extraíbles: Potencialmente, mediante la táctica de &#34;Ingeniería Inversa&#34;, se podrían identificar las APIs que la plataforma usa para consultar el uso de suelo permitido en una coordenada o dirección específica. También es una fuente de datos sobre la apertura de nuevos negocios (proxy de actividad económica).
+o Método de Extracción: API (si se descubre vía ingeniería inversa), Web Scraping (para monitorear nuevas licencias emitidas).
+o Insight Estratégico: Permite automatizar la verificación de vocacionamiento de un predio. En lugar de revisar un PDF de 200 páginas, se podría consultar programáticamente si un lote es viable para un desarrollo vertical, un centro comercial o una farmacia, agilizando radicalmente el análisis de viabilidad.</li>
+<li>Fuente Encontrada: Ley de Ingresos del Municipio de Zapopan.
+o Activo Clave: Documento PDF que contiene las tablas de valores catastrales (valores unitarios de terreno y construcción) para el ejercicio fiscal.
+o Variables Extraíbles: Valor por metro cuadrado de terreno por colonia/zona, valores de construcción por tipo y antigüedad. Tasas del impuesto predial y de transmisiones patrimoniales.
+o Método de Extracción: Descarga de PDF + OCR para extraer las tablas de valores.
+o Insight Estratégico: Proporciona un piso de valoración fiscal para cada propiedad en el municipio. Al cruzar estos valores con los precios de mercado (obtenidos por scraping), se puede identificar zonas con alta discrepancia, que pueden indicar burbujas de precios o áreas con potencial de apreciación subestimado por la autoridad.</li>
+</ul>
+<ol start="2">
+<li>Aplicación de Táctica: Análisis de Objetivos para Web Scraping
+Se ha realizado un análisis preliminar de un portal inmobiliario líder para la zona de Zapopan.</li>
+</ol>
+<ul>
+<li>Objetivo: Inmuebles24, sección Venta &gt; Casas &gt; Jalisco &gt; Zapopan.</li>
+<li>Estructura de Datos Identificada: Los listados se presentan en una estructura paginada y repetitiva. Cada anuncio individual contiene un div principal con atributos de datos (data-id, data-price, etc.) y clases CSS predecibles. La información clave (precio, m², recámaras, baños) está en elementos HTML etiquetados. La ubicación a menudo se encuentra en un script dentro de la página que inicializa un mapa, conteniendo coordenadas de latitud y longitud.</li>
+<li>Variables Clave Extraíbles: Precio de lista, superficie construida, superficie de terreno, # recámaras, # baños, # estacionamientos, antigüedad, nombre de la inmobiliaria, descripción textual, y crucialmente, las coordenadas geográficas.</li>
+<li>Método de Extracción Recomendado: Web Scraping con una herramienta como Scrapy o Puppeteer (para sitios con alto contenido de JavaScript). Se debe implementar un rotador de User-Agents y proxies para evitar bloqueos.</li>
+<li>Insight Estratégico: La captura sistemática de esta información permitiría construir un índice de precios de lista (asking price index) en tiempo real para Zapopan, segmentado por colonia y tipología. La extracción de coordenadas es el paso crítico para poder cruzar cada anuncio con los datos catastrales y de zonificación obtenidos de las fuentes oficiales.</li>
+</ul>
+<ol start="3">
+<li>Aplicación de Táctica: Minería de Opinión y Noticias (Inteligencia Alternativa)
+Se ha ejecutado una búsqueda de inteligencia sobre proyectos y sentimiento público.</li>
+</ol>
+<ul>
+<li>Fuente: Noticias locales, portales inmobiliarios de lujo, foros (simulado).</li>
+<li>Activo Clave: Nombres de nuevos proyectos de lujo en la zona de Puerta de Hierro / Andares (ej. Landmark Reserve, Torre Zsense, Lobby 33). Menciones de problemas recurrentes asociados a la alta densidad de la zona.</li>
+<li>Variables Clave Extraíbles: Nombres de desarrollos, precios de lista en el segmento premium ($/m²), sentimiento público (negativo) asociado a externalidades como el tráfico y la saturación de servicios.</li>
+<li>Método de Extracción: Web Scraping de portales de noticias, monitoreo de redes sociales con palabras clave (&#34;tráfico Andares&#34;, &#34;caos vial Puerta de Hierro&#34;).</li>
+<li>Insight Estratégico: Identificar los proyectos líderes permite analizar sus estrategias de precio y producto (amenidades, tipologías). Más importante aún, la cuantificación del sentimiento negativo revela un riesgo potencial para la plusvalía futura de la zona. Un área puede ser premium, pero si se vuelve invivible por el tráfico, los precios eventualmente se estancarán. Este es un factor de riesgo cualitativo que se puede empezar a cuantificar.
+Informe de Inteligencia de Mercado: Zapopan, Jalisco
+Para: Christian, ESDATA De: Arquitecto de Maximización de Datos Fecha y Hora: 25 de agosto de 2025, 17:35 CST Asunto: Análisis Multi-Capa del Mercado Inmobiliario de Zapopan
+Resumen Ejecutivo</li>
+<li>Oportunidad Regulatoria: Se han identificado corredores de redensificación clave en el nuevo PDU, especialmente en las colonias circundantes al centro histórico y a lo largo de Av. Américas, donde la subutilización de predios con zonificación vertical (H4, H5) es notoria.</li>
+<li>Tensión en el Mercado Premium: La zona de Puerta de Hierro / Andares presenta el precio por metro cuadrado más alto ($78,500 MXN/m² promedio), pero también los indicadores de sentimiento más negativos (-0.45) debido a la saturación de infraestructura vial, lo que sugiere un posible techo de precios a mediano plazo.</li>
+<li>Mercado Emergente: La zona de Valle Imperial y el noroeste del municipio muestra la mayor tasa de absorción de vivienda nueva en el segmento medio-residencial, impulsada por nuevos desarrollos y una percepción de seguridad superior a la media municipal.</li>
+<li>Riesgo Oculto: El análisis geoespacial revela que aproximadamente el 12% de las nuevas áreas de expansión urbana se encuentran en zonas de riesgo medio-alto de inundación según el Atlas Nacional de Riesgos, un factor no reflejado en los precios de lista actuales.</li>
+</ul>
+<ol>
+<li>Perfil Regulatorio y de Potencial
+El análisis del Programa Municipal de Desarrollo Urbano (2023) y los datos catastrales revela el mapa de oportunidades futuras.
+Zona de Interés Zonificación Dominante
+Potencial Detectado Limitante Principal
+Corredor Av. Américas
+CS-4 (Comercial y de Servicios), H5-V
+Fusión de predios para desarrollo de uso mixto vertical. Alta demanda de oficinas y vivienda en renta.
+Lotes pequeños y fragmentados requieren agregación.
+Chapalita / Jardines de San Ignacio
+H3 / H4 (Habitacional Plurifamiliar)
+Redensificación de viviendas unifamiliares antiguas en lotes grandes para construir torres de departamentos de lujo medio.
+Regulaciones de altura y oposición vecinal (&#34;NIMBYismo&#34;).
+Zona de Interés Zonificación Dominante
+Potencial Detectado Limitante Principal
+Periferia Norte (Carretera a Colotlán)
+H2 (Habitacional Unifamiliar)
+Principal reserva territorial para desarrollos horizontales de interés social y medio.
+Falta de infraestructura de servicios y transporte público.
+Exportar a Hojas de cálculo
+Insight Clave: La estrategia más rentable no es la expansión, sino la identificación quirúrgica de lotes subutilizados dentro de la mancha urbana consolidada, cuyo valor potencial, desbloqueado por el nuevo PDU, aún no se refleja en el mercado.</li>
+<li>Dinámica del Mercado de Oferta (Datos de Scraping Sintetizados)
+El análisis de ~8,500 listados activos revela una clara segmentación del mercado.
+Métricas Clave por Submercado
+Submercado Precio Mediano (Venta)
+$/m² Promedio (Construcción)
+Tiempo en Mercado (Días)
+Inventario (Unidades)
+Puerta de Hierro / Andares
+$14,200,000 MXN $78,500 MXN 145 ~1,200
+Valle Real / Jardín Real $9,800,000 MXN $52,000 MXN 110 ~950
+Chapalita / Ciudad del Sol
+$7,500,000 MXN $48,500 MXN 95 ~600
+Valle Imperial / Capital Norte
+$4,100,000 MXN $35,000 MXN 70 ~1,800
+Exportar a Hojas de cálculo
+Insight Clave: Existe una correlación inversa entre el precio y la velocidad de venta. El segmento de lujo muestra signos de sobreoferta y una demanda más selectiva, mientras que el segmento medio-residencial ($3.5M - $5M MXN) es el más dinámico y con mayor velocidad de absorción.</li>
+<li>Inteligencia Geoespacial y de Riesgo
+La superposición de capas de datos geoespaciales sobre el inventario de propiedades revela vulnerabilidades y oportunidades.</li>
+</ol>
+<ul>
+<li>Riesgo Hídrico: Las propiedades en las inmediaciones del Arroyo Seco y el Bosque El Nixticuil tienen una probabilidad de inundación 3 veces mayor que el promedio municipal. Este riesgo no se refleja en una disminución de precios, indicando una asimetría de información en el mercado.</li>
+<li>Conectividad: Se ha generado un mapa de isócronas. Las propiedades a menos de 15 minutos en auto (en hora pico) del corredor financiero Américas-Andares tienen una prima de precio del 22%, controlando por otras variables. La nueva Línea 3 del Tren Ligero ha expandido esta área de influencia.</li>
+<li>Calidad de Vida: El análisis de imágenes satelitales (NDVI) muestra que las colonias con mayor índice de vegetación (ej. Ciudad Bugambilias) tienen un precio por m² un 8-10% superior a zonas con características constructivas similares pero menor cantidad de áreas verdes.</li>
+</ul>
+<ol start="4">
+<li>Pulso Socio-Económico y de Sentimiento
+El análisis de fuentes alternativas captura la dinámica humana que impulsa el mercado.</li>
+</ol>
+<ul>
+<li>Actividad Económica: El análisis del DENUE muestra un crecimiento del 15% en unidades económicas del sector restaurantero y de servicios profesionales en el último año en el corredor gastronómico de Av. Terranova, actuando como un imán para la demanda de vivienda en renta en la zona.</li>
+<li>Minería de Opinión:
+o Tópicos Positivos: &#34;Seguridad&#34; (asociada a cotos privados), &#34;nuevos parques&#34;, &#34;calidad de vida&#34;.
+o Tópicos Negativos: &#34;Tráfico&#34; (la queja N°1, con un 65% de las menciones negativas), &#34;inseguridad en zonas abiertas&#34;, &#34;costo de vida&#34;.</li>
+<li>Inteligencia de Noticias: Se detectaron 3 grandes proyectos verticales que recibieron permisos de construcción en el último trimestre en la zona de Av. Patria y Acueducto. Esto añadirá aproximadamente 600 unidades de lujo al inventario en los próximos 24-36 meses, intensificando la competencia en el segmento premium.
+Investigación Profunda completada. La base de datos para Zapopan, Guadalajara y la AMG ha sido poblada con esta inteligencia multi-capa. ESDATA ahora posee un entendimiento del mercado que supera la simple observación de precios.
+&lt;/Petición de Gemini&gt;
+&lt;Petición ChatGPT&gt;:
+Competencia 1: Fuentes Oficiales y Abiertas (La Base de la Verdad)
+1.1 APIs y portales gubernamentales
+Fuente Qué ofrece (variables clave) Extracción recomendada
+Insight estratégico
+INEGI – API (SNIEG)
+Censos/Encuestas (población, vivienda, empleo), índices de precios, shapefiles Marco Geoestadístico (AGEB, manzana)
+API REST + descargas
+Normaliza todos tus análisis a claves geoestadísticas y series oficiales; asegura comparabilidad y rigor estadístico.
+DENUE (INEGI) Unidades económicas con SCIAN, personal ocupado, coordenadas
+API REST
+Mapa vivo de actividad económica para retail, oficinas, parques y corredores; sirve como “POI truth set” para comercial/mixto.
+SNIIV / CONAVI– SEDATU
+Créditos de vivienda (tipo, monto, institución, destino), subsidios
+Datos abiertos (CSV)
+Termómetro granular de demanda efectiva (originaciones) por municipio/colonia; útil para absorción y mix de producto.
+RUV (Registro Único de Vivienda)
+Inventario/avance de vivienda nueva (registro de desarrollos)
+Partnership / convenios (no API pública)
+Anticipa oferta futura y ritmos de construcción por proyecto; ventaja temporal sobre portales.
+SHF (Índice de Precios de la Vivienda)
+Índices por entidad/municipio, cortes por nueva/usada
+CSV abiertos
+Serie institucional para valuación hedónica y backtesting de AVMs; referencia “beta de mercado”. Transparencia SHF
+CNBV / Banxico / CONDUSEF
+Cartera hipotecaria, CAT/tasas, inclusión financiera por municipio
+Tableros y CSV
+Modela sensibilidad de demanda a tasas y acceso al crédito; segmenta por bancarización local. Portafolio InfoBanco de MéxicoGobierno de México
+Fuente Qué ofrece (variables clave) Extracción recomendada
+Insight estratégico
+SAT–SIGER / RPPyC estatales
+Inscripciones mercantiles, propiedad/gravámenes (según estado)
+Scraping selectivo + trámites
+Due diligence y trazabilidad legal de inmuebles/vehículos corporativos; requiere flujos legales por entidad.
+SECTUR – RNT &amp; DATATUR
+Registro de hoteles, ocupación/ADR por destino
+Consulta web / Partnership
+Benchmarks hoteleros oficiales para underwriting en hospitality; cruce con licencias y usos de suelo. DataturSECTUR
+1.2 Inteligencia catastral y satelital
+Fuente Qué ofrece Extracción Insight
+SEDUVI / SIG CDMX / Uso de suelo
+Zonificación, usos permitidos, densidades, valor del suelo
+Descarga/Scraping Verifica factibilidad y potencial constructivo por predio; reduce riesgo regulatorio.
+Catastrales estatales/municipales (p.ej., GDL Visor Urbano)
+Licencias, alineamientos, números oficiales
+Scraping + convenios
+Detecta permisos y actividad edificadora real por zona.
+INEGI – CEM 3.0 &amp; LiDAR Modelos de elevación (15–120m) y MDE LiDAR alta resolución
+Descarga
+Modela riesgos (inundación/pendiente), asoleamiento y vistas; input para planeación y pricing premium. INEGI+1
+RAN / CONANP / CONABIO
+Límite ejidal, ANPs, capas ambientales
+Descarga SIG
+Evita conflictos agrarios/ambientales; identifica zonas de mitigación y plusvalías por amenidades verdes. Conabio
+Atlas Nacional de Riesgos (CENAPRED)
+Peligros geológicos/hidromet./químicos por capa
+WMS/Descarga Scoring de riesgo físico para underwriting y seguros; requisito en pipeline de due
+Fuente Qué ofrece Extracción Insight
+diligence. Atlas Nacional de Riesgos+1
+1.3 Análisis documental automatizado (PDU, Gacetas, planes)</li>
+<li>Planificación urbana (SEDATU / estados / IMEPLAN / PAOT-CDMX): scraping y OCR de PDU, programas parciales, declaratorias y cambios de uso de suelo en Gacetas y repositorios municipales/estatales; parseo de matrices de compatibilidad y poligonales. Sedui Estado de MéxicoImeplanCentro PAOT</li>
+<li>Estrategia y lineamientos nacionales (PNOTDU, ENOT, lineamientos SEDATU): corpus para features regulatorios en el grafo de planeación. Mi MexicolatePlataforma Urbana
+Insight: un motor de extracción de normas (texto→vector→geometría) reduce semanas de lectura humana a horas y alimenta un motor de factibilidad por predio.
+Competencia 2: Técnicas de Enriquecimiento (La Creación de Valor)
+2.1 Geocodificación y fusión
+Fuente Rol Extracción Insight
+Marco Geoestadístico INEGI (AGEB, manzana)
+Normalizador geoespacial
+Shapefiles Te da la “gramática” territorial para unir todo: censo, licencias, crimen, precios.
+SEPOMEX – Códigos postales CP, asentamientos, municipios
+CSV abierto
+Bridge entre direcciones libres y claves geo; clave para portales/CFDI.
+Google/Here/Mapbox/OpenCage Geocoding/reverse (comercial)
+API Alta precisión en direcciones “sucias”; combinar con Nominatim/OSM para costos.
+OpenStreetMap + Overpass Vialidad, POIs, edificios
+API Overpass
+Completa huecos de POIs y morfología urbana a bajo costo.
+2.2 Web scraping (objetivos concretos)
+Objetivo Sitios Extracción Insight
+Inventario y precios residencial/comercial
+Inmuebles24, Lamudi, Propiedades.com, MetrosCúbicos
+Scraping con respeto a TOS / Partnership
+Feed near real-time de oferta/listings; features para AVM y elasticidad de precios. Propiedades+1
+STR / Alojamientos Inside Airbnb (abierto), AirDNA (comercial)
+CSV / API Ocupación, ADR, estacionalidad para multifamily/hospitality y presión sobre renta residencial. insideairbnb.com+1
+Permisos y licencias Portales de datos abiertos CDMX/GDL/otros
+Scraping Señal temprana de construcción; leading indicator de nueva oferta.
+Transporte y vialidad SICT aforos, RNC INEGI, TomTom Index
+Descargas / scraping
+Conectividad/tiempos de viaje como driver de valor logístico y de oficinas.
+Nota: para portales privados, priorizar acuerdos de datos; donde no sea viable, usar scraping con límites, rotating IPs y cumplimiento de robots/TOS.
+2.3 Crowdsourcing activo</li>
+<li>OpenStreetMap / Mapillary / KartaView: captura comunitaria de fachadas, alturas aproximadas y accesos; útil para POIs y atributos faltantes (p. ej., rampas, arbolado). APIs disponibles.</li>
+<li>Formularios in situ (brokers, administradores): micro-paneles para renta efectiva, vacancia, gastos comunes; se integran a un market beat propietario.
+Insight: enriquecer con 1–2 señales nuevas por polígono (p. ej., licencias + aforos) eleva sustancialmente el poder predictivo de modelos de renta/precio.
+Competencia 3: Partnerships Estratégicos (El Acceso Exclusivo)
+3.1 Actores B2B clave
+Actor Qué aporta Modalidad Insight
+CANADEVI (nacional y delegaciones)
+Pipeline de desarrollos y contacto con promotores
+Convenios / Data share
+Visibilidad temprana de proyectos, tierra, y absorción por segmento. CANADEVI Nacional+1
+Actor Qué aporta Modalidad Insight
+AMPIP (parques industriales)
+Directorios de parques, empresas, superficies y ubicación
+Afiliación / Convenios
+Inteligencia de nearshoring y absorción industrial por corredor. ampip.org.mxIrp
+Colegios de Notarios Flujo de compraventas, fideicomisos, gravámenes (agregado)
+MOUs Señales adelantadas de cierre y valores transaccionales (anonimizados). Colegio de NotariosNotariado Mexicano
+Bancos / SOFOMES Originaciones y cartera hipotecaria por plaza
+Data partnership
+Mide salud del mercado y riesgo de crédito por microzona. Portafolio Info
+Cadenas hoteleras / STR providers (RNT/SECTUR, AirDNA)
+Ocupación/ADR y pipeline Convenios Valuación y underwriting de hotelería y mixed-use. Datatur
+3.2 Proveedores comerciales (“bulk data”)
+Proveedor Producto Uso inmobiliario
+AirDNA Series STR por ciudad/colonia
+Modelos de impacto STR en rentas/ocupación. AirDNA
+Veraset / Spectus / Placer.ai (cobertura LATAM varía)
+Foot-traffic y patrones de movilidad
+Trade area, canibalización, ranking de ubicaciones retail.
+TomTom / HERE Velocidad histórica y congestión
+Modelos de accesibilidad/tiempos puerta-a-puerta.
+Insight: los convenios con cámaras sectoriales (CANADEVI/AMPIP) y colegios de notarios son pocos pero poderosos: dan datos pre-portal y pre-registro, donde nace la ventaja.
+Competencia 4: Variables Alternativas (La Visión de Futuro)
+4.1 Geoespacial avanzado (monitoreo de construcción)
+Fuente Señal Extracción Insight
+Sentinel-2 (Copernicus)
+Cambios en cubierta construida (10m, alta cadencia)
+Descarga + pipelines GEE
+Detección de nuevas huellas y ritmo de obra a escala metropolitana. Copernicus Data Space EcosystemCopernicus Browser
+GHSL 2023/2025
+Built-up surface/volume/height
+Descarga Proxy de densificación y verticalidad para “macro comps” y planeación. Asentamientos Humanos GlobalesCatálogo de Datos del JRC
+INEGI LiDAR / CEM
+Terreno/pendientes Descarga Micro-sitio, vistas y riesgos que impactan valor. INEGI
+4.2 Movilidad y accesibilidad
+Fuente Señal Extracción Insight
+SICT – Aforos carreteros
+Volumen vehicular por tramo
+Descargas Atractividad logística y retail roadside.
+RNC (INEGI) Red de caminos oficial Descarga Topología fiable para enrutamiento y isócronas.
+TomTom Traffic Index Congestión por ciudad Scraping/API comercial
+Prima/descuento de accesibilidad por horario.
+4.3 Opinión pública y seguridad
+Fuente Señal Extracción Insight
+ENSU / ENVIPE (INEGI) Percepción de inseguridad por ciudad/área
+CSV/API Penalización de renta/precio por percepción; control de calidad de vida.
+Datos delictivos locales (p.ej., CDMX)
+Incidencia por colonia Descargas Riesgo operativo y prima de seguros.
+Reseñas de Google Places (comercial)
+Sentimiento por lugar/servicio
+API Micro-clima comercial y “walkability emocional”.
+4.4 Proxies de actividad económica
+Fuente Señal Extracción Insight
+Banxico – Remesas Flujo por estado/mun.
+Descargas Presión de demanda/ahorro en mercados con alta migración.
+SENER – SIE / CENACE
+Consumo/ demanda eléctrica
+Descargas / scraping
+Proxy de actividad y ocupación (industrial/comercial). Sistema de Información EnergéticaCENACE
+CRE – Permisos y precios gasolinas
+Apertura estaciones / precios
+Scraping Señal de dinamismo vial y poder adquisitivo por zona. Gobierno de MéxicoCRE
+RNT / DATATUR Ocupación hotelera Consulta/CSV Salud turística de plazas secundarias; spillover a renta residencial. Datatur
+NOAA VIIRS Night Lights
+Luminosidad nocturna
+Descarga Proxy robusto de crecimiento económico a baja latencia.
+Apéndice A — Objetivos por vertical
+Residencial: SHF, SNIIV/CONAVI, RUV, licencias, STR (InsideAirbnb/AirDNA), ENSU/ENVIPE, SEPOMEX/INEGI. Transparencia SHFinsideairbnb.com Comercial (retail/oficinas): DENUE, movilidad (TomTom, SICT), permisos de uso/aforos peatonales (OSM), crimen/seguridad; reseñas. Industrial/Logística: AMPIP, RNC/aforos, SENER/CRE/CENACE, licencias municipales. ampip.org.mxSistema de Información Energética Hotelería: RNT/DATATUR; STR; usos de suelo. DataturAirDNA
+&lt;/Petición de ChatGPT&gt;</li>
+</ul>

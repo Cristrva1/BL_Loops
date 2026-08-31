@@ -1,0 +1,55 @@
+{
+  "title": "El Discurso de Ventas Moderno",
+  "type": "ARTIFACT_TYPE_EXPLAINER_VIDEO",
+  "sources": [{
+    "sourceId": {
+      "id": "045043ce-af58-4fef-9901-9a900f41db10"
+    }
+  }, {
+    "sourceId": {
+      "id": "784d36dc-afeb-4a8b-a449-034af32dc21d"
+    }
+  }, {
+    "sourceId": {
+      "id": "8d829969-ec97-4184-8d84-b20262d3aebf"
+    }
+  }, {
+    "sourceId": {
+      "id": "3665bb6e-3296-407b-80d3-f1e54deb76b9"
+    }
+  }, {
+    "sourceId": {
+      "id": "bbb23a23-eb27-4ea9-8918-4dc68e811db6"
+    }
+  }, {
+    "sourceId": {
+      "id": "163ad50a-a444-4c3c-b893-621f083e9d50"
+    }
+  }, {
+    "sourceId": {
+      "id": "233cb07d-3406-458b-be1a-2234faf62522"
+    }
+  }, {
+    "sourceId": {
+      "id": "3ae93ac4-fd4d-4789-a582-bc0eb9fcb9ae"
+    }
+  }, {
+    "sourceId": {
+      "id": "e0c1521e-7cb1-4a52-9fc6-31d0c9a59a1f"
+    }
+  }, {
+    "sourceId": {
+      "id": "ae613b0c-b781-475d-9d68-c0693adfce19"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "explainerVideo": {
+    "generationOptions": {
+      "languageCode": "es-MX",
+      "videoFocus": "",
+      "length": "EXPLAINER_VIDEO_LENGTH_UNSPECIFIED",
+      "templateFormat": "TEMPLATE_FORMAT_UNSPECIFIED",
+      "videoOverviewStyle": "VIDEO_OVERVIEW_STYLE_UNSPECIFIED"
+    }
+  }
+}

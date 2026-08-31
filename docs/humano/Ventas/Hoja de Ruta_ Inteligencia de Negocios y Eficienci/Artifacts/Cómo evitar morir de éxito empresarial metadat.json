@@ -1,0 +1,20 @@
+{
+  "title": "Cómo evitar morir de éxito empresarial",
+  "type": "ARTIFACT_TYPE_AUDIO_OVERVIEW",
+  "sources": [{
+    "sourceId": {
+      "id": "f55e6d62-be34-4761-a305-0f20e98524b2"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "audioOverview": {
+    "generationOptions": {
+      "episodeFocus": "",
+      "episodeLength": "EPISODE_LENGTH_UNSPECIFIED",
+      "targetAudience": "TARGET_AUDIENCE_UNSPECIFIED",
+      "languageCode": "es-MX",
+      "showFormat": "SHOW_FORMAT_UNSPECIFIED"
+    },
+    "isInteractive": false
+  }
+}

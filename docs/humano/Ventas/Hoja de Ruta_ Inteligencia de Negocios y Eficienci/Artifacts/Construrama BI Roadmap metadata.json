@@ -1,0 +1,18 @@
+{
+  "title": "Construrama BI Roadmap",
+  "type": "ARTIFACT_TYPE_SLIDES",
+  "sources": [{
+    "sourceId": {
+      "id": "f55e6d62-be34-4761-a305-0f20e98524b2"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "slides": {
+    "generationOptions": {
+      "languageCode": "es-MX",
+      "deckType": "DECK_TYPE_UNSPECIFIED",
+      "length": "SLIDE_DECK_LENGTH_UNSPECIFIED"
+    },
+    "title": "Construrama BI Roadmap"
+  }
+}

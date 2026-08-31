@@ -1,0 +1,211 @@
+<h1 id="tab-1">Tab 1</h1>
+<p><strong>1. METHODS TAXONOMY</strong></p>
+<p>The following table synthesizes techniques from the comprehensive taxonomy in  <em>The Prompt Report</em>  (arXiv:2406.06608, Feb 2025 update), cross-referenced with task-specific classifications in Vatsal et al. (arXiv:2407.12994) and Sahoo et al. (arXiv:2402.07927). Categories draw primarily from the 58-technique taxonomy (ICL, Thought Generation, Decomposition, Ensembling, Self-Criticism, Automated Prompt Optimization). Optimal models reflect empirical performance on latest frontier models (GPT-5/o-series, Claude 4.x, Gemini 2.x) as of early 2026; larger reasoning models reduce explicit CoT needs but benefit from structure. Efficacy is quantitative where reported (benchmarks: GSM8K, MMLU, Game-of-24, ALFWorld, etc.).</p>
+<table>
+<thead>
+<tr>
+<th><strong>Technique</strong></th>
+<th><strong>Category</strong></th>
+<th><strong>Optimal Model</strong></th>
+<th><strong>Use Case</strong></th>
+<th><strong>Reported Efficacy</strong></th>
+<th><strong>Source</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zero-shot</td>
+<td>In-Context Learning (ICL)</td>
+<td>Any frontier (Claude 4 Haiku)</td>
+<td>Simple classification/instruction-following</td>
+<td>Baseline; ~62.7% MMLU (GPT-3.5)</td>
+<td>arXiv:2406.06608</td>
+</tr>
+<tr>
+<td>Few-shot / Many-shot</td>
+<td>ICL</td>
+<td>GPT-5, Claude 4 Sonnet</td>
+<td>Pattern learning, style matching</td>
+<td>+10–30% over zero-shot on reasoning; 90% accuracy in medical coding with 5 examples</td>
+<td>arXiv:2406.06608; Lenny&#39;s Newsletter (Jun 2025)</td>
+</tr>
+<tr>
+<td>Chain-of-Thought (CoT) &amp; variants (Zero-shot CoT, Auto-CoT)</td>
+<td>Thought Generation</td>
+<td>GPT-5 reasoning models, Claude 4 Opus</td>
+<td>Math, commonsense, multi-hop QA</td>
+<td>+39% GSM8K vs baseline; Zero-shot CoT task-agnostic</td>
+<td>arXiv:2407.12994; arXiv:2406.06608</td>
+</tr>
+<tr>
+<td>Tree-of-Thoughts (ToT) / Graph-of-Thought</td>
+<td>Decomposition / Thought Generation</td>
+<td>Claude 4 Opus, GPT-5</td>
+<td>Planning, search, creative problem-solving</td>
+<td>65% success Game-of-24 vs 4% CoT; 40% Logical Reasoning gain</td>
+<td>arXiv:2407.12994; Yao et al. (2023/2024)</td>
+</tr>
+<tr>
+<td>Role Prompting / Persona Assignment</td>
+<td>ICL / Style</td>
+<td>All (stylistic)</td>
+<td>Tone/style control, domain adaptation</td>
+<td>Strong for style/tone; minimal accuracy gain (debunked myth for facts)</td>
+<td>Lenny&#39;s Newsletter (2025); arXiv:2406.06608</td>
+</tr>
+<tr>
+<td>ReAct</td>
+<td>Agents / Decomposition</td>
+<td>Claude 4 with tools, GPT-5 agents</td>
+<td>Tool use, interactive reasoning</td>
+<td>&gt;10% ALFWorld / HotpotQA; competitive with CoT</td>
+<td>arXiv:2407.12994; Yao et al. (2022)</td>
+</tr>
+<tr>
+<td>Self-Consistency / Self-Refinement</td>
+<td>Ensembling / Self-Criticism</td>
+<td>GPT-5, Gemini 2</td>
+<td>Reducing variance in reasoning</td>
+<td>+11% GSM8K over CoT; +3–6% commonsense</td>
+<td>arXiv:2406.06608; arXiv:2407.12994</td>
+</tr>
+<tr>
+<td>Skeleton-of-Thought (SoT)</td>
+<td>Decomposition</td>
+<td>Any (latency-focused)</td>
+<td>Parallelizable long-form generation</td>
+<td>~2× speedup; quality parity or better</td>
+<td>arXiv:2307.15337 (ICLR 2024)</td>
+</tr>
+<tr>
+<td>Meta-Prompting / Automatic Prompt Engineer (APE)</td>
+<td>Automated Optimization</td>
+<td>GPT-5 / Claude 4 as optimizer</td>
+<td>Prompt discovery/iteration</td>
+<td>Outperforms manual baselines; DSPy variants +15–20% in optimization loops</td>
+<td>arXiv:2406.06608; DSPy (2023/2025)</td>
+</tr>
+<tr>
+<td>Directional Stimulus Prompting</td>
+<td>Thought Generation / ICL</td>
+<td>Claude 4, GPT-5</td>
+<td>Guided creative or constrained generation</td>
+<td>Task-specific gains in controlled stimuli (e.g., +8–12% targeted behaviors)</td>
+<td>Derived from style/emotion variants in arXiv:2406.06608</td>
+</tr>
+<tr>
+<td>Program-of-Thought (PoT)</td>
+<td>Decomposition</td>
+<td>Models with code interp (GPT-5, Claude)</td>
+<td>Symbolic/math computation</td>
+<td>+12% avg over CoT on math/table tasks</td>
+<td>arXiv:2407.12994</td>
+</tr>
+<tr>
+<td>Emotion Prompting</td>
+<td>ICL / Psychological</td>
+<td>All</td>
+<td>Motivation, creativity, persuasion</td>
+<td>+8–11% on benchmarks; also amplifies bias/disinfo (caution)</td>
+<td>arXiv:2307.11760; arXiv:2406.06608</td>
+</tr>
+<tr>
+<td>Multimodal Prompting (vision+text)</td>
+<td>Multimodal Extension</td>
+<td>GPT-5-V, Claude 4 Vision, Gemini 2</td>
+<td>Image analysis, VQA, diagram reasoning</td>
+<td>+15–25% on MM-Bench/VQA when using structured image desc + CoT</td>
+<td>OpenAI/Anthropic multimodal guides (2025)</td>
+</tr>
+<tr>
+<td>Structured Output Prompting (JSON mode, grammars)</td>
+<td>Output Control</td>
+<td>GPT-5 (Structured Outputs), Claude 4 (XML)</td>
+<td>Reliable parsing/API integration</td>
+<td>Near-100% valid JSON with schema; eliminates post-processing</td>
+<td>OpenAI docs; Anthropic XML best practices</td>
+</tr>
+<tr>
+<td>System Prompts / Constitutional AI</td>
+<td>Alignment / System</td>
+<td>Claude 4 (native)</td>
+<td>Safety, consistency, multi-turn</td>
+<td>Reduces harmful outputs; self-critique alignment</td>
+<td>Anthropic Constitutional AI (integrated in docs)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2. FUNDAMENTAL TECHNIQUES (with functional example)</strong></p>
+<p><strong>Zero-shot / Few-shot / Many-shot</strong>  (ICL): Instruction-only vs. 1–few exemplars. Example (Few-shot sentiment):textClassify sentiment as positive/negative/neutral.</p>
+<p>Review: The food was amazing! → positive</p>
+<p>Review: Service was slow. → negative</p>
+<p>Review: [new review here]</p>
+<p><strong>Chain-of-Thought (CoT) and variants (Auto-CoT, ToT, Graph-of-Thought)</strong> : &#34;Think step by step&#34; or tree/graph search. Zero-shot CoT example:textQ: Roger has 5 tennis balls. He buys 2 more cans of tennis balls. Each can has 3 tennis balls. How many tennis balls does he have now?</p>
+<p>A: Let&#39;s think step by step...ToT (simplified): Generate 3 branches, evaluate, prune.</p>
+<p><strong>Role Prompting and Persona Assignment</strong> : &#34;You are a world-class [role]...&#34; Example: You are a senior Python engineer with 15 years experience. Review this code for security and performance...</p>
+<p><strong>ReAct (Reasoning + Acting)</strong> : Interleave thought-action-observation. Example: Thought: I need latest stock price. Action: Search[TSLA]. Observation: $... Thought: ...</p>
+<p><strong>Self-Consistency and Self-Refinement</strong> : Sample multiple paths → majority vote; or critique/improve. Example (Self-Refine): Initial answer: [output]. Critique: [list flaws]. Improved:</p>
+<p><strong>Skeleton-of-Thought</strong> : First outline skeleton in parallel, then expand sections. Example: Generate skeleton for essay on prompt engineering: 1. Intro 2. ... Then expand point 2 in detail.</p>
+<p><strong>3. ADVANCED AND EMERGING TECHNIQUES (2024-2025)</strong></p>
+<p><strong>Meta-Prompting / APE</strong> : LLM generates/optimizes prompts. Example: Improve this prompt for accuracy: [original]. Score and iterate.</p>
+<p><strong>Directional Stimulus Prompting</strong> : Add targeted stimuli (e.g., &#34;Focus on ethical implications first&#34;). Emerging in style-guided generation (2024–2025 extensions of emotion/style prompting).</p>
+<p><strong>Program-of-Thought (PoT)</strong> : Generate executable code. Example: Solve: [math problem]. Write Python code using sympy, then execute result.</p>
+<p><strong>Emotion Prompting and psychological priming</strong> : Add phrases like &#34;This is very important to my research—give your absolute best effort.&#34; Gains 8–11% but risks bias amplification.</p>
+<p><strong>Prompting for multimodal models (vision + text)</strong> : Describe image + CoT. Example (Claude/GPT-5-V): Image: [base64 or URL]. Analyze chart step-by-step: first describe axes, then trends, finally insights.</p>
+<p><strong>Structured Output Prompting (JSON mode, grammars)</strong> : Use API schemas or XML. OpenAI Structured Outputs guarantees schema compliance; Anthropic XML tags for parsing.</p>
+<p><strong>System Prompts and Constitutional AI prompting</strong> : High-priority instructions + self-critique against principles (e.g., Anthropic: &#34;Evaluate against constitutional principles: harmlessness, honesty...&#34;). Integrates with tool use and long context.</p>
+<p><strong>4. ANTI-PATTERNS AND COMMON MISTAKES</strong>  (top 10, derived from Prompt Report meta-analysis, Lenny&#39;s 2025, Lakera 2026, OpenAI/Anthropic guides)</p>
+<p><strong>Vague/ambiguous instructions</strong>  – Model hallucinates or drifts. Before: &#34;Tell me about AI.&#34; After: &#34;Summarize state-of-the-art prompt engineering 2024–2025 in exactly 5 bullets, citing 3 arXiv papers.&#34;</p>
+<p><strong>Over-reliance on role prompting for factual accuracy</strong>  (2025 myth). Before: &#34;You are a genius professor. Solve this.&#34; After: &#34;Solve using step-by-step reasoning. Verify facts against provided context.&#34;</p>
+<p><strong>No output format/structure</strong>  (leads to unparseable text). Before: &#34;Analyze this.&#34; After: &#34;Respond ONLY in valid JSON: {&#34;analysis&#34;: &#34;...&#34;, &#34;confidence&#34;: 0–100}.&#34;</p>
+<p><strong>Ignoring prompt sensitivity</strong>  (order, spacing, synonyms change results 0–80%). Before/After: Always test 3–5 variants + use evals.</p>
+<p><strong>Poor/no examples in few-shot</strong>  (biased or irrelevant). Before: Random examples. After: Diverse, high-quality, balanced labels (KNN/Vote-K selection).</p>
+<p><strong>Threats or negative instructions</strong>  (ineffective post-2024). Before: &#34;Do NOT hallucinate or I will...&#34; After: &#34;Ground every claim in provided context. If unsure, say &#39;I don&#39;t know&#39;.&#34;</p>
+<p><strong>Overloading context without structure/delimiters</strong>  (long-context confusion). Before: Wall of text. After: XML tags   (Anthropic/OpenAI).</p>
+<p><strong>No iteration/evaluation</strong>  (one-shot prompting). Before: Deploy first prompt. After: Use DSPy or manual loop with metrics (pass@k, human eval).</p>
+<p><strong>Weak security (no scaffolding against injection/jailbreak)</strong> . Before: Direct user input. After: Evaluate input for safety first. If risky: &#34;I cannot assist.&#34; Else proceed.</p>
+<p><strong>Assuming static prompts work across model updates</strong>  (drift). Before: Hardcode for GPT-4. After: Pin snapshot + automated evals on MMLU subset.</p>
+<p><strong>5. FRAMEWORKS AND TEMPLATES</strong>  (universal, reusable)</p>
+<p><strong>Structured Analysis Framework</strong>  (OpenAI/Anthropic hybrid):text</p>
+<p></p>
+<p></p>
+<p></p>
+<p>&lt;output_format&gt;JSON: {&#34;reasoning&#34;: &#34;...&#34;, &#34;answer&#34;: &#34;...&#34;, &#34;confidence&#34;: 0-100}&lt;/output_format&gt;</p>
+<p></p>
+<p><strong>Agentic Task Framework</strong>  (ReAct + Self-Crit):textGoal: [GOAL]. Success criteria: [CRITERIA].</p>
+<p>You have tools: [LIST].</p>
+<p>For each step: Thought → Action → Observation → Critique → Next.</p>
+<p>[VARIABLE_USER_INPUT]</p>
+<p><strong>Safety + Generation Template</strong>  (Constitutional-inspired):textSystem: [CONSTITUTIONAL_PRINCIPLES e.g., be harmless, truthful].</p>
+<p>Evaluate input: [VARIABLE_INPUT].</p>
+<p>If safe: Generate [OUTPUT] in [FORMAT]. Else: Refuse politely.</p>
+<p><strong>6. BENCHMARKS AND METRICS</strong></p>
+<p>Prompt quality is measured via  <strong>quantitative</strong>  metrics: accuracy / F1 on classification (MMLU, BIG-Bench Hard), pass@k / HumanEval for code, BLEU/ROUGE/BERTScore for generation, exact match on QA (GSM8K, HotpotQA), majority-vote consistency.  <strong>Qualitative</strong> : human preference (Helpfulness, Honesty, Harmlessness – HHH), faithfulness to source (no hallucination), robustness to perturbations.</p>
+<p>Key benchmarks (prioritized in 2024–2025 surveys):</p>
+<p>MMLU (multitask knowledge)</p>
+<p>BIG-Bench / BBH (hard tasks)</p>
+<p>HellaSwag (commonsense)</p>
+<p>GSM8K / MATH (math reasoning)</p>
+<p>Game-of-24, ALFWorld (planning/agents)</p>
+<p>MM-Bench / VQA (multimodal)</p>
+<p>Harmful Behaviors / Jailbreak suites (security).</p>
+<p>Newer models use internal reasoning evals; prompt techniques still boost consistency by 10–40% on these.</p>
+<p><strong>7. CURATED RESOURCES</strong></p>
+<p><strong>5 essential papers (2023–2025, prioritized recency/comprehensiveness):</strong></p>
+<p>Schulhoff et al., &#34;The Prompt Report: A Systematic Survey...&#34; arXiv:2406.06608 (Feb 2025) – 58-technique taxonomy + meta-analysis; most comprehensive to date.</p>
+<p>Vatsal &amp; Dubey, &#34;A Survey of Prompt Engineering Methods... for Different NLP Tasks&#34; arXiv:2407.12994 (2024) – 39 methods across 29 tasks with SoTA efficacy.</p>
+<p>Sahoo et al., &#34;A Systematic Survey of Prompt Engineering in LLMs: Techniques and Applications&#34; arXiv:2402.07927 (2024) – Application-area categorization.</p>
+<p>Yao et al., &#34;Tree of Thoughts...&#34; (2023/2024 extensions) arXiv:2305.10601 – Deliberate problem-solving; massive gains on search/planning.</p>
+<p>Li et al. / related EmotionPrompt extensions (2023–2025) arXiv:2307.11760 – Psychological priming; 8–11% gains with caveats on bias.</p>
+<p><strong>3 actively maintained GitHub repositories (as of Feb 2026):</strong></p>
+<p><a href="https://github.com/dair-ai/Prompt-Engineering-Guide">https://github.com/dair-ai/Prompt-Engineering-Guide</a> (70k+ stars) – Papers, notebooks, RAG/agents extensions; weekly updates.</p>
+<p><a href="https://github.com/promptslab/Awesome-Prompt-Engineering">https://github.com/promptslab/Awesome-Prompt-Engineering</a> – Curated papers/tools/courses; active 2025–2026.</p>
+<p><a href="https://github.com/anthropics/prompt-eng-interactive-tutorial">https://github.com/anthropics/prompt-eng-interactive-tutorial</a> – Interactive Claude-specific; maintained with model releases.</p>
+<p><strong>2 reference courses/guides:</strong></p>
+<p>PromptingGuide.ai (DAIR.AI) – Free interactive techniques + code.</p>
+<p>DeepLearning.AI / Andrew Ng &#34;ChatGPT Prompt Engineering for Developers&#34; (updated 2025) + Anthropic/Lakera production guides.</p>
+<p><strong>Communities (active discussion 2025–2026):</strong></p>
+<p>Reddit r/PromptEngineering (tens of thousands members, daily papers)</p>
+<p>LearnPrompting.org Discord / HackAPrompt community</p>
+<p>X/Twitter #PromptEngineering + Anthropic/OpenAI dev forums.</p>
+<p>All efficacy claims are directly from cited papers/docs; contradictory info on role prompting (early positive vs. 2025 empirical debunking for accuracy) is flagged in table and anti-patterns. This reflects the rapidly evolving field as of February 2026.</p>

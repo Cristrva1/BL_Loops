@@ -1,0 +1,114 @@
+<ul>
+<li>Skip to primary navigation</li>
+<li>Skip to main content</li>
+<li>Skip to footer
+Codemotion Magazine
+We code the future. Together
+EN
+IT
+ES</li>
+<li>Sign in
+adsOrli Dunmayo 26, 2025   6 min read</li>
+</ul>
+<h3 id="ingenier-a-de-prompts-y-el-potencial-oculto-de-los-llms">Ingeniería de Prompts y el potencial oculto de los LLMs</h3>
+<p>Inteligencia ArtificialfacebooktwitterlinkedinredditImagina tener una conversación con una mente vasta, capaz de generar ideas, textos, código y mucho más. Esa es la promesa de los Large Language Models (LLMs), inteligencias artificiales entrenadas con cantidades ingentes de datos textuales. Pero, ¿cómo dirigimos esa inmensa capacidad? Aquí es donde entra en juego la  <strong>ingeniería de prompts</strong> , un campo emergente que se sitúa en la intersección de la lingüística, la informática y, sí, un toque de arte.
+En su esencia, un  <em>prompt</em>  es la instrucción o pregunta que le damos a un LLM. Puede ser tan simple como “¿Cuál es la capital de Francia?” o tan complejo como “Escribe un poema en estilo surrealista sobre la melancolía de un robot oxidado que añora el sol”. La calidad y la especificidad de este prompt son cruciales, ya que actúan como la brújula que guía la respuesta del modelo.
+Recommended article   agosto 1, 2025</p>
+<h5 id="humano-2-0-c-mo-la-living-intelligence-est-redefiniendo-qui-nes-somos">Humano 2.0: Cómo la Living Intelligence está Redefiniendo Quiénes Somos</h5>
+<p>Orli Dun
+Aprendizaje automático  Piensa en los LLMs como genios encerrados en una lámpara digital. El prompt es la forma en que formulamos nuestro deseo. Un deseo vago podría generar una respuesta igualmente imprecisa, mientras que un deseo articulado y lleno de matices tiene el potencial de desatar una creatividad y una utilidad sorprendentes.</p>
+<h4 id="qu-son-los-large-language-models">¿Qué son los  <strong>Large Language Models</strong>  <strong>?</strong></h4>
+<p>Los  <strong>LLMs</strong>  o modelos de lenguaje a gran escala, son sistemas de inteligencia artificial entrenados con grandes cantidades de datos textuales, capaces de generar, comprender y manipular el lenguaje de una forma sorprendentemente humana. Gracias a su entrenamiento, pueden responder preguntas, escribir textos creativos, resumir información, traducir idiomas y hasta resolver problemas complejos. Estos modelos se han posicionado como herramientas esenciales en diversas áreas, desde la asistencia virtual hasta la generación de contenido académico y profesional.</p>
+<h4 id="el-arte-del-prompting"><strong>El Arte del Prompting</strong></h4>
+<p>La ingeniería de prompts va mucho más allá de simplemente hacer preguntas. Implica una comprensión profunda de cómo funcionan los LLMs, sus fortalezas y sus limitaciones. Requiere experimentar, iterar y refinar nuestras instrucciones para obtener los resultados deseados. Es un arte porque exige creatividad para encontrar las palabras exactas, la estructura precisa y el tono adecuado para “conversar” eficazmente con la inteligencia artificial.
+El  <strong>prompting</strong>  es el arte de diseñar el mensaje o instrucción que le damos a un LLM para obtener respuestas precisas, coherentes y útiles. Aunque los LLMs tienen una gran capacidad de generación, la calidad y relevancia de la respuesta dependen en gran medida de la claridad, el contexto y la estructura de nuestro prompt. En otras palabras, no se trata solo de preguntar, sino de hacerlo de la manera más efectiva posible.</p>
+<h4 id="t-cnicas-de-ingenier-a-de-prompts"><strong>Técnicas de Ingeniería de Prompts</strong></h4>
+<p>Algunas de las técnicas que exploramos en el arte del prompting incluyen:</p>
+<ul>
+<li><strong>Claridad y contexto:</strong>  Un prompt bien diseñado proporciona suficiente información para que el modelo entienda de qué se le está hablando. Ofrecer información de fondo relevante ayuda al LLM a comprender mejor la tarea y a generar respuestas más pertinentes. Evitar la ambigüedad y ser lo más detallado posible sobre lo que esperamos. En lugar de “Escribe sobre el cambio climático”, podríamos decir “Escribe un breve ensayo explicando las tres principales consecuencias del aumento del nivel del mar debido al cambio climático, citando estudios recientes”.</li>
+<li>Definición de Roles <strong>:</strong>  Asignarle un “rol” al LLM puede influir significativamente en su respuesta. Podemos pedirle que actúe como un “historiador experto”, un “consultor de marketing creativo” o un “programador de Python experimentado”.</li>
+<li><strong>Direccionalidad y Establecer el Formato:</strong>  Incluir instrucciones específicas sobre el tono, formato o niveles de detalle ayuda a guiar la respuesta. Indicar explícitamente el formato deseado (un listado, un párrafo, un poema, código en un lenguaje específico) facilita la obtención del resultado esperado.</li>
+<li><strong>Uso de Ejemplos (Few-Shot Prompting):</strong>  En algunos casos, es útil mostrarle al LLM ejemplos para que entienda la estructura o el estilo esperado. Proporcionar ejemplos de lo que buscamos puede guiar al LLM para que genere respuestas similares en estilo y contenido.</li>
+<li><strong>Iteración y Refinamiento:</strong>  Rara vez obtenemos la respuesta perfecta al primer intento. A menudo es necesario ajustar y optimizar el prompt para mejorar la respuesta, lo que implica un proceso cíclico de prueba, análisis y mejora. La ingeniería de prompts es un proceso iterativo donde analizamos la salida del LLM, ajustamos el prompt y volvemos a intentarlo hasta lograr el resultado deseado.</li>
+</ul>
+<h5 id="ejemplos-de-c-digo"><strong>Ejemplos de Código</strong></h5>
+<p>A continuación, se presentan algunos ejemplos prácticos con código en Python para ilustrar cómo podemos interactuar con un LLM utilizando técnicas de prompting.</p>
+<h6 id="1-prompt-b-sico-zero-shot-prompting"><em>1. Prompt Básico (Zero-shot Prompting)</em></h6>
+<p>En este ejemplo, realizamos una llamada a la API de OpenAI utilizando un prompt simple. Este enfoque se denomina  <em>zero-shot prompting</em> , en el cual no se proporcionan ejemplos, solo la instrucción directa.
+import openai  # Configuración de la clave API  openai.api_key =  &#34;TU_API_KEY&#34;   # Definición del prompt simple  prompt =  &#34;Explica de manera clara qué es un Large Language Model (LLM) y cómo funciona.&#34;   # Solicitud a la API utilizando un prompt básico  response = openai.ChatCompletion.create( model= &#34;gpt-4&#34; , messages=[ { &#34;role&#34; :  &#34;system&#34; ,  &#34;content&#34; :  &#34;Eres un experto en inteligencia artificial y procesamiento del lenguaje.&#34; }, { &#34;role&#34; :  &#34;user&#34; ,  &#34;content&#34; : prompt} ] )  # Mostrar la respuesta del modelo   print (response.choices[ 0 ].message.content)Lenguaje del código:   PHP   ( php ) <em>Explicación:</em></p>
+<ul>
+<li>Configuramos la clave API necesaria para autentificar la solicitud.</li>
+<li>Se define un prompt directo y claro.</li>
+<li>Se establece un mensaje del sistema para indicar el rol del modelo, lo que ayuda a contextualizar la respuesta.</li>
+<li>Finalmente, se invoca la API y se imprime la respuesta.</li>
+</ul>
+<h6 id="2-prompt-con-ejemplos-few-shot-prompting"><em>2. Prompt con Ejemplos (Few-shot Prompting)</em></h6>
+<p>En el siguiente ejemplo, utilizamos  <em>few-shot prompting</em>  para guiar al modelo a través de ejemplos. Esto es útil cuando queremos un formato o estilo específicos en la respuesta.
+import  openai openai.api_key =  &#34;TU_API_KEY&#34;  messages = [ { &#34;role&#34; :  &#34;system&#34; ,  &#34;content&#34; :  &#34;Eres un experto en ingeniería de prompts y LLMs.&#34; }, { &#34;role&#34; :  &#34;user&#34; ,  &#34;content&#34; :  &#34;A continuación, se muestran ejemplos sobre cómo estructurar un resumen:\n\nEjemplo 1:\nEntrada: &#34;La IA está transformando la medicina.&#34;\nSalida: &#34;La inteligencia artificial está revolucionando el campo médico, mejorando diagnósticos y tratamientos.&#34;\n\nEjemplo 2:\nEntrada: &#34;El cambio climático afecta la biodiversidad.&#34;\nSalida: &#34;El cambio climático está reduciendo la diversidad biológica, alterando ecosistemas y poniendo en riesgo especies.&#34; \n\nAhora, resume este texto de manera similar:\nEntrada: &#34;La tecnología impulsa avances en la educación.&#34;&#34; } ] response = openai.ChatCompletion.create( model= &#34;gpt-4&#34; , messages=messages ) print(response.choices[ 0 ].message.content)Lenguaje del código:   JavaScript   ( javascript ) <em>Explicación:</em></p>
+<ul>
+<li>Se añade una serie de mensajes, incluyendo un mensaje de sistema que posiciona al LLM como experto en el campo.</li>
+<li>El prompt del usuario incluye dos ejemplos claros de entrada y salida, lo que establece el formato que se espera en la respuesta.</li>
+<li>Se solicita al modelo que aplique esa lógica a un nuevo texto.</li>
+<li>Este método mejora la precisión y coherencia de las respuestas cuando se requiere un formato específico.</li>
+</ul>
+<h6 id="3-prompt-avanzado-con-instrucciones-detalladas"><em>3. Prompt Avanzado con Instrucciones Detalladas</em></h6>
+<p>Un prompt avanzado puede incluir instrucciones sobre la extensión, el estilo y la profundidad de la respuesta. Este ejemplo es ideal para cuando buscas respuestas más elaboradas.
+import  openai openai.api_key =  &#34;TU_API_KEY&#34;  messages = [ { &#34;role&#34; :  &#34;system&#34; ,  &#34;content&#34; :  &#34;Actúa como experto en IA, explicando conceptos de manera didáctica y con ejemplos en el código cuando sea pertinente.&#34; }, { &#34;role&#34; :  &#34;user&#34; ,  &#34;content&#34; :  &#34;Explícame detalladamente qué es el prompting en LLMs, cómo se diferencia el approach de zero-shot y few-shot, y cuáles son las mejores prácticas para conseguir respuestas consistentes y de alta calidad. Usa ejemplos en código de Python para ilustrar tus puntos.&#34; } ] response = openai.ChatCompletion.create( model= &#34;gpt-4&#34; , messages=messages ) print(response.choices[ 0 ].message.content)Lenguaje del código:   JavaScript   ( javascript ) <em>Explicación:</em></p>
+<ul>
+<li>En el mensaje del sistema, se indica explícitamente la profundidad, el tono y la expectativa de respuesta.</li>
+<li>El prompt del usuario detalla las preguntas a responder, abarcando no solo la definición de  <em>prompting</em> , sino también las estrategias y mejores prácticas, junto con la solicitud de ejemplos en código.</li>
+<li>Este enfoque proporciona una respuesta integral que puede abarcar desde la teoría hasta la práctica, adaptándose a diversas necesidades educativas o profesionales.</li>
+</ul>
+<h4 id="mejores-pr-cticas-de-prompting"><strong>Mejores Prácticas de Prompting</strong></h4>
+<p>Al diseñar prompts efectivos, ten en cuenta lo siguiente:</p>
+<ul>
+<li><strong>Sé específico:</strong>  Cuanto más detallada sea tu instrucción, mayor es la probabilidad de obtener una respuesta precisa.</li>
+<li><strong>Define el contexto:</strong>  Los mensajes del sistema son fundamentales para guiar el rol y los conocimientos que se esperan de la respuesta.</li>
+<li><strong>Itera y refina:</strong>  No temas probar variaciones del prompt hasta lograr el resultado deseado.</li>
+<li><strong>Usa ejemplos cuando sea necesario:</strong>  Proveer ejemplos concretos puede eliminar ambigüedades y ayudar al modelo a entender el formato o el estilo esperado.</li>
+<li><strong>Considera la longitud y la complejidad:</strong>  Demasiada información en un solo prompt puede confundir al modelo. A veces, dividir un problema en partes más pequeñas resulta en respuestas más precisas.</li>
+</ul>
+<h4 id="un-campo-en-evoluci-n-constante"><strong>Un Campo en Evolución Constante</strong></h4>
+<p>La ingeniería de prompts es un campo dinámico y en rápida evolución. A medida que los LLMs se vuelven más sofisticados, también lo hacen las técnicas para interactuar con ellos de manera efectiva. Comprender los principios fundamentales del prompting se está convirtiendo en una habilidad crucial en diversos campos, desde la creación de contenido y la investigación hasta la educación y la resolución de problemas complejos.
+La ingeniería de prompts es tanto un arte como una ciencia. Permite sacarle el máximo provecho a los LLMs, transformando la forma en que interactuamos con ellos. Ya sea que te dediques a la investigación, el desarrollo o simplemente tengas curiosidad, dominar el arte del prompting abre un abanico de posibilidades innovadoras.
+Así que la próxima vez que interactúes con un LLM, recuerda que no solo estás haciendo una pregunta, estás participando en el arte de la  <em>ingeniería de prompts</em> . ¡Atrévete a explorar y a dar forma a las palabras que dan vida a la inteligencia artificial!
+ia</p>
+<h6 id="seleccionados-para-ti">Seleccionados para ti</h6>
+<p>¿Te gustaría leer más artículos como este? Explora la colección ia , con una selección personalizada y siempre actualizada de contenido nuevo.
+Share on:facebooktwitterlinkedinreddit</p>
+<h6 id="orli-dun-de-las-finanzas-a-la-revoluci-n-digital-software-developer-cloud-ai-oci-certified-tech-content-creator-porunmillondeamigos-por-qu-drupal-sigue-siendo-relevante-en-2025">Orli Dun¡De las finanzas a la revolución digital! Software Developer - Cloud &amp; AI - OCI Certified - Tech Content Creator #porunmillondeamigos  ¿Por qué Drupal sigue siendo relevante en 2025?</h6>
+<h6 id="art-culo-anterior-el-futuro-cabe-en-tu-bolsillo-los-small-language-models-revolucionan-la-comunicaci-n">Artículo anterior  El Futuro cabe en tu bolsillo: Los Small Language Models revolucionan la comunicación</h6>
+<h4 id="pr-ximo-art-culofooter">Próximo artículoFooter</h4>
+<h5 id="discover">Discover</h5>
+<ul>
+<li>Events</li>
+<li>Community</li>
+<li>Partners</li>
+<li>Become a partner</li>
+<li>Hackathons</li>
+</ul>
+<h5 id="magazine">Magazine</h5>
+<ul>
+<li>Tech articles</li>
+</ul>
+<h5 id="talent">Talent</h5>
+<ul>
+<li>Discover talent</li>
+<li>Jobs</li>
+</ul>
+<h5 id="companies">Companies</h5>
+<ul>
+<li>Discover companies</li>
+</ul>
+<h5 id="for-business">For Business</h5>
+<ul>
+<li>Codemotion for companies</li>
+</ul>
+<h5 id="about">About</h5>
+<ul>
+<li>About us</li>
+<li>Become a contributor</li>
+<li>Work with us</li>
+<li>Contact us</li>
+</ul>
+<h5 id="follow-us">Follow Us</h5>

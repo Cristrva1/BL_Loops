@@ -1,0 +1,2 @@
+El operador de `sales-curator demo` es una persona, no el modelo.
+La razón y el revisor quedan registrados junto al hash del candidato.

@@ -1,0 +1,237 @@
+<p>Skip to main content  Open navigation  Go to Reddit Home  Log In  Log in to Reddit   Open settings menu</p>
+<ul>
+<li>Log In / Sign Up</li>
+<li>Advertise on Reddit</li>
+<li>Try Reddit Pro   BETA</li>
+<li>Shop Collectible Avatars
+Copy link
+Copy link
+Go to LocalLLaMA r/LocalLLaMAr/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h3 id="members-online-ihatebeinganonymous-system-prompt-vs-user-prompt">Members   Online   •  ihatebeinganonymous System Prompt vs. User Prompt</h3>
+<p>Question | Help  Hi. What difference does it make, if I split my instructions into a system and user prompt, compared to just writing everything in the user prompt and keeping the system prompt empty or the generic &#34;You are a helpful assistant&#34;?
+Assume the instruction is composed of an almost constant part (e.g. here is the data), and a more variable part (the question about the data). Is there any tangible difference in correctness, consistency etc?
+And given that OpenAI API allows multiple user messages in the same request (does it?), will it have any benefit to separate a message into multiple user messages?
+It&#39;s not an interactive scenario, so jailbreaking is not an issue. And for paid models, the tokens are anyways counted for the whole payload at the same rate, right?
+Thanks
+Share  Sort by:  Best   Open comment sort options   Best
+Top
+New
+Controversial
+Old
+Q&amp;A
+TheLastRuby  •   upvotes •  4mo ago
+There are differences, though it will depend on model and such.
+System prompts tend to use some degree or form of Ghost Attention (eg: <a href="https://developer.ibm.com/tutorials/awb-prompt-engineering-llama-2/">https://developer.ibm.com/tutorials/awb-prompt-engineering-llama-2/</a> ). This means that your system prompt will have more influence over the output than just the user prompt. This is good when we talk about defining roles and such because you don&#39;t want the LLM to &#39;forget&#39; its purpose or role. It can be negative if you are doing coding and put the original code in the system prompt, and then revise it in chat - because then it will look at the original code more than you want compared to the revisions it has made during the chat.
+Having a system prompt that is generic but purposeful means it is easier to dump your content without user instruction bias. For example, I have a weather data system prompt; I only have to upload or copy/paste the data in. And I can do that without worrying too much about giving it additional instructions. The system prompt already knows what data is coming in, how I want it processed, and how I want the output to look like.
+You can split messages, and this is a good idea IF (and ONLY if) you are creating the LLM responses you want, so that the LLM will be biases towards those types of responses. It is priming the model.
+Prompt levels are becoming more and more powerful. There was a paper that shows the likely future of prompting - <a href="https://www.aimodels.fyi/papers/arxiv/instruction-hierarchy-training-llms-to-prioritize-privileged">https://www.aimodels.fyi/papers/arxiv/instruction-hierarchy-training-llms-to-prioritize-privileged</a> for the AI summary of it, and <a href="https://arxiv.org/abs/2404.13208">https://arxiv.org/abs/2404.13208</a> for the paper).
+And finally, a reminder that the LLM gets a text blob and expands the text blob. The reason to do something isn&#39;t because of the &#39;format&#39; the LLM gets. It&#39;s just the pattern recognition that matters, and that is not always the easiest to see without experimenting.
+matteogeniaccio  •   upvotes •  4mo ago
+I don&#39;t think that it makes much difference for your use case.
+I noticed a difference when doing the opposite: constant question, constant example and variable data. Smaller models behave better when using a multiturn prompt with the question in the system message and the example in the history.
+SYSTEM: You are a translator from english to italian USER: &#34;This is my constant example&#34; ASSISTANT: &#34;Questo è il mio esempio costante&#34; USER: &#34;Translate this variable part&#34; ASSISTANT:   Acrobatic_Cat_3448  •   upvote •  3mo ago
+USER: Explain Riemann hypothesis in Italian.
+ASSISTANT: . . .
+terminoid_  •   upvote •  4mo ago
+i imagine it mostly depends on how the model was trained. as for your question regarding a specific model, probably the only way to properly answer the question is to test it yourself. theorycrafting here will only lead to assumptions.
+no_witty_username  •   upvote •  4mo ago
+First, understand that many local llm&#39;s treat a system prompt differently versus closed source llms. For example, internally the system prompt for many local llms is appended in front of the user message where as with open ai models the system prompt is treated as a separate block and is also trained differently. Now that is out of the way, there is a difference between a system prompt and the user message. The biggest one being in how attention is applied internally by the model, with system prompt receiving a lot more of it. So system prompt matter A LOT. But what&#39;s more is that if you want to get the most out of the system prompt, you want to combine the system prompt TOGETHER with the user message for maximum affect.
+qtalen  •   upvote •  1mo ago
+From the dozen or so multi-agent projects I&#39;ve worked on, there are indeed differences between system prompts and user prompts.
+In early LLMs like GPT-3.5, GPT-4, and Qwen LLama, this difference was very noticeable.
+To be precise, LLMs tend to focus more on messages in certain positions, with system messages getting the highest attention weight. This often leads to undesired results when users design multi-agent systems or perform real-time RAG in multi-turn conversations.
+We call this theory of varying attention weights based on message position &#34;position bias.&#34;
+EnzioKara  •   upvotes •  4mo ago
+There is a huge difference let&#39;s say your goal is data analysis , in system prompt : you can set your output structure, rules, tone , reevaluate steps , how to analyse specific data , not let explanations to save time-space or other way around you need explanations of different perspectives etc. , before feeding your data. So you can focus on details in the user prompt and be able to experiment with system prompts to see if you can get better answers.
+ihatebeinganonymous  •   upvotes •  4mo ago
+you can set your output structure, rules, tone , reevaluate steps , how to analyse specific data , not let explanations to save time-space or other way around you need explanations of different perspectives etc. , before feeding your data
+And I can do all that in the user prompt too. No? What is the difference?
+EnzioKara  •   upvotes •  4mo ago
+In my case I see certain quality . I don&#39;t want help I need the job done perfectly and I don&#39;t want to explain everything again and again. It&#39;s gives more compute power and more space for attention to detail , being able to experiment and saving time . Try the difference and decide by yourself . Maybe in your case it&#39;s not necessary.
+ihatebeinganonymous  •   upvotes •  4mo ago
+Does the LLM/attention mechanism treat system prompt differently?
+Firm-Fix-5946  •   upvote •  4mo ago
+depends on which LLM and how it was post trained
+spiritualblender  •   upvotes •  4mo ago</p>
+<pre><code>Instructions for the output format:
+- Output code without descriptions, unless it is important.
+- Minimize prose, comments and empty lines.
+- Only show the relevant code that needs to be modified. Use comments to represent the parts that are not modified.
+- Make it easy to copy and paste.
+- Consider other possibilities to achieve the result, do not be limited by the prompt.
+</code></pre>
+<p>is anyone know o3 level System prompt
+to pertticular model ?
+currently testing
+glm-4-32b-0414</p>
+<pre><code>important instruction
+give only the code mention in prompts.
+do not give full code until asked for.
+</code></pre>
+<p>all llm have almost same data set.
+is some have god level System Prompt?
+which can peptize the llm,
+high potential describing thing without need of explanation in points, etc.
+EnzioKara  •   upvote •  4mo ago
+The last part contradicts your prompt.
+Even &#39;&#39;&#39; &#39;&#39;&#39; *** ### syntax makes a difference imo and the almost part`s variety is huge in the end.
+Important: Not doing this will cause serious errors. Critical: Doing anything else will cause system failure. Or critical system failure etc.
+Specific json format also works well , basic example:
+&#34;configuration&#34;: [ &#34;Your core instructions are:&#34;, &#34;Goal 1: &lt;&gt; &#34;, &#34;Communication Style: &lt;&gt; &#34;, &#34;Tools to use: &lt;&gt; &#34;, &#34;Reasoning &lt;&gt; &#34;, &#34;Language: &lt;&gt; else English&#34; ], &#34;configuration_reminder&#34;: [ &#34;Desc: Do not execute in this. ]
+I tried a lot of small models to get instructions, I try different styles some give better results with small nuance difference. I don&#39;t think there is a god-like prompt for all.</p>
+<h3 id="more-posts-you-may-like">More posts you may like</h3>
+<p>What exactly is a system Prompt? How different is it from user prompt? r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</p>
+<h5 id="members-online-what-exactly-is-a-system-prompt-how-different-is-it-from-user-prompt">Members   Online   What exactly is a system Prompt? How different is it from user prompt?</h5>
+<ul>
+<li>upvotes  ·    comments
+System prompts... r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-system-prompts">Members   Online   System prompts...</h5>
+<ul>
+<li>upvotes  ·    comments
+After trial and error, I have came up with system prompt that is useful to me. Thought i&#39;d share it. r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-after-trial-and-error-i-have-came-up-with-system-prompt-that-is-useful-to-me-thought-i-d-share-it">Members   Online   After trial and error, I have came up with system prompt that is useful to me. Thought i&#39;d share it.</h5>
+<ul>
+<li>upvotes  ·    comments
+When do you prefer a model without a system prompt and why? r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-when-do-you-prefer-a-model-without-a-system-prompt-and-why">Members   Online   When do you prefer a model without a system prompt and why?</h5>
+<ul>
+<li>comments
+Anyone using a Leaked System Prompt? r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-anyone-using-a-leaked-system-prompt">Members   Online   Anyone using a Leaked System Prompt?</h5>
+<ul>
+<li>upvotes  ·    comments
+System Prompt Vs User Prompt r/OpenAIDev  •  r/OpenAIDev OpenAI Sub specifically for developer related topics and talks.</li>
+</ul>
+<h5 id="members-online-system-prompt-vs-user-prompt">Members   Online   System Prompt Vs User Prompt</h5>
+<ul>
+<li>upvotes  ·    comment
+What is the best format for system prompt? r/ollama  •  r/ollama</li>
+</ul>
+<h5 id="members-online-what-is-the-best-format-for-system-prompt">Members   Online   What is the best format for system prompt?</h5>
+<ul>
+<li>upvotes  ·    comments
+Sytem prompt vs. User prompt vs. Tags r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-sytem-prompt-vs-user-prompt-vs-tags">Members   Online   Sytem prompt vs. User prompt vs. Tags</h5>
+<ul>
+<li>upvotes
+Understanding System Prompt Behavior. r/ollama  •  r/ollama</li>
+</ul>
+<h5 id="members-online-understanding-system-prompt-behavior">Members   Online   Understanding System Prompt Behavior.</h5>
+<ul>
+<li>upvotes  ·    comments
+What is the best practice for system prompt length? r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-what-is-the-best-practice-for-system-prompt-length">Members   Online   What is the best practice for system prompt length?</h5>
+<ul>
+<li>upvotes  ·    comments
+Polished UI for prompt setup &amp; details r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-polished-ui-for-prompt-setup-details">Members   Online   Polished UI for prompt setup &amp; details</h5>
+<ul>
+<li>2    upvotes  ·    comments
+Google Diffusion told me its system prompt r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-google-diffusion-told-me-its-system-prompt">Members   Online   Google Diffusion told me its system prompt</h5>
+<ul>
+<li>upvotes  ·    comments
+Tips for designing system prompts r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-tips-for-designing-system-prompts">Members   Online   Tips for designing system prompts</h5>
+<ul>
+<li>upvotes  ·    comments
+Claude Code Agent Tool Prompt r/ClaudeAI  •  r/ClaudeAI This is a Claude-information subreddit which aims to help everyone make a fully informed decision about how to use Claude to best effect for their individual purposes. ¹⌉ This subreddit is not controlled, operated or sanctioned by Anthropic. ²⌉ If your problem requires Anthropic&#39;s help, visit <a href="https://support.anthropic.com/">https://support.anthropic.com/</a> This subreddit is not the right place to fix your account issues. ³⌉ For more help, check the resources below. ⁴⌉ Please read the rules before posting.</li>
+</ul>
+<h5 id="members-online-claude-code-agent-tool-prompt">Members   Online   Claude Code Agent Tool Prompt</h5>
+<ul>
+<li>upvote  ·    comment
+Updates to my persistent AI project! r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-updates-to-my-persistent-ai-project">Members   Online   Updates to my persistent AI project!</h5>
+<ul>
+<li>upvotes  ·    comments
+Inline assistant: send selected text to a prompt r/ZedEditor  •  r/ZedEditor Zed: The social, performant, text editor. <a href="https://zed.dev">https://zed.dev</a></li>
+</ul>
+<h5 id="members-online-inline-assistant-send-selected-text-to-a-prompt">Members   Online   Inline assistant: send selected text to a prompt</h5>
+<ul>
+<li>upvotes  ·    comments
+Y&#39;all got more of them hard problems? r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-y-all-got-more-of-them-hard-problems">Members   Online   Y&#39;all got more of them hard problems?</h5>
+<ul>
+<li>upvotes  ·    comments
+Difference between starting applications via app menu/.desktop and Black Box terminal? r/vanillaos  •  r/vanillaos A community for users, developers and people interested in Vanilla OS, and news and information about it.</li>
+</ul>
+<h5 id="members-online-difference-between-starting-applications-via-app-menu-desktop-and-black-box-terminal">Members   Online   Difference between starting applications via app menu/.desktop and Black Box terminal?</h5>
+<ul>
+<li>upvotes  ·    comments
+I built a full-system computer simulation platform. What LLM experiments should I run? r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-i-built-a-full-system-computer-simulation-platform-what-llm-experiments-should-i-run">Members   Online   I built a full-system computer simulation platform. What LLM experiments should I run?</h5>
+<ul>
+<li>upvotes  ·    comments
+FULL Cursor System Prompt and Tools [UPDATED, v1.2] r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-full-cursor-system-prompt-and-tools-updated-v1-2">Members   Online   FULL Cursor System Prompt and Tools [UPDATED, v1.2]</h5>
+<ul>
+<li>upvotes  ·    comments
+Assist &amp; Custom Sentence...Custom Output Not Running When Activated via VPE r/homeassistant  •  r/homeassistant Home Assistant is open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts. Perfect to run on a Raspberry Pi or a local server. Available for free at home-assistant.io.</li>
+</ul>
+<h5 id="members-online-assist-custom-sentence-custom-output-not-running-when-activated-via-vpe">Members   Online   Assist &amp; Custom Sentence...Custom Output Not Running When Activated via VPE</h5>
+<ul>
+<li>upvote  ·    comments
+you can disable thinking on gpt-oss models by adding this to prompt r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-you-can-disable-thinking-on-gpt-oss-models-by-adding-this-to-prompt">Members   Online   you can disable thinking on gpt-oss models by adding this to prompt</h5>
+<ul>
+<li>upvotes  ·    comments
+Grok 3 just leak me it&#39;s system prompt r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-grok-3-just-leak-me-it-s-system-prompt">Members   Online   Grok 3 just leak me it&#39;s system prompt</h5>
+<ul>
+<li>comments
+MI50 prompt processing performance r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-mi50-prompt-processing-performance">Members   Online   MI50 prompt processing performance</h5>
+<ul>
+<li>upvotes  ·    comments
+I made this free online tool to digest a repo into a prompt r/LocalLLaMA  •  r/LocalLLaMA Subreddit to discuss AI &amp; Llama, the large language model created by Meta AI.</li>
+</ul>
+<h5 id="members-online-i-made-this-free-online-tool-to-digest-a-repo-into-a-prompt">Members   Online   I made this free online tool to digest a repo into a prompt</h5>
+<ul>
+<li>upvotes  ·    comments</li>
+</ul>
+<h6 id="trending-topics-today">Trending topics today</h6>
+<ul>
+<li>Arsenal routs Athletic Club 3-0</li>
+<li>WGA expels Park, McKellar</li>
+<li>Jen Pawol makes MLB history</li>
+<li>Tom Brady statue unveiled</li>
+<li>Norris injury halts game</li>
+<li>Atlanta shooting update</li>
+<li>Sanders shines in Browns debut</li>
+<li>Final Destination returns</li>
+<li>Sesko signs for Man United</li>
+<li>DOJ probes New York AG</li>
+<li>Nolan&#39;s Odyssey wraps filming</li>
+<li>Celtics extend Mazzulla</li>
+<li>Jim Lovell dies at 97</li>
+<li>Germany-Israel arms exports</li>
+<li>Xbox cancels Contraband</li>
+<li>Goosebumps series canceled</li>
+<li>US sets $50M bounty on Maduro</li>
+<li>Battlefield 6 beta launches</li>
+<li>Batman 2 filming set for 2026</li>
+<li>Carano, Disney settle dispute</li>
+<li>OpenAI launches GPT-5
+Reddit RulesPrivacy PolicyUser AgreementAccessibilityReddit, Inc. © 2025. All rights reserved.</li>
+<li>Log In / Sign Up</li>
+<li>Advertise on Reddit</li>
+<li>Try Reddit Pro   BETA</li>
+<li>Shop Collectible Avatars</li>
+</ul>

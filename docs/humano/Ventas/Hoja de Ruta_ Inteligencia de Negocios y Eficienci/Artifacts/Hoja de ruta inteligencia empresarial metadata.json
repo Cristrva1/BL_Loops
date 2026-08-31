@@ -1,0 +1,19 @@
+{
+  "title": "Hoja de ruta inteligencia empresarial",
+  "type": "ARTIFACT_TYPE_INFOGRAPHIC",
+  "sources": [{
+    "sourceId": {
+      "id": "f55e6d62-be34-4761-a305-0f20e98524b2"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "infographic": {
+    "generationOptions": {
+      "languageCode": "es_mx",
+      "aspectRatio": "ASPECT_RATIO_LANDSCAPE",
+      "informationDensity": "INFORMATION_DENSITY_HIGH",
+      "style": "STYLE_AUTO"
+    },
+    "title": "Hoja de ruta inteligencia empresarial"
+  }
+}

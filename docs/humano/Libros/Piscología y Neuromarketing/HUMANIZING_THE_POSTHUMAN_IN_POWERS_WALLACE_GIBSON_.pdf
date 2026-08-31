@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html class="no-js  page-10 app-SEARCH" lang="en" >
+<head>
+  <meta http-equiv="x-ua-compatible" content="IE=edge" />
+  <meta charset="utf-8">
+  <title>OhioLINK ETD: Ghashmari, Ahmad</title>
+  <base href="/acprod/odb_etd/" />
+<link rel="stylesheet" href="/id/app_ui/css/Core.min.css?v=24.1.7" type="text/css" />
+<link rel="stylesheet" href="/id/app_ui/css/Theme-Standard.min.css?v=24.1.7" type="text/css" />
+
+  <link rel="stylesheet" href="/id/libraries/font-apex/2.3/css/font-apex.min.css?v=24.1.7" type="text/css" />
+<link rel="stylesheet" href="/id/themes/theme_42/24.1/css/Core.min.css?v=24.1.7" type="text/css" />
+
+  
+  <link rel="stylesheet" href="r/etd/1501/files/theme/42/v66/2854694875491799452.css" type="text/css" />
+
+  <link rel="stylesheet" href="/c/ohiolink/etd/main.css" type="text/css" />
+<link rel="stylesheet" href="/c/ohiolink/etd/etd_search.css" type="text/css" />
+<link rel="stylesheet" href="/c/theme_uni_css/footer.css" type="text/css" />
+<link rel="stylesheet" href="/c/ohiolink/ejc/css/footer.css" type="text/css" />
+
+  <style type="text/css">
+.more-less-overflow {
+  width: 80%;
+}
+
+button#export-refworks {
+  background: #aaaaaa;
+  background: rgba(255,255,255,0);
+  height: 30px;
+  border: 0;
+  margin: 0 10px 0 10px;
+}
+button#export-refworks > span { display:none; }
+
+button#export-endnote {
+  background: #aaaaaa;
+  background: rgba(255,255,255,0);
+  height: 30px;
+  border: 0;
+  margin: 0 10px 0 10px;
+}
+button#export-endnote > span { display:none; }
+
+button#export-ris {
+  background: #aaaaaa;
+  background: rgba(255,255,255,0);
+  height: 30px;
+  border: 0;
+  margin: 0 10px 0 10px;
+}
+button#export-ris > span { display:none; }
+
+button#export-mendeley {
+  background: #aaaaaa;
+  background: rgba(255,255,255,0);
+  height: 30px;
+  border: 0;
+  margin: 0 10px 0 10px;
+}
+button#export-mendeley > span { display:none; }
+
+
+div.addthis_toolbox {
+  display: inline-block;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+#abstract-container.preview:before {
+    position: absolute;
+    top: 350px;
+    left: 50px;
+    z-index: 9999;
+    color:red;
+    opacity:0.25;
+    font-size:180px;
+    transform: rotate(-30deg);
+    -webkit-transform: rotate(-30deg);
+    content: "PREVIEW"
+}
+
+#warning {
+  background-color:red;
+}
+
+#warning .t-Region-body {
+  color: white;
+}
+</style>
+
+  <link rel="apple-touch-icon" href="r/etd/1501/files/static/v23/icons/app-icon-192.png" /><link rel="icon" href="r/etd/1501/files/static/v23/icons/app-icon-32.png" />
+  <meta name="citation_author" content="Ghashmari, Ahmad">
+<meta name="citation_author_institution" content="Kent State University">
+<meta name="citation_author_orcid" content="">
+<meta name="citation_title" content="HUMANIZING THE POSTHUMAN IN POWERS, WALLACE, GIBSON AND DELILLO">
+<meta name="citation_dissertation_institution" content="Kent State University">
+<meta name="citation_date" content="2016">
+<meta name="citation_dissertation_name" content="PhD thesis">
+<meta name="citation_pdf_url" content="https:&#x2F;&#x2F;etd.ohiolink.edu&#x2F;acprod&#x2F;odb_etd&#x2F;ws&#x2F;send_file&#x2F;send?accession=kent147855115808631&amp;disposition=inline">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body class="t-PageBody t-PageBody--hideLeft t-PageBody--hideActions no-anim t-PageTemplate--standard   apex-top-nav apex-icons-fontapex apex-theme-etd-search"   id="t_PageBody">
+<a href="#main" id="t_Body_skipToContent">Skip to Main Content</a>
+<form role="none" action="wwv_flow.accept?p_context=search/10/106909031845502" method="post" name="wwv_flow" id="wwvFlowForm" data-oj-binding-provider="none" novalidate  autocomplete="off">
+<input type="hidden" name="p_flow_id" value="1501" id="pFlowId" /><input type="hidden" name="p_flow_step_id" value="10" id="pFlowStepId" /><input type="hidden" name="p_instance" value="106909031845502" id="pInstance" /><input type="hidden" name="p_page_submission_id" value="NzU3MzUxMTI5NTc0MTE1NzkwNTM0MjA1MDk1ODY2MDYyMzg0NTI&#x2F;ycI_ex7JuW3L2m0pRrkQakUt1JLQV7GhV9f5y0m4xVmni_aEMVDDrAgNfn7ZJNlnOE1NuOQQkoom-6A8kWvYVg" id="pPageSubmissionId" /><input type="hidden" name="p_request" value="" id="pRequest" /><input type="hidden" name="p_reload_on_submit" value="A" id="pReloadOnSubmit" /><input type="hidden" value="search&#x2F;10&#x2F;106909031845502" id="pContext" /><input type="hidden" value="75735112957411579053420509586606238452" id="pSalt" />
+<header class="t-Header" id="t_Header" role="banner">
+  
+  <div class="t-Header-branding">
+    <div class="t-Header-controls">
+      <button class="t-Button t-Button--icon t-Button--header t-Button--headerTree" aria-label="Main Navigation" title="Main Navigation" id="t_Button_navControl" type="button"><span class="t-Header-controlsIcon" aria-hidden="true"></span></button>
+    </div>
+    <div class="t-Header-logo">
+      <a href="&#x2F;acprod&#x2F;odb_etd&#x2F;r&#x2F;etd&#x2F;search&#x2F;1?clear=0,1,5,10,20,21,1001" class="t-Header-logo-link"><img src="/c/ohiolink/OhioLINK-white.png" title="OhioLINK Logo" id="app-logo"/></a>
+      
+    </div>
+    <div class="t-Header-navBar">
+      <div class="t-Header-navBar--start"></div>
+      <div class="t-Header-navBar--center"><ul class="t-NavigationBar " id="3542514346810241162"><li class="t-NavigationBar-item banner-link">
+  <a class="t-Button t-Button--icon t-Button--header t-Button--navBar" href="https://etdadmin.ohiolink.edu/acprod/odb_etd/r/etd/admin/faq" onclick="window.open(this.href, 'FAQ', 'resizable=yes,status=yes,location=no,toolbar=no,menubar=no,fullscreen=no,scrollbars=yes,dependent=no,width=800,height=600'); return false;" title="" target="">
+    <span class="t-Icon " aria-hidden="true" target="_FAQ"></span><span class="t-Button-label">Frequently Asked Questions</span><span class="t-Button-badge"></span>
+  </a>
+</li><li class="t-NavigationBar-item banner-link">
+  <a class="t-Button t-Button--icon t-Button--header t-Button--navBar" href="https://etdadmin.ohiolink.edu/acprod/odb_etd/r/etd/admin/home" title="" target="">
+    <span class="t-Icon " aria-hidden="true" ></span><span class="t-Button-label">Submit an ETD</span><span class="t-Button-badge"></span>
+  </a>
+</li></ul></div>
+      <div class="t-Header-navBar--end"></div>
+    </div>
+  </div>
+  <div class="t-Header-nav"></div>
+</header>
+<div class="t-Body">
+  
+  <div class="t-Body-main">
+    <div class="t-Body-title" id="t_Body_title"></div>
+    <div class="t-Body-content" id="t_Body_content">
+      <main id="main" class="t-Body-mainContent">
+        <span id="APEX_SUCCESS_MESSAGE" data-template-id="3385208652488413354_S" class="apex-page-success u-hidden"></span><span id="APEX_ERROR_MESSAGE" data-template-id="3385208652488413354_E" class="apex-page-error u-hidden"></span>
+        <div class="t-Body-fullContent"><div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div id="R4388241214372582080" class=""  ><style>
+li.banner-link {
+  padding-top: 5px;
+}
+</style></div></div>
+</div><div class="row ">
+<div class="col col-1  col-start" ><span class="apex-grid-nbsp">&nbsp;</span></div><div class="col col-11 apex-col-auto transparent col-end" ><div class="t-Region transparent  t-Region--hideHeader t-Region--noBorder t-Region--hiddenOverflow margin-bottom-none" id="search_banner"  role="region" aria-label="Global&#x20;Search&#x20;Box" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="search_banner_heading" data-apex-heading>Global Search Box</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     
+     <div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div id="R3508164619107718261" class=""  >&nbsp;</div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto transparent col-start col-end" ><div id="GLOBALSEARCH" class="transparent"  ><input type="hidden" name="P0_HELP" id="P0_HELP" value="javascript:apex.theme42.dialog(&#x27;\u002Facprod\u002Fodb_etd\u002Fr\u002Fetd\u002Fsearch\u002Fhelp?p251_parent_page=10\u0026p251_attr_01=\u0026dialogCs=fheHWHk6aitFzvR7TfoXLuVryjtgMmfEOY89P624WRGU6-MwpnsCmF3gKwOjiYiUwXwLRS1LwPm9ftcaG6BdmQ&#x27;,{title:&#x27;OhioLINK ETD Center - Advanced Search Help&#x27;,h:&#x27;700&#x27;,w:&#x27;800&#x27;,mxw:&#x27;960&#x27;,modal:false,dialog:null,dlgCls:&#x27;t-Dialog-page--standard &#x27;+&#x27;&#x27;},&#x27;&#x27;,this)"><div class="container">
+<div class="row ">
+<div class="col col-8  col-start" ><span class="apex-grid-nbsp">&nbsp;</span></div><div class="col col-4 apex-col-auto col-end" ><button class="t-Button search&#x20;buttons-size&#x20;&#x20;t-Button--link" type="button"   id="GOTO_FAQ"><span class="t-Button-label">Need Help?</span></button></div>
+</div><div class="row ">
+<div class="col col-10  col-start" ><div class="t-Form-fieldContainer t-Form-fieldContainer--hiddenLabel rel-col  apex-item-wrapper apex-item-wrapper--has-placeholder apex-item-wrapper--text-field" id="P0_SEARCH_CONTAINER"><div class="t-Form-labelContainer t-Form-labelContainer--hiddenLabel col col-0">
+<label for="P0_SEARCH" id="P0_SEARCH_LABEL" class="t-Form-label u-VisuallyHidden">Keyword Search</label>
+</div><div class="t-Form-inputContainer col col-10"><div class="t-Form-itemWrapper"><input type="text"  id="P0_SEARCH" name="P0_SEARCH" placeholder="Search&#x20;by&#x20;title,&#x20;author,&#x20;keywords,&#x20;etc." class="text_field&#x20;apex-item-text&#x20;SEARCH_FIELD" aria-label="Enter keyword search terms" value="" size="300" maxlength="200" onkeypress="return apex.submit({request:'P0_SEARCH',submitIfEnter:event})" data-trim-spaces="NONE"  /></div><span id="P0_SEARCH_error_placeholder" class="a-Form-error" data-template-id="3395005504232413416_ET"></span></div></div></div><div class="col col-2 apex-col-auto col-end" style="margin-top:10px"><button class="t-Button t-Button--noLabel t-Button--icon search-icon&#x20;&#x20;t-Button--padTop t-Button--hot"  onclick="void(0);" type="button" id="SEARCH_BUTTON" title="Search" aria-label="Search"><span class="t-Icon fa&#x20;fa-search" aria-hidden="true"></span></button></div>
+</div>
+</div><div class="container">
+<div class="row ">
+<div class="col col-1  col-start" ><span class="apex-grid-nbsp">&nbsp;</span></div><div class="col col-11  col-end" ><div id="links-bar" class=""  ><div class="container">
+<div class="row ">
+<div class="col col-8 apex-col-auto col-start" ><button class="t-Button search&#x20;buttons-size&#x20;&#x20;t-Button--link&#x20;t-Button--gapRight" type="button"   id="INSTITUTIONS_BUTTON"><span class="t-Button-label">Participating Institutions</span></button></div><div class="col col-4 apex-col-auto col-end" ><button class="t-Button search&#x20;buttons-size&#x20;&#x20;t-Button--link" type="button"   id="ADVANCED_SEARCH_BUTTON"><span class="t-Button-label">Advanced Search</span></button></div>
+</div><input type="hidden" name="P0_AS_JSON" id="P0_AS_JSON" value="">
+</div></div></div>
+</div>
+</div></div></div>
+</div>
+</div>
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+</div></div>
+        <div class="t-Body-contentInner"><div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><input type="hidden" name="P10_ETD_SUBID" id="P10_ETD_SUBID" value="119334"><input type="hidden" data-for="P10_ETD_SUBID" value="KF2Zp6zs_WzYngrJC1CYJLxsUT94lVrjP8_EHLutCwqWc8MaVZHCbcbj9mtKL-IZnOlh-0LSXg68iMYBoRmMjg"><input type="hidden" name="P10_AUTHOR_EMAIL_ADDRESS" id="P10_AUTHOR_EMAIL_ADDRESS" value=""><input type="hidden" data-for="P10_AUTHOR_EMAIL_ADDRESS" value="kLDeUuRlbGout4EMmSyFXkFOktomtX72AnF8l5WibtDYrySk7DEIweYAYu1ivOymrY7IGoxYSK7nxdQKSCV5Ww"><input type="hidden" name="P10_PRIMARY_ADVISOR_ROLE" id="P10_PRIMARY_ADVISOR_ROLE" value="Advisor"><input type="hidden" data-for="P10_PRIMARY_ADVISOR_ROLE" value="3oc6TZ1XRcV6mKaj-jUsOnWOYFLs92ds24dQMG9BSGi_ZZ_PpP5cfZwffQVpxq4IeVBzgsmKSmsYPWq7dGG-hA"><input type="hidden" name="P10_DEGREE_YEAR" id="P10_DEGREE_YEAR" value="2016"><input type="hidden" data-for="P10_DEGREE_YEAR" value="AADejri8DLoBmIGcutTjq3mHsKpbmYsJQJymYfkj9wa6ttcVMVnBwYUMY95J-6PBnVNKv7EQMCQkm6_66kssIg"><input type="hidden" name="P10_INST_NAME" id="P10_INST_NAME" value="Kent State University"><input type="hidden" data-for="P10_INST_NAME" value="X9B6W5qNKCC8VpCKIuaSA4CSonFfiEgOslwuWT6jwe5qaP2F3LbmQx4xYeyx_sXb8jO_zHqjPJcYDtP-ttQoUQ"><input type="hidden" name="P10_DEGREE_LEVEL" id="P10_DEGREE_LEVEL" value="PhD thesis"><input type="hidden" data-for="P10_DEGREE_LEVEL" value="LNmTC1ifDyX8SX3TFvFn3KDUo2-anta6E-P2v0n4LP1k1iIyqsHgkZMYe1lGNyR5gs-VqKxyJiLWKM62OZ5sSA"><input type="hidden" name="P10_APP_URL" id="P10_APP_URL" value="https:&#x2F;&#x2F;etd.ohiolink.edu&#x2F;acprod&#x2F;odb_etd&#x2F;etd&#x2F;r&#x2F;1501&#x2F;0"><input type="hidden" data-for="P10_APP_URL" value="DEZHfhlSDq5cvDwbg91OMYU3sXdaWquPbZ3ZiuaJyyHwR27f9wTIRoE16uTapgfRjRXyZk6FMhYTClySkar50w"><input type="hidden" name="P10_REFWORKS_URL" id="P10_REFWORKS_URL" value="http:&#x2F;&#x2F;www.refworks.com&#x2F;express&#x2F;ExpressImport.asp?vendor=OhioLINK&amp;filter=RIS Format&amp;database=OhioLINK&amp;url="><input type="hidden" data-for="P10_REFWORKS_URL" value="6eM7uKy2BzFRysZ50wxzksJLWhalzDuHj0mWxcPpdACVFSWsl08yDc26jwrIxI80PhiEKjAN_sFvt6FAmZPqQA"><input type="hidden" name="P10_RAVE_URL" id="P10_RAVE_URL" value="http:&#x2F;&#x2F;rave.ohiolink.edu&#x2F;etdc&#x2F;view?acc_num=kent147855115808631"><input type="hidden" data-for="P10_RAVE_URL" value="i2LmaaYG_2wXiZFcunMZWD98mhV8h_JKWxTdCrOmQisT4fqqikDtIX6mEQ-Mi5b9rkTSPPljomOBTrmJuu2trw"><input type="hidden" name="P10_TOKEN" id="P10_TOKEN" value=""><input type="hidden" data-for="P10_TOKEN" value="XiGzn-UmE8iu4KDjrnwSlmwwVdmqnTRLZIRF-n7FXq1ltiHYDvl9cVW03gOsVcWf-84zALnlyG9-IJTqDvWaGw"><input type="hidden" name="P10_TOKEN_VALID" id="P10_TOKEN_VALID" value="0"><input type="hidden" data-for="P10_TOKEN_VALID" value="e5dZFvMGvG9zzliItEjIicHqvWy-LcxxLJPUkxDtxulDofdPMWSyN2z8NT-cDwDxujhfSE9gxEARqFhqc6MeAA"><input type="hidden" name="P10_IS_SEARCHABLE" id="P10_IS_SEARCHABLE" value="1"><input type="hidden" data-for="P10_IS_SEARCHABLE" value="4h7naRhfSTYGrbV558uJHCJ_y2LXFL0HzphNeWHK2srCKfbhbwxBLe6OTU2Yv7eHju2QFJEO15QC-nBYQ4D65A"></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><script>
+(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");
+ga("create", "UA-39351495-1", "auto");ga("send", "pageview");
+/* Click tracking */ var glink = function(cat, url) {ga("send", "event", cat, "click", url, {"transport": "beacon","hitCallback": function(){document.location = url;}}); return true;}
+ </script>
+</div>
+</div><div class="row ">
+<div class="col col-3 transparent col-start" style="min-width: 18em"><div id="R3359111471394571238" class=""  ><div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div id="R3359111781489571241" class=""  ><div class="container">
+<div class="row ">
+<div class="col col-3  col-start" ><span class="apex-grid-nbsp">&nbsp;</span></div><div class="col col-9 apex-col-auto col-end" ><div class="t-Form-fieldContainer t-Form-fieldContainer--hiddenLabel rel-col  apex-item-wrapper apex-item-wrapper--display-image" id="P10_SCHOOL_LOGO_CONTAINER"><div class="t-Form-labelContainer t-Form-labelContainer--hiddenLabel col col-2">
+<label for="P10_SCHOOL_LOGO" id="P10_SCHOOL_LOGO_LABEL" class="t-Form-label u-VisuallyHidden">School Logo</label>
+</div><div class="t-Form-inputContainer col col-7"><div class="t-Form-itemWrapper"><img  id="P10_SCHOOL_LOGO" class="display_image&#x20;apex-item-image"  src="wwv_flow.show&#x3F;p_request&#x3D;NATIVE&#x25;3DSVRFTSBUWVBFfjUxMjB-MzM5OTY0MjQwODIyMDk2Mzk5Nw&#x2F;noikKeKEWTRX22DssWG0jRlTxYKteiXTO9z07BLbzA4w4KQ6n_GCjfzPvfqWKzsUr4eS9MmIRJdxJNgXAhZOEw&#x26;p_instance&#x3D;106909031845502&#x26;p_flow_id&#x3D;1501&#x26;p_flow_step_id&#x3D;10&#x26;p_context&#x3D;search&#x2F;10&#x2F;106909031845502"  alt="Kent&#x20;State&#x20;University&#x20;Logo"  title="Kent&#x20;State&#x20;University&#x20;Logo"  loading="lazy" /></div><span id="P10_SCHOOL_LOGO_error_placeholder" class="a-Form-error" data-template-id="3395005504232413416_ET"></span></div></div></div>
+</div>
+</div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region file-display  t-Region--noBorder t-Region--scrollBody t-Form--noPadding t-Form--stretchInputs margin-top-none margin-bottom-none" id="R3399640600012963990"  role="region" aria-label="Files" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="R3399640600012963990_heading" data-apex-heading>Files</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     
+     <div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region blue-background file-box  t-Region--removeHeader js-removeLandmark t-Region--noBorder t-Region--scrollBody margin-left-none margin-right-none" id="R3508164326027718258"  role="region" aria-label="File&#x20;List" style="text-align:center">
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="R3508164326027718258_heading" data-apex-heading>File List</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     <br/><a target="_blank" class="doc-link" onclick="$(this).trigger('download-doc');" href="https:&#x2F;&#x2F;etd.ohiolink.edu&#x2F;acprod&#x2F;odb_etd&#x2F;ws&#x2F;send_file&#x2F;send?accession=kent147855115808631&amp;disposition=inline">Dissertation.pdf (795.65 KB)</a><br/>
+     
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+</div>
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+</div></div></div><div class="col col-9 apex-col-auto transparent col-end" ><div id="R3359111561646571239" class=""  ><div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region t-Region--hideHeader t-Region--noBorder t-Region--scrollBody" id="abstract-container"  role="region" aria-label="ETD&#x20;Abstract&#x20;Container" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="abstract-container_heading" data-apex-heading>ETD Abstract Container</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     
+     <div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region t-Region--hideHeader t-Region--stacked t-Region--scrollBody" id="R3399642011886963996"  role="region" aria-label="Abstract&#x20;Header" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="R3399642011886963996_heading" data-apex-heading>Abstract Header</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     <H1 class="red-text" style="font-weight:normal; font-size:1.4em; line-height:1.2em; margin-block-end:0.6rem;">HUMANIZING THE POSTHUMAN IN POWERS, WALLACE, GIBSON AND DELILLO</H1>
+<input type="hidden" name="P10_TITLE" id="P10_TITLE" value="HUMANIZING THE POSTHUMAN IN POWERS, WALLACE, GIBSON AND DELILLO"><input type="hidden" data-for="P10_TITLE" value="SzyoJDVpW8DKj2fqSGf72YvWe09jdiCX9qWiKfVQEKi0JonHNZtBs84aljnD3hg06c7mQMTw7VMgau9QhYvGrg"><div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" style="margin-left: 2px"><div class="t-Form-fieldContainer t-Form-fieldContainer--hiddenLabel rel-col  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_AUTHOR_INFO_CONTAINER"><div class="t-Form-labelContainer t-Form-labelContainer--hiddenLabel col col-0">
+<label for="P10_AUTHOR_INFO" id="P10_AUTHOR_INFO_LABEL" class="t-Form-label u-VisuallyHidden">Author Info</label>
+</div><div class="t-Form-inputContainer col col-12"><div class="t-Form-itemWrapper"><span id="P10_AUTHOR_INFO"  aria-labelledby="P10_AUTHOR_INFO_LABEL" class="display_only"  data-escape="false"><span class="abstract-author">Ghashmari, Ahmad</span></span></div><span id="P10_AUTHOR_INFO_error_placeholder" class="a-Form-error" data-template-id="3395005504232413416_ET"></span></div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" style="min-width:300px; margin-left: 2px""><div class="t-Form-fieldContainer rel-col  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_PERMALINK_CONTAINER"><div class="t-Form-labelContainer col col-1">
+<label for="P10_PERMALINK" id="P10_PERMALINK_LABEL" class="t-Form-label">Permalink:</label>
+</div>
+<div class="t-Form-inputContainer col col-11"><div class="t-Form-itemWrapper"><span id="P10_PERMALINK"  aria-labelledby="P10_PERMALINK_LABEL" class="display_only"  data-escape="false"><a href="http://rave.ohiolink.edu/etdc/view?acc_num=kent147855115808631" target="_blank" title="permanent link to this ETD">http://rave.ohiolink.edu/etdc/view?acc_num=kent147855115808631</a></span></div><span id="P10_PERMALINK_error_placeholder" class="a-Form-error" data-template-id="3395005575442413417_ET"></span></div></div></div>
+</div>
+</div>
+     
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region abstract-display  t-Region--hideHeader t-Region--stacked t-Region--scrollBody" id="abstract-details"  role="region" aria-label="Abstract&#x20;Details" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="abstract-details_heading" data-apex-heading>Abstract Details</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     <div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer t-Form-fieldContainer--stacked  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_DEGREE_NAME_CONTAINER"><div class="t-Form-labelContainer">
+<label for="P10_DEGREE_NAME" id="P10_DEGREE_NAME_LABEL" class="t-Form-label">Year and Degree</label> 
+</div><div class="t-Form-inputContainer"><div class="t-Form-itemWrapper"><span id="P10_DEGREE_NAME"  class="display_only&#x20;apex-item-display-only"  data-escape="true">2016, PHD, Kent State University, College of Arts and Sciences &#x2F; Department of English.</span></div><span id="P10_DEGREE_NAME_error_placeholder" class="a-Form-error" data-template-id="3395005683747413417_ET"></span></div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer t-Form-fieldContainer--stacked  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_ABSTRACT_CONTAINER"><div class="t-Form-labelContainer">
+<label for="P10_ABSTRACT" id="P10_ABSTRACT_LABEL" class="t-Form-label">Abstract</label> 
+</div><div class="t-Form-inputContainer"><div class="t-Form-itemWrapper"><span id="P10_ABSTRACT"  class="display_only&#x20;apex-item-display-only" >For centuries, the liberal humanist subject has been widely considered the defining status of human existence, at least in the western tradition. Liberal humanism embraces a humanist subject characterized by agency, autonomy and exceptionalism, qualities that do not belong to the non-human. This understanding of the human subject, however, has recently been challenged by posthumanist and transhumanist theories that see the advancement in technology and its influence on the nature of the human-nonhuman relationship as a basis for a new understanding of humanness. In spite of their conflicting differences on the future of the human, posthumanism and transhumanism have declared the death of liberal humanism. 
+This dissertation contests this declaration. Through an analysis of a sample of novels published in the 1990&#x2019;s and 2000&#x2019;s, this study aims to argue that posthumanism is more a re-appropriation and reconceptualization of the remaining aspects of liberal humanism than an abandonment of it. Despite the challenges to most of the values of liberal humanism by postmodernism and poststructuralism and despite the rise of the machine, the emergence of commodity culture and globalization, contemporary novelists including Richard Powers, David Foster Wallace, William Gibson, and Don DeLillo depict liberal humanist values as surviving and still relevant in the posthuman age. The argument of this study, therefore, is that posthumanism is shaped not by the end of human exceptionalism but rather by the human response to the realization that this exceptionalism needs to be understood in new ways. This response emerges in the form of an urgency to re-appropriate and re-inscribe human subjectivity, autonomy and agency within posthumanism. Moreover, as this study aims to present a new definition of posthumanism, it also aims to reject the transhumanist philosophy that sees humans transcending their nature into a technological singularity or a post-biological existence. The novels studied in this dissertation are Galatea 2.2 (1995) by Richard Powers, Infinite Jest (1996) by David Foster Wallace, Pattern Recognition (2003) by William Gibson, and Cosmopolis (2003) by Don DeLillo. 
+eb</span></div><span id="P10_ABSTRACT_error_placeholder" class="a-Form-error" data-template-id="3395005683747413417_ET"></span></div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer t-Form-fieldContainer--stacked  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_ADVISORS_CONTAINER"><div class="t-Form-labelContainer">
+<label for="P10_ADVISORS" id="P10_ADVISORS_LABEL" class="t-Form-label">Committee</label> 
+</div><div class="t-Form-inputContainer"><div class="t-Form-itemWrapper"><span id="P10_ADVISORS"  aria-labelledby="P10_ADVISORS_LABEL" class="display_only"  data-escape="false">Tammy Clewell (Advisor)</span></div><span id="P10_ADVISORS_error_placeholder" class="a-Form-error" data-template-id="3395005683747413417_ET"></span></div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer t-Form-fieldContainer--stacked  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_NUM_OF_PAGES_CONTAINER"><div class="t-Form-labelContainer">
+<label for="P10_NUM_OF_PAGES" id="P10_NUM_OF_PAGES_LABEL" class="t-Form-label">Pages</label> 
+</div><div class="t-Form-inputContainer"><div class="t-Form-itemWrapper"><span id="P10_NUM_OF_PAGES"  class="display_only&#x20;apex-item-display-only"  data-escape="true">171 p.</span></div><span id="P10_NUM_OF_PAGES_error_placeholder" class="a-Form-error" data-template-id="3395005683747413417_ET"></span></div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer t-Form-fieldContainer--stacked  apex-item-wrapper apex-item-wrapper--display-only" id="P10_SUBJECTS_CONTAINER"><div class="t-Form-labelContainer">
+<label for="P10_SUBJECTS" id="P10_SUBJECTS_LABEL" class="t-Form-label">Subject Headings</label> 
+</div><div class="t-Form-inputContainer"><div class="t-Form-itemWrapper"><span id="P10_SUBJECTS"  aria-labelledby="P10_SUBJECTS_LABEL" class="display_only"  data-escape="false"><a href="/acprod/odb_etd/r/etd/search/search-results?p1001_subject=26&request=SUBJECT_SEARCH&clear=1001" aria-label="Browse subject: American Literature">American Literature</a>; <a href="/acprod/odb_etd/r/etd/search/search-results?p1001_subject=275&request=SUBJECT_SEARCH&clear=1001" aria-label="Browse subject: Literature">Literature</a></span></div><span id="P10_SUBJECTS_error_placeholder" class="a-Form-error" data-template-id="3395005683747413417_ET"></span></div></div></div>
+</div>
+</div>
+     
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region t-Region--stacked t-Region--scrollBody" id="citations"  role="region" aria-label="Recommended&#x20;Citations" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="citations_heading" data-apex-heading>Recommended Citations<button class="t-Button " type="button" title="Export to Refworks" target="_blank" href="#export-refworks"  id="export-refworks"><span class="t-Button-label">Refworks</span></button><button class="t-Button " type="button" title="Export to EndNote" target="_blank" href="#export-endnote"  id="export-endnote"><span class="t-Button-label">EndNote</span></button><button class="t-Button " type="button" title="Export to RIS" href="#export-ris"  id="export-ris"><span class="t-Button-label">RIS</span></button><button class="t-Button " type="button" title="Export to Mendeley" target="_blank" href="#export-mendeley"  id="export-mendeley"><span class="t-Button-label">Mendeley</span></button></h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     
+     <div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region t-Region--noBorder t-Region--scrollBody" id="R3352765223610741035"  role="region" aria-label="Citations" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="R3352765223610741035_heading" data-apex-heading>Citations</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     <ul id="R3352765223610741035_jqm_list_view" data-role="listview" data-back-button-text="Back" data-apex-region-id="R3352765223610741035" data-apex-ajax-identifier="UkVHSU9OIFRZUEV-fjMzNTI3NjUyMjM2MTA3NDEwMzU&#x2F;lMcRXxxAmEx50CATElYYrLrcpt5fRtbCyHL4e-UL5jCwoUxmkOgBmwR6j_fDS2NhZaAsBM8puKbVEywFyPMKYA" >
+<li  >Ghashmari, A. (2016). <i>HUMANIZING THE POSTHUMAN IN POWERS, WALLACE, GIBSON AND DELILLO</i> [Doctoral dissertation, Kent State University]. OhioLINK Electronic Theses and Dissertations Center. http://rave.ohiolink.edu/etdc/view?acc_num=kent147855115808631<p class="ui-li-aside">APA Style (7th edition)</p></li>
+<li  >Ghashmari, Ahmad. <i>HUMANIZING THE POSTHUMAN IN POWERS, WALLACE, GIBSON AND DELILLO.</i> 2016. Kent State University, Doctoral dissertation. <i>OhioLINK Electronic Theses and Dissertations Center</i>, http://rave.ohiolink.edu/etdc/view?acc_num=kent147855115808631.<p class="ui-li-aside">MLA Style (8th edition)</p></li>
+<li  >Ghashmari, Ahmad. "HUMANIZING THE POSTHUMAN IN POWERS, WALLACE, GIBSON AND DELILLO." Doctoral dissertation, Kent State University, 2016. http://rave.ohiolink.edu/etdc/view?acc_num=kent147855115808631<p class="ui-li-aside">Chicago Manual of Style (17th edition)</p></li>
+</ul>
+
+     
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+</div>
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Region t-Region--hideHeader t-Region--stacked t-Region--scrollBody" id="abstract-footer"  role="region" aria-label="Abstract&#x20;Footer" >
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="abstract-footer_heading" data-apex-heading>Abstract Footer</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     <div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer rel-col  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_ACCESSION_NUM_CONTAINER"><div class="t-Form-labelContainer col col-2">
+<label for="P10_ACCESSION_NUM" id="P10_ACCESSION_NUM_LABEL" class="t-Form-label"> Document number:</label>
+</div>
+<div class="t-Form-inputContainer col col-10"><div class="t-Form-itemWrapper"><span id="P10_ACCESSION_NUM"  class="display_only&#x20;apex-item-display-only"  data-escape="true">kent147855115808631</span></div><span id="P10_ACCESSION_NUM_error_placeholder" class="a-Form-error" data-template-id="3395005575442413417_ET"></span></div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer rel-col  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--text-field is-readonly" id="P10_DOWNLOAD_COUNT_CONTAINER"><div class="t-Form-labelContainer col col-2">
+<label for="P10_DOWNLOAD_COUNT" id="P10_DOWNLOAD_COUNT_LABEL" class="t-Form-label"> Download Count: </label>
+</div>
+<div class="t-Form-inputContainer col col-10"><div class="t-Form-itemWrapper"><input type="hidden" id="P10_DOWNLOAD_COUNT" name="P10_DOWNLOAD_COUNT" value="     4,793"><input type="hidden" data-for="P10_DOWNLOAD_COUNT" value="RKZ4SltzDYAU8hY6kQ-oHdITxeZmCQyOapDc4DWKI4zGgOdGt-plBKcbANOd8yFWTJyBIiFEx3xjMogvYdKrGw"><span id="P10_DOWNLOAD_COUNT_DISPLAY"  class="display_only&#x20;apex-item-display-only"  data-escape="true">     4,793</span></div><span id="P10_DOWNLOAD_COUNT_error_placeholder" class="a-Form-error" data-template-id="3395005575442413417_ET"></span></div></div></div>
+</div><div class="row ">
+<div class="col col-12 apex-col-auto col-start col-end" ><div class="t-Form-fieldContainer t-Form-fieldContainer--hiddenLabel rel-col  apex-item-wrapper apex-item-wrapper--has-initial-value apex-item-wrapper--display-only" id="P10_COPYRIGHT_INFO_CONTAINER"><div class="t-Form-labelContainer t-Form-labelContainer--hiddenLabel col col-2">
+<label for="P10_COPYRIGHT_INFO" id="P10_COPYRIGHT_INFO_LABEL" class="t-Form-label u-VisuallyHidden">Copyright Info</label>
+</div><div class="t-Form-inputContainer col col-10"><div class="t-Form-itemWrapper"><span id="P10_COPYRIGHT_INFO"  aria-labelledby="P10_COPYRIGHT_INFO_LABEL" class="display_only"  data-escape="false">&copy; 2016, all rights reserved.<br/>This open access ETD is published by Kent State University and OhioLINK.</span></div><span id="P10_COPYRIGHT_INFO_error_placeholder" class="a-Form-error" data-template-id="3395005504232413416_ET"></span></div></div></div>
+</div>
+</div>
+     
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+</div>
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+</div></div></div>
+</div>
+</div></div>
+      </main>
+      <footer class="t-Footer" id="t_Footer" role="contentinfo">
+        <div class="t-Footer-body">
+          <div class="t-Footer-content"><div class="container">
+<div class="row ">
+<div class="col col-12 apex-col-auto ETD_Footer_Col col-start col-end" style="border:0; margin:0"><div class="t-Region ETD_Footer  t-Region--noPadding t-Region--removeHeader js-removeLandmark t-Region--noBorder t-Region--hiddenOverflow t-Form--noPadding margin-bottom-none margin-left-none margin-right-none" id="global_footer"  role="region" aria-label="Global&#x20;Footer" nowrap="nowrap" style="border:0; margin:0">
+ <div class="t-Region-header">
+  <div class="t-Region-headerItems t-Region-headerItems--title">
+    <span class="t-Region-headerIcon"><span class="t-Icon " aria-hidden="true"></span></span>
+    <h2 class="t-Region-title" id="global_footer_heading" data-apex-heading>Global Footer</h2>
+  </div>
+  <div class="t-Region-headerItems t-Region-headerItems--buttons"><span class="js-maximizeButtonContainer"></span></div>
+ </div>
+ <div class="t-Region-bodyWrap">
+   <div class="t-Region-buttons t-Region-buttons--top">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+   <div class="t-Region-body">
+     <div class="t-Region-orderBy"></div>
+     <input type="hidden" name="P0_APP_VERSION" id="P0_APP_VERSION" value="Release 3.2.12"><input type="hidden" data-for="P0_APP_VERSION" value="Unj79_RksyGZq7hlpWny07Va4L3z11hRDswy4ZSj0jt6SEFs8nJnpTyrPockYpimtdS0P57Kuzg0uaxgZTLVdQ"><a-dynamic-content region-id="global_footer" ajax-identifier="UkVHSU9OIFRZUEV-fjM0MTAwNjgxNjAwNzM1ODMwNjA&#x2F;nKKGVgX78nJN9ufXyUeAEwF1OyVMcXsQZBB26MzlCf-xIZd3wYz8Be8F86Ak6CfJGL0hVyhly07Jckn3uNBbVA" >
+<!-- OhioLINK EJC/ETD pre-footer $Revision: 25596 $ --!>
+<footer id="footer" class="full">
+  <div class="wrapper">
+    <div  class="cont-item">
+      <div class="row-fluid">
+        <div align="center" class="span4"><a href="javascript:apex.theme42.dialog('\u002Facprod\u002Fodb_etd\u002Fr\u002Fetd\u002Fsearch\u002Freport-a-problem?p221_previous_page=10\u0026clear=221\u0026dialogCs=-W5D9mrE9JSLsv37lqGXw99Hw6y8up36C2CzPu9Bz_QvDnHd26SkQ9pSmqZqvJK4AYLWiXy-RQy8cp1sTzaPtw',{title:'Report a problem',h:'750',w:'725',mxw:'960',modal:true,dialog:null,dlgCls:'t-Dialog-page--standard '+''},'','#global_footer')">Report a Problem</a></div>
+        <div align="center" class="span4"><a href="https://www.ohiolink.edu/content/acceptable_use_policy_ohiolink_etd">Acceptable Use Policy</a></div>
+        <div align="center" class="span4"> <a href="http://oh-tech.org/node/1188">Privacy Policy</a></div>
+      </div>
+    </div>
+    <div id="footer-message">
+      <div>
+        <span><a href="https://www.ohiolink.edu/">Ohio Library and Information Network (OhioLINK)</a></span>
+        <span class="htl-apart"> &bull; </span>
+        <span>A member of the <a href="http://oh-tech.org">Ohio Technology Consortium</a></span>
+      </div>
+      <div>
+        <span class="cont-item">1224 Kinnear Road Columbus OH 43212 US</span>
+        <span class="htl-apart"> &bull; </span>
+        <span class="cont-item"><a href="tel:614-292-9191">614-292-9191</a></span>
+        <span class="htl-apart"> &bull; </span>
+        <span class="cont-item"><a href="mailto:info@ohiolink.edu">info@ohiolink.edu</a></span>
+      </div>
+      <div>
+        <span>Copyright &copy; 2016 by the Ohio Library and Information Network. All Rights Reserved.</span>
+      </div>
+    </div>
+  </div>
+</footer><!-- global footer $Revision: 25448 $ --!>
+    <div class="ohtech-Footer"><div style="max-width:80em; text-align:center; padding-top:10px; margin:0 auto 0 auto;">
+       <div class="col col4">
+          <span class="heavy">OHIO DEPARTMENT OF HIGHER EDUCATION<br/></span>
+          <div>
+          25 South Front Street<br />Columbus, Ohio 43215
+          </div>
+       </div>
+
+      <div class="col col4">
+        <span class="heavy">STATE GOVERNMENT LINKS<br/></span>
+        <a href="http://www.governor.ohio.gov/">Mike DeWine, Governor</a><span class="htl-apart"> | </span>
+        <a href="http://www.ohio.gov/">Ohio.gov</a>
+      </div>
+
+      <div class="col col4">
+        <span class="heavy">EDUCATION LINKS<br/></span>
+        <a href="http://highered.ohio.gov/">Ohio Department of Higher Education</a>
+        <br>
+        <a href="http://www.oh-tech.org" title="The Ohio Technology Consortium">OH-TECH</a><span class="htl-apart"> | </span>
+        <a href="http://www.oar.net">OARnet</a><span class="htl-apart"> | </span>
+        <a href="http://www.ohiolink.edu/" title="Ohio Library and Information Network">OhioLINK</a>
+        <br>
+        <a href="http://www.osc.edu" title="Ohio Supercomputer Center">OSC</a><span class="htl-apart"> | </span>
+        <a href="http://www.ohiocommunitycolleges.org/" title="Ohio Association of Community Colleges">OACC</a><span class="htl-apart"> | </span>
+        <a href="http://www.iuc-ohio.org/" title="Inter-University Council of Ohio">IUC</a><span class="htl-apart"> | </span>
+        <a href="http://www.collegeadvantage.com/" title="Ohio Tuition Trust Authority">OTTA</a><span class="htl-apart"> | </span>
+        <a href="http://education.ohio.gov/" title="Ohio Department of Education">ODE</a>
+      </div>
+      <div class="row ability"><!-- div class="ability" -->
+        If you have a disability and experience difficulty accessing this content, please contact the OH-TECH Digital Accessibility Team
+        <span style="white-space:nowrap">&nbsp;at&nbsp;<a href="mailto:accessibility@oh-tech.org" rel="noopener noreferrer" target="_blank">accessibility@oh-tech.org</a>.</span>
+      <!-- /div -->
+</div>
+<div class="row">
+<div class="application-version">
+   <a href="#" OnClick="AboutDialog()">Release 3.2.12</a>
+</div>
+    <!-- This creates a pop-up window with the SVN Id and app_version in it -->
+    <!-- It is not strictly required, but all of our other applications have it -->
+    <script type="text/javascript">
+      function AboutDialog() {
+          alert("About This Application\n\n" +
+                "Release 3.2.12\n\n" + "$Id: f1501.sql 25624 2025-03-28 18:27:19Z jclark $\n\n" + "\n"); return false;}</script>
+</div></footer></a-dynamic-content>
+
+     
+   </div>
+   <div class="t-Region-buttons t-Region-buttons--bottom">
+    <div class="t-Region-buttons-left"></div>
+    <div class="t-Region-buttons-right"></div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+</div></div>
+          <div class="t-Footer-apex">
+            <div class="t-Footer-version">Release 3.2.12</div>
+            <div class="t-Footer-customize"></div>
+            
+          </div>
+        </div>
+        <div class="t-Footer-top">
+          <a href="#top" class="t-Footer-topButton" id="t_Footer_topButton" title="Start of page" aria-label="Start of page"><span class="a-Icon icon-up-chevron" aria-hidden="true"></span></a>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+<div class="t-Body-inlineDialogs" id="t_Body_inlineDialogs"></div><input type="hidden" id="pPageFormRegionChecksums" value="&#x5B;&#x5D;">
+<input type="hidden" id="pPageItemsRowVersion" value="" /><input type="hidden" id="pPageItemsProtected" value="UDEwX0VURF9TVUJJRDpQMTBfQVVUSE9SX0VNQUlMX0FERFJFU1M6UDEwX1BSSU1B.,UllfQURWSVNPUl9ST0xFOlAxMF9ERUdSRUVfWUVBUjpQMTBfSU5TVF9OQU1FOlAx.,MF9ERUdSRUVfTEVWRUw6UDEwX0FQUF9VUkw6UDEwX1JFRldPUktTX1VSTDpQMTBf.,UkFWRV9VUkw6UDEwX1RPS0VOOlAxMF9UT0tFTl9WQUxJRDpQMTBfSVNfU0VBUkNI.,QUJMRTpQMTBfVElUTEU6UDEwX0RPV05MT0FEX0NPVU5UOlAwX0FQUF9WRVJTSU9O&#x2F;TxLhcZz0e6pQbLw2vOa9lyy9hPzHw9Y0gwwHYqA6EyBO_zo9z2kTUVLHGOogUj0WcjGK6OwxbczTZ0hnvcwOPw" /></form>
+
+
+<script>
+var apex_img_dir = "\u002Fid\u002F";
+var apex = {env: {APP_USER: "APEX_PUBLIC_USER",APP_ID: "1501",APP_PAGE_ID: "10",APP_SESSION: "106909031845502",APP_FILES: "r\u002Fetd\u002F1501\u002Ffiles\u002Fstatic\u002Fv23\u002F",WORKSPACE_FILES: "r\u002Fetd\u002Ffiles\u002Fstatic\u002Fv1\u002F",APEX_VERSION: "24.1.7",APEX_BASE_VERSION: "24.1"},
+libVersions:{cropperJs:"1.6.1",domPurify:"3.1.6",fontapex:"2.3",fullcalendar:"6.1.11",hammer:"2.0.8",jquery:"3.6.4",jqueryUi:"1.13.2",maplibre:"4.0.1",markedJs:"12.0.1",prismJs:"1.29.0",oraclejet:"16.0.10",tinymce:"6.8.4",turndown:"7.1.3",monacoEditor:"0.47.0",lessJs:"4.2.0"}};
+</script>
+<script src="/id/libraries/apex/minified/desktop_all.min.js?v=24.1.7"></script>
+<script src="wwv_flow.js_messages?p_app_id=1501&p_lang=en&p_version=24.1.7-299695521882"></script>
+
+<script type="text/javascript">
+apex.da.initDaEventList = function(){
+apex.da.gEventList = [
+{"triggeringElementType":"BUTTON","triggeringButtonId":"export-refworks","bindType":"bind","executionType":"IMMEDIATE","bindEventType":"click","anyActionsFireOnInit":false,actionList:[{"eventResult":true,"executeOnPageInit":false,"stopExecutionOnError":true,javascriptFunction:function (){ window.location="http://www.refworks.com/express/ExpressImport.asp?vendor=OhioLINK&filter=RIS Format&database=OhioLINK&url=https://etd.ohiolink.edu/acprod/odb_etd/etd/r/1501/0:APPLICATION_PROCESS%3DDOWNLOAD_RIS_FORMAT:::ACC_NUM:kent147855115808631"
+},"action":"NATIVE_JAVASCRIPT_CODE"}]},
+{"triggeringElementType":"BUTTON","triggeringButtonId":"export-endnote","bindType":"bind","executionType":"IMMEDIATE","bindEventType":"click","anyActionsFireOnInit":false,actionList:[{"eventResult":true,"executeOnPageInit":false,"stopExecutionOnError":true,javascriptFunction:function (){ window.location="http://www.myendnoteweb.com/?func=directExport&partnerName=OhioLINK&dataIdentifier=1&dataRequestUrl=https://etd.ohiolink.edu/acprod/odb_etd/etd/r/1501/0:APPLICATION_PROCESS=DOWNLOAD_RIS_FORMAT:::DISPOSITION,ACC_NUM:inline,kent147855115808631"
+},"action":"NATIVE_JAVASCRIPT_CODE"}]},
+{"triggeringElementType":"BUTTON","triggeringButtonId":"SEARCH_BUTTON","bindType":"bind","executionType":"IMMEDIATE","bindEventType":"click","anyActionsFireOnInit":false,actionList:[{"eventResult":true,"executeOnPageInit":false,"stopExecutionOnError":true,javascriptFunction:apex.da.submitPage,"attribute01":"P0_SEARCH","attribute02":"Y","action":"NATIVE_SUBMIT_PAGE"}]}];
+}
+</script>
+
+<script src="/id/libraries/apex/minified/widget.stickyWidget.min.js?v=24.1.7"></script>
+<script src="/id/themes/theme_42/24.1/js/theme42.min.js?v=24.1.7"></script>
+
+
+<script src="/c/js_utils/morelessoverflow/morelessoverflow.js"></script>
+<script src="/c/ohiolink/etd/jquery-collapser/2.0.0/jquery.collapser.min.js"></script>
+<script src="/c/js_utils/hideShowFAQ.js"></script>
+
+  
+
+
+<script src="/id/libraries/apex/minified/listview.min.js?v=24.1.7"></script>
+
+
+
+
+
+<script type="text/javascript">
+apex.jQuery( function() {
+apex.page.init( this, function() {
+try {
+(function(){apex.jQuery("#GOTO_FAQ").click( event => { apex.navigation.redirect('javascript:apex.theme42.dialog(\u002527\u00255Cu002Facprod\u00255Cu002Fodb_etd\u00255Cu002Fr\u00255Cu002Fetd\u00255Cu002Fsearch\u00255Cu002Fhelp?p251_parent_page=10\u00255Cu0026p251_attr_01=\u00255Cu0026dialogCs=fheHWHk6aitFzvR7TfoXLuVryjtgMmfEOY89P624WRGU6-MwpnsCmF3gKwOjiYiUwXwLRS1LwPm9ftcaG6BdmQ\u002527,\u00257Btitle:\u002527OhioLINK\u002520ETD\u002520Center\u002520-\u002520Advanced\u002520Search\u002520Help\u002527,h:\u002527700\u002527,w:\u002527800\u002527,mxw:\u002527960\u002527,modal:false,dialog:null,dlgCls:\u002527t-Dialog-page--standard\u002520\u002527+\u002527\u002527\u00257D,\u002527\u002527,this)'); });})();
+(function(){apex.jQuery("#INSTITUTIONS_BUTTON").click( event => { apex.navigation.redirect('\u002Facprod\u002Fodb_etd\u002Fr\u002Fetd\u002Fsearch\u002Finstitutions?clear=0'); });})();
+(function(){apex.jQuery("#ADVANCED_SEARCH_BUTTON").click( event => { apex.navigation.redirect('\u002Facprod\u002Fodb_etd\u002Fr\u002Fetd\u002Fsearch\u002Fsearch-results?p1001_advanced=1\u0026clear=0,1001'); });})();
+(function(){apex.jQuery("#export-ris").click( event => { apex.navigation.redirect('\u002Facprod\u002Fodb_etd\u002Fr\u002Fetd\u002Fsearch\u002F0?acc_num=kent147855115808631\u0026request=APPLICATION_PROCESS\u00253DDOWNLOAD_RIS_FORMAT\u0026clear=RP'); });})();
+(function(){apex.jQuery("#export-mendeley").click( event => { apex.navigation.redirect('http:\u002F\u002Fwww.mendeley.com\u002Fimport\u002F?url=http:\u002F\u002Frave.ohiolink.edu\u002Fetdc\u002Fview?acc_num=kent147855115808631'); });})();
+} catch(e) {apex.debug.error(e)};
+apex.item.waitForDelayLoadItems().done(function() {
+try {
+(function(){apex.da.initDaEventList();
+apex.da.init();})();
+apex.theme42.initializePage.noSideCol();
+$('#export-refworks')
+  .prepend('<img src="/c/etd_docs/refworks.png" style="vertical-align: middle; padding: 0px 3px 3px 3px;"/>Refworks');
+
+$('#export-endnote')
+  .prepend('<img src="/c/etd_docs/page_icon.png" style="vertical-align: middle; padding: 0px 3px 3px 3px;"/>EndNote');
+ 
+ //.after('<span style="display: inline-block; padding: 0 5px;">|</span>');
+
+$('#export-ris')
+  .prepend('<img src="/c/etd_docs/page_icon.png" style="vertical-align: middle; padding: 0px 3px 3px 3px;" />RIS');
+  
+//.after('<span style="display: inline-block; padding: 0 5px;">|</span>');
+
+$('#export-mendeley').prepend('<img src="/c/etd_docs/mendeley.png" style="vertical-align: middle; padding: 0px 3px 3px 3px;" />Mendeley');
+
+setupMoreLessOverflow();
+$('#citations a.uRegionControl').click();
+
+apex.item( 'P0_SEARCH' ).setFocus();
+} finally {
+apex.event.trigger(apex.gPageContext$,'apexreadyend');
+};
+});
+});
+});apex.pwa.cleanup( { serviceWorkerPath:'\u002Facprod\u002Fodb_etd\u002Fr\u002Fetd\u002Fsearch\u002Fsw.js?v=24.1.7-299695521882\u0026lang=en' } );
+</script>
+
+</body>
+</html>

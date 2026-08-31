@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/pattern.detected.v1.json",
+  "title": "pattern.detected.v1",
+  "description": "Emitido por el Pattern Miner cuando detecta un patrón de comportamiento estadísticamente significativo en datos anonimizados.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "pattern.detected" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "const": "pattern-miner" },
+    "correlation_id": { "type": "string", "format": "uuid", "description": "ID del batch de minería que generó este patrón." },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string", "const": "system", "description": "Patrones son globales, no por usuario." },
+    "payload": {
+      "type": "object",
+      "required": ["pattern_id", "description", "signal_strength", "sample_size", "affected_modules", "analysis_window_days"],
+      "additionalProperties": false,
+      "properties": {
+        "pattern_id":    { "type": "string", "format": "uuid" },
+        "description":   { "type": "string", "description": "Descripción del patrón detectado." },
+        "signal_strength": {
+          "type": "number", "minimum": 0.0, "maximum": 1.0,
+          "description": "Fuerza de la señal (0.0–1.0). Por encima de 0.7 se propone doctrina."
+        },
+        "sample_size":   { "type": "integer", "minimum": 1 },
+        "affected_modules": {
+          "type": "array", "items": { "type": "string" }, "minItems": 1,
+          "description": "Módulos del sistema que este patrón sugiere mejorar."
+        },
+        "analysis_window_days": { "type": "integer", "minimum": 1 },
+        "cluster_ids": {
+          "type": "array", "items": { "type": "string" },
+          "description": "IDs de clusters de usuarios anonimizados donde se observó el patrón.",
+          "default": []
+        },
+        "hypothesis": {
+          "type": "string",
+          "description": "Hipótesis de mejora que el patrón sugiere (texto libre)."
+        },
+        "proposed_change_type": {
+          "type": "string",
+          "enum": ["prompt_update", "routing_policy", "guild_config", "specialist_selection", "budget_adjustment"],
+          "description": "Tipo de cambio que el patrón sugiere."
+        }
+      }
+    },
+    "metadata": { "type": "object", "default": {} }
+  }
+}

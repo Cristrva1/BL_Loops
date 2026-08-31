@@ -1,0 +1,199 @@
+{
+  "$defs": {
+    "Independence": {
+      "enum": [
+        "original",
+        "syndicated",
+        "derived",
+        "unknown"
+      ],
+      "title": "Independence",
+      "type": "string"
+    },
+    "QuarantineStatus": {
+      "enum": [
+        "clear",
+        "empty",
+        "uncertain_rights",
+        "injection",
+        "unsupported_mime",
+        "oversize"
+      ],
+      "title": "QuarantineStatus",
+      "type": "string"
+    },
+    "SourceKind": {
+      "enum": [
+        "local_markdown",
+        "local_txt"
+      ],
+      "title": "SourceKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/SourceKind"
+    },
+    "title": {
+      "maxLength": 200,
+      "minLength": 3,
+      "title": "Title",
+      "type": "string"
+    },
+    "author": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Author",
+      "type": "string"
+    },
+    "editor": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Editor"
+    },
+    "uri": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Uri",
+      "type": "string"
+    },
+    "published_at": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Published At"
+    },
+    "updated_at": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Updated At"
+    },
+    "retrieved_at": {
+      "format": "date-time",
+      "title": "Retrieved At",
+      "type": "string"
+    },
+    "license": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "License",
+      "type": "string"
+    },
+    "usage_basis": {
+      "maxLength": 80,
+      "minLength": 3,
+      "title": "Usage Basis",
+      "type": "string"
+    },
+    "redistribution_allowed": {
+      "title": "Redistribution Allowed",
+      "type": "boolean"
+    },
+    "content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Sha256",
+      "type": "string"
+    },
+    "language": {
+      "maxLength": 12,
+      "minLength": 2,
+      "title": "Language",
+      "type": "string"
+    },
+    "jurisdiction": {
+      "maxLength": 40,
+      "minLength": 2,
+      "title": "Jurisdiction",
+      "type": "string"
+    },
+    "origin_source_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Origin Source Id",
+      "type": "string"
+    },
+    "independence": {
+      "$ref": "#/$defs/Independence"
+    },
+    "topics": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Topics",
+      "type": "array"
+    },
+    "quarantine_status": {
+      "$ref": "#/$defs/QuarantineStatus"
+    },
+    "rights_clarity": {
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Rights Clarity",
+      "type": "integer"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Warnings",
+      "type": "array"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_id",
+    "kind",
+    "title",
+    "author",
+    "uri",
+    "retrieved_at",
+    "license",
+    "usage_basis",
+    "redistribution_allowed",
+    "content_sha256",
+    "language",
+    "jurisdiction",
+    "origin_source_id",
+    "independence",
+    "quarantine_status",
+    "rights_clarity",
+    "content_hash"
+  ],
+  "title": "SourceRecord",
+  "type": "object"
+}

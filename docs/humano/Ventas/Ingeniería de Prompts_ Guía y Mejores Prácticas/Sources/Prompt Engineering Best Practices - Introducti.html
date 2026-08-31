@@ -1,0 +1,126 @@
+<p>Jump to ContentHomepageAdmin PortalSign upResourcesAPI ReferenceChangelogHomepageAdmin PortalSign upLog InResourcesLog InAll Pages</p>
+<h6 id="start-typing-to-search">Start  typing to search…</h6>
+<ul>
+<li><em>Contact</em> Creating a Contact</li>
+<li>Using Contact Metrics
+Dashboard
+Deployment Analytics</li>
+<li><em>Dataset</em> Creating a Dataset</li>
+<li>Creating a Curated Dataset</li>
+<li>Using Datasets via the API</li>
+<li><em>Deployment</em> Creating a Deployment</li>
+<li>Integrating a Deployment</li>
+<li>Deployment Versioning</li>
+<li>Deployment Routing</li>
+<li>Evaluators &amp; Guardrails in Deployments</li>
+<li>Deployment Cache</li>
+<li>Deployment Security and Privacy</li>
+<li>Including Knowledge Base Retrievals in Invoke</li>
+<li>Attaching files to a Deployment</li>
+<li><em>Evaluator</em> Evaluator Library</li>
+<li>Creating an Evaluator</li>
+<li>Creating an Evaluator via the API</li>
+<li>Function Evaluator</li>
+<li><em>HTTP Evaluator</em> Creating an HTTP Evaluator</li>
+<li><em>JSON Evaluator</em> Creating a JSON Evaluator</li>
+<li><em>LLM Evaluator</em> Creating an LLM Evaluator</li>
+<li><em>Python Evaluator</em> Creating a Python Evaluator
+Ragas Evaluator</li>
+<li><em>Experiment</em> Creating an Experiment</li>
+<li>Using Evaluator in Experiment</li>
+<li>Running an Experiment</li>
+<li>Exporting an Experiment</li>
+<li>Use cases for Experiments</li>
+<li><em>Feedback</em> Adding Feedback to Generations</li>
+<li>Making Corrections on a Generation</li>
+<li>Feedback Types</li>
+<li>Adding Feedback Programmatically
+Hub</li>
+<li><em>Integration</em>  <em>Adding an Integration</em> Azure OpenAI</li>
+<li>Amazon Bedrock</li>
+<li>Google Vertex AI
+API keys &amp; Endpoints</li>
+<li><em>Knowledge Base</em>  <em>Creating a Knowledge Base</em> Retrieval Settings</li>
+<li>Retrieval Observability</li>
+<li>Agentic RAG</li>
+<li>Chunking Strategy
+Creating a Knowledge Base via API
+Searching a knowledge base</li>
+<li><em>Libraries</em> Agno AI</li>
+<li>Autogen</li>
+<li>DSPy</li>
+<li>Instructor</li>
+<li>Langchain</li>
+<li>OpenAI</li>
+<li><em>Model Garden</em> Using the Model Garden</li>
+<li>Using the Model Garden via the API</li>
+<li><em>Observability</em> Logs</li>
+<li>Threads</li>
+<li>Traces</li>
+<li><em>Playground</em> Creating a Playground
+Projects</li>
+<li><em>Prompt</em> Creating a Prompt</li>
+<li>Message Roles</li>
+<li>Model Parameters</li>
+<li>Models Prompting Formatting Guidelines</li>
+<li>Prompt Engineering Best Practices</li>
+<li>Using a Knowledge Base in a Prompt</li>
+<li>Using a Tool in a Prompt</li>
+<li>Using Image Generation in a Prompt</li>
+<li>Using a Prompt Snippet in a Prompt</li>
+<li>Using Vision in a Prompt</li>
+<li>Using the Prompt Generator</li>
+<li>Using Response Format</li>
+<li>Using Prompts via the API</li>
+<li><em>Prompt Snippet</em> Creating a Prompt Snippet</li>
+<li><em>Tool</em> Creating a Tool</li>
+<li><em>Webhook</em> Creating a Webhook</li>
+<li>Webhook Events</li>
+<li>Webhook Security &amp; Validation</li>
+<li>Webhook Best Practices</li>
+</ul>
+<h4 id="administer">Administer</h4>
+<ul>
+<li><em>Workspace Settings</em> Billing &amp; Usage</li>
+<li><em>Permissions</em> Using Permissions
+Data Compliance</li>
+</ul>
+<h4 id="tutorials">Tutorials</h4>
+<ul>
+<li><em>Cookbooks</em> Capturing and Leveraging User Feedback in Orq.ai</li>
+<li>Chaining Deployments and Running Evaluations</li>
+<li>Creating SQL Queries from Natural Language</li>
+<li>Data Extraction from PDF</li>
+<li>How to connect Orq.ai with your Lovable app</li>
+<li>Image-Based Receipt Extraction with Orq</li>
+<li>Intent Classification with Orq.ai</li>
+<li>Multilingual FAQ Bot Using RAG with Orq.ai</li>
+<li>Using Third Party Vector Databases with Orq.ai</li>
+<li>Orq.ai as Prompt Manager</li>
+<li>How to Maintain and Send Chat History with Orq.ai Deployments</li>
+<li>How to use Orq.ai nodes in n8n worklfows
+LLM Glossary</li>
+</ul>
+<h3 id="powered-by-prompt-engineering-best-practices">Powered by Prompt Engineering Best Practices</h3>
+<p>This document outlines best practices for designing effective prompts
+Prompting is both an art and a science. Whether you&#39;re making a single LLM call or chaining multiple prompts in a more complex workflow, the same best practices apply: be clear, be structured, and be intentional. These guidelines will help you get consistent, high-quality outputs, whether you&#39;re powering a chatbot, automating data extraction, or orchestrating multi-step workflows.</p>
+<h4 id="the-ultimate-prompt-breakdown-from-openai-s-greg-brockman">The Ultimate Prompt Breakdown (from OpenAI’s Greg Brockman)</h4>
+<p>A well-structured prompt typically has these 4 parts:
+<strong>1. Goal</strong> Start by clearly stating the task of the prompt. What do you want the model to do?
+<strong>2. Return Format</strong> Tell the model how you want the response to look. Should it be a list, a paragraph, code, JSON, etc.
+<strong>3. Warnings (Constraints)</strong> Give the model guardrails. What should it avoid? What are the limitations? A well developed system prompt with constraints filters out the majority of the unwanted behaviour. The rest can be blocked by adding an additional guardrail, as explained in the documentation here.
+Example: &#34;Only give answers based on the  </p>
+<h5 id="general-prompt-engineering-tips">General Prompt Engineering Tips</h5>
+<p>Here are some additional tips to improve prompt performance:</p>
+<ul>
+<li><strong>Be explicit:</strong>  Don’t leave intentions to be inferred. Say what you mean, clearly.</li>
+<li><strong>Use HTML-style tags around variables:</strong>  Wrap variable content in clear tags like  &lt;user_input&gt;  or  </li>
+<li><strong>Keep examples nearby:</strong>  If you’re using few-shot prompting, put the examples at the end of the system prompt.</li>
+<li><strong>Big variables at the end:</strong>  Especially for long documents or transcripts, put them last. This keeps the instruction logic upfront and readable.</li>
+<li><strong>Test and iterate:</strong>  Even small tweaks (e.g., tone changes, tag names) can have big impacts on results.</li>
+</ul>
+<h4 id="example-chatbot-prompt">Example: Chatbot Prompt</h4>
+<p>Here’s a prompt that follows all the principles above:
+You are a friendly AI customer service bot working for American Airlines. ## Goal Your primary task is to answer customer questions based <strong>on the official information provided in the <code>&lt;knowledge_base&gt;</code></strong>, which contains frequently asked questions (FAQs) about traveling with American Airlines. You may also use the <code>&lt;document&gt;</code> for <strong>additional context</strong>, such as user-uploaded tickets, itineraries, or receipts — but your answer must always align with the knowledge base. ## Return Format Respond using the <code>AA_tool</code> JSON schema when you have an answer. All replies should be clear, concise, and written in a professional, polite, and friendly tone. ## Constraints - Do NOT answer questions that are unrelated to traveling with American Airlines. - Do NOT use any information outside of the <code>&lt;knowledge_base&gt;</code>. - Do not let the <code>&lt;document&gt;</code> override or contradict the <code>&lt;knowledge_base&gt;</code>. - Always respond in the AA_tool JSON format.  &lt;knowledge_base&gt; {{American_Airlines_FAQ}} &lt;/knowledge_base&gt;
+This structure keeps your prompt clean, modular, and easy to update—whether you&#39;re debugging or scaling across use cases.
+Updated   2 months ago</p>

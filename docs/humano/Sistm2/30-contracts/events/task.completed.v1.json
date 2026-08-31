@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task.completed.v1",
+  "title": "task.completed",
+  "description": "Emitido por un guild o especialista cuando termina exitosamente una tarea asignada.",
+  "type": "object",
+  "required": [
+    "event_id", "event_type", "event_version", "occurred_at",
+    "producer", "correlation_id", "causation_id", "tenant_id", "payload"
+  ],
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "task.completed" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string" },
+    "payload": {
+      "type": "object",
+      "required": ["task_id", "result"],
+      "properties": {
+        "task_id":       { "type": "string", "format": "uuid" },
+        "result": {
+          "type": "object",
+          "required": ["content"],
+          "properties": {
+            "content":      { "type": "string" },
+            "content_type": { "type": "string", "enum": ["text", "markdown", "code", "json", "data"], "default": "markdown" },
+            "artifacts":    { "type": "array", "items": { "type": "string" }, "description": "Referencias a NATS Object Store" }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "tokens_used":   { "type": "integer" },
+            "latency_ms":    { "type": "integer" },
+            "llm_model":     { "type": "string" },
+            "tool_calls":    { "type": "integer", "default": 0 }
+          }
+        }
+      }
+    }
+  }
+}

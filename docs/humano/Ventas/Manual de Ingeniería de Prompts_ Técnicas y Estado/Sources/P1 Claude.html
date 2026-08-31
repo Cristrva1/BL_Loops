@@ -1,0 +1,284 @@
+<h1 id="tab-1">Tab 1</h1>
+<p>the prompt you paste directly into Claude to generate the artifact:</p>
+<p><strong>Call 1 — Intent Analyst</strong></p>
+<p>System prompt: &#34;You are an expert prompt engineer. Analyze the user&#39;s raw input and return ONLY valid JSON: { &#34;intent_summary&#34;: &#34;one sentence describing their true underlying goal&#34;, &#34;questions&#34;: [{ &#34;id&#34;: &#34;q1&#34;, &#34;text&#34;: &#34;question&#34;, &#34;placeholder&#34;: &#34;hint&#34; }] }. Generate EXACTLY 1-2 questions — only the ones that would most change the prompt quality. Never ask what you can reasonably infer.&#34;</p>
+<p>User message: their raw input.</p>
+<p><strong>Call 2 — Prompt Generator</strong></p>
+<p>System prompt: &#34;You are a master prompt engineer. Given a user&#39;s need and their clarifying answers, return ONLY valid JSON: { &#34;prompt&#34;: &#34;the complete optimized prompt&#34;, &#34;technique&#34;: &#34;technique name used&#34;, &#34;why_it_works&#34;: &#34;2 sentences on structural choices&#34;, &#34;tips&#34;: [&#34;tip1&#34;, &#34;tip2&#34;, &#34;tip3&#34;] }. Use the best technique for the case (CoT, Role Prompting, XML structure, etc.). Use [VARIABLE] for customizable parts. Make it copy-paste ready.&#34;</p>
+<p>User message: raw need + detected intent + clarifying answers.</p>
+<h2 id="flow">Flow</h2>
+<ol>
+<li>
+<p><strong>Input stage</strong> — textarea where user describes their goal in natural language</p>
+</li>
+<li>
+<p><strong>Analyzing stage</strong> — loading state while Call 1 runs</p>
+</li>
+<li>
+<p><strong>Clarifying stage</strong> — shows detected intent in a highlighted box + renders the 1-2 questions as text inputs</p>
+</li>
+<li>
+<p><strong>Generating stage</strong> — loading state while Call 2 runs</p>
+</li>
+<li>
+<p><strong>Result stage</strong> — displays the optimized prompt in a monospace code block with a Copy button, the technique used, why it works, and 3 tips</p>
+</li>
+</ol>
+<h2 id="ui-requirements">UI Requirements</h2>
+<ul>
+<li>
+<p>Dark theme, elegant and minimal</p>
+</li>
+<li>
+<p>3-step progress indicator (Define → Refine → Craft)</p>
+</li>
+<li>
+<p>Parse all API responses with JSON.parse after stripping markdown fences</p>
+</li>
+<li>
+<p>Copy button on the final prompt</p>
+</li>
+<li>
+<p>&#34;Start over&#34; button to reset all state</p>
+</li>
+<li>
+<p>Handle errors gracefully with a visible error message</p>
+</li>
+</ul>
+<p>—-----------------------------------------------------------</p>
+<p>CLAUDE:</p>
+<p>Got it. Here&#39;s the prompt you paste directly into Claude to generate the artifact:</p>
+<p>Create a React artifact called &#34;The Prompt Architect&#34; — an AI-powered tool that helps users engineer high-quality prompts.## Core BehaviorThe app makes two sequential Claude API calls (using fetch to <a href="https://api.anthropic.com/v1/messages">https://api.anthropic.com/v1/messages</a>, model: claude-sonnet-4-20250514, no API key needed):<strong>Call 1 — Intent Analyst</strong>System prompt: &#34;You are an expert prompt engineer. Analyze the user&#39;s raw input and return ONLY valid JSON: { &#34;intent_summary&#34;: &#34;one sentence describing their true underlying goal&#34;, &#34;questions&#34;: [{ &#34;id&#34;: &#34;q1&#34;, &#34;text&#34;: &#34;question&#34;, &#34;placeholder&#34;: &#34;hint&#34; }] }. Generate EXACTLY 1-2 questions — only the ones that would most change the prompt quality. Never ask what you can reasonably infer.&#34;User message: their raw input.<strong>Call 2 — Prompt Generator</strong>System prompt: &#34;You are a master prompt engineer. Given a user&#39;s need and their clarifying answers, return ONLY valid JSON: { &#34;prompt&#34;: &#34;the complete optimized prompt&#34;, &#34;technique&#34;: &#34;technique name used&#34;, &#34;why_it_works&#34;: &#34;2 sentences on structural choices&#34;, &#34;tips&#34;: [&#34;tip1&#34;, &#34;tip2&#34;, &#34;tip3&#34;] }. Use the best technique for the case (CoT, Role Prompting, XML structure, etc.). Use [VARIABLE] for customizable parts. Make it copy-paste ready.&#34;User message: raw need + detected intent + clarifying answers.## Flow1. <strong>Input stage</strong> — textarea where user describes their goal in natural language2. <strong>Analyzing stage</strong> — loading state while Call 1 runs3. <strong>Clarifying stage</strong> — shows detected intent in a highlighted box + renders the 1-2 questions as text inputs4. <strong>Generating stage</strong> — loading state while Call 2 runs5. <strong>Result stage</strong> — displays the optimized prompt in a monospace code block with a Copy button, the technique used, why it works, and 3 tips## UI Requirements- Dark theme, elegant and minimal- 3-step progress indicator (Define → Refine → Craft)- Parse all API responses with JSON.parse after stripping markdown fences- Copy button on the final prompt- &#34;Start over&#34; button to reset all state- Handle errors gracefully with a visible error message</p>
+<p>That&#39;s the complete spec. Every structural decision — the two-call architecture, the max-2-questions constraint, the JSON schemas — is baked in so Claude builds it correctly on the first try.</p>
+<p>ME:</p>
+<p>I have this prompt for you to analyze and improve the artifact.</p>
+<p>&#34;&#34;&#34;</p>
+<p>PROMPT: You are Lyra, a master-level AI prompt optimization specialist...</p>
+<p>&#34;&#34;&#34;</p>
+<p>CLAUDE:</p>
+<p>The user wants me to analyze this &#34;Lyra&#34; prompt and improve it for use as an artifact. Let me analyze what&#39;s good, what&#39;s weak, and then provide an improved version.</p>
+<p>Key issues I see:</p>
+<p>The prompt is duplicated (copy-pasted twice) — structural noise</p>
+<p>The 4-D methodology is solid conceptually but over-verbose</p>
+<p>The welcome message is rigid and forces users into an awkward &#34;DETAIL/BASIC&#34; choice upfront — adds friction</p>
+<p>Platform-specific notes are shallow and potentially outdated</p>
+<p>&#34;Memory&#34; appears randomly at the end of each duplicate — artifact of copy-paste</p>
+<p>The mode detection logic is contradictory: it says &#34;auto-detect complexity&#34; BUT ALSO asks the user to choose DETAIL or BASIC in the welcome message</p>
+<p>The response formats rely on bullet lists that won&#39;t work well in conversational AI</p>
+<p>Since this is meant to drive an artifact, I need to make the JSON output schema explicit and ensure it works as a system prompt for API calls</p>
+<p>The real improvement path is to strip away the duplication and friction, auto-detect user intent instead of forcing upfront choices, and structure the output schema so it actually works for an artifact-driven workflow.</p>
+<p>Actually, I&#39;m realizing the user probably just wants a solid analysis and an improved version of the prompt itself, not necessarily tied back to the artifact implementation. Let me focus on giving them a clear breakdown of what&#39;s working and what needs tightening.</p>
+<p>Analysis</p>
+<p>What works:</p>
+<p>The 4-D framework (Deconstruct → Diagnose → Develop → Deliver) is a genuinely solid structure</p>
+<p>Platform-specific awareness is a smart differentiator</p>
+<p>The DETAIL/BASIC mode split is a good instinct</p>
+<p>What&#39;s broken or weak:</p>
+<p>The whole prompt is duplicated. Literally copy-pasted twice with &#34;Memory&#34; orphaned at the end of each. This isn&#39;t intentional — it&#39;s noise that wastes context tokens and can confuse the model.</p>
+<p>The welcome message is counterproductive. Forcing the user to specify &#34;DETAIL using ChatGPT — ...&#34; before they can even start adds friction and a learning curve. Users come with a need, not a syntax.</p>
+<p>Auto-detect contradicts the welcome message. The Processing Flow says &#34;auto-detect complexity&#34; — but the welcome message asks the user to manually choose DETAIL or BASIC. These cancel each other out.</p>
+<p>The 4-D steps describe what to do but not how. &#34;Extract core intent&#34; is not an instruction — it&#39;s a label. The model already knows to do this; what it needs is decision logic.</p>
+<p>Response format section is too rigid. Hardcoding &#34;Simple&#34; vs. &#34;Complex&#34; response templates leads to formulaic outputs that feel mechanical.</p>
+<p>Platform notes are surface-level. &#34;Claude: longer context, reasoning frameworks&#34; adds no actionable value — any capable model knows this.</p>
+<p>Improved Prompt</p>
+<p>You are Lyra, a master-level prompt engineer. Your sole function is to transform any user input — rough, vague, or half-formed — into a precision-crafted prompt that gets measurably better results.## CORE BEHAVIORWhen a user sends you any input:1. SILENTLY assess it across three dimensions: - Clarity: Is the goal unambiguous? - Specificity: Are constraints, format, and audience defined? - Complexity: Does this require reasoning scaffolding or is it a direct task?2. AUTO-SELECT a mode: - BASIC: Input is clear enough to optimize immediately. → Optimize directly. No questions asked. - DETAIL: Input is ambiguous or high-stakes (professional, technical, creative with nuance). → Ask 1-2 targeted questions ONLY. Never more. → Tell the user which mode you selected and why (one line). → Always offer: &#34;Or say SKIP to optimize with my best assumptions.&#34;3. APPLY the right technique for the task type: - Creative work → perspective layering + tone calibration - Technical tasks → hard constraint specification + precision role - Reasoning/analysis → chain-of-thought scaffolding - Educational content → few-shot structure + progressive complexity - Conversational/persona → character grounding + behavioral guardrails4. ADAPT output for the target platform when specified: - ChatGPT/GPT-4: Front-load context; use markdown sections - Claude: Use XML tags (</p>
+<p>Summary of key changes:</p>
+<p>The duplication is gone. The welcome message is removed — Lyra now just works when you send it something. The contradiction between auto-detect and manual mode selection is resolved in favor of auto-detect with a one-line override. The 4-D labels are replaced with actual decision logic. The response format is simplified to three consistent sections instead of two brittle templates. And the question cap is dropped from 2-3 down to a strict maximum of 2.</p>
+<p>ME:</p>
+<p>By analyzing Lyra, you can improve &#34;The Prompt Architect&#34;</p>
+<p>CLAUDE:</p>
+<p>The user wants me to analyze what Lyra does well (after my improvements) and apply those lessons to improve &#34;The Prompt Architect&#34; system prompt I gave them earlier. They just want the improved prompt, not a rebuilt artifact.</p>
+<p>Key lessons from Lyra analysis to apply to The Prompt Architect:</p>
+<p>The Analyst system prompt could be tighter - add decision logic not just labels</p>
+<p>The Generator system prompt could be improved with technique selection logic</p>
+<p>Add platform awareness</p>
+<p>Maybe consolidate or improve the two-call architecture prompts</p>
+<p>Let me think about what specifically to improve in The Prompt Architect&#39;s two system prompts:</p>
+<p>Analyst system prompt improvements:</p>
+<p>I should add a SKIP option so users can bypass analysis with reasonable defaults, tighten the question selection with concrete criteria rather than vague guidance, and incorporate the silent assessment dimensions that made Lyra&#39;s analysis more actionable.</p>
+<p>Generator system prompt improvements:</p>
+<p>I need to add platform-specific adaptation logic, implement actual technique selection based on the analysis rather than just labeling techniques, and refine the output format to be more structured and useful.</p>
+<p>Now I&#39;ll write out the improved full artifact prompt.</p>
+<p>Exactly. Here&#39;s what Lyra&#39;s analysis reveals that applies directly to The Prompt Architect, and the improved artifact prompt:</p>
+<p>Lessons transferred:</p>
+<p>The Analyst needs decision logic for when to ask 1 vs. 2 questions — not just a cap</p>
+<p>Add a SKIP option so power users can bypass clarification entirely</p>
+<p>The Generator needs explicit technique-selection logic, not just a list</p>
+<p>Add platform awareness to the Generator</p>
+<p>The intent summary should surface assumptions made so the user can correct them</p>
+<p>Create a React artifact called &#34;The Prompt Architect&#34; — an AI-powered tool that engineers high-quality prompts from rough user input.## TWO-CALL ARCHITECTURE### Call 1 — Intent AnalystEndpoint: POST <a href="https://api.anthropic.com/v1/messagesModel">https://api.anthropic.com/v1/messagesModel</a>: claude-sonnet-4-20250514Max tokens: 1000System prompt:&#34;You are an expert prompt engineer. Silently assess the user&#39;s input across three dimensions: (1) Clarity — is the goal unambiguous? (2) Specificity — are constraints, format, and audience defined? (3) Complexity — does this need reasoning scaffolding?Return ONLY valid JSON:{ &#39;intent_summary&#39;: &#39;One sentence: the true underlying goal&#39;, &#39;assumptions&#39;: &#39;One sentence: key things you inferred that the user should verify&#39;, &#39;questions&#39;: [ { &#39;id&#39;: &#39;q1&#39;, &#39;text&#39;: &#39;question text&#39;, &#39;placeholder&#39;: &#39;hint&#39; } ]}Question rules:- If input is clear and specific → 1 question maximum- If input is ambiguous or high-stakes → exactly 2 questions- Only ask what would SIGNIFICANTLY change the output- Never ask what you can reasonably infer- Questions must be under 12 words each&#34;User message: their raw input.---### Call 2 — Prompt GeneratorSystem prompt:&#34;You are a master prompt engineer. Given a user&#39;s need, detected intent,assumptions, and clarifying answers, apply the optimal technique:- Creative tasks → perspective layering + tone calibration- Technical tasks → hard constraint specification + precision role- Reasoning/analysis → chain-of-thought scaffolding - Educational content → few-shot structure- Conversational/persona → character grounding + behavioral guardrailsAdapt for target platform if specified:- Claude → XML tags (</p>
+<p>The three concrete upgrades from Lyra:</p>
+<p>The assumptions box is new — it makes the model&#39;s inferences visible so users can catch wrong guesses before generation. The SKIP path removes friction for experienced users who just want the output. And the platform selector feeds directly into the Generator&#39;s technique logic, so the output is actually tailored rather than generic.</p>
+<h2 id="two-call-architecture">TWO-CALL ARCHITECTURE</h2>
+<h3 id="call-1-intent-analyst">Call 1 — Intent Analyst</h3>
+<p>Endpoint: POST <a href="https://api.anthropic.com/v1/messages">https://api.anthropic.com/v1/messages</a></p>
+<p>Model: claude-sonnet-4-20250514</p>
+<p>Max tokens: 1000</p>
+<p>System prompt:</p>
+<p>&#34;You are an expert prompt engineer. Silently assess the user&#39;s input</p>
+<p>across three dimensions: (1) Clarity — is the goal unambiguous?</p>
+<p>(2) Specificity — are constraints, format, and audience defined?</p>
+<p>(3) Complexity — does this need reasoning scaffolding?</p>
+<p>Return ONLY valid JSON:</p>
+<p>{</p>
+<p>&#39;intent_summary&#39;: &#39;One sentence: the true underlying goal&#39;,</p>
+<p>&#39;assumptions&#39;: &#39;One sentence: key things you inferred that the user</p>
+<p>should verify&#39;,</p>
+<p>&#39;questions&#39;: [</p>
+<p>{ &#39;id&#39;: &#39;q1&#39;, &#39;text&#39;: &#39;question text&#39;, &#39;placeholder&#39;: &#39;hint&#39; }</p>
+<p>]</p>
+<p>}</p>
+<p>Question rules:</p>
+<ul>
+<li>
+<p>If input is clear and specific → 1 question maximum</p>
+</li>
+<li>
+<p>If input is ambiguous or high-stakes → exactly 2 questions</p>
+</li>
+<li>
+<p>Only ask what would SIGNIFICANTLY change the output</p>
+</li>
+<li>
+<p>Never ask what you can reasonably infer</p>
+</li>
+<li>
+<p>Questions must be under 12 words each&#34;</p>
+</li>
+</ul>
+<p>User message: their raw input.</p>
+<hr>
+<h3 id="call-2-prompt-generator">Call 2 — Prompt Generator</h3>
+<p>System prompt:</p>
+<p>&#34;You are a master prompt engineer. Given a user&#39;s need, detected intent,</p>
+<p>assumptions, and clarifying answers, apply the optimal technique:</p>
+<ul>
+<li>
+<p>Creative tasks → perspective layering + tone calibration</p>
+</li>
+<li>
+<p>Technical tasks → hard constraint specification + precision role</p>
+</li>
+<li>
+<p>Reasoning/analysis → chain-of-thought scaffolding</p>
+</li>
+<li>
+<p>Educational content → few-shot structure</p>
+</li>
+<li>
+<p>Conversational/persona → character grounding + behavioral guardrails</p>
+</li>
+</ul>
+<p>Adapt for target platform if specified:</p>
+<ul>
+<li>
+<p>Claude → XML tags (</p>
+</li>
+<li>
+<p>ChatGPT/GPT-4 → front-loaded context, markdown sections</p>
+</li>
+<li>
+<p>Gemini → multi-draft or comparative framing</p>
+</li>
+<li>
+<p>Unknown → universal best practices</p>
+</li>
+</ul>
+<p>Return ONLY valid JSON:</p>
+<p>{</p>
+<p>&#39;prompt&#39;: &#39;complete copy-paste-ready optimized prompt&#39;,</p>
+<p>&#39;technique&#39;: &#39;primary technique name&#39;,</p>
+<p>&#39;why_it_works&#39;: &#39;2 sentences on the key structural decisions made&#39;,</p>
+<p>&#39;tips&#39;: [&#39;tip1&#39;, &#39;tip2&#39;, &#39;tip3&#39;]</p>
+<p>}</p>
+<p>Rules:</p>
+<ul>
+<li>
+<p>Use [VARIABLE] for anything the user must customize</p>
+</li>
+<li>
+<p>Length matches complexity — don&#39;t over-engineer simple tasks</p>
+</li>
+<li>
+<p>If the user skipped clarification, build the strongest reasonable</p>
+</li>
+</ul>
+<p>version and note assumptions inside the prompt as [VARIABLE] hints&#34;</p>
+<p>User message: raw need + intent + assumptions + answers (or &#39;SKIPPED&#39;).</p>
+<hr>
+<h2 id="ui-flow">UI FLOW</h2>
+<p><strong>Stage 1 — Input</strong></p>
+<ul>
+<li>
+<p>Textarea: &#39;Describe what you need — rough is fine&#39;</p>
+</li>
+<li>
+<p>Below textarea: small platform selector (Claude / ChatGPT / Gemini /</p>
+</li>
+</ul>
+<p>Other) — optional, defaults to &#39;Universal&#39;</p>
+<ul>
+<li>Primary CTA: &#39;Analyze Intent&#39;</li>
+</ul>
+<p><strong>Stage 2 — Analyzing</strong> (loading state during Call 1)</p>
+<p><strong>Stage 3 — Clarifying</strong></p>
+<ul>
+<li>
+<p>Show detected intent in a highlighted box</p>
+</li>
+<li>
+<p>Show assumptions in a softer secondary box labeled</p>
+</li>
+</ul>
+<p>&#39;What I inferred — correct me if wrong&#39;</p>
+<ul>
+<li>
+<p>Render 1-2 questions as text inputs</p>
+</li>
+<li>
+<p>Primary CTA: &#39;Craft the Prompt&#39;</p>
+</li>
+<li>
+<p>Secondary link below: &#39;Skip — optimize with your best assumptions →&#39;</p>
+</li>
+</ul>
+<p>(triggers Call 2 immediately with answers marked as SKIPPED)</p>
+<p><strong>Stage 4 — Generating</strong> (loading state during Call 2)</p>
+<p><strong>Stage 5 — Result</strong></p>
+<ul>
+<li>
+<p>Monospace code block with the optimized prompt + Copy button</p>
+</li>
+<li>
+<p>Technique badge</p>
+</li>
+<li>
+<p>&#39;Why it works&#39; section</p>
+</li>
+<li>
+<p>3 pro tips</p>
+</li>
+<li>
+<p>&#39;Start over&#39; button</p>
+</li>
+</ul>
+<hr>
+<h2 id="technical-requirements">TECHNICAL REQUIREMENTS</h2>
+<ul>
+<li>
+<p>Parse all API responses: JSON.parse after stripping ``` fences</p>
+</li>
+<li>
+<p>Handle errors with a visible inline error message + retry option</p>
+</li>
+<li>
+<p>Store platform selection in state, pass it to Call 2 user message</p>
+</li>
+<li>
+<p>Dark elegant theme, 3-step progress indicator (Define → Refine → Craft)</p>
+</li>
+<li>
+<p>SKIP must bypass stage 3 entirely and go straight to stage 4</p>
+</li>
+</ul>
+<p>&#34;&#34;&#34;</p>

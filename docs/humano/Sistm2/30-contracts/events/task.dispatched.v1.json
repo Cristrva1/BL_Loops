@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task.dispatched.v1",
+  "title": "task.dispatched",
+  "description": "Emitido por el Meta-Orchestrator o un Coordinador al delegar una subtarea a un guild o especialista.",
+  "type": "object",
+  "required": [
+    "event_id", "event_type", "event_version", "occurred_at",
+    "producer", "correlation_id", "causation_id", "tenant_id", "payload"
+  ],
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "task.dispatched" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid" },
+    "tenant_id":      { "type": "string" },
+    "payload": {
+      "type": "object",
+      "required": ["task_id", "task_type", "assignee_guild", "instructions"],
+      "properties": {
+        "task_id":         { "type": "string", "format": "uuid" },
+        "task_type":       { "type": "string", "description": "Tipo de tarea: research, write, analyze, format, memory_read, memory_write, qa" },
+        "assignee_guild":  { "type": "string", "enum": ["research", "production", "analysis", "communication", "memory", "learning", "qa"] },
+        "instructions":    { "type": "string", "description": "Instrucciones detalladas para el guild" },
+        "context":         { "type": "object", "description": "Contexto relevante del usuario y la petición" },
+        "constraints":     {
+          "type": "object",
+          "properties": {
+            "max_tokens":     { "type": "integer" },
+            "max_latency_ms": { "type": "integer" },
+            "deadline_at":    { "type": "string", "format": "date-time" }
+          }
+        },
+        "priority":        { "type": "string", "enum": ["low", "normal", "high"], "default": "normal" }
+      }
+    }
+  }
+}

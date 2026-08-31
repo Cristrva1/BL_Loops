@@ -1,0 +1,161 @@
+{
+  "$defs": {
+    "WorkflowStatus": {
+      "enum": [
+        "scope_draft",
+        "inventory_running",
+        "gaps_ready",
+        "research_planned",
+        "awaiting_external_authorization",
+        "collecting_local",
+        "sources_normalized",
+        "claims_extracted",
+        "verification_running",
+        "conflicts_open",
+        "review_pending",
+        "changes_requested",
+        "approved",
+        "rejected",
+        "staging",
+        "validating",
+        "published",
+        "failed"
+      ],
+      "title": "WorkflowStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "event_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Event Id",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "node_id": {
+      "maxLength": 80,
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "title": "Node Id",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/WorkflowStatus"
+    },
+    "tool": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool"
+    },
+    "result_sanitized": {
+      "additionalProperties": true,
+      "title": "Result Sanitized",
+      "type": "object"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "maxLength": 400,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error"
+    },
+    "tokens": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tokens"
+    },
+    "latency_ms": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latency Ms"
+    },
+    "ram_mb": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ram Mb"
+    },
+    "vram_mb": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Vram Mb"
+    },
+    "refs": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50,
+      "title": "Refs",
+      "type": "array"
+    }
+  },
+  "required": [
+    "run_id",
+    "sequence",
+    "event_id",
+    "occurred_at",
+    "node_id",
+    "state"
+  ],
+  "title": "RunEvent",
+  "type": "object"
+}

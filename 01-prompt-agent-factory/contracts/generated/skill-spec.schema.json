@@ -1,0 +1,426 @@
+{
+  "$defs": {
+    "InputSpec": {
+      "additionalProperties": false,
+      "description": "Dato que el prompt, agente o skill espera recibir.",
+      "properties": {
+        "name": {
+          "maxLength": 80,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "example": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Example"
+        }
+      },
+      "required": [
+        "name",
+        "description"
+      ],
+      "title": "InputSpec",
+      "type": "object"
+    },
+    "OutputContract": {
+      "additionalProperties": false,
+      "description": "Forma verificable que debe tener la respuesta.",
+      "properties": {
+        "format": {
+          "$ref": "#/$defs/OutputFormat"
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        },
+        "schema_name": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schema Name"
+        },
+        "required_sections": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Required Sections",
+          "type": "array"
+        },
+        "max_items": {
+          "anyOf": [
+            {
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Items"
+        }
+      },
+      "required": [
+        "format",
+        "description"
+      ],
+      "title": "OutputContract",
+      "type": "object"
+    },
+    "OutputFormat": {
+      "enum": [
+        "json",
+        "markdown",
+        "text",
+        "yaml",
+        "code"
+      ],
+      "title": "OutputFormat",
+      "type": "string"
+    },
+    "PermissionEffect": {
+      "enum": [
+        "allow",
+        "deny"
+      ],
+      "title": "PermissionEffect",
+      "type": "string"
+    },
+    "PermissionPolicy": {
+      "additionalProperties": false,
+      "description": "Límite de autoridad. Lo no declarado queda negado.",
+      "properties": {
+        "default_effect": {
+          "const": "deny",
+          "default": "deny",
+          "title": "Default Effect",
+          "type": "string"
+        },
+        "runtime_network": {
+          "default": false,
+          "title": "Runtime Network",
+          "type": "boolean"
+        },
+        "external_writes": {
+          "default": false,
+          "title": "External Writes",
+          "type": "boolean"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/PermissionRule"
+          },
+          "maxItems": 50,
+          "title": "Rules",
+          "type": "array"
+        }
+      },
+      "title": "PermissionPolicy",
+      "type": "object"
+    },
+    "PermissionRule": {
+      "additionalProperties": false,
+      "description": "Capacidad concreta que se permite o se niega.",
+      "properties": {
+        "capability": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Capability",
+          "type": "string"
+        },
+        "effect": {
+          "$ref": "#/$defs/PermissionEffect"
+        },
+        "scope": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "requires_approval": {
+          "default": false,
+          "title": "Requires Approval",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "capability",
+        "effect",
+        "scope",
+        "reason"
+      ],
+      "title": "PermissionRule",
+      "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "description": "Rastro de la fuente que justificó una decisión del artefacto.",
+      "properties": {
+        "path": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Section"
+        },
+        "note": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "note"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "StopCondition": {
+      "additionalProperties": false,
+      "description": "Regla observable que impide que un agente o flujo continúe sin límite.",
+      "properties": {
+        "code": {
+          "maxLength": 80,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Code",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "done",
+            "blocked",
+            "failed"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "description",
+        "outcome"
+      ],
+      "title": "StopCondition",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Plano portable de una skill con disparadores y revelado progresivo.",
+  "properties": {
+    "artifact_id": {
+      "pattern": "^[a-z]+_[0-9a-f]{12}$",
+      "title": "Artifact Id",
+      "type": "string"
+    },
+    "artifact_type": {
+      "const": "skill",
+      "default": "skill",
+      "title": "Artifact Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 160,
+      "minLength": 3,
+      "title": "Title",
+      "type": "string"
+    },
+    "purpose": {
+      "maxLength": 2000,
+      "minLength": 10,
+      "title": "Purpose",
+      "type": "string"
+    },
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/InputSpec"
+      },
+      "maxItems": 30,
+      "minItems": 1,
+      "title": "Inputs",
+      "type": "array"
+    },
+    "instructions": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 30,
+      "minItems": 1,
+      "title": "Instructions",
+      "type": "array"
+    },
+    "constraints": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 30,
+      "minItems": 1,
+      "title": "Constraints",
+      "type": "array"
+    },
+    "output_contract": {
+      "$ref": "#/$defs/OutputContract"
+    },
+    "permissions": {
+      "$ref": "#/$defs/PermissionPolicy"
+    },
+    "stop_conditions": {
+      "items": {
+        "$ref": "#/$defs/StopCondition"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Stop Conditions",
+      "type": "array"
+    },
+    "evaluation_refs": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Evaluation Refs",
+      "type": "array"
+    },
+    "source_refs": {
+      "items": {
+        "$ref": "#/$defs/SourceRef"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "Source Refs",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "generator_model": {
+      "maxLength": 160,
+      "minLength": 3,
+      "title": "Generator Model",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "triggers": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Triggers",
+      "type": "array"
+    },
+    "instruction_template": {
+      "maxLength": 12000,
+      "minLength": 20,
+      "title": "Instruction Template",
+      "type": "string"
+    },
+    "resource_refs": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50,
+      "title": "Resource Refs",
+      "type": "array"
+    },
+    "progressive_disclosure": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Progressive Disclosure",
+      "type": "array"
+    }
+  },
+  "required": [
+    "artifact_id",
+    "title",
+    "purpose",
+    "inputs",
+    "instructions",
+    "constraints",
+    "output_contract",
+    "permissions",
+    "stop_conditions",
+    "evaluation_refs",
+    "source_refs",
+    "created_at",
+    "generator_model",
+    "content_hash",
+    "triggers",
+    "instruction_template",
+    "progressive_disclosure"
+  ],
+  "title": "SkillSpec",
+  "type": "object"
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://binarias-labs.io/events/task.failed.v1.json",
+  "title": "task.failed.v1",
+  "description": "Emitido por un Guild o Especialista cuando una tarea no puede completarse. Es el evento compensatorio de task.dispatched.",
+  "type": "object",
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "producer", "correlation_id", "causation_id", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id":       { "type": "string", "format": "uuid" },
+    "event_type":     { "type": "string", "const": "task.failed" },
+    "event_version":  { "type": "string", "const": "v1" },
+    "occurred_at":    { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "description": "Guild o especialista que falló (ej: 'guild-production', 'specialist-web-searcher')." },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id":   { "type": "string", "format": "uuid", "description": "ID del task.dispatched que causó esta tarea." },
+    "tenant_id":      { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["task_id", "guild", "failure_reason", "failure_code", "retry_count", "is_retriable"],
+      "additionalProperties": false,
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID de la tarea que falló (mismo task_id que en task.dispatched)."
+        },
+        "guild": {
+          "type": "string",
+          "description": "Guild que procesó la tarea."
+        },
+        "failure_reason": {
+          "type": "string",
+          "description": "Descripción legible del error."
+        },
+        "failure_code": {
+          "type": "string",
+          "enum": [
+            "budget_exceeded",
+            "timeout",
+            "llm_error",
+            "tool_error",
+            "invalid_input",
+            "dependency_failed",
+            "compliance_blocked",
+            "specialist_unavailable",
+            "max_retries_exceeded",
+            "internal_error"
+          ],
+          "description": "Código de error estandarizado."
+        },
+        "retry_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Número de reintentos ya realizados para esta tarea."
+        },
+        "is_retriable": {
+          "type": "boolean",
+          "description": "Indica si el Meta-Orchestrator debe reintentar esta tarea."
+        },
+        "error_detail": {
+          "type": "object",
+          "description": "Detalle técnico del error (stack trace resumido, respuesta del LLM, etc.).",
+          "additionalProperties": true,
+          "default": {}
+        },
+        "partial_result": {
+          "type": "string",
+          "description": "Resultado parcial si el guild avanzó antes de fallar (puede ser vacío)."
+        },
+        "tokens_used": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tokens consumidos antes del fallo."
+        },
+        "latency_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tiempo transcurrido hasta el fallo."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  }
+}

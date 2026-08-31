@@ -1,0 +1,20 @@
+{
+  "title": "IA inmobiliaria del código al negocio",
+  "type": "ARTIFACT_TYPE_AUDIO_OVERVIEW",
+  "sources": [{
+    "sourceId": {
+      "id": "9f4cc8e2-8f0f-4d88-bb9d-22a716a64baf"
+    }
+  }],
+  "status": "ARTIFACT_STATUS_READY",
+  "audioOverview": {
+    "generationOptions": {
+      "episodeFocus": "",
+      "episodeLength": "EPISODE_LENGTH_MEDIUM",
+      "targetAudience": "TARGET_AUDIENCE_UNSPECIFIED",
+      "languageCode": "es-MX",
+      "showFormat": "SHOW_FORMAT_CRITIQUE"
+    },
+    "isInteractive": false
+  }
+}
