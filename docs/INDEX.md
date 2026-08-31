@@ -57,8 +57,9 @@ que exista su entrada técnica para evitar enlaces muertos.
 ## Estado
 
 Estado al 2026-08-30: solo `14-local-code-hermes` tiene un corte inicial de preflight; OpenCode y
-Claude Code siguen planificados. La rama `main` no tiene aún un `HEAD`, por lo que no existe una
-comparación formal ni una recomendación entre clientes.
+Claude Code siguen planificados. La rama `main` ya tiene un commit base; cada corrida y revisión
+debe registrar su SHA exacto. Todavía no existe una comparación formal ni una recomendación entre
+clientes.
 
 Este índice distingue reglas, decisiones, enseñanza y materiales de estudio. Cuando una decisión
 cambie, primero se actualiza el plan maestro, después el laboratorio afectado y finalmente las

@@ -558,7 +558,7 @@ El contrato detallado vive en [CASOS_DE_EVALUACION.md](CASOS_DE_EVALUACION.md).
 
 ### Estado de ejecución al 2026-08-30
 
-- Fase 0: completada en documentación y configuración; Git está inicializado y todavía no se ha creado ningún commit.
+- Fase 0: completada en documentación, configuración y baseline Git; el repositorio maestro ya tiene un commit inicial y las futuras corridas deben fijar su SHA exacto.
 - Fase 1, Parte 1: implementada en [`01-prompt-agent-factory/`](../01-prompt-agent-factory/README.md) con contratos estrictos, preguntas guiadas, API, exportación local, pruebas y React Flow.
 - La documentación didáctica del laboratorio vive en `docs/humano/`; el runtime está separado y una prueba impide que dependa de esa documentación.
 - La Parte 1 es deliberadamente determinista y no invoca Ollama. La siguiente parte añadirá generación y crítica con IA local sin permitir que el modelo salte los contratos.
@@ -575,9 +575,9 @@ El contrato detallado vive en [CASOS_DE_EVALUACION.md](CASOS_DE_EVALUACION.md).
   autónomo con tool calling local, límite de una búsqueda, memoria volátil, citas y trazas sin
   contenido crudo. Es un corte A0; el loop agéntico con reevaluación sigue pendiente.
 - El benchmark local-code está aprobado, pero solo `14-local-code-hermes` tiene un corte inicial de
-  preflight. `15-local-code-opencode` y `16-local-code-claude` siguen planificados. A esta fecha de
-  corte no existe `HEAD`, por lo que el modo formal y toda comparación puntuada permanecen
-  bloqueados.
+  preflight. `15-local-code-opencode` y `16-local-code-claude` siguen planificados. Aunque ya existe
+  un `HEAD` base, el modo formal y toda comparación puntuada permanecen bloqueados hasta completar
+  los clientes, gates y autorizaciones requeridos.
 - El mismo día se añadió [`13-sales-knowledge-curator/`](../13-sales-knowledge-curator/README.md)
   como fábrica local de conocimiento: fixtures sintéticos, ledger de afirmaciones, conflictos,
   aprobación humana y release versionado. No cura todavía el corpus real de ventas ni activa la web.

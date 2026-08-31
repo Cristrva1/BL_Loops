@@ -52,9 +52,9 @@ de red independiente para el cliente y su árbol de procesos. LM Studio y llama.
 experimentos A/B posteriores; el modelo 27B no será el agente cotidiano.
 
 El corte actual de Hermes solo inspecciona prerrequisitos y exporta JSONL diagnóstico. No inicia
-Hermes, no crea modelos, no edita código y no ejecuta aún tools o tests. La comparación formal
-permanece bloqueada hasta que exista un `HEAD`, estén disponibles los tres clientes y aprueben el
-mismo gate desde el mismo SHA.
+Hermes, no crea modelos, no edita código y no ejecuta aún tools o tests. El repositorio maestro ya
+tiene un baseline Git; la comparación formal permanece bloqueada hasta que estén disponibles los
+tres clientes y aprueben el mismo gate desde el mismo SHA.
 
 ## Por dónde empezar
 

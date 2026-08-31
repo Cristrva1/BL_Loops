@@ -14,7 +14,7 @@ Hay un modelo cargado o el estado no pudo determinarse. No descargues ni detenga
 
 ## `git.head` no existe
 
-El repositorio aún no tiene un commit de partida. El modo exploratorio puede continuar como diagnóstico, pero el formal queda bloqueado y no hay benchmark comparable. No crees un commit solo para silenciar el gate sin decisión del propietario.
+El repositorio o la copia evaluada no tiene un commit de partida. El modo exploratorio puede continuar como diagnóstico, pero el formal queda bloqueado y no hay benchmark comparable. No crees un commit solo para silenciar el gate sin decisión del propietario.
 
 ## RAM o VRAM insuficiente
 
