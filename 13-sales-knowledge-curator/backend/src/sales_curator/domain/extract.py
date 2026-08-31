@@ -37,6 +37,11 @@ def _optional_date(fields: dict[str, str], name: str) -> date | None:
     return date.fromisoformat(raw)
 
 
+def _claim_references(fields: dict[str, str], name: str) -> list[str]:
+    raw = fields.get(name, "")
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 def locator_for(text: str, start: int, end: int) -> str:
     before = text[:start]
     start_line = before.count("\n") + 1
@@ -83,6 +88,8 @@ def extract_from_source(item: IngestedSource) -> list[ClaimCandidate]:
                 valid_until=_optional_date(fields, "valid_until"),
                 method=fields.get("method") or None,
                 sample=fields.get("sample") or None,
+                conflicts_with=_claim_references(fields, "conflicts_with"),
+                supersedes=fields.get("supersedes") or None,
                 locator=locator,
                 source_id=item.source.source_id,
             )

@@ -56,6 +56,7 @@ def happy_results() -> dict[tuple[str, ...], CommandResult]:
             0,
             stdout="a" * 40 + "\n",
         ),
+        ("git", "status", "--porcelain=v1"): CommandResult(0, stdout=""),
         (
             "powershell.exe",
             "-NoProfile",

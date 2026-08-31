@@ -20,6 +20,6 @@ topics: price-timing
 
 Fuente competente e independiente. Discrepa del anclaje temprano.
 
-CLAIM:id=clm-price-after-discovery;type=prescriptive;topic=price-timing;population=compradores-de-vivienda-demo;valid_from=2026-01-01
+CLAIM:id=clm-price-after-discovery;type=prescriptive;topic=price-timing;population=compradores-de-vivienda-demo;valid_from=2026-01-01;conflicts_with=clm-price-first-contact
 El vendedor no debe mencionar precio hasta mapear necesidades, restricciones y plazo.
 ENDCLAIM

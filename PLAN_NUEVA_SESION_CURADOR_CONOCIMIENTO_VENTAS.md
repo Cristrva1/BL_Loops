@@ -1,23 +1,24 @@
-# Plan para una nueva sesión: curador multiagente de conocimiento de ventas
+# Plan y estado de continuidad: curador multiagente de conocimiento de ventas
 
-**Nombre propuesto del laboratorio:** `13-sales-knowledge-curator`  
+**Laboratorio:** `13-sales-knowledge-curator`
 **Nombre humano:** Fábrica de conocimiento confiable de ventas  
-**Estado:** propuesta operativa; no implementada  
+**Estado:** corte editorial y expansión de investigación implementados; configuración real pendiente
 **Fecha de corte del diseño:** 2026-08-30  
 **Entorno objetivo:** Windows 11, PowerShell, Python 3.12, Ollama local  
-**Alcance de este archivo:** instruir una sesión futura; este documento no instala, ejecuta ni modifica ningún laboratorio existente.
+**Alcance de este archivo:** conservar el diseño original y registrar qué partes existen, cuáles
+siguen configurables y cuáles permanecen aplazadas.
 
-## 1. Instrucción principal para la próxima sesión
+## 1. Continuidad actual
 
-La próxima sesión debe construir un laboratorio autónomo llamado
-`13-sales-knowledge-curator`. Su misión será auditar la biblioteca actual de ventas, detectar
-huecos y afirmaciones débiles, investigar fuentes permitidas, contrastar cada afirmación,
-presentar conflictos a una persona y publicar paquetes de conocimiento versionados.
+El laboratorio autónomo ya audita una biblioteca local, detecta huecos y afirmaciones débiles,
+presenta conflictos, exige revisión humana y construye paquetes versionados. La expansión actual
+añade importación PDF/DOCX autorizada, catálogos bibliográficos, una captura web estrecha y
+exports manuales sin conectar laboratorios en ejecución.
 
-La primera sesión de implementación debe completar **la fase 0 y el corte vertical de la fase
-1** descritos aquí. No debe activar navegación web real, instalar plataformas pesadas ni
-modificar `09-agentic-rag`. Primero demostrará el flujo completo con fixtures sintéticos y
-archivos locales. La red se añadirá después, únicamente con autorización específica.
+La red fue autorizada como capacidad, pero permanece apagada por defecto. Cada corrida exige los
+tres gates de configuración, allowlist, presupuesto, jurisdicción escrita y autorización de la
+invocación. La jurisdicción está aprobada conceptualmente, pero su valor concreto no se comunicó;
+el dominio real tampoco se documentó. Ninguno se infiere.
 
 Antes de editar:
 
@@ -30,8 +31,7 @@ Antes de editar:
    documentación.
 5. Tratar `C:/Users/criss/Desktop/Claude/Repositorios_Prueba` como solo lectura.
 6. No hacer commit, push, publicación, instalaciones globales ni efectos externos.
-7. No confundir el sistema multiagente que se construirá con subagentes de Codex. Estos últimos
-   solo se usan si el usuario los autoriza expresamente.
+7. No confundir los roles del runtime con agentes de una sesión de construcción.
 
 ## 2. Problema que debe resolver
 
@@ -99,7 +99,7 @@ en vivo, una base compartida ni una escritura automática hacia `09-agentic-rag`
   un experimento demuestre la necesidad.
 - No publicar automáticamente una corrección generada por un modelo.
 
-## 5. Decisiones confirmadas, propuestas y pendientes
+## 5. Decisiones confirmadas, implementadas y pendientes
 
 | Tipo | Decisión |
 |---|---|
@@ -107,17 +107,17 @@ en vivo, una base compartida ni una escritura automática hacia `09-agentic-rag`
 | `CONFIRMADA` | Ollama será el único proveedor LLM del runtime. |
 | `CONFIRMADA` | Red, navegador, telemetría y conectores reales estarán desactivados por defecto. |
 | `CONFIRMADA` | El resultado se exportará como archivos; no habrá dependencia en ejecución entre laboratorios. |
-| `PROPUESTA` | Construir primero un orquestador Python propio, tipado y visible. |
-| `PROPUESTA` | Usar varios roles especializados, aunque un único modelo local pueda ejecutarlos secuencialmente. |
-| `PROPUESTA` | Empezar con venta consultiva de vivienda como dominio de demostración por continuidad con el laboratorio 09. |
-| `PROPUESTA` | Publicar resúmenes y guías propias, más registros JSON/JSONL de evidencia y decisión. |
-| `PENDIENTE HUMANO` | Confirmar si el dominio inicial será vivienda, ventas consultivas generales u otro vertical. |
-| `PENDIENTE HUMANO` | Aprobar fuentes y dominios web permitidos, idiomas, jurisdicción y frecuencia de actualización. |
-| `PENDIENTE HUMANO` | Nombrar quién puede aprobar releases y qué asuntos requieren un especialista. |
-| `PENDIENTE HUMANO` | Autorizar en una sesión posterior la lectura web real y su presupuesto. |
+| `IMPLEMENTADA` | Orquestador Python propio, tipado, con dashboard de la corrida editorial. |
+| `IMPLEMENTADA` | MarkItDown para PDF/DOCX autorizados, Open Library y Google Books, Crawl4AI estrecho y paquetes manuales NotebookLM/RAG. |
+| `IMPLEMENTADA` | Staging separado de publicación y aprobación humana posterior sobre el hash exacto del candidato. |
+| `APROBADA` | Red como capacidad, allowlist e idiomas inglés/español; cualquier operador identificado puede aprobar desde el CLI. |
+| `CONFIGURABLE` | El dominio real existe, pero no se proporcionó su identificador; no se inventa. |
+| `CONFIGURABLE` | La jurisdicción fue aprobada, pero falta escribir su valor concreto. |
+| `PENDIENTE OPERATIVO` | Completar `ALLOWED_DOMAINS`, `RESEARCH_JURISDICTION` y presupuesto antes de una corrida real. |
+| `APLAZADA` | CrewAI, ArchiveBox, Langfuse, embeddings e importación automática hacia `09-agentic-rag`. |
 
-Las decisiones pendientes no bloquean el MVP local: este usará un dominio ficticio y fixtures
-sin PII. Sí bloquean cualquier investigación externa o publicación para uso real.
+La falta de valores concretos no bloquea fixtures ni pruebas. Sí bloquea una corrida web real:
+la aprobación conceptual nunca sustituye la configuración explícita y auditable.
 
 ## 6. Principios de calidad
 
@@ -155,7 +155,7 @@ detectar sindicación y evidencia circular.
 | `legal_or_policy` | requisito normativo | fuente oficial vigente, jurisdicción y revisión humana obligatoria |
 | `anecdotal` | experiencia de una persona | nunca presentada como generalización; etiqueta visible |
 
-## 7. Arquitectura propuesta
+## 7. Arquitectura implementada y dirección de expansión
 
 ```mermaid
 flowchart LR
@@ -249,24 +249,30 @@ Reglas de parada:
 - un fixture que represente una fuente vigente, una obsoleta, una contradictoria, una duplicada
   y una con inyección indirecta.
 
-### Web futura, solo con autorización
+### Web implementada, con autorización por corrida
 
 - `NETWORK_ENABLED=false` por defecto;
-- allowlist de dominios y esquemas `https`;
-- solo operaciones `GET`/`HEAD` sin login, formularios ni descargas ejecutables;
-- respeto de términos, `robots.txt`, límites de tasa y tamaño;
-- bloqueo de IPs privadas, localhost, redirecciones fuera de allowlist y archivos peligrosos;
-- user-agent identificable y caché local con fecha de recuperación;
+- triple opt-in con `BL_LOOPS_RUNTIME_NETWORK` y `BL_LOOPS_ALLOW_REAL_CONNECTORS`;
+- allowlist, presupuesto máximo configurado y `--authorize-network` en la invocación;
+- jurisdicción explícita e idiomas limitados a inglés/español;
+- `SafeHttpClient` para JSON de Open Library y Google Books, sin proxy ambiental;
+- Crawl4AI para una página HTTPS, con `robots.txt` comprobado antes del navegador;
+- bloqueo de IPs no globales, credenciales, puertos no estándar y redirects fuera de allowlist;
+- límites de MIME, bytes, redirects y URL, user-agent identificable;
 - ninguna acción que cambie estado externo;
-- resultado ambiguo después de un timeout no se reintenta ciegamente.
+- resultado ambiguo después de un timeout no se reintenta ciegamente;
+- no descarga de libros, login, formularios, perfiles persistentes, stealth ni evasión de controles.
 
 ### Derechos y copyright
 
 - Conservar metadatos, hash, localizador y el fragmento mínimo permitido para verificar apoyo.
 - Redactar síntesis originales; no publicar el texto completo de libros o artículos.
-- Registrar `license`, `usage_basis`, `retention_policy` y `redistribution_allowed`.
+- Registrar `license`, `usage_basis`, jurisdicción, permisos de retención/extracción/cita,
+  `redistribution_allowed` y `notebooklm_upload_allowed`.
 - Si los derechos no están claros, el contenido queda en cuarentena y fuera del release.
 - Un archivo entregado por el usuario no implica automáticamente permiso para redistribuirlo.
+- Uso educativo o no comercial no equivale a dominio público, licencia abierta o permiso.
+- `borrow`, `preview`, `read_online` y `catalog_only` son acceso, no copias descargables.
 
 ### Contenido no confiable
 
@@ -279,7 +285,11 @@ ni controlan el workflow.
 | Contrato | Campos imprescindibles |
 |---|---|
 | `SourceRecord` | `source_id`, tipo, título, autor/editor, URI o ruta sanitizada, fechas de publicación/actualización/recuperación, licencia, base de uso, hash, idioma, jurisdicción, origen e independencia |
-| `DocumentArtifact` | `artifact_id`, `source_id`, MIME, extractor y versión, hash original/normalizado, tamaño, estado de cuarentena, advertencias y localizadores |
+| `DocumentImportRecord` | documento, MIME, MarkItDown/versión, hashes original/Markdown, derechos, warnings, rutas de contenido/manifiesto |
+| `BookAccessOffer` | proveedor/registro, obra/edición, identificadores, idioma, modo de acceso, derechos, evidencia, jurisdicción y enlaces permitidos |
+| `BookResearchReport` | consulta, jurisdicción, idiomas, ofertas normalizadas, fallos parciales y hash |
+| `WebCaptureRecord` | URL solicitada/final, robots permitido, idioma, Crawl4AI/versión, derechos, hashes y rutas locales |
+| `NotebookPacket` / `RagPacket` | manifiesto, fuentes o registros portables, hash y ausencia de subida/dependencia viva |
 | `ClaimRecord` | `claim_id`, texto canónico, tipo, tema, población/contexto, jurisdicción, vigencia, estado, versión, `supersedes`, creador y timestamps |
 | `EvidenceLink` | `claim_id`, `source_id`, localizador exacto, relación `supports/refutes/qualifies`, fragmento mínimo, hash del fragmento y evaluación de apoyo |
 | `ConflictRecord` | afirmaciones implicadas, tipo de conflicto, evidencia por lado, materialidad, resolución y responsable |
@@ -325,7 +335,7 @@ Excepciones etiquetadas:
 
 ## 13. Paquete de salida
 
-Estructura propuesta de un release:
+Estructura implementada de un release editorial:
 
 ```text
 releases/<release_id>/
@@ -341,13 +351,25 @@ releases/<release_id>/
 └── CHANGELOG.md
 ```
 
+La investigación mantiene salidas separadas indicadas por `--output`:
+
+```text
+research/<research_id>/report.json
+documents/<document_id>/{content.md,manifest.json}
+web/<capture_id>/{content.md,manifest.json}
+exports/notebooklm/{manifest.json,SOURCES.md,STUDY_GUIDE.md,RESEARCH_QUESTIONS.md,sources/}
+exports/rag/{manifest.json,book-access-offers.jsonl}
+```
+
+Los paquetes NotebookLM y RAG no son releases editoriales ni se publican automáticamente.
+
 Proceso de publicación:
 
 1. Construir en `staging/<run_id>/`.
 2. Validar schemas, referencias, hashes, links y ausencia de PII/secretos.
-3. Ejecutar la suite de evaluación sobre el candidato.
-4. Confirmar aprobación humana para ese hash.
-5. Mover atómicamente a un nuevo `release_id` inmutable.
+3. Mostrar `candidate_id`, diff sanitizado y hash del staging; detenerse.
+4. Confirmar una aprobación humana posterior para ese candidato y hash exactos.
+5. Repetir el gate y mover atómicamente a un nuevo `release_id` inmutable.
 6. Actualizar un puntero local `current.json` mediante reemplazo atómico.
 7. Conservar el release anterior para rollback.
 
@@ -372,7 +394,7 @@ El dashboard mostrará:
 La UI se deriva de eventos reales. No puede pintar `done` si el backend no emitió el evento
 terminal correspondiente.
 
-## 15. Repositorios preseleccionados desde `menu_portable`
+## 15. Repositorios seleccionados y estado actual
 
 La selección parte de la receta “Agente de research profundo” de
 [`menu_portable/REPO_MENU.md`](menu_portable/REPO_MENU.md), pero la reduce para mantener el
@@ -383,15 +405,15 @@ actualización.
 | Repositorio | Rol propuesto | Ruta local y SHA verificado | Remoto y licencia observada | Decisión inicial |
 |---|---|---|---|---|
 | `gpt-researcher` | Referencia para planner → investigadores → publisher y research citado | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/gpt-researcher` · `6f998577d547b1e54ec662dac63583aa11e3b84b` | [remoto oficial](https://github.com/assafelovic/gpt-researcher) · Apache-2.0 | **Referencia, no runtime MVP.** Reusar ideas, no asumir que frecuencia entre sitios equivale a verdad. |
-| `crawl4ai` | Adaptador futuro de web a Markdown controlado | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/crawl4ai` · `7e801521428ee12509994d39151006f64055ebe3` | [remoto oficial](https://github.com/unclecode/crawl4ai) · Apache-2.0 | **Candidato ejecutable tras spike.** Solo modo local, allowlist y extracción sin LLM cuando sea posible. |
-| `markitdown` | Conversión local y estrecha de PDF/DOCX/HTML autorizados | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/markitdown` · `9dc0d6579b8739c9d0671ff205e071e3053c7df1` | [remoto oficial](https://github.com/microsoft/markitdown) · MIT | **Candidato ejecutable tras spike.** Instalar solo extras requeridos; plugins y servicios Azure apagados. |
+| `crawl4ai` | Adaptador web a Markdown controlado | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/crawl4ai` · `7e801521428ee12509994d39151006f64055ebe3` | [remoto oficial](https://github.com/unclecode/crawl4ai) · texto Apache-2.0 más atribución adicional en `LICENSE` | **Dependencia `0.9.2`.** Browser dedicado/headless, allowlist, robots fail-closed, sin proxy/stealth/descargas; atribución a UncleCode en documentación y CLI. |
+| `markitdown` | Conversión local y estrecha de PDF/DOCX autorizados | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/markitdown` · `9dc0d6579b8739c9d0671ff205e071e3053c7df1` | [remoto oficial](https://github.com/microsoft/markitdown) · MIT | **Dependencia `0.1.7`.** Solo extras PDF/DOCX; plugins y servicios Azure apagados. |
 | `ArchiveBox` | Preservación opcional de evidencia web permitida | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/ArchiveBox` · `f7697328dcaaff8dbd9749a25be75e50dcbe1641` | [remoto oficial](https://github.com/ArchiveBox/ArchiveBox) · MIT | **Fase posterior.** Evaluar costo, Windows/Docker, derechos y política de retención antes de adoptar. |
 | `crewAI` | Variante comparable de orquestación por roles | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/crewAI` · `9e9a8577becc322f98a966ad88d7904251049744` | [remoto oficial](https://github.com/crewAIInc/crewAI) · MIT | **No MVP.** Comparar contra la base propia; fijar Ollama y `OTEL_SDK_DISABLED=true`, porque el default documentado usa OpenAI y existe telemetría anónima. |
 | `langfuse` | Variante self-hosted de trazas y evaluación | `C:/Users/criss/Desktop/Claude/Repositorios_Prueba/langfuse` · `3c3ca18eed76b164b418776d8d93cc1590e1d65b` | [remoto oficial](https://github.com/langfuse/langfuse) · MIT salvo carpetas `ee` | **No MVP.** JSONL propio primero; evaluar self-hosting, licencia por carpeta y telemetría desactivada después. |
 
-Antes de convertir un candidato en dependencia, la sesión correspondiente debe volver a
-verificar remoto, SHA, licencia completa, manifest, Python/Node soportado, compatibilidad con
-Ollama, telemetría, instalación en Windows y una prueba mínima hermética.
+Antes de actualizar una dependencia o activar otro candidato, la sesión correspondiente debe
+volver a verificar remoto, versión/SHA, licencia completa, manifest, Python/Node soportado,
+compatibilidad con Ollama, telemetría, instalación en Windows y una prueba mínima hermética.
 
 ### Alternativas descartadas por ahora
 
@@ -402,7 +424,7 @@ Ollama, telemetría, instalación en Windows y una prueba mínima hermética.
 - `GraphRAG`/Neo4j: una relación explícita puede modelarse primero en SQLite; solo se adopta si
   un caso multi-hop demuestra mejora.
 
-## 16. Estructura futura del laboratorio
+## 16. Estructura actual resumida
 
 ```text
 13-sales-knowledge-curator/
@@ -411,8 +433,6 @@ Ollama, telemetría, instalación en Windows y una prueba mínima hermética.
 ├── .env.example
 ├── pyproject.toml
 ├── uv.lock
-├── package.json
-├── <lockfile-frontend>
 ├── backend/
 │   ├── src/sales_curator/
 │   │   ├── api/
@@ -423,11 +443,13 @@ Ollama, telemetría, instalación en Windows y una prueba mínima hermética.
 │   │   ├── connectors/
 │   │   ├── storage/
 │   │   ├── evaluation/
+│   │   ├── research/
 │   │   └── cli.py
 │   └── tests/
 ├── frontend/
-│   ├── src/
-│   └── tests/
+│   ├── package.json
+│   ├── package-lock.json
+│   └── src/
 ├── contracts/
 ├── fixtures/
 │   ├── corpus/
@@ -447,40 +469,62 @@ Backend y frontend conservan sus propios entornos. El runtime no importará, lee
 `docs/humano/`. El `.env.example` del laboratorio documentará todas las opciones necesarias para
 copiarlo fuera de BL_Loops.
 
-## 17. Variables de configuración propuestas
+## 17. Variables de configuración implementadas
 
 Solo nombres y valores seguros de ejemplo:
 
 ```dotenv
 OLLAMA_BASE_URL=http://127.0.0.1:11434
-CURATOR_MODEL=<modelo-local-verificado>
-CURATOR_EMBEDDING_MODEL=<vacio-hasta-justificarlo>
+CURATOR_MODEL=
+CURATOR_EMBEDDING_MODEL=
 NETWORK_ENABLED=false
 ALLOWED_DOMAINS=
 MAX_URLS_PER_RUN=0
 MAX_BYTES_PER_SOURCE=2000000
 MAX_RESEARCH_ROUNDS=3
 MAX_CLAIM_REVISIONS=2
+MAX_LLM_CHUNKS_PER_DOCUMENT=8
+RESEARCH_DOMAIN=sales-books-education
+RESEARCH_JURISDICTION=
+RESEARCH_LANGUAGES=en,es
+RESEARCH_USER_AGENT=BL-Loops-SalesCurator/0.2 educational-research
 TELEMETRY_ENABLED=false
 RAW_CONTENT_IN_RUN_LOGS=false
+BL_LOOPS_RUNTIME_NETWORK=false
+BL_LOOPS_ALLOW_EXTERNAL_WRITES=false
+BL_LOOPS_ALLOW_REAL_CONNECTORS=false
+BL_LOOPS_TELEMETRY=false
+BL_LOOPS_STORE_RAW_PII=false
+BL_LOOPS_DATA_DIR=.local/data
+BL_LOOPS_RUNS_DIR=.local/runs
 ```
 
 El arranque debe fallar con un mensaje claro si el modelo configurado no existe. No debe elegir
-otro modelo o proveedor por su cuenta.
+otro modelo o proveedor por su cuenta. `sales-books-education` es una etiqueta técnica neutra del
+laboratorio, no el dominio real que el usuario mantiene fuera de este repositorio.
 
-## 18. Interfaces objetivo
+## 18. Interfaces implementadas
 
-CLI didáctica propuesta:
+CLI didáctica actual:
 
 ```powershell
-uv run sales-curator audit --source .\fixtures\corpus
-uv run sales-curator plan --topic "descubrimiento de necesidades"
+uv run sales-curator --version
+uv run sales-curator doctor
+uv run sales-curator audit --source .\fixtures\corpus --extractor deterministic
+uv run sales-curator audit --source .\fixtures\corpus --extractor ollama
+uv run sales-curator plan
 uv run sales-curator research --fixture .\fixtures\corpus
-uv run sales-curator claims list --status disputed
-uv run sales-curator review --candidate <id>
-uv run sales-curator release build --candidate <id>
+uv run sales-curator claims list --run <run_id> --status disputed
+uv run sales-curator review --run <run_id> --candidate <claim_id> --decision approved --reviewer <id> --reason <texto> --expected-hash <sha256>
+uv run sales-curator release build --run <run_id>
+uv run sales-curator release publish --run <run_id> --candidate <candidate_id> --expected-hash <sha256> --reviewer <id> --reason <texto>
 uv run sales-curator validate --release <release_id>
 uv run sales-curator export-run --run <run_id>
+uv run sales-curator document import --source <pdf-o-docx> --inbox <dir> --output <dir> --title <titulo> --author <autor> --language es --rights <rights.json>
+uv run sales-curator book research --title <titulo> --jurisdiction <jurisdiccion> --url-budget <n> --authorize-network --output <dir>
+uv run sales-curator web capture --url <https> --language es --rights <rights.json> --url-budget <n> --authorize-network --output <dir>
+uv run sales-curator notebooklm export --report <report.json> --output <dir> --max-sources 50
+uv run sales-curator rag export --report <report.json> --output <dir>
 ```
 
 La aprobación humana no debe aceptar un argumento libre como `--approve=true`. Debe mostrar el
@@ -501,7 +545,7 @@ API mínima:
 
 ## 19. Plan de implementación por fases
 
-### Fase 0 — contrato y amenaza
+### Fase 0 — contrato y amenaza · completada
 
 Entregables:
 
@@ -521,7 +565,7 @@ Gate:
 - schemas aceptan los válidos y rechazan los inválidos;
 - ninguna dependencia externa ha sido instalada todavía.
 
-### Fase 1 — corte vertical local para la primera sesión
+### Fase 1 — corte vertical local · completada
 
 Construir de extremo a extremo:
 
@@ -536,28 +580,34 @@ Construir de extremo a extremo:
 9. Documentación humana completa, ejercicios y troubleshooting.
 10. Demo local reproducible y validación del release.
 
-No entra en fase 1: web real, PDF/DOCX real, Crawl4AI, CrewAI, ArchiveBox, Langfuse, CRM ni
-integración automática con el laboratorio 09.
+La fase conserva su alcance histórico. Web, PDF/DOCX y Crawl4AI se añadieron después como
+adaptadores independientes; CrewAI, ArchiveBox, Langfuse, CRM e integración automática con el
+laboratorio 09 siguen fuera.
 
-### Fase 2 — extracción documental y modelo local
+### Fase 2 — extracción documental y modelo local · corte funcional completado
 
-- hacer spike de `markitdown` con un PDF y un DOCX sintéticos;
-- instalar solo extras necesarios dentro de la `.venv` del laboratorio;
-- comparar extracción determinista contra Ollama;
-- medir precisión de claims y localizadores;
-- rechazar salidas LLM que no validen el schema;
-- probar dos modelos locales, uno por vez, con el mismo fixture.
+- MarkItDown `0.1.7` y únicamente extras PDF/DOCX están instalados en la `.venv`;
+- el importador exige inbox, tamaño, idioma y contrato de derechos, conserva hashes y no modifica
+  el original;
+- existe comparación por CLI entre extractor determinista y Ollama local;
+- el modelo se verifica una vez, los chunks están acotados y no se usan proxies;
+- JSON inválido, claves duplicadas, `source_id` ajeno, localizador inexistente o texto no literal
+  fallan la corrida y producen JSONL terminal;
+- comparar calidad entre dos modelos locales con el mismo fixture sigue siendo un experimento.
 
-### Fase 3 — investigación web autorizada
+### Fase 3 — investigación web autorizada · corte controlado completado
 
-- obtener autorización explícita y una allowlist;
-- hacer spike de `crawl4ai` sin proveedores cloud;
-- añadir fetch seguro, caché, rate limit, robots, redirect policy y SSRF guard;
-- investigar una sola pregunta con máximo tres dominios;
-- conservar procedencia por rama y evidenciar fallos parciales;
-- demostrar que `NETWORK_ENABLED=false` sigue siendo el default.
+- autorización, allowlist e idiomas fueron aprobados; los valores concretos siguen configurables;
+- Open Library y Google Books se consultan con JSON oficial y fallos parciales visibles;
+- Crawl4AI `0.9.2` captura HTML estático de una sola URL con robots fail-closed, JavaScript y
+  subrecursos bloqueados, y sin proveedores cloud;
+- HTTPS, DNS público, redirects/allowlist y presupuestos se validan; robots y la proyección final
+  tienen límite de bytes, mientras el documento HTML superior queda acotado por una petición y
+  timeout del navegador;
+- `NETWORK_ENABLED=false` y los otros gates siguen siendo defaults;
+- no se descarga automáticamente ningún libro ni se evade una limitación de acceso.
 
-### Fase 4 — comparación multiagente
+### Fase 4 — comparación multiagente · aplazada
 
 - establecer línea base de un solo agente;
 - comparar la máquina propia contra una variante CrewAI;
@@ -565,14 +615,14 @@ integración automática con el laboratorio 09.
 - desactivar telemetría y bloquear defaults cloud;
 - adoptar CrewAI solo si mejora calidad o mantenibilidad de forma medible.
 
-### Fase 5 — releases útiles para otros laboratorios
+### Fase 5 — releases útiles para otros laboratorios · parcial
 
-- definir perfil de exportación para un corpus de RAG;
-- probar copia/importación manual en una copia temporal o fixture, no en `09-agentic-rag` vivo;
-- comprobar citas, estados y rollback;
-- solicitar autorización antes de reemplazar cualquier fuente real.
+- existe un JSONL portable de metadatos RAG con manifiesto y hash;
+- existe un paquete de fichas para importación manual en NotebookLM;
+- no se probó ni automatizó importación hacia `09-agentic-rag`;
+- cualquier copia o reemplazo real requiere una acción manual posterior.
 
-### Fase 6 — preservación y observabilidad avanzadas
+### Fase 6 — preservación y observabilidad avanzadas · aplazada
 
 - evaluar ArchiveBox para snapshots permitidos;
 - evaluar Langfuse self-hosted frente al JSONL propio;
@@ -703,35 +753,119 @@ El corte vertical se considera terminado solo si:
 - un release se construye atómicamente y valida;
 - la corrida JSONL es sanitizada e importable;
 - todas las pruebas y builds aplicables pasan;
-- no hubo red, cloud, telemetría, PII ni escritura fuera del laboratorio.
+- toda red real tuvo triple opt-in, allowlist, presupuesto, jurisdicción y autorización por
+  invocación; el gate determinista puede completarse sin red;
+- no hubo cloud LLM, telemetría, PII ni escritura fuera del laboratorio.
 
 Esto demuestra el sistema causal mínimo. No demuestra todavía que el corpus real de ventas sea
 completo, correcto o apto para decisiones de negocio.
 
-## 24. Preguntas que deben resolverse antes de la fase web
+## 24. Decisiones humanas resueltas y configuración pendiente
 
-1. ¿El primer dominio real será venta consultiva de vivienda, ventas B2B, retail u otro?
-2. ¿Qué países o jurisdicciones aplican?
-3. ¿Se aceptan fuentes en inglés para producir conocimiento en español?
-4. ¿Qué tipos de fuente están permitidos y cuáles pueden redistribuirse?
-5. ¿Qué dominios integrarán la allowlist inicial?
-6. ¿Qué antigüedad máxima aplica por tipo de afirmación?
-7. ¿Quién aprueba releases y quién resuelve asuntos legales o regulatorios?
-8. ¿Qué paquete de salida deberá probarse después con `09-agentic-rag`?
+| Estado | Decisión |
+|---|---|
+| Resuelta | Se permiten fuentes en inglés y español. |
+| Resuelta | Red y allowlist están autorizadas como capacidad. |
+| Resuelta | Cualquier operador identificado puede aprobar desde el CLI. |
+| Pendiente de valor | Dominio real: existe fuera del laboratorio, pero no fue identificado. |
+| Pendiente de valor | Jurisdicción: aprobada, pero falta su código o nombre concreto. |
+| Pendiente de configuración | Hosts exactos de `ALLOWED_DOMAINS` y presupuesto por corrida. |
+| Pendiente editorial | Antigüedad máxima por tipo de claim y asuntos que requieren especialista. |
+| Aplazada | Importación manual de prueba hacia una copia temporal del laboratorio 09. |
 
-Hasta responderlas, el laboratorio puede aprender y demostrar el método con datos sintéticos,
-pero no debe presentarse como fuente real corregida.
+Sin jurisdicción y hosts escritos, el runtime detiene la red. Esto no deshace la autorización
+humana: la convierte en una decisión explícita y reproducible para cada corrida. La prueba live
+usó `TEST` como centinela técnico; no resolvió la jurisdicción real.
 
-## 25. Entrega esperada de la próxima sesión
+## 25. Estado de entrega
 
-La respuesta final de esa sesión deberá separar:
-
-- **Terminado:** archivos, corte vertical y comportamiento demostrable.
-- **Verificado:** comandos, resultados, demo, JSONL, release y recorrido visual.
-- **Inferido:** decisiones todavía apoyadas solo por experimentos parciales.
-- **Pendiente humano:** autorización de red, alcance de ventas, fuentes y aprobador.
-- **Aplazado:** integraciones y variantes que no pertenecen al MVP.
+- **Implementado, pero no liberable todavía:** corte editorial local; extractor Ollama funcional;
+  CLI versionado; PDF/DOCX; Open Library y Google Books; Crawl4AI estrecho; paquetes manuales
+  NotebookLM/RAG; staging, aprobación y publicación separados.
+- **Gate técnico disponible, no aceptación final:** tests, lint, compile, frontend, `--version`,
+  `doctor`, demo, release, JSONL y ayudas del CLI. La sección 26 registra cuatro defectos altos
+  descubiertos después del último gate y prevalece sobre cualquier evidencia verde anterior.
+- **Configurable:** dominio, jurisdicción y allowlist concretos.
+- **Pendiente editorial:** ejecutar investigación sobre libros reales autorizados y revisar sus
+  derechos/ediciones antes de enriquecer un corpus real.
+- **Aplazado:** CrewAI, ArchiveBox, Langfuse, embeddings e importación a `09-agentic-rag`.
 
 No se afirmará que “la fuente de ventas ya fue corregida” hasta que exista un release real,
 revisado y aprobado. La primera victoria es construir el mecanismo que hace esa corrección
 trazable, reversible y difícil de falsificar.
+
+## 26. Relevo exacto para la siguiente sesión — 2026-08-30
+
+La sesión se detuvo por decisión explícita del usuario. No continuar desde una supuesta entrega
+verde: el laboratorio contiene una implementación amplia, pero quedan cuatro defectos `HIGH`
+abiertos. No se hizo commit, push, despliegue ni publicación.
+
+### Continuidad obligatoria
+
+1. Trabajar en `13-sales-knowledge-curator` dentro del checkout actual; no crear rama, worktree,
+   plan paralelo ni laboratorio nuevo.
+2. Leer `AGENTS.md`, este plan y `git status --short`. Preservar íntegros los cambios ajenos de
+   `14-local-code-hermes`, `docs/INDEX.md` y `docs/PLAN_MAESTRO_DIDACTICO.md`.
+3. Tratar todos los hashes y gates de esta sección como evidencia histórica. Cualquier edición
+   exige pruebas nuevas y un candidato de staging nuevo.
+4. Escribir primero las regresiones de los cuatro defectos siguientes y corregirlos en un solo
+   lote coherente. No publicar un release para demostrar la reparación.
+
+### Cuatro defectos altos abiertos
+
+1. **Compatibilidad real del hook de Crawl4AI.** La captura live autorizada de
+   `https://openlibrary.org/works/OL66554W/Pride_and_Prejudice` falló cerrada con
+   `'_BrowserRequestGuard' object has no attribute ...` dentro del wrapper de Playwright. Los tests
+   simulados no reprodujeron el contrato real de `context.route`. Obtener el traceback completo y
+   adaptar el handler sin reactivar JavaScript, subrecursos, iframes, WebSocket, métodos distintos
+   de `GET`/`HEAD`, proxies, persistencia o descargas. Repetir después una sola captura live con
+   allowlist exacta y derechos no redistribuibles.
+2. **Texto libre dentro de approvals.** `ReviewDecision.reason` y `conditions` se empaquetan tanto
+   para claims incluidos como para `candidate-approval.json`. Un operador podría copiar allí texto
+   sin derecho de redistribución. Crear una proyección de aprobación autónoma y verificable que no
+   exporte texto libre —por ejemplo metadatos estructurados más hash del review original— y añadir
+   regresiones para claim y candidato. No basta con filtrar reviews de claims excluidos.
+3. **Una decisión posterior no revoca la anterior.** Los helpers actuales aceptan cualquier
+   `APPROVED` histórico del mismo objeto/hash. La última decisión exacta, ordenada de forma
+   determinista por tiempo e identidad, debe ser la vigente; `REJECTED` o `CHANGES_REQUESTED`
+   posterior debe bloquear `build`/`publish` y quedar demostrable en el paquete sin filtrar la
+   revocación.
+4. **Visibilidad antes de persistencia durable.** `publish()` mueve el paquete y actualiza
+   `current.json` antes de que `service.py` persista release, claims y estado `PUBLISHED` en SQLite.
+   Diseñar una publicación por fases donde `current.json` sea el último commit visible, con
+   transacción SQLite y compensación/rollback verificable. Inyectar fallos en cada frontera
+   (move/copy, SQLite, escritura del puntero) y demostrar que nunca queda un release visible con la
+   corrida en `VALIDATING`, ni se pierde un staging recuperable.
+
+### Evidencia histórica útil, pero no suficiente
+
+- Suite acumulativa: `150` pruebas pasaron con basetemp aislado antes de descubrir los cuatro
+  defectos anteriores.
+- Ruff quedó limpio y `82` archivos formateados; `compileall`, `uv lock --check`, `npm test` y
+  `npm run build` pasaron. Vite transformó `172` módulos.
+- CLI: `sales-curator 0.2.0`; MarkItDown `0.1.7`; Crawl4AI `0.9.2`; lock de `127` paquetes.
+- Demo técnica final anterior: `run_6f60adef1fb2`, estado `staging`, candidato
+  `can_5cb19d8adbce`, hash
+  `0f93d68760207d699c0c655daac02a8016eb3ba71d250e1ecae761b7bb6128b3`. Exportó tres claims y
+  excluyó `clm-rights-blocked`; no existen `candidate-approval.json` ni
+  `knowledge-release.json`. **No aprobar ni publicar este candidato**: quedó invalidado como
+  referencia de liberación por los hallazgos posteriores.
+- La captura live posterior falló cerrada y no cuenta como prueba browser verde.
+- El `.env` compartido emite un warning de parseo en la línea 24. No se inspeccionó ni imprimió su
+  contenido; corregirlo requiere una decisión del propietario, no una edición oportunista.
+
+### Orden de cierre recomendado
+
+1. Browser real: regresión del hook instalado, corrección y focales de crawler/política/CLI.
+2. Reviews: proyección sin texto libre y semántica de última decisión, con claims y candidate.
+3. Publicación: transacción, puntero visible al final y pruebas de fallos inyectados.
+4. Ejecutar focales, luego suite completa una sola vez sobre código congelado; Ruff, formato,
+   compile, lock, frontend y schemas.
+5. Repetir MarkItDown sintético, búsqueda multifuente y captura live estática. Un `429` de Google
+   Books debe seguir como rama parcial visible, nunca como éxito falso.
+6. Crear una demo nueva en directorios `.local` nuevos, validar staging autónomamente y detenerse.
+   Solo después una persona aprueba el nuevo `candidate_id`/hash y decide si publica.
+
+Siguen faltando los valores operativos concretos de dominio, jurisdicción y hosts de allowlist.
+`TEST` es únicamente un centinela técnico. NotebookLM permanece manual; no automatizar sesión,
+cookies ni interfaz de consumidor.

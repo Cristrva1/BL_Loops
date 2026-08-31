@@ -213,6 +213,16 @@ def ingest_directory(
         )
         for path in files
     ]
+    source_uris: dict[str, str] = {}
+    for item in ingested:
+        source_id = item.source.source_id
+        if source_id in source_uris:
+            raise IngestError(
+                f"source_id duplicado en la corrida: {source_id}; "
+                f"{source_uris[source_id]} y {item.source.uri}; "
+                "cada archivo debe declarar una identidad única"
+            )
+        source_uris[source_id] = item.source.uri
     by_hash: dict[str, str] = {}
     result: list[IngestedSource] = []
     for item in ingested:

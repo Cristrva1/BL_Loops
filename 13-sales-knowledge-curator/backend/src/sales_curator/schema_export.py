@@ -14,6 +14,16 @@ from sales_curator.contracts.models import (
     RunRecord,
     SourceRecord,
 )
+from sales_curator.contracts.research import (
+    BookAccessOffer,
+    BookResearchReport,
+    DocumentImportRecord,
+    DocumentRights,
+    NotebookPacket,
+    NotebookSourceSet,
+    RagPacket,
+    WebCaptureRecord,
+)
 
 SCHEMAS = {
     "source-record.schema.json": SourceRecord,
@@ -23,6 +33,14 @@ SCHEMAS = {
     "knowledge-release.schema.json": KnowledgeRelease,
     "run-event.schema.json": RunEvent,
     "run-record.schema.json": RunRecord,
+    "document-rights.schema.json": DocumentRights,
+    "book-access-offer.schema.json": BookAccessOffer,
+    "book-research-report.schema.json": BookResearchReport,
+    "document-import-record.schema.json": DocumentImportRecord,
+    "web-capture-record.schema.json": WebCaptureRecord,
+    "notebook-source-set.schema.json": NotebookSourceSet,
+    "notebook-packet.schema.json": NotebookPacket,
+    "rag-packet.schema.json": RagPacket,
 }
 
 

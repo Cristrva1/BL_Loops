@@ -151,7 +151,8 @@ def build_claim(
             sample=candidate.sample,
             status=_initial_status(source, candidate, assessment, as_of),
             version=1,
-            supersedes=None,
+            conflicts_with=candidate.conflicts_with,
+            supersedes=candidate.supersedes,
             created_by="claim_extractor",
             created_at=stamp,
             updated_at=stamp,
@@ -163,36 +164,86 @@ def build_claim(
     )
 
 
+def _merge_identity(claim: ClaimRecord) -> tuple[object, ...]:
+    """Sólo une la misma afirmación editorial, nunca texto con distinto alcance."""
+
+    has_relations = bool(claim.conflicts_with or claim.supersedes)
+    return (
+        normalize_text(claim.canonical_text),
+        claim.claim_type,
+        claim.topic,
+        claim.population,
+        claim.context,
+        claim.jurisdiction,
+        claim.valid_from,
+        claim.valid_until,
+        claim.method,
+        claim.sample,
+        tuple(claim.conflicts_with),
+        claim.supersedes,
+        claim.claim_id if has_relations else None,
+    )
+
+
+def _retarget_evidence(
+    link: EvidenceLink,
+    claim_id: str,
+    *,
+    relation: EvidenceRelation | None = None,
+) -> EvidenceLink:
+    updates: dict[str, object] = {}
+    if link.claim_id != claim_id:
+        updates["claim_id"] = claim_id
+    if relation is not None and link.relation != relation:
+        updates["relation"] = relation
+    if not updates:
+        return link
+    updates["content_hash"] = "0" * 64
+    return with_content_hash(link.model_copy(update=updates))
+
+
 def merge_duplicates(
     claims: list[ClaimRecord], sources: dict[str, SourceRecord]
 ) -> list[ClaimRecord]:
-    """Dos copias sindicadas no cuentan como dos fuentes independientes."""
+    """Une duplicados editoriales compatibles sin perder alcance ni integridad referencial."""
 
-    by_text: dict[str, ClaimRecord] = {}
+    by_identity: dict[tuple[object, ...], ClaimRecord] = {}
+    identity_by_claim_id: dict[str, tuple[object, ...]] = {}
     ordered: list[ClaimRecord] = []
     for claim in claims:
-        key = normalize_text(claim.canonical_text)
-        existing = by_text.get(key)
+        key = _merge_identity(claim)
+        prior_identity = identity_by_claim_id.get(claim.claim_id)
+        if prior_identity is not None and prior_identity != key:
+            raise ValueError(f"claim_id duplicado con contenido incompatible: {claim.claim_id}")
+        identity_by_claim_id[claim.claim_id] = key
+        existing = by_identity.get(key)
         if existing is None:
-            by_text[key] = claim
-            ordered.append(claim)
+            normalized_evidence = [
+                _retarget_evidence(link, claim.claim_id) for link in claim.evidence
+            ]
+            normalized = claim
+            if normalized_evidence != claim.evidence:
+                normalized = with_content_hash(
+                    claim.model_copy(
+                        update={"evidence": normalized_evidence, "content_hash": "0" * 64}
+                    )
+                )
+            by_identity[key] = normalized
+            ordered.append(normalized)
             continue
         extra = []
         for link in claim.evidence:
             source = sources.get(link.source_id)
             if source and source.independence == Independence.SYNDICATED:
                 extra.append(
-                    with_content_hash(
-                        link.model_copy(
-                            update={
-                                "relation": EvidenceRelation.QUALIFIES,
-                                "content_hash": "0" * 64,
-                            }
-                        )
+                    _retarget_evidence(
+                        link,
+                        existing.claim_id,
+                        relation=EvidenceRelation.QUALIFIES,
                     )
                 )
             else:
-                extra.append(link)
+                extra.append(_retarget_evidence(link, existing.claim_id))
         merged_evidence = list(existing.evidence) + extra
         origin_ids = {
             sources[link.source_id].origin_source_id
@@ -213,34 +264,38 @@ def merge_duplicates(
                 update={"evidence": merged_evidence, "status": status, "content_hash": "0" * 64}
             )
         )
-        by_text[key] = updated
+        by_identity[key] = updated
         ordered[ordered.index(existing)] = updated
     return ordered
 
 
 def detect_conflicts(claims: list[ClaimRecord]) -> list[ConflictRecord]:
     conflicts: list[ConflictRecord] = []
-    active = [
-        claim
-        for claim in claims
-        if claim.status
-        in {
-            ClaimStatus.SUPPORTED_SINGLE_SOURCE,
-            ClaimStatus.CORROBORATED,
-            ClaimStatus.DISPUTED,
-        }
-    ]
-    for index, left in enumerate(active):
-        for right in active[index + 1 :]:
+    active_statuses = {
+        ClaimStatus.SUPPORTED_SINGLE_SOURCE,
+        ClaimStatus.CORROBORATED,
+        ClaimStatus.DISPUTED,
+    }
+    active = {claim.claim_id: claim for claim in claims if claim.status in active_statuses}
+    seen: set[tuple[str, str]] = set()
+    for left in active.values():
+        for right_id in left.conflicts_with:
+            right = active.get(right_id)
+            if right is None or left.claim_id not in right.conflicts_with:
+                continue
             if left.topic != right.topic:
                 continue
             if normalize_text(left.canonical_text) == normalize_text(right.canonical_text):
                 continue
+            pair = tuple(sorted((left.claim_id, right.claim_id)))
+            if pair in seen:
+                continue
+            seen.add(pair)
             conflicts.append(
                 with_content_hash(
                     ConflictRecord(
                         conflict_id=_id("cfl"),
-                        claim_ids=[left.claim_id, right.claim_id],
+                        claim_ids=list(pair),
                         conflict_type=ConflictType.DIRECT_CONTRADICTION,
                         topic=left.topic,
                         evidence_by_side={
@@ -281,40 +336,36 @@ def apply_conflicts(
     return updated
 
 
+def _coherent_supersession(replacement: ClaimRecord, outdated: ClaimRecord) -> bool:
+    previous_boundary = outdated.valid_until or outdated.valid_from
+    return (
+        replacement.status in {ClaimStatus.SUPPORTED_SINGLE_SOURCE, ClaimStatus.CORROBORATED}
+        and outdated.status == ClaimStatus.OUTDATED
+        and replacement.topic == outdated.topic
+        and replacement.valid_from is not None
+        and previous_boundary is not None
+        and replacement.valid_from > previous_boundary
+        and (replacement.valid_until is None or replacement.valid_until >= replacement.valid_from)
+    )
+
+
 def supersede_outdated(claims: list[ClaimRecord]) -> list[ClaimRecord]:
-    latest_by_topic: dict[str, ClaimRecord] = {}
-    for claim in claims:
-        if claim.status in {ClaimStatus.SUPPORTED_SINGLE_SOURCE, ClaimStatus.CORROBORATED}:
-            current = latest_by_topic.get(claim.topic)
-            if current is None or (claim.valid_from or date.min) > (current.valid_from or date.min):
-                latest_by_topic[claim.topic] = claim
-    updated: list[ClaimRecord] = []
-    for claim in claims:
-        newer = latest_by_topic.get(claim.topic)
-        if (
-            claim.status == ClaimStatus.OUTDATED
-            and newer is not None
-            and newer.claim_id != claim.claim_id
-        ):
-            updated.append(
-                with_content_hash(
-                    claim.model_copy(
-                        update={
-                            "status": ClaimStatus.SUPERSEDED,
-                            "supersedes": None,
-                            "content_hash": "0" * 64,
-                        }
-                    )
-                )
-            )
-            replacement = with_content_hash(
-                newer.model_copy(update={"supersedes": claim.claim_id, "content_hash": "0" * 64})
-            )
-            latest_by_topic[claim.topic] = replacement
-        else:
-            updated.append(claim)
-    rewritten = {item.claim_id: item for item in latest_by_topic.values()}
-    return [rewritten.get(claim.claim_id, claim) for claim in updated]
+    by_id = {claim.claim_id: claim for claim in claims}
+    valid_replacements: set[str] = set()
+    for replacement in claims:
+        if replacement.supersedes is None:
+            continue
+        outdated = by_id.get(replacement.supersedes)
+        if outdated is not None and _coherent_supersession(replacement, outdated):
+            valid_replacements.add(outdated.claim_id)
+    return [
+        with_content_hash(
+            claim.model_copy(update={"status": ClaimStatus.SUPERSEDED, "content_hash": "0" * 64})
+        )
+        if claim.claim_id in valid_replacements
+        else claim
+        for claim in claims
+    ]
 
 
 def adversarial_scan(

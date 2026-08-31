@@ -19,44 +19,52 @@ CREATE TABLE IF NOT EXISTS events (
     PRIMARY KEY (run_id, sequence)
 );
 CREATE TABLE IF NOT EXISTS sources (
-    source_id TEXT PRIMARY KEY,
+    source_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, source_id)
 );
 CREATE TABLE IF NOT EXISTS artifacts (
-    artifact_id TEXT PRIMARY KEY,
+    artifact_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, artifact_id)
 );
 CREATE TABLE IF NOT EXISTS claims (
-    claim_id TEXT PRIMARY KEY,
+    claim_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, claim_id)
 );
 CREATE TABLE IF NOT EXISTS conflicts (
-    conflict_id TEXT PRIMARY KEY,
+    conflict_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, conflict_id)
 );
 CREATE TABLE IF NOT EXISTS gaps (
-    gap_id TEXT PRIMARY KEY,
+    gap_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, gap_id)
 );
 CREATE TABLE IF NOT EXISTS tasks (
-    task_id TEXT PRIMARY KEY,
+    task_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, task_id)
 );
 CREATE TABLE IF NOT EXISTS reviews (
-    decision_id TEXT PRIMARY KEY,
+    decision_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, decision_id)
 );
 CREATE TABLE IF NOT EXISTS findings (
-    finding_id TEXT PRIMARY KEY,
+    finding_id TEXT NOT NULL,
     run_id TEXT NOT NULL,
-    payload TEXT NOT NULL
+    payload TEXT NOT NULL,
+    PRIMARY KEY (run_id, finding_id)
 );
 CREATE TABLE IF NOT EXISTS releases (
     release_id TEXT PRIMARY KEY,
@@ -71,6 +79,17 @@ CREATE TABLE IF NOT EXISTS documents (
 );
 """
 
+RUN_SCOPED_PRIMARY_KEYS = {
+    "sources": "source_id",
+    "artifacts": "artifact_id",
+    "claims": "claim_id",
+    "conflicts": "conflict_id",
+    "gaps": "gap_id",
+    "tasks": "task_id",
+    "reviews": "decision_id",
+    "findings": "finding_id",
+}
+
 
 class CuratorStore:
     def __init__(self, path: Path) -> None:
@@ -80,7 +99,70 @@ class CuratorStore:
         self._conn.row_factory = sqlite3.Row
         self._conn.execute("PRAGMA foreign_keys = ON")
         self._conn.executescript(SCHEMA)
+        self._migrate_legacy_run_scoped_tables()
         self._conn.commit()
+
+    def _primary_key_columns(self, table: str) -> list[str]:
+        rows = self._conn.execute(f'PRAGMA table_info("{table}")').fetchall()
+        primary = [row for row in rows if row["pk"]]
+        return [row["name"] for row in sorted(primary, key=lambda row: row["pk"])]
+
+    def _migrate_legacy_run_scoped_tables(self) -> None:
+        """Amplía claves globales legacy a ``(run_id, id)`` sin perder filas."""
+
+        legacy_tables: list[tuple[str, str]] = []
+        for table, id_column in RUN_SCOPED_PRIMARY_KEYS.items():
+            primary_key = self._primary_key_columns(table)
+            if primary_key == ["run_id", id_column]:
+                continue
+            if primary_key == [id_column]:
+                legacy_tables.append((table, id_column))
+                continue
+            raise RuntimeError(f"Esquema inesperado en {table}: clave primaria {primary_key!r}")
+
+        if not legacy_tables:
+            return
+
+        try:
+            self._conn.execute("BEGIN IMMEDIATE")
+            for table, id_column in legacy_tables:
+                migrated = f"{table}__run_scoped_v2"
+                existing = self._conn.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?",
+                    (migrated,),
+                ).fetchone()
+                if existing is not None:
+                    raise RuntimeError(f"Migración incompleta detectada: {migrated}")
+
+                self._conn.execute(
+                    f"""
+                    CREATE TABLE "{migrated}" (
+                        "{id_column}" TEXT NOT NULL,
+                        run_id TEXT NOT NULL,
+                        payload TEXT NOT NULL,
+                        PRIMARY KEY (run_id, "{id_column}")
+                    )
+                    """
+                )
+                source_count = self._conn.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
+                self._conn.execute(
+                    f"""
+                    INSERT INTO "{migrated}" ("{id_column}", run_id, payload)
+                    SELECT "{id_column}", run_id, payload FROM "{table}"
+                    """
+                )
+                migrated_count = self._conn.execute(
+                    f'SELECT COUNT(*) FROM "{migrated}"'
+                ).fetchone()[0]
+                if migrated_count != source_count:
+                    raise RuntimeError(f"La migración de {table} no conservó todas las filas")
+
+                self._conn.execute(f'DROP TABLE "{table}"')
+                self._conn.execute(f'ALTER TABLE "{migrated}" RENAME TO "{table}"')
+            self._conn.commit()
+        except Exception:
+            self._conn.rollback()
+            raise
 
     def close(self) -> None:
         self._conn.close()

@@ -1,0 +1,24 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "notebook_number": {
+      "minimum": 1,
+      "title": "Notebook Number",
+      "type": "integer"
+    },
+    "source_paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50,
+      "title": "Source Paths",
+      "type": "array"
+    }
+  },
+  "required": [
+    "notebook_number",
+    "source_paths"
+  ],
+  "title": "NotebookSourceSet",
+  "type": "object"
+}

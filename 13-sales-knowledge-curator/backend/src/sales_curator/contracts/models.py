@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Annotated, Any, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class StrictModel(BaseModel):
@@ -121,6 +121,20 @@ class TaskStatus(StrEnum):
 
 HASH_PATTERN = r"^[0-9a-f]{64}$"
 ID_PATTERN = r"^[a-z][a-z0-9_-]{1,80}$"
+ClaimReference = Annotated[str, Field(pattern=ID_PATTERN)]
+
+
+def _validate_claim_relations(
+    claim_id: str,
+    conflicts_with: list[str],
+    supersedes: str | None,
+) -> None:
+    if len(conflicts_with) != len(set(conflicts_with)):
+        raise ValueError("conflicts_with no admite IDs duplicados")
+    if claim_id in conflicts_with:
+        raise ValueError("una afirmación no puede entrar en conflicto consigo misma")
+    if supersedes == claim_id:
+        raise ValueError("una afirmación no puede reemplazarse a sí misma")
 
 
 class QualityScores(StrictModel):
@@ -194,8 +208,15 @@ class ClaimCandidate(StrictModel):
     valid_until: date | None = None
     method: str | None = Field(default=None, max_length=200)
     sample: str | None = Field(default=None, max_length=80)
+    conflicts_with: list[ClaimReference] = Field(default_factory=list, max_length=20)
+    supersedes: ClaimReference | None = None
     locator: str = Field(min_length=2, max_length=80)
     source_id: str = Field(pattern=ID_PATTERN)
+
+    @model_validator(mode="after")
+    def relations_are_consistent(self) -> Self:
+        _validate_claim_relations(self.claim_id, self.conflicts_with, self.supersedes)
+        return self
 
 
 class EvidenceLink(StrictModel):
@@ -223,7 +244,8 @@ class ClaimRecord(StrictModel):
     sample: str | None = Field(default=None, max_length=80)
     status: ClaimStatus
     version: int = Field(ge=1, le=99)
-    supersedes: str | None = Field(default=None, pattern=ID_PATTERN)
+    conflicts_with: list[ClaimReference] = Field(default_factory=list, max_length=20)
+    supersedes: ClaimReference | None = None
     created_by: str = Field(min_length=3, max_length=80)
     created_at: datetime
     updated_at: datetime
@@ -231,6 +253,11 @@ class ClaimRecord(StrictModel):
     evidence: list[EvidenceLink] = Field(default_factory=list, max_length=30)
     challenge_note: str | None = Field(default=None, max_length=400)
     content_hash: str = Field(pattern=HASH_PATTERN)
+
+    @model_validator(mode="after")
+    def relations_are_consistent(self) -> Self:
+        _validate_claim_relations(self.claim_id, self.conflicts_with, self.supersedes)
+        return self
 
     @field_validator("created_at", "updated_at")
     @classmethod

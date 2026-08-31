@@ -1,50 +1,34 @@
 # Evaluación
 
-## Fase implementada: F-LOCAL-CODE-004@0.1.0
+## Fase 1: F-LOCAL-CODE-004@0.1.0
 
-**Objetivo:** decidir si el host está preparado para una futura corrida con Hermes sin cambiar su estado.
+El preflight comprueba Python 3.12, endpoint loopback, referencias formales de firewall y perfil Ollama, identidad del alias, versión de Hermes, LM Studio, SHA exacto, worktree limpio, RAM/commit y VRAM.
 
-### Criterios iniciales
+Sus terminales son `run.completed`, `run.blocked` y `run.failed`; nunca puntúa ni compara.
 
-- Python activo 3.12.
-- endpoint Ollama HTTP inequívocamente loopback.
-- en modo formal, referencias autorizadas de firewall y perfil del servidor.
-- alias `local-code-9b-64k` con `FROM qwen3.5:9b` y `num_ctx 65536`.
-- versión de Hermes capturable.
-- ningún modelo de LM Studio cargado.
-- `HEAD` exacto en modo formal.
-- al menos 8 GiB de RAM física y de margen de commit, y 12,288 MiB de VRAM libres antes de carga.
+## Fase 2: B-CODE-003@0.1.0
 
-Los umbrales son gates conservadores de preparación, no una garantía de que el modelo cargará 100 % en GPU.
+El runner crea una copia aislada del fixture, fuerza Hermes `provider: custom` hacia Ollama local y ejecuta los comandos del agente con Docker sin red. Después verifica:
 
-### Terminales
+- cambios únicamente en `src/pricing.py` y `tests/test_pricing.py`;
+- cuatro pruebas requeridas, fronteras 0/25/100 y negativos/mayores a 100;
+- ejecución unitaria, semántica oculta y comprobación por mutación;
+- digest común del alias y modelo fuente;
+- `ollama ps` con alias, `100% GPU` y contexto efectivo 65,536;
+- delta de logs sin `truncating input prompt` ni HTTP 500;
+- uso normalizado de Hermes sin persistir respuesta, prompt, stdout o stderr.
 
-| Terminal | Significado | Score |
-|---|---|---|
-| `run.completed` | todos los requisitos iniciales pasaron | `null` |
-| `run.blocked` | falta requisito o autoridad | `null` |
-| `run.failed` | fallo interno del harness | `null` |
+El JSONL conserva conteos y estados, no contenido. Una salida `run.completed` indica que el proceso terminó; `scored=false` y `comparable=false` siguen siendo obligatorios para esta corrida única y para cualquier smoke con worktree sucio.
 
-Toda corrida de esta fase exporta `scored=false` y `comparable=false`.
+## Criterio de corrida oficial
 
-## Fase pendiente: B-CODE-003@0.1.0
+Para puntuar se requiere todo lo anterior, worktree limpio, evidencia contemporánea de inferencia local y cero egress, y tres corridas válidas por cliente. La comparación exige el mismo SHA, fixture, permisos, modelo, digest, contexto, hardware y cohorte. Un warning, un `SKIPPED`, una evidencia de otro SHA o una salida sin terminal validado invalida la comparación.
 
-El proyecto de precios exige corregir la frontera de descuento completo y añadir una prueba para valores superiores a 100. El verificador requiere cambios exactos en producción y tests, preserva los casos 0/25/100 y negativos mediante comprobaciones ocultas, y ejecuta mutantes para demostrar que los cuatro tests requeridos fallan ante una implementación errónea.
+## Métricas exportadas
 
-Antes de puntuar también deben demostrarse:
+El benchmark registra duración, contadores de entrada/salida/total/API, residencia y contexto observados, conteos de truncación/HTTP 500, estado del fixture y estado del sandbox. El score oficial queda fuera hasta que la evidencia de red y las repeticiones lo permitan.
 
-- residencia 100 % GPU en `ollama ps`;
-- contexto efectivo de 65,536;
-- cero mensajes `truncating input prompt` y cero HTTP 500;
-- ausencia de paginación sostenida;
-- tool calls, edición y pruebas correctos;
-- inferencia local y cero egress con evidencias separadas.
-
-## Comparación futura
-
-Hermes, OpenCode y Claude Code deben partir del mismo `HEAD`, fixture, permisos, modelo, digest, contexto y hardware. Se requieren tres corridas puntuadas válidas por cliente. Un preflight aislado nunca autoriza una clasificación.
-
-## Verificación automática
+## Verificación
 
 ```powershell
 uv run pytest
@@ -53,4 +37,4 @@ uv run ruff format --check .
 uv run hermes-run-validate <ruta-jsonl>
 ```
 
-Las pruebas son herméticas. El preflight real es una demostración separada de solo lectura; la corrida de agente queda aplazada.
+Para importar en el comparador central se entrega únicamente el JSONL validado; el comparador no consulta laboratorios en vivo.

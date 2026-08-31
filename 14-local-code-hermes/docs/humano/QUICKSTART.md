@@ -2,86 +2,82 @@
 
 ## Resultado esperado
 
-Validarás el laboratorio sin inferencia y producirás un diagnóstico real de solo lectura. Si faltan modelo, recursos, `HEAD` o evidencias autorizadas, el resultado esperado es `run.blocked`, no un falso aprobado.
+Validarás el laboratorio sin inferencia, producirás un diagnóstico real de solo lectura y, si el host está autorizado, ejecutarás una única corrida aislada. Si faltan recursos, modelo, evidencia o un worktree limpio, el resultado correcto es `run.blocked`.
 
-## 1. Abrir el laboratorio
+## 1. Preparar el entorno propio
 
 ```powershell
-# Desde la raíz de BL_Loops
 Set-Location .\14-local-code-hermes
-```
-
-Si copiaste el laboratorio, abre PowerShell en su carpeta y omite `Set-Location`.
-
-## 2. Crear el entorno aislado
-
-```powershell
 uv sync --locked --all-groups
-```
-
-Se crea `.venv` solo para este laboratorio.
-
-## 3. Ejecutar el gate hermético
-
-```powershell
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 ```
 
-No se invocan servicios reales.
+El laboratorio conserva su propio `.venv`; estas pruebas no invocan servicios reales.
 
-## 4. Diagnosticar el host sin modificarlo
+## 2. Diagnosticar el host
 
 ```powershell
 uv run hermes-preflight --mode exploratory
 $LASTEXITCODE
 ```
 
-Códigos:
+`0` significa que los checks terminaron sin bloqueo; `2` indica prerrequisitos faltantes; `1` indica configuración inválida o fallo interno. El modo exploratorio puede dejar warnings de red, perfil o Git y nunca produce una corrida comparable.
 
-- `0`: todos los checks iniciales pasaron.
-- `2`: el gate quedó bloqueado por uno o más prerrequisitos.
-- `1`: configuración inválida o fallo interno.
+## 3. Referenciar evidencia formal
 
-El modo exploratorio permite warnings por evidencia de red, perfil del servidor o `HEAD`, pero siempre exporta `comparable=false`.
-
-Solo después de obtener y custodiar evidencia real, el modo formal referencia sus IDs así:
+Después de cerrar/liberar LM Studio, aplicar el perfil autorizado de Ollama y capturar evidencia real de firewall/perfil:
 
 ```powershell
 uv run hermes-preflight --mode formal `
-  --network-proof firewall-authorized --firewall-proof-id FW-LOCAL-001 `
-  --server-profile-proof operator-authorized --server-profile-proof-id OLLAMA-PROFILE-001
+  --network-proof firewall-authorized --firewall-proof-id FW-LOCAL-20260830 `
+  --server-profile-proof operator-authorized --server-profile-proof-id OLLAMA-PROFILE-20260830
 ```
 
-Los IDs de ejemplo no son evidencia. Sustitúyelos únicamente por referencias autorizadas; el
-programa no carga `.env.example`, no crea la evidencia y no configura el host.
+Los IDs deben corresponder a evidencia existente. El JSONL guarda únicamente hashes de referencia; no los valores sensibles.
 
-## 5. Validar la exportación
+## 4. Validar cualquier corrida
 
 ```powershell
 $runFile = Get-ChildItem .local\runs\*.jsonl | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 uv run hermes-run-validate $runFile.FullName
 ```
 
-El archivo debe terminar en `run.completed`, `run.blocked` o `run.failed`, sin stdout, prompts ni secretos.
+El archivo es UTF-8, compacto, termina en newline y no contiene stdout, stderr, prompts ni respuestas.
 
-## 6. Preparar el fixture sintético
+## 5. Preparar el fixture
 
 ```powershell
 uv run hermes-fixture-verify prepare practica-001
+uv run hermes-fixture-verify verify practica-001
 ```
 
-Esto copia `B-CODE-003` a `.local/workspaces/practica-001`. No inicia Hermes. El proyecto contiene un error de borde intencional y una prueba que ya lo demuestra.
+El primer comando copia `B-CODE-003` a `.local/workspaces/`. La verificación inicial falla intencionalmente porque el proyecto aún tiene el defecto de frontera.
 
-## Preparación futura, solo con autorización
+## 6. Ejecutar Hermes en Docker
 
-Cuando haya terminado toda sesión activa y exista VRAM suficiente, el operador podrá crear el alias local:
+El operador debe confirmar antes que `lms ps --json` devuelva una lista vacía, que Ollama esté en loopback con el alias creado y que Docker responda. La imagen `nikolaik/python-nodejs:python3.11-nodejs20` debe existir localmente.
 
 ```powershell
-ollama create local-code-9b-64k -f .\Modelfile
+uv run hermes-benchmark --execute
 ```
 
-Las variables `OLLAMA_FLASH_ATTENTION=1`, `OLLAMA_KV_CACHE_TYPE=q8_0`, `OLLAMA_NUM_PARALLEL=1`, `OLLAMA_MAX_LOADED_MODELS=1` y `OLLAMA_NO_CLOUD=1` deben aplicarse al proceso servidor de Ollama y verificarse por evidencia independiente. Este laboratorio no las cambia ni reinicia el servidor.
+El runner crea una configuración temporal bajo `.local/`, selecciona explícitamente `provider: custom`, usa `/v1` de Ollama, monta solo el workspace en `/workspace` y desactiva la red del contenedor. No usa el proveedor Hermes configurado por el usuario ni hace fallback a nube.
 
-No ejecutes Ollama y LM Studio con modelos cargados al mismo tiempo durante el benchmark.
+Si el checkout está sucio por la tanda de desarrollo, el único override disponible es explícito y no puntuable:
+
+```powershell
+uv run hermes-benchmark --execute --allow-dirty-worktree
+```
+
+Ese flag no convierte `git.head` en verde; el JSONL conserva `dirty_worktree_override=true` y `scored=false`.
+
+## 7. Revisar el resultado
+
+```powershell
+$runFile = Get-ChildItem .local\runs\benchmark-*.jsonl | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+uv run hermes-run-validate $runFile.FullName
+```
+
+`run.completed` solo significa que el proceso terminó; el score oficial requiere contexto efectivo, GPU, logs sin truncación/HTTP 500, fixture correcto, cero egress independiente y repeticiones comparables.

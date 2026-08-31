@@ -1,28 +1,27 @@
 # Arquitectura
 
-## Límite del corte actual
+## Dos fases separadas
 
 ```mermaid
 flowchart TB
-    CLI[hermes-preflight] --> CFG[PreflightConfig inmutable]
-    CFG --> RUN[Runner shell=False]
-    RUN --> PY[Python activo]
-    RUN --> OL[Ollama show]
-    RUN --> HE[Hermes --version]
-    RUN --> LM[lms ps / proceso de respaldo]
-    RUN --> GI[git rev-parse]
-    RUN --> HW[PowerShell CIM + nvidia-smi]
-    PY --> REP[PreflightReport]
-    OL --> REP
-    HE --> REP
-    LM --> REP
-    GI --> REP
-    HW --> REP
-    REP --> JL[JSONL atómico bajo .local]
-    JL --> VAL[Validador estricto stdlib]
+    P[hermes-preflight] --> G{10 gates}
+    G --> PF[PreflightReport]
+    PF --> PJ[JSONL F-LOCAL-CODE-004]
+    PF --> E{formal verde?}
+    E -->|no| B[run.blocked]
+    E -->|sí / override Git explícito| H[Hermes -z]
+    H --> O[Ollama loopback]
+    H --> D[Docker por sesión]
+    D --> W[workspace único]
+    W --> T[unittest + semántica + mutación]
+    O --> R[ollama ps + logs delta]
+    T --> Q[BenchmarkReport]
+    R --> Q
+    Q --> BJ[JSONL B-CODE-003]
+    BJ --> V[hermes-run-validate]
 ```
 
-El runner usa listas de argumentos, `shell=False`, timeout y cwd explícito. La salida cruda solo existe en memoria el tiempo necesario para extraer datos permitidos; el JSONL conserva códigos y evidencia estructurada.
+El preflight no inicia agentes. El benchmark solo pasa a Hermes con `--execute`. La excepción `--allow-dirty-worktree` está diseñada para este checkout de desarrollo: permite observar el flujo, conserva el bloqueo Git y desactiva score/comparabilidad.
 
 ## Los diez gates
 
@@ -35,18 +34,24 @@ El runner usa listas de argumentos, `shell=False`, timeout y cwd explícito. La 
 | `ollama.model` | `FROM` y `num_ctx` del alias | contexto efectivo en carga |
 | `hermes.available` | versión capturable | tool calls correctos |
 | `lmstudio.conflict` | ausencia de modelo LM Studio cargado | VRAM futura suficiente |
-| `git.head` | SHA de partida | árbol limpio |
+| `git.head` | SHA exacto y worktree limpio | calidad del parche |
 | `resource.ram` | margen físico y de commit | ausencia futura de paginación |
 | `resource.vram` | VRAM libre antes de carga | residencia 100 % GPU posterior |
 
-## Contrato JSONL
+## Sandbox
 
-Cada línea contiene exactamente 14 campos comunes y usa schema `1.1`. La fase actual registra `F-LOCAL-CODE-004@0.1.0`, `scored=false` y `comparable=false`. `run.blocked` representa una condición de preparación, mientras `run.failed` representa un fallo del harness.
+`DockerSandbox` usa una imagen local, `--network=none`, `--cap-drop=ALL`, `--security-opt=no-new-privileges`, límite de PID, raíz de contenedor de solo lectura y un único bind mount RW: el workspace del fixture. El callback inyectado al verificador traduce el intérprete Windows a `python` dentro de la imagen. No se hace `docker pull` durante la corrida.
+
+Hermes recibe la misma política por su configuración temporal: backend Docker, contenedor no persistente, sin volúmenes, sin variables reenviadas y sin red. La llamada del padre a Ollama permanece en loopback; los comandos que ejecuta el agente quedan dentro del contenedor.
 
 ## Fixture B-CODE-003
 
-El fixture es local, sintético y congelado por SHA-256. `prepare` lo copia dentro de `.local/workspaces/`; `verify` exige solo los dos cambios permitidos, conserva fronteras positivas y negativas, y comprueba por mutación que cada una de las cuatro pruebas detecta una implementación errónea. Ejecutar una solución no confiable sigue requiriendo un sandbox o autorización del operador: este verificador solo reduce el entorno y no sustituye aislamiento del sistema operativo.
+El fixture es local, sintético y congelado por SHA-256. `prepare` lo copia dentro de `.local/workspaces/`. `verify_workspace` comprueba el conjunto de archivos, permite solo `src/pricing.py` y `tests/test_pricing.py`, ejecuta la suite, valida semántica oculta y aplica mutación a las cuatro pruebas requeridas.
 
-## Fase futura
+## Contratos JSONL
 
-Hermes recibirá una copia del fixture, permisos equivalentes a los otros clientes y Ollama por loopback. Esa fase deberá emitir eventos de prompts sanitizados, tools, edición, pruebas, errores, reintentos y métricas. No existe todavía en este corte.
+Cada línea contiene exactamente 14 campos comunes y usa schema `1.1`. El preflight usa `F-LOCAL-CODE-004@0.1.0` y el benchmark `B-CODE-003@0.1.0` con variantes distintas. Ninguno conserva prompt, respuesta, stdout, stderr, rutas personales o secretos. El validador despacha por `case_id` y verifica lifecycle, identidad, métricas y terminal.
+
+## Observabilidad
+
+La corrida conserva conteos, no texto: digest efímero de salida del proceso, uso normalizado, `ollama ps`, conteos de truncación y HTTP 500 del delta de logs, archivos cambiados como conteo y resultados del fixture. Si no puede observar un dato, lo marca como no verificado y no lo convierte en score.

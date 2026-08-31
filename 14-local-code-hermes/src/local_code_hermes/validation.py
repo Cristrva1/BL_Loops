@@ -11,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from local_code_hermes.config import (
+    BENCHMARK_CASE_ID,
     LAB_ID,
     MODEL_NAME,
     NUM_CTX,
@@ -90,6 +91,8 @@ BLOCKED_CODES = {
     "git.head": {
         "head_absent_formal",
         "head_not_exact",
+        "worktree_dirty",
+        "worktree_state_unknown",
         "command_not_found",
         "command_timeout",
         "command_nonzero",
@@ -360,9 +363,14 @@ def _validate_passed_gate(
             raise ValidationError("Evidencia de version Hermes invalida.")
     elif gate_id == "git.head":
         if (
-            set(evidence) != {"head"}
+            set(evidence) != {"head", "worktree_clean", "changed_entry_count"}
             or not isinstance(evidence["head"], str)
             or not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", evidence["head"])
+            or not isinstance(evidence["worktree_clean"], bool)
+            or isinstance(evidence["changed_entry_count"], bool)
+            or not isinstance(evidence["changed_entry_count"], int)
+            or evidence["changed_entry_count"] != 0
+            or evidence["worktree_clean"] is not True
         ):
             raise ValidationError("Evidencia HEAD invalida.")
     elif gate_id == "resource.ram":
@@ -415,6 +423,24 @@ def _validate_gate_contract(
             or not isinstance(evidence["returncode"], int)
         ):
             raise ValidationError(f"Evidencia de comando invalida para {gate_id}.")
+    elif code == "worktree_dirty":
+        if (
+            set(evidence) != {"head", "worktree_clean", "changed_entry_count"}
+            or not isinstance(evidence["head"], str)
+            or not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", evidence["head"])
+            or evidence["worktree_clean"] is not False
+            or isinstance(evidence["changed_entry_count"], bool)
+            or not isinstance(evidence["changed_entry_count"], int)
+            or evidence["changed_entry_count"] <= 0
+        ):
+            raise ValidationError("Evidencia de worktree sucio invalida.")
+    elif code == "worktree_state_unknown":
+        if (
+            set(evidence) != {"returncode"}
+            or isinstance(evidence["returncode"], bool)
+            or not isinstance(evidence["returncode"], int)
+        ):
+            raise ValidationError("Evidencia de estado Git invalida.")
     elif code == "ram_headroom_low":
         _validate_ram_evidence(evidence, expect_enough=False)
     elif code == "vram_headroom_low":
@@ -697,6 +723,10 @@ def validate_path(path: Path) -> dict[str, object]:
     if any(not line.strip() for line in lines):
         raise ValidationError("El JSONL no admite lineas vacias.")
     events = [_parse_line(line, number) for number, line in enumerate(lines, start=1)]
+    if events[0].get("case_id") == BENCHMARK_CASE_ID:
+        from local_code_hermes.benchmark_validation import validate_benchmark_events
+
+        return validate_benchmark_events(events)
     return validate_events(events)
 
 

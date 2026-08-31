@@ -1,0 +1,12 @@
+{
+  "rights_status": "explicit_permission",
+  "license": "replace-with-license-or-permission-id",
+  "usage_basis": "Written educational-use permission reviewed by the operator",
+  "jurisdiction": "REPLACE-WITH-APPROVED-JURISDICTION",
+  "retention_allowed": true,
+  "extraction_allowed": true,
+  "quotation_allowed": true,
+  "redistribution_allowed": false,
+  "notebooklm_upload_allowed": false,
+  "evidence": "Replace with the local path or reference to the reviewed permission"
+}

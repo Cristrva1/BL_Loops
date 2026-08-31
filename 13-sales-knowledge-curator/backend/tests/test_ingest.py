@@ -100,3 +100,36 @@ def test_syndicated_origin_is_preserved() -> None:
     )
     assert copy.origin_source_id == "src-current-discovery"
     assert copy.independence.value == "syndicated"
+
+
+def test_directory_rejects_duplicate_source_ids_before_pipeline(tmp_path: Path) -> None:
+    frontmatter = """---
+source_id: src-collision
+title: {title}
+author: Escuela
+published_at: 2026-01-01
+license: CC-BY-4.0
+usage_basis: explicit-license
+redistribution_allowed: true
+language: es
+jurisdiction: MX
+independence: original
+topics: ventas
+rights_clarity: 3
+---
+{body}
+"""
+    (tmp_path / "first.md").write_text(
+        frontmatter.format(title="Primera", body="Contenido uno."), encoding="utf-8"
+    )
+    (tmp_path / "second.md").write_text(
+        frontmatter.format(title="Segunda", body="Contenido dos."), encoding="utf-8"
+    )
+
+    with pytest.raises(IngestError, match="source_id duplicado.*src-collision"):
+        ingest_directory(
+            tmp_path,
+            allowed_root=tmp_path,
+            max_bytes=2_000_000,
+            retrieved_at=datetime.now(UTC),
+        )

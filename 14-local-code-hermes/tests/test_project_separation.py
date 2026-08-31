@@ -18,6 +18,7 @@ def test_required_autonomous_lab_files_are_present() -> None:
         ROOT / "Modelfile",
         ROOT / "pyproject.toml",
         ROOT / "contracts" / "run-event.schema.json",
+        ROOT / "contracts" / "benchmark-run-event.schema.json",
         ROOT / "cases" / "B-CODE-003" / "manifest.json",
     }
     assert not {path.relative_to(ROOT).as_posix() for path in required if not path.is_file()}
@@ -100,6 +101,15 @@ def test_json_schema_is_local_1_1_extension_with_blocked_terminal() -> None:
     assert {"run.completed", "run.blocked", "run.failed"} <= set(
         schema["properties"]["event_type"]["enum"]
     )
+
+
+def test_benchmark_schema_has_distinct_case_and_variant() -> None:
+    schema = json.loads(
+        (ROOT / "contracts" / "benchmark-run-event.schema.json").read_text(encoding="utf-8")
+    )
+
+    assert schema["properties"]["case_id"]["const"] == "B-CODE-003@0.1.0"
+    assert schema["properties"]["variant_id"]["const"] == "ollama-hermes-benchmark"
 
 
 def test_no_automated_hermes_agent_launch_exists_in_runtime() -> None:

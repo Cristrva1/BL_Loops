@@ -1,43 +1,68 @@
 # Guía didáctica · Fábrica de conocimiento confiable de ventas
 
-> Esta carpeta reúne la documentación para aprender. El código ejecutable permanece separado en `backend/`, `frontend/`, `contracts/` y `fixtures/`.
+> Esta carpeta enseña el sistema. El runtime no lee ni necesita `docs/humano/`.
 
-El laboratorio 09 puede recuperar y citar. No puede convertir una biblioteca débil en una autoridad. Este laboratorio enseña esa segunda capacidad: **auditar, contrastar y publicar** afirmaciones, no documentos sueltos ni vectores.
+Este laboratorio convierte fuentes permitidas en evidencia auditable y, solo después de una
+decisión humana, en un `KnowledgeRelease`. También ayuda a descubrir ediciones y accesos legales
+sin confundir “está en Internet” con “se puede copiar”.
 
-> Estado: **fase 1 — corte vertical local**. Las fuentes son Markdown/TXT sintéticos. La red está apagada. Un modelo local es opcional y no aprueba releases.
-
-## Qué aprenderás
-
-- Por qué la unidad central es la afirmación trazable (`ClaimRecord`) y no el archivo.
-- Cómo se separan procedencia, apoyo, vigencia, independencia y derechos.
-- Qué distingue una cita válida de una verdad.
-- Por qué tres páginas que repiten el mismo comunicado no son tres evidencias.
-- Cómo una persona aprueba un hash concreto y no un interruptor `--approve=true`.
-- Qué queda fuera de un release: disputas, cuarentena, inyección y huecos.
-
-## El recorrido visual
+## Dos carriles separados
 
 ```mermaid
 flowchart LR
-    A[Archivos locales] --> Q[Ingesta y cuarentena]
-    Q --> S[Registro de fuentes]
-    S --> X[Afirmaciones]
-    X --> V[Verificación]
-    V --> H[Revisión humana]
-    H --> R[KnowledgeRelease]
+    L[Markdown/TXT local] --> A[Auditar claims]
+    A --> H[Revisión humana]
+    H --> S[Staging]
+    S --> C{Aprobar hash exacto}
+    C --> R[KnowledgeRelease]
+
+    D[PDF/DOCX autorizado] --> M[MarkItDown]
+    O[Open Library + Google Books] --> B[Fichas de acceso]
+    W[Web allowlisted] --> X[Crawl4AI]
+    M --> E[Artefactos locales]
+    B --> E
+    X --> E
+    E --> N[Paquete manual NotebookLM]
+    E --> P[Paquete portable RAG]
 ```
 
-La pantalla muestra diez nodos. Un nodo solo aparece como hecho si el backend alcanzó ese estado.
+El carril editorial publica claims. El carril de investigación crea Markdown, manifiestos y
+metadatos para revisión; no descarga libros ni publica por sí solo.
 
-## Dominio de demostración
+## Qué está disponible
 
-Se usa un vertical **ficticio** de venta consultiva de vivienda, por continuidad pedagógica con el laboratorio 09. No es una biblioteca real corregida. Las decisiones de dominio, jurisdicción, allowlist web y aprobador humano siguen pendientes.
+| Capacidad | Estado y límite |
+|---|---|
+| Corpus local | Markdown/TXT, determinista y read-only |
+| PDF/DOCX | MarkItDown, solo desde inbox autorizado y con derechos explícitos |
+| Catálogos | Open Library y Google Books; lectura JSON de bajo volumen |
+| Navegador | Una URL HTTPS allowlisted, `robots.txt` verificable, sin descargas ni sesión |
+| NotebookLM | Paquete local; la subida es manual y `upload_performed=false` |
+| RAG | JSONL de metadatos portable; sin conexión viva con otro laboratorio |
+| Publicación | Claims aprobados → staging → aprobación posterior del hash → release |
+
+## Decisiones humanas vigentes
+
+- Se autorizó incorporar red, allowlist e investigación en inglés o español.
+- Cualquier operador identificado puede aprobar un release desde el CLI.
+- La jurisdicción está aprobada conceptualmente, pero falta escribir su valor concreto en
+  `RESEARCH_JURISDICTION` o pasarlo al comando.
+- El dominio real existe fuera del laboratorio, pero no fue identificado aquí; continúa como
+  configuración, no como una suposición documental.
+
+## Regla legal central
+
+El uso educativo o no comercial no concede automáticamente permiso para copiar. La máquina
+distingue `full_download`, `read_online`, `preview`, `borrow` y `catalog_only`; solo una
+descarga completa con dominio público, licencia abierta o permiso explícito y evidencia de derechos
+puede ser elegible. En este corte los catálogos únicamente descubren y clasifican: el operador
+revisa.
 
 ## Recorrido recomendado
 
-1. Lee esta página.
-2. Sigue [QUICKSTART.md](QUICKSTART.md).
-3. Observa fuentes, claims, conflictos y el hash de aprobación.
-4. Publica un release y valida sus huellas.
-5. Estudia [ARCHITECTURE.md](ARCHITECTURE.md) y [METHODOLOGY.md](METHODOLOGY.md).
-6. Practica con [EXERCISES.md](EXERCISES.md) y [EVALUATION.md](EVALUATION.md).
+1. Ejecuta [QUICKSTART.md](QUICKSTART.md).
+2. Entiende los gates en [ARCHITECTURE.md](ARCHITECTURE.md).
+3. Revisa decisiones y fuentes oficiales en [METHODOLOGY.md](METHODOLOGY.md).
+4. Practica con [EXERCISES.md](EXERCISES.md).
+5. Diagnostica con [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+6. Aplica el gate de [EVALUATION.md](EVALUATION.md).

@@ -1,39 +1,36 @@
-# Aprende a preparar un agente de código local sin alterar el equipo
+# Aprende a preparar y ejecutar un agente de código local
 
-Este laboratorio enseña una separación que evita conclusiones falsas: configurar un endpoint local, comprobar prerrequisitos y ejecutar un benchmark no son la misma cosa.
+Este laboratorio enseña la separación entre diagnóstico, aislamiento y evaluación. El primer corte era solo preflight; ahora existe una corrida viva de Hermes contra Ollama, pero continúa separada del score oficial y de la comparación con otros clientes.
 
 ## Mapa visual
 
 ```mermaid
 flowchart LR
-    H[Humano] --> P[Preflight F-LOCAL-CODE-004]
+    H[Humano] --> P[Preflight formal]
     P --> C{10 gates}
-    C -->|listos| OK[run.completed\nno puntuado]
-    C -->|falta prerrequisito| B[run.blocked]
-    C -->|error interno| F[run.failed]
-    OK --> J[(JSONL sanitario)]
-    B --> J
-    F --> J
-    X[B-CODE-003 congelado] --> W[Workspace copiado]
-    W -. fase futura autorizada .-> HR[Hermes + Ollama]
+    C -->|bloqueado| B[JSONL preflight]
+    C -->|verde / smoke autorizado| D[Docker sin red]
+    D --> HR[Hermes + Ollama loopback]
+    HR --> V[Fixture + ps + logs]
+    V --> J[JSONL benchmark]
 ```
 
 ## Estados que debes distinguir
 
-- `passed`: el preflight pudo comprobar todos sus requisitos iniciales.
-- `warning`: una evidencia no está disponible en modo exploratorio; la corrida sigue sin ser comparable.
-- `blocked`: falta un requisito o una autorización. No es un fallo de calidad del modelo.
-- `failed`: el propio diagnóstico no pudo ejecutarse de forma confiable.
-
-Aunque el preflight pase, el benchmark todavía necesita demostrar 100 % GPU, 65,536 tokens efectivos, ausencia de truncación, HTTP 500 y paginación sostenida, además de tools, edición y pruebas reales.
+- `passed`: un gate pudo verificarse.
+- `warning`: evidencia ausente en modo exploratorio; no es autorización.
+- `blocked`: falta requisito, autoridad o aislamiento; no es un fallo de calidad del modelo.
+- `failed`: el harness no pudo ejecutar su diagnóstico de forma confiable.
+- `completed`: el proceso vivo terminó; aún puede no ser una solución correcta o comparable.
 
 ## Recorrido
 
-1. Ejecuta las pruebas herméticas de [QUICKSTART.md](QUICKSTART.md).
-2. Ejecuta el modo exploratorio sin cambiar procesos.
-3. Abre el JSONL y localiza `run.started`, cada nodo y el terminal.
-4. Explica por qué endpoint loopback no equivale a cero egress.
-5. Prepara una copia del fixture, sin ejecutar aún un agente.
-6. Continúa con [EXERCISES.md](EXERCISES.md).
+1. Ejecuta la verificación hermética de [QUICKSTART.md](QUICKSTART.md).
+2. Ejecuta el preflight exploratorio y valida su JSONL.
+3. Revisa el alias, el perfil de Ollama, LM Studio, recursos y Git.
+4. Ejecuta el benchmark solo con autorización y Docker disponible.
+5. Examina el workspace y valida el JSONL de benchmark.
+6. Explica por qué loopback, `--network=none` y firewall son evidencias distintas.
+7. Usa [EXERCISES.md](EXERCISES.md) para repetir el razonamiento sin depender de servicios.
 
-La estructura y las decisiones están en [ARCHITECTURE.md](ARCHITECTURE.md) y [METHODOLOGY.md](METHODOLOGY.md).
+La estructura está en [ARCHITECTURE.md](ARCHITECTURE.md); decisiones, límites y cohortes están en [METHODOLOGY.md](METHODOLOGY.md).

@@ -49,7 +49,9 @@ LMSTUDIO_PROCESS_SCRIPT = (
     "$all=@(Get-CimInstance Win32_Process -Filter \"Name = 'llama-server.exe'\");"
     "$items=@($all | "
     "Where-Object { $_.ExecutablePath -and "
-    "$_.ExecutablePath.ToLowerInvariant().Contains('\\.lmstudio\\') });"
+    "($_.ExecutablePath.ToLowerInvariant().Contains('\\.lmstudio\\') -or "
+    "$_.ExecutablePath.ToLowerInvariant().Contains('\\lm-studio\\') -or "
+    "$_.ExecutablePath.ToLowerInvariant().Contains('\\lmstudio\\')) });"
     "$unknown=@($all | Where-Object { -not $_.ExecutablePath });"
     "[pscustomobject]@{loaded_model_processes=[int]$items.Count;"
     "unknown_model_processes=[int]$unknown.Count} | "
@@ -443,7 +445,29 @@ def check_git(config: PreflightConfig, runner: CommandRunner) -> GateResult:
     head = result.stdout.strip()
     if result.returncode == 0:
         if re.fullmatch(r"(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})", head):
-            return _gate("git.head", "passed", "head_captured", {"head": head.lower()})
+            status = runner.run(
+                CommandRequest(
+                    args=("git", "status", "--porcelain=v1"),
+                    cwd=config.lab_root,
+                    timeout_seconds=config.command_timeout_seconds,
+                )
+            )
+            if status.returncode != 0:
+                return _gate(
+                    "git.head",
+                    "blocked",
+                    "worktree_state_unknown",
+                    {"returncode": status.returncode},
+                )
+            changed_entry_count = sum(bool(line.strip()) for line in status.stdout.splitlines())
+            evidence = {
+                "head": head.lower(),
+                "worktree_clean": changed_entry_count == 0,
+                "changed_entry_count": changed_entry_count,
+            }
+            if changed_entry_count:
+                return _gate("git.head", "blocked", "worktree_dirty", evidence)
+            return _gate("git.head", "passed", "head_captured", evidence)
         return _gate("git.head", "blocked", "head_not_exact")
     if result.returncode == 128 and result.error_kind != "not_found":
         if config.mode == "exploratory":

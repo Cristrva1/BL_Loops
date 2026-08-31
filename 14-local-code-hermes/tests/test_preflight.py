@@ -184,6 +184,55 @@ def test_hermes_missing_or_unversioned_blocks(tmp_path: Path) -> None:
     assert check_hermes(config, unversioned).code == "version_not_captured"
 
 
+def test_dirty_git_tree_blocks_without_recording_file_names(tmp_path: Path) -> None:
+    runner = FakeRunner(
+        {
+            ("git", "rev-parse", "--verify", "HEAD"): CommandResult(
+                0,
+                stdout="a" * 40 + "\n",
+            ),
+            ("git", "status", "--porcelain=v1"): CommandResult(
+                0,
+                stdout=" M private-not-to-be-recorded.py\n?? another-file.txt\n",
+            ),
+        }
+    )
+
+    gate = check_git(
+        PreflightConfig(lab_root=tmp_path, python_version=(3, 12)),
+        runner,
+    )
+
+    assert gate.outcome == "blocked"
+    assert gate.code == "worktree_dirty"
+    assert gate.evidence == {
+        "head": "a" * 40,
+        "worktree_clean": False,
+        "changed_entry_count": 2,
+    }
+    assert "private-not-to-be-recorded.py" not in repr(gate.evidence)
+
+
+def test_git_status_failure_blocks_without_claiming_clean_tree(tmp_path: Path) -> None:
+    runner = FakeRunner(
+        {
+            ("git", "rev-parse", "--verify", "HEAD"): CommandResult(
+                0,
+                stdout="a" * 40 + "\n",
+            ),
+            ("git", "status", "--porcelain=v1"): CommandResult(128),
+        }
+    )
+
+    gate = check_git(
+        PreflightConfig(lab_root=tmp_path, python_version=(3, 12)),
+        runner,
+    )
+
+    assert gate.outcome == "blocked"
+    assert gate.code == "worktree_state_unknown"
+
+
 def test_lmstudio_loaded_model_is_a_conflict(tmp_path: Path) -> None:
     runner = FakeRunner(
         {("lms", "ps", "--json"): CommandResult(0, stdout='{"models":[{"id":"x"}]}')}

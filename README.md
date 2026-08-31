@@ -5,8 +5,8 @@ Laboratorio didáctico y visual para aprender, construir y comparar agentes de I
 > Estado actual: fase 1 sigue en construcción. La fábrica tiene su base determinista,
 > `02-single-agent` ofrece el primer chat real y la rama RAG ya incluye una línea base léxica,
 > una variante híbrida y un agente experto en ventas con una herramienta local acotada. El
-> benchmark local-code está aprobado y `14-local-code-hermes` tiene solo su corte inicial de
-> preflight; todavía no hay una comparación entre clientes.
+> benchmark local-code está aprobado y `14-local-code-hermes` ya incluye preflight y el harness
+> de una corrida autorizada; todavía no hay una comparación entre clientes.
 
 ## Qué se va a construir
 
@@ -38,7 +38,7 @@ Los pesos principales se encuentran en `D:/ollama`. No hace falta descargar mode
 
 | Laboratorio | Cliente | Estado |
 |---|---|---|
-| `14-local-code-hermes` | Hermes | Preflight inicial; benchmark pendiente. |
+| `14-local-code-hermes` | Hermes | Preflight y harness de una corrida; benchmark puntuado pendiente. |
 | `15-local-code-opencode` | OpenCode | Planificado. |
 | `16-local-code-claude` | Claude Code | Planificado. |
 
@@ -51,10 +51,12 @@ Un endpoint de inferencia en loopback no demuestra cero egress. Esa propiedad re
 de red independiente para el cliente y su árbol de procesos. LM Studio y llama.cpp quedan para
 experimentos A/B posteriores; el modelo 27B no será el agente cotidiano.
 
-El corte actual de Hermes solo inspecciona prerrequisitos y exporta JSONL diagnóstico. No inicia
-Hermes, no crea modelos, no edita código y no ejecuta aún tools o tests. El repositorio maestro ya
-tiene un baseline Git; la comparación formal permanece bloqueada hasta que estén disponibles los
-tres clientes y aprueben el mismo gate desde el mismo SHA.
+El preflight de Hermes solo inspecciona prerrequisitos y exporta JSONL diagnóstico. El runner
+separado inicia Hermes únicamente con `--execute`, usa un workspace sintético dentro de un sandbox
+Docker sin red y ejecuta sus tests de evaluación; no crea modelos ni produce por sí solo una
+corrida comparable. El repositorio maestro ya tiene un baseline Git; la comparación formal
+permanece bloqueada hasta que estén disponibles los tres clientes y aprueben el mismo gate desde
+el mismo SHA.
 
 ## Por dónde empezar
 
@@ -79,7 +81,7 @@ La decisión sobre dependencias está explicada en [Configuración y entornos](d
 - [`13-sales-knowledge-curator/`](13-sales-knowledge-curator/README.md): audita fuentes locales,
   contrasta afirmaciones y publica un paquete de conocimiento versionado. No escribe en el 09.
 - [`14-local-code-hermes/`](14-local-code-hermes/README.md): preflight de solo diagnóstico,
-  contrato JSONL y fixture congelado para el futuro benchmark Hermes + Ollama 64k.
+  harness controlado, contratos JSONL y fixture congelado para Hermes + Ollama 64k.
 
 ## Fuentes
 

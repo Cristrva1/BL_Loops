@@ -32,14 +32,14 @@
   una búsqueda híbrida por turno, memoria en RAM, citas y trazas sanitizadas.
 - [Laboratorio 13: curador de conocimiento de ventas](../13-sales-knowledge-curator/README.md):
   auditoría local, afirmaciones trazables, conflictos y `KnowledgeRelease` versionado.
-- [Laboratorio 14: preflight Hermes local](../14-local-code-hermes/README.md): diagnóstico sin
-  efectos externos, JSONL solo bajo `.local/` y fixture congelado para el futuro benchmark Ollama 64k.
+- [Laboratorio 14: Hermes local](../14-local-code-hermes/README.md): preflight, sandbox Docker sin red,
+  una corrida controlada y JSONL solo bajo `.local/` para el benchmark Ollama 64k.
 
 ## Benchmark local-code aprobado
 
 | Laboratorio | Cliente | Estado documental |
 |---|---|---|
-| [`14-local-code-hermes`](../14-local-code-hermes/README.md) | Hermes | Corte inicial de preflight; benchmark puntuado pendiente. |
+| [`14-local-code-hermes`](../14-local-code-hermes/README.md) | Hermes | Preflight y harness de una corrida; benchmark puntuado pendiente. |
 | `15-local-code-opencode` | OpenCode | Planificado; todavía no es una aplicación disponible. |
 | `16-local-code-claude` | Claude Code | Planificado; todavía no es una aplicación disponible. |
 
@@ -56,7 +56,7 @@ que exista su entrada técnica para evitar enlaces muertos.
 
 ## Estado
 
-Estado al 2026-08-30: solo `14-local-code-hermes` tiene un corte inicial de preflight; OpenCode y
+Estado al 2026-08-30: solo `14-local-code-hermes` tiene un corte ejecutable de Hermes; OpenCode y
 Claude Code siguen planificados. La rama `main` ya tiene un commit base; cada corrida y revisión
 debe registrar su SHA exacto. Todavía no existe una comparación formal ni una recomendación entre
 clientes.

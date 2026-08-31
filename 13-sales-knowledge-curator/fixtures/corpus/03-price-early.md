@@ -20,6 +20,6 @@ topics: price-timing
 
 Fuente competente y vigente. Discrepa de otra fuente tambien vigente.
 
-CLAIM:id=clm-price-first-contact;type=prescriptive;topic=price-timing;population=compradores-de-vivienda-demo;valid_from=2026-01-01
+CLAIM:id=clm-price-first-contact;type=prescriptive;topic=price-timing;population=compradores-de-vivienda-demo;valid_from=2026-01-01;conflicts_with=clm-price-after-discovery
 El vendedor debe presentar un rango de precio en el primer contacto para anclar expectativas.
 ENDCLAIM

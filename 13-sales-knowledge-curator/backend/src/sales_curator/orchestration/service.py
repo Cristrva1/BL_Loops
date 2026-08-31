@@ -8,6 +8,7 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from uuid import uuid4
 
+from sales_curator.agents.llm_extractor import OllamaExtractor
 from sales_curator.agents.roles import assert_role_may
 from sales_curator.config import Settings, lab_root
 from sales_curator.connectors.network import NetworkDisabled, fetch_url
@@ -49,7 +50,7 @@ from sales_curator.evaluation.gate import (
 )
 from sales_curator.evaluation.jsonl import to_jsonl_event, validate_run, write_run_jsonl
 from sales_curator.evaluation.metrics import compute_metrics
-from sales_curator.hashing import sha256_text, with_content_hash
+from sales_curator.hashing import with_content_hash
 from sales_curator.orchestration.machine import (
     NODE_FOR_STATE,
     ensure_transition,
@@ -58,9 +59,11 @@ from sales_curator.storage.releases import (
     ReleaseError,
     build_staging,
     make_release,
+    manifest_hash,
     publish,
     read_current,
     rollback,
+    validate_release_package,
     validate_staging,
 )
 from sales_curator.storage.sqlite import CuratorStore
@@ -68,6 +71,16 @@ from sales_curator.storage.sqlite import CuratorStore
 
 def _id(prefix: str) -> str:
     return f"{prefix}_{uuid4().hex[:12]}"
+
+
+class AuditRunFailed(RuntimeError):
+    """La corrida falló, pero conserva identidad y JSONL terminal inspeccionable."""
+
+    def __init__(self, *, run_id: str, jsonl_path: Path, reason: str) -> None:
+        self.run_id = run_id
+        self.jsonl_path = jsonl_path
+        self.reason = reason
+        super().__init__(f"{reason} [run_id={run_id}; jsonl={jsonl_path}]")
 
 
 @dataclass
@@ -82,9 +95,13 @@ class RunSnapshot:
     events: list[RunEvent]
     findings: list
     metrics: dict[str, float | int | None]
+    domain: str
+    as_of: date
+    extractor: str
     release_id: str | None = None
     candidate_id: str | None = None
     candidate_hash: str | None = None
+    candidate_diff: dict[str, object] | None = None
     jsonl_path: str | None = None
     stop_reason: str | None = None
 
@@ -124,9 +141,13 @@ class CuratorService:
             ],
             findings=self.store.list_findings(run_id),
             metrics=run.get("metrics") or {},
+            domain=run.get("domain") or DEMO_DOMAIN,
+            as_of=date.fromisoformat(run.get("as_of") or "2026-08-30"),
+            extractor=run.get("extractor") or "deterministic",
             release_id=run.get("release_id"),
             candidate_id=run.get("candidate_id"),
             candidate_hash=run.get("candidate_hash"),
+            candidate_diff=run.get("candidate_diff"),
             jsonl_path=run.get("jsonl_path"),
             stop_reason=workflow.stop_reason,
         )
@@ -139,9 +160,13 @@ class CuratorService:
             "run_id": snapshot.workflow.run_id,
             "workflow": snapshot.workflow.model_dump(mode="json"),
             "metrics": snapshot.metrics,
+            "domain": snapshot.domain,
+            "as_of": snapshot.as_of.isoformat(),
+            "extractor": snapshot.extractor,
             "release_id": snapshot.release_id,
             "candidate_id": snapshot.candidate_id,
             "candidate_hash": snapshot.candidate_hash,
+            "candidate_diff": snapshot.candidate_diff,
             "jsonl_path": snapshot.jsonl_path,
         }
         if extra:
@@ -226,20 +251,32 @@ class CuratorService:
         source_dir: Path,
         *,
         as_of: date | None = None,
+        domain: str | None = None,
         dry_run: bool = False,
         extractor: str = "deterministic",
     ) -> RunSnapshot:
+        if extractor not in {"deterministic", "ollama"}:
+            raise ValueError("extractor debe ser deterministic u ollama")
         if dry_run:
             isolated = self.settings.with_isolated_dirs(
                 (self.root / ".local" / "dry-run" / _id("dry")),
                 (self.root / ".local" / "dry-run" / _id("dryruns")),
             )
             service = CuratorService(isolated)
-            snapshot = service.start_audit(source_dir, as_of=as_of, extractor=extractor)
-            service.close()
-            return snapshot
+            try:
+                return service.start_audit(
+                    source_dir,
+                    as_of=as_of,
+                    domain=domain,
+                    extractor=extractor,
+                )
+            finally:
+                service.close()
 
         as_of = as_of or date(2026, 8, 30)
+        domain = (domain or self.settings.research_domain).strip()
+        if not 3 <= len(domain) <= 80:
+            raise ValueError("domain debe tener entre 3 y 80 caracteres")
         run_id = _id("run")
         workflow = with_content_hash(
             WorkflowState(
@@ -268,6 +305,9 @@ class CuratorService:
             events=[],
             findings=[],
             metrics={},
+            domain=domain,
+            as_of=as_of,
+            extractor=extractor,
         )
         self._persist_run(snapshot)
         self._emit(
@@ -276,6 +316,7 @@ class CuratorService:
             result={
                 "source_dir": source_dir.name,
                 "as_of": as_of.isoformat(),
+                "domain": domain,
                 "extractor": extractor,
             },
         )
@@ -299,8 +340,12 @@ class CuratorService:
                         )
                     )
             self._emit(snapshot, event_type="run.failed", result={}, error=str(exc)[:300])
-            self._flush_jsonl(snapshot)
-            raise
+            jsonl_path = self._flush_jsonl(snapshot)
+            raise AuditRunFailed(
+                run_id=run_id,
+                jsonl_path=jsonl_path,
+                reason=str(exc)[:300],
+            ) from exc
         return snapshot
 
     def _run_pipeline(
@@ -457,26 +502,42 @@ class CuratorService:
         self._transition(
             snapshot, WorkflowStatus.SOURCES_NORMALIZED, "source_auditor", "cadenas de origen"
         )
+        if extractor == "ollama":
+            llm_extractor = OllamaExtractor(
+                base_url=self.settings.ollama_base_url,
+                model=self.settings.curator_model,
+            )
+            extracted_by_source = llm_extractor.extract_documents(
+                tuple((item.source.source_id, item.full_text) for item in ingested),
+                max_chunks_per_document=self.settings.max_llm_chunks_per_document,
+            )
+        else:
+            extracted_by_source = {
+                item.source.source_id: extract_from_source(item) for item in ingested
+            }
+        claims: list[ClaimRecord] = []
+        sources_by_id = {item.source.source_id: item.source for item in ingested}
+        for item in ingested:
+            for candidate in extracted_by_source[item.source.source_id]:
+                claims.append(build_claim(candidate, item.source, item, as_of, clock=self._clock()))
+        claims = merge_duplicates(claims, sources_by_id)
+        snapshot.claims = claims
         self._transition(
             snapshot,
             WorkflowStatus.CLAIMS_EXTRACTED,
             "claim_extractor",
             f"extractor {extractor}",
         )
-        if extractor == "ollama":
-            raise RuntimeError("El extractor Ollama es opcional y se invoca por contrato aparte")
-        claims: list[ClaimRecord] = []
-        sources_by_id = {item.source.source_id: item.source for item in ingested}
-        for item in ingested:
-            for candidate in extract_from_source(item):
-                claims.append(build_claim(candidate, item.source, item, as_of, clock=self._clock()))
-        claims = merge_duplicates(claims, sources_by_id)
-        snapshot.claims = claims
         self._emit(
             snapshot,
             event_type="claims.extracted",
             tool="claim_extractor",
-            result={"claims": len(claims)},
+            result={
+                "claims": len(claims),
+                "documents": len(ingested),
+                "extractor": extractor,
+                "model": self.settings.curator_model if extractor == "ollama" else "none",
+            },
         )
 
         self._transition(
@@ -530,6 +591,7 @@ class CuratorService:
 
     def _flush_jsonl(self, snapshot: RunSnapshot, terminal: str | None = None) -> Path:
         rows = []
+        model_ref = self.settings.curator_model if snapshot.extractor == "ollama" else ""
         stored = self.store.list_events(snapshot.workflow.run_id)
         for index, raw in enumerate(stored):
             event = RunEvent.model_validate(
@@ -542,7 +604,7 @@ class CuratorService:
                 to_jsonl_event(
                     event,
                     event_type=event_type,
-                    model_ref=self.settings.curator_model,
+                    model_ref=model_ref,
                 )
             )
         if terminal:
@@ -551,7 +613,7 @@ class CuratorService:
                 to_jsonl_event(
                     last.model_copy(update={"sequence": last.sequence + 1, "event_id": _id("evt")}),
                     event_type=terminal,
-                    model_ref=self.settings.curator_model,
+                    model_ref=model_ref,
                 )
             )
         path = self.settings.runs_path / f"{snapshot.workflow.run_id}.jsonl"
@@ -582,17 +644,29 @@ class CuratorService:
             claim = next(item for item in snapshot.claims if item.claim_id == object_id)
             actual = claim_identity_hash(claim)
         elif object_type == "release_candidate":
-            actual = snapshot.candidate_hash or ""
+            if snapshot.workflow.state != WorkflowStatus.STAGING:
+                raise ValueError("El candidato solo puede revisarse mientras está en staging")
+            if not snapshot.candidate_id or object_id != snapshot.candidate_id:
+                raise ValueError("El candidate_id no coincide con el candidato actual")
+            folder = self.settings.staging_dir / run_id
+            actual = manifest_hash(folder)
+            if actual != snapshot.candidate_hash:
+                raise ValueError("El hash del candidato cambió después de staging")
         else:
             raise ValueError("object_type no soportado")
         if actual != expected_hash:
             raise ValueError("El hash aprobado no coincide con el candidato actual")
+        verdict = ReviewVerdict(decision)
+        if object_type == "claim" and verdict == ReviewVerdict.APPROVED:
+            errors = claim_passes_technical_gate(claim)
+            if errors:
+                raise ValueError("; ".join(errors))
         review = with_content_hash(
             ReviewDecision(
                 decision_id=_id("rev"),
                 object_type=object_type,  # type: ignore[arg-type]
                 object_id=object_id,
-                decision=ReviewVerdict(decision),
+                decision=verdict,
                 reviewer=reviewer,
                 reason=reason,
                 decided_at=self._clock(),
@@ -603,9 +677,6 @@ class CuratorService:
         )
         self.store.save_review(run_id, review.model_dump(mode="json"))
         if object_type == "claim" and review.decision == ReviewVerdict.APPROVED:
-            errors = claim_passes_technical_gate(claim)
-            if errors:
-                raise ValueError("; ".join(errors))
             updated = with_content_hash(
                 claim.model_copy(
                     update={"status": ClaimStatus.HUMAN_APPROVED, "content_hash": "0" * 64}
@@ -645,7 +716,15 @@ class CuratorService:
             approved.append(claim.claim_id)
         return approved
 
-    def build_release(self, run_id: str, *, reviewer: str, reason: str) -> RunSnapshot:
+    def build_release(
+        self,
+        run_id: str,
+        *,
+        reviewer: str | None = None,
+        reason: str | None = None,
+    ) -> RunSnapshot:
+        """Construye un candidato y se detiene; los kwargs legacy nunca lo aprueban."""
+
         snapshot = self.get_run(run_id)
         if snapshot.workflow.state != WorkflowStatus.REVIEW_PENDING:
             raise ReleaseError("Solo se construye staging desde review_pending")
@@ -658,70 +737,119 @@ class CuratorService:
             if matching_approval(claim, snapshot.reviews) is None:
                 raise ReleaseError(f"Falta aprobación contemporánea de {claim.claim_id}")
         self._transition(
-            snapshot, WorkflowStatus.APPROVED, reviewer, "revisión humana sobre hashes actuales"
+            snapshot,
+            WorkflowStatus.APPROVED,
+            "orchestrator",
+            "las afirmaciones incluidas tienen aprobaciones contemporáneas",
         )
         self._transition(snapshot, WorkflowStatus.STAGING, "publisher", "construir paquete")
         drafts = drafts_from_claims(self.get_run(run_id).claims)
         snapshot = self.get_run(run_id)
+        candidate_id = _id("can")
+        included_ids = sorted(item.claim_id for item in approved_claims)
+        candidate_diff: dict[str, object] = {
+            "previous_release_id": (read_current(self.settings.releases_dir) or {}).get(
+                "release_id"
+            ),
+            "included_claim_ids": included_ids,
+            "excluded_claim_ids": sorted(
+                item.claim_id for item in snapshot.claims if item.claim_id not in included_ids
+            ),
+            "source_count": len(snapshot.sources),
+            "conflict_count": len(snapshot.conflicts),
+        }
         folder = build_staging(
             self.settings.staging_dir,
             run_id,
+            candidate_id=candidate_id,
+            candidate_diff=candidate_diff,
             sources=snapshot.sources,
             claims=snapshot.claims,
             conflicts=snapshot.conflicts,
             reviews=snapshot.reviews,
             drafts=drafts,
             metrics=snapshot.metrics,
-            domain=DEMO_DOMAIN,
-            as_of=date(2026, 8, 30),
+            domain=snapshot.domain,
+            as_of=snapshot.as_of,
             model_versions={
-                "extractor": "deterministic-frontmatter-v1",
+                "extractor": (
+                    f"ollama:{self.settings.curator_model}"
+                    if snapshot.extractor == "ollama"
+                    else "deterministic-frontmatter-v1"
+                ),
                 "llm": self.settings.curator_model or "none",
             },
         )
-        candidate_id = _id("can")
-        manifest_hash = sha256_text((folder / "manifest.json").read_text(encoding="utf-8"))
+        errors = validate_staging(folder, snapshot.claims)
+        if errors:
+            self._transition(snapshot, WorkflowStatus.FAILED, "publisher", "; ".join(errors)[:300])
+            raise ReleaseError("; ".join(errors))
+        candidate_hash = manifest_hash(folder)
         snapshot.candidate_id = candidate_id
-        snapshot.candidate_hash = manifest_hash
+        snapshot.candidate_hash = candidate_hash
+        snapshot.candidate_diff = candidate_diff
         self._persist_run(snapshot)
         self._emit(
             snapshot,
             event_type="staging.built",
             tool="publisher",
-            result={"candidate_id": candidate_id, "manifest_hash": manifest_hash},
+            result={
+                "candidate_id": candidate_id,
+                "candidate_hash": candidate_hash,
+                "candidate_diff": candidate_diff,
+            },
         )
-        self.submit_review(
-            run_id,
-            object_type="release_candidate",
-            object_id=candidate_id,
-            decision="approved",
-            reviewer=reviewer,
-            reason=reason,
-            expected_hash=manifest_hash,
-        )
+        return self.get_run(run_id)
+
+    def publish_release(self, run_id: str) -> RunSnapshot:
+        """Publica solo un staging aprobado posteriormente sobre su hash exacto."""
+
         snapshot = self.get_run(run_id)
+        if snapshot.workflow.state != WorkflowStatus.STAGING:
+            raise ReleaseError("Solo se publica una corrida detenida en staging")
+        if not snapshot.candidate_id or not snapshot.candidate_hash:
+            raise ReleaseError("La corrida no expone candidate_id/hash")
+        folder = self.settings.staging_dir / run_id
+        if not folder.is_dir():
+            raise ReleaseError("No existe el staging del candidato")
+        actual_hash = manifest_hash(folder)
+        if actual_hash != snapshot.candidate_hash:
+            raise ReleaseError("El hash del manifest cambió después de construir staging")
+        approval = candidate_approval(
+            snapshot.candidate_id,
+            snapshot.candidate_hash,
+            snapshot.reviews,
+        )
+        if approval is None:
+            raise ReleaseError("Falta aprobación exacta posterior del candidato")
         self._transition(snapshot, WorkflowStatus.VALIDATING, "publisher", "gate reproducible")
         errors = validate_staging(folder, snapshot.claims)
         if errors:
             self._transition(snapshot, WorkflowStatus.FAILED, "publisher", "; ".join(errors)[:300])
             raise ReleaseError("; ".join(errors))
-        if candidate_approval(candidate_id, manifest_hash, snapshot.reviews) is None:
-            raise ReleaseError("La aprobación del candidato no coincide con el hash")
         release_id = _id("rel")
         release = make_release(
             release_id,
-            domain=DEMO_DOMAIN,
-            as_of=date(2026, 8, 30),
+            domain=snapshot.domain,
+            as_of=snapshot.as_of,
             folder=folder,
             claims=snapshot.claims,
             reviews=snapshot.reviews,
             metrics=snapshot.metrics,
-            model_versions={"extractor": "deterministic-frontmatter-v1"},
+            model_versions={
+                "extractor": (
+                    f"ollama:{self.settings.curator_model}"
+                    if snapshot.extractor == "ollama"
+                    else "deterministic-frontmatter-v1"
+                ),
+                "llm": self.settings.curator_model or "none",
+            },
         )
         destination = publish(folder, self.settings.releases_dir, release)
         self.store.save_release(release.model_dump(mode="json"))
+        included_claim_ids = set(release.included_claim_ids)
         for claim in snapshot.claims:
-            if claim.status == ClaimStatus.HUMAN_APPROVED:
+            if claim.status == ClaimStatus.HUMAN_APPROVED and claim.claim_id in included_claim_ids:
                 published = with_content_hash(
                     claim.model_copy(
                         update={"status": ClaimStatus.PUBLISHED, "content_hash": "0" * 64}
@@ -730,8 +858,6 @@ class CuratorService:
                 self.store.save_claim(run_id, published.model_dump(mode="json"))
         snapshot = self.get_run(run_id)
         snapshot.release_id = release_id
-        snapshot.candidate_id = candidate_id
-        snapshot.candidate_hash = manifest_hash
         self._persist_run(snapshot)
         self._transition(
             snapshot, WorkflowStatus.PUBLISHED, "publisher", f"publicado {destination.name}"
@@ -743,29 +869,23 @@ class CuratorService:
         folder = self.settings.releases_dir / release_id
         if not folder.is_dir():
             raise ReleaseError("Release no encontrado")
-        payload = self.store.get_release(release_id)
-        claims = []
-        if payload:
-            from sales_curator.contracts.models import KnowledgeRelease
-
-            release = KnowledgeRelease.model_validate(payload)
-            run_id = None
-            for item in self.store.list_runs():
-                if item.get("release_id") == release_id:
-                    run_id = item["run_id"]
-                    break
-            if run_id:
-                claims = [ClaimRecord.model_validate(row) for row in self.store.list_claims(run_id)]
-            errors = validate_staging(folder, claims)
-            return {
-                "release_id": release_id,
-                "valid": not errors,
-                "errors": errors,
-                "manifest_hash": release.manifest_hash,
-                "included": release.included_claim_ids,
-                "excluded": release.excluded_claim_ids,
-            }
-        return {"release_id": release_id, "valid": False, "errors": ["sin metadatos en sqlite"]}
+        release, errors = validate_release_package(folder)
+        if release is None:
+            return {"release_id": release_id, "valid": False, "errors": errors}
+        if release.release_id != release_id:
+            errors.append("release_id no coincide con el directorio solicitado")
+        return {
+            "release_id": release_id,
+            "valid": not errors,
+            "errors": errors,
+            "manifest_hash": release.manifest_hash,
+            "content_hash": release.content_hash,
+            "domain": release.domain,
+            "as_of": release.as_of.isoformat(),
+            "approval_ids": release.approval_ids,
+            "included": release.included_claim_ids,
+            "excluded": release.excluded_claim_ids,
+        }
 
     def export_run(self, run_id: str) -> Path:
         snapshot = self.get_run(run_id)
@@ -787,4 +907,4 @@ class CuratorService:
     def demo(self, fixture_dir: Path, reviewer: str, reason: str) -> RunSnapshot:
         snapshot = self.start_audit(fixture_dir)
         self.approve_publishable_claims(snapshot.workflow.run_id, reviewer, reason)
-        return self.build_release(snapshot.workflow.run_id, reviewer=reviewer, reason=reason)
+        return self.build_release(snapshot.workflow.run_id)

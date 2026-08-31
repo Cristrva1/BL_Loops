@@ -1,0 +1,72 @@
+{
+  "$defs": {
+    "NotebookSourceSet": {
+      "additionalProperties": false,
+      "properties": {
+        "notebook_number": {
+          "minimum": 1,
+          "title": "Notebook Number",
+          "type": "integer"
+        },
+        "source_paths": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Source Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "notebook_number",
+        "source_paths"
+      ],
+      "title": "NotebookSourceSet",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "packet_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Packet Id",
+      "type": "string"
+    },
+    "mode": {
+      "const": "manual_notebooklm_import",
+      "default": "manual_notebooklm_import",
+      "title": "Mode",
+      "type": "string"
+    },
+    "upload_performed": {
+      "const": false,
+      "default": false,
+      "title": "Upload Performed",
+      "type": "boolean"
+    },
+    "notebooks": {
+      "items": {
+        "$ref": "#/$defs/NotebookSourceSet"
+      },
+      "title": "Notebooks",
+      "type": "array"
+    },
+    "manifest_path": {
+      "title": "Manifest Path",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "packet_id",
+    "notebooks",
+    "manifest_path",
+    "content_hash"
+  ],
+  "title": "NotebookPacket",
+  "type": "object"
+}

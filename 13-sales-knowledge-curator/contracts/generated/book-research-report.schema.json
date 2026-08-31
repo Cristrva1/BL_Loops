@@ -1,0 +1,247 @@
+{
+  "$defs": {
+    "AccessMode": {
+      "enum": [
+        "full_download",
+        "read_online",
+        "preview",
+        "borrow",
+        "catalog_only"
+      ],
+      "title": "AccessMode",
+      "type": "string"
+    },
+    "BookAccessOffer": {
+      "additionalProperties": false,
+      "properties": {
+        "offer_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Offer Id",
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "open_library",
+            "google_books",
+            "project_gutenberg",
+            "doab_oapen",
+            "library_of_congress",
+            "internet_archive",
+            "hathitrust",
+            "bne",
+            "europeana"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "provider_record_id": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Provider Record Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 400,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "authors": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Authors",
+          "type": "array"
+        },
+        "identifiers": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Identifiers",
+          "type": "object"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "maxLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "published_date": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published Date"
+        },
+        "record_url": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Record Url",
+          "type": "string"
+        },
+        "access_mode": {
+          "$ref": "#/$defs/AccessMode"
+        },
+        "rights_status": {
+          "$ref": "#/$defs/RightsStatus"
+        },
+        "rights_evidence_url": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rights Evidence Url"
+        },
+        "rights_statement": {
+          "maxLength": 600,
+          "minLength": 8,
+          "title": "Rights Statement",
+          "type": "string"
+        },
+        "download_url": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Download Url"
+        },
+        "jurisdiction": {
+          "maxLength": 40,
+          "minLength": 2,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "content_hash": {
+          "default": "0000000000000000000000000000000000000000000000000000000000000000",
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "offer_id",
+        "provider",
+        "provider_record_id",
+        "title",
+        "record_url",
+        "access_mode",
+        "rights_status",
+        "rights_statement",
+        "jurisdiction",
+        "retrieved_at"
+      ],
+      "title": "BookAccessOffer",
+      "type": "object"
+    },
+    "RightsStatus": {
+      "enum": [
+        "public_domain",
+        "open_license",
+        "explicit_permission",
+        "restricted",
+        "unknown"
+      ],
+      "title": "RightsStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "research_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Research Id",
+      "type": "string"
+    },
+    "query": {
+      "maxLength": 400,
+      "minLength": 2,
+      "title": "Query",
+      "type": "string"
+    },
+    "jurisdiction": {
+      "maxLength": 40,
+      "minLength": 2,
+      "title": "Jurisdiction",
+      "type": "string"
+    },
+    "languages": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Languages",
+      "type": "array"
+    },
+    "offers": {
+      "items": {
+        "$ref": "#/$defs/BookAccessOffer"
+      },
+      "maxItems": 1000,
+      "title": "Offers",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Warnings",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "research_id",
+    "query",
+    "jurisdiction",
+    "languages",
+    "created_at",
+    "content_hash"
+  ],
+  "title": "BookResearchReport",
+  "type": "object"
+}

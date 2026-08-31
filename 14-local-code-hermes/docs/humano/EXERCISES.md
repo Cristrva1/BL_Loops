@@ -5,7 +5,7 @@
 1. Ejecuta el preflight exploratorio.
 2. Valida el JSONL.
 3. Cuenta nodos `passed`, `warning` y `blocked`.
-4. Explica por qué el terminal puede ser `run.blocked` aunque el programa haya funcionado bien.
+4. Explica por qué un terminal `run.blocked` puede significar que el programa funcionó correctamente.
 
 **Aprobado:** distingues un bloqueo de prerrequisitos de un fallo interno.
 
@@ -18,21 +18,27 @@
 
 **Aprobado:** solo cambian `src/pricing.py` y `tests/test_pricing.py`, las cuatro pruebas pasan y 101 % sigue rechazado.
 
-## Avanzado — diseñar evidencia comparable
+## Avanzado — razonar sobre el sandbox
 
-Sin ejecutar agentes, redacta una ficha para una futura corrida que incluya:
+1. Ejecuta `uv run pytest tests/test_benchmark.py`.
+2. Localiza `--network=none`, `--cap-drop=ALL`, `no-new-privileges` y el único mount.
+3. Explica por qué Docker protege los comandos del agente, pero no convierte por sí solo al proceso padre en evidencia de firewall.
+4. Explica por qué `--allow-dirty-worktree` no debe producir un score.
 
-- SHA exacto y estado del árbol;
-- cliente y versión;
-- modelo, digest, contexto configurado y efectivo;
-- `ollama ps` y residencia GPU;
-- conteos de truncación y HTTP 500;
-- RAM, commit, pagefile y VRAM durante la corrida;
-- evidencia separada de inferencia local y cero egress;
-- permisos, tool calls, archivos cambiados y tests.
+**Aprobado:** puedes distinguir aislamiento de comandos, inferencia local y cero egress del host.
 
-**Aprobado:** ninguna afirmación depende de suposiciones y sabes qué campos impiden comparar dos corridas.
+## Experimento controlado — una corrida Hermes
 
-## Experimento posterior — A/B de runtime
+Con el operador autorizado y el host preparado:
 
-Solo después de completar la cohorte Ollama, diseña el mismo caso con LM Studio. Mantén modelo, cuantización, contexto, SHA y permisos; nunca cargues ambos runtimes simultáneamente. llama.cpp directo se usa primero para diagnóstico, no para mezclar resultados.
+```powershell
+uv run hermes-benchmark --execute --allow-dirty-worktree
+$runFile = Get-ChildItem .local\runs\benchmark-*.jsonl | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+uv run hermes-run-validate $runFile.FullName
+```
+
+Revisa el workspace generado, los conteos de uso y el delta de logs. No copies respuestas al reporte ni declares score si `comparable=false`.
+
+## Diseño posterior — A/B de runtime
+
+Solo después de completar una cohorte Ollama, diseña el mismo caso con LM Studio. Mantén modelo, cuantización, contexto, SHA y permisos; nunca cargues ambos runtimes simultáneamente. OpenCode y Claude Code siguen siendo laboratorios independientes.

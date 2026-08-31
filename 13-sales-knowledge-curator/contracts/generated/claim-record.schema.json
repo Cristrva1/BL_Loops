@@ -283,6 +283,15 @@
       "title": "Version",
       "type": "integer"
     },
+    "conflicts_with": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Conflicts With",
+      "type": "array"
+    },
     "supersedes": {
       "anyOf": [
         {

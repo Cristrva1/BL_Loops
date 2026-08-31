@@ -435,15 +435,16 @@ la variante A: afirmaciones con localizador, conflictos visibles, aprobación po
 
 | Lab ID | Cliente | Rol del experimento | Estado |
 |---|---|---|---|
-| `14-local-code-hermes` | Hermes | Orquestación, memoria, investigación y skills. | Corte inicial: preflight `F-LOCAL-CODE-004`; benchmark puntuado pendiente. |
+| `14-local-code-hermes` | Hermes | Orquestación, memoria, investigación y skills. | Preflight `F-LOCAL-CODE-004` y harness de una corrida; benchmark puntuado pendiente. |
 | `15-local-code-opencode` | OpenCode | Ejecutor principal de programación. | Planificado. |
 | `16-local-code-claude` | Claude Code | Compatibilidad y revisión compleja. | Planificado. |
 
-El corte inicial de `14-local-code-hermes` solo diagnostica Python 3.12, endpoint HTTP loopback,
-referencia de evidencia de firewall autorizada, identidad del `Modelfile`, versión de Hermes,
-ausencia de modelos cargados en LM Studio, `HEAD` de Git y margen de RAM/VRAM. No crea ni carga
-modelos, no configura firewall, no inicia Hermes, no invoca herramientas, no edita fuentes ni
-archivos versionables y no ejecuta todavía `B-CODE-003`; solo exporta JSONL bajo `.local/`.
+`14-local-code-hermes` diagnostica Python 3.12, endpoint HTTP loopback, referencias de firewall y
+perfil, identidad del `Modelfile`, versión de Hermes, ausencia de modelos cargados en LM Studio,
+SHA/worktree de Git y margen de RAM/VRAM. También incluye un runner explícito para una corrida
+autorizada de `B-CODE-003`: Hermes usa Ollama local y Docker sin red, el fixture se verifica dentro
+del sandbox y el resultado se exporta como JSONL bajo `.local/`. El preflight por sí solo no crea ni
+carga modelos ni ejecuta Hermes.
 
 La cohorte base usa `local-code-9b-64k`, derivado de `qwen3.5:9b` con `num_ctx 65536`. Para Hermes
 y OpenCode, 65,536 tokens son el mínimo del experimento, no una variable que pueda reducirse para
@@ -451,10 +452,10 @@ obtener un resultado favorable. Si 9B no supera el gate, el único fallback apro
 `qwen3.5:4b` conservando 65,536 tokens; sus resultados forman otra cohorte. Una corrida a 32k no
 es comparable. Claude Code debe conservar el mismo contexto o registrar una incompatibilidad.
 
-Antes de ejecutar el caso puntuado deberán añadirse y aprobarse: `ollama ps` con 100 % GPU,
-contexto efectivo de 65,536, ausencia de `truncating input prompt`, ausencia de HTTP 500, ausencia
-de paginación sostenida y funcionamiento real de tools, edición y pruebas. El preflight inicial no
-demuestra todavía esas propiedades.
+Antes de puntuar el caso deberán aprobarse: `ollama ps` con 100 % GPU, contexto efectivo de 65,536,
+ausencia de `truncating input prompt`, ausencia de HTTP 500, ausencia de paginación sostenida y
+funcionamiento real de tools, edición y pruebas. El smoke con worktree sucio y cualquier corrida
+única del laboratorio no son comparables ni puntuables.
 
 No habrá comparación formal hasta que exista un `HEAD` y las tres variantes registren el mismo SHA
 exacto. Un preflight exploratorio sin `HEAD` es diagnóstico y nunca sustenta una clasificación o

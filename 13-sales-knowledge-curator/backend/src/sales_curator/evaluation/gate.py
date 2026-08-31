@@ -10,14 +10,10 @@ def claim_identity_hash(claim: ClaimRecord) -> str:
     """Huella editorial: cambia si cambia el contenido, no el estado de revisión."""
 
     return compute_content_hash(
-        {
-            "claim_id": claim.claim_id,
-            "canonical_text": claim.canonical_text,
-            "claim_type": claim.claim_type.value,
-            "topic": claim.topic,
-            "population": claim.population,
-            "evidence": [item.model_dump(mode="json") for item in claim.evidence],
-        }
+        claim.model_dump(
+            mode="json",
+            exclude={"status", "created_at", "updated_at", "content_hash"},
+        )
     )
 
 

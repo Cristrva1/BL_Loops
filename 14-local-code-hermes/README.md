@@ -1,31 +1,28 @@
 # 14-local-code-hermes
 
-Preflight didáctico sin efectos externos para preparar un futuro benchmark de programación local con Hermes, Ollama y `local-code-9b-64k`. El corte actual inspecciona prerrequisitos, escribe JSONL sanitario solo bajo `.local/` y ofrece un fixture determinista; todavía no inicia Hermes ni ejecuta el benchmark.
+Laboratorio didáctico para preparar y ejecutar una corrida controlada de Hermes contra Ollama local. El corte incluye el preflight, el alias `local-code-9b-64k`, un sandbox Docker sin red, la reparación del fixture `B-CODE-003` y la exportación JSONL sanitaria.
 
 ## Qué existe
 
 ```text
-humano
-  -> preflight de solo diagnóstico
-     -> Python y endpoint loopback
-     -> evidencia referenciada de red y perfil Ollama
-     -> identidad del Modelfile y versión de Hermes
-     -> conflicto de LM Studio y HEAD de Git
-     -> margen de RAM, commit y VRAM
-  -> JSONL F-LOCAL-CODE-004 (no puntuado, no comparable)
+preflight formal
+  -> diez gates + evidencia de firewall/perfil + estado Git
+  -> JSONL F-LOCAL-CODE-004 (no puntuado)
 
-B-CODE-003 congelado -> workspace copiado -> verificador local
-                                      (ejecución con Hermes pendiente)
+benchmark autorizado
+  -> Hermes -z + Ollama loopback
+  -> Docker por sesión, solo workspace, --network=none
+  -> tests unitarios, semánticos y de mutación
+  -> JSONL B-CODE-003 (una corrida; no comparable todavía)
 ```
 
-El preflight no crea el modelo, no cambia el host, no libera VRAM y no ejecuta tools. Un resultado `run.blocked` es una salida válida cuando falta un prerrequisito o autoridad.
+La corrida viva requiere `--execute`. `--allow-dirty-worktree` solo habilita un smoke de desarrollo explícito; conserva el bloqueo de Git en la evidencia y fuerza `scored=false` y `comparable=false`. No hay fallback cloud silencioso.
 
 ## Verificación hermética
 
 Desde PowerShell:
 
 ```powershell
-# Desde la raíz de BL_Loops
 Set-Location .\14-local-code-hermes
 uv sync --locked --all-groups
 uv run pytest
@@ -35,28 +32,43 @@ uv run ruff format --check .
 
 Estas pruebas no llaman a Ollama, Hermes, LM Studio ni internet.
 
-## Preflight real de solo lectura
+## Preflight
 
 ```powershell
 uv run hermes-preflight --mode exploratory
-```
-
-El comando solo consulta herramientas ya instaladas y escribe una traza sanitizada en `.local/runs/`. Valídala con:
-
-```powershell
-$runFile = Get-ChildItem .local\runs\*.jsonl | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$runFile = Get-ChildItem .local\runs\preflight-*.jsonl | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 uv run hermes-run-validate $runFile.FullName
 ```
 
-Consulta [docs/humano/QUICKSTART.md](docs/humano/QUICKSTART.md) antes de preparar el modelo o un gate formal.
+El modo formal exige referencias previamente autorizadas:
+
+```powershell
+uv run hermes-preflight --mode formal `
+  --network-proof firewall-authorized --firewall-proof-id FW-LOCAL-20260830 `
+  --server-profile-proof operator-authorized --server-profile-proof-id OLLAMA-PROFILE-20260830
+```
+
+Los IDs solo son referencias; la evidencia real se obtiene fuera del JSONL y nunca se imprimen secretos.
+
+## Corrida viva controlada
+
+Después de verificar que LM Studio no tiene modelos cargados, que Ollama está configurado y que Docker está disponible:
+
+```powershell
+uv run hermes-benchmark --execute --allow-dirty-worktree
+$runFile = Get-ChildItem .local\runs\benchmark-*.jsonl | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+uv run hermes-run-validate $runFile.FullName
+```
+
+El flag de worktree sucio es deliberado para este checkout de desarrollo y no convierte la corrida en release. Para una corrida puntuable, el preflight debe terminar `run.completed` con worktree limpio y se requieren las repeticiones/cohortes definidas en `docs/humano/EVALUATION.md`.
 
 ## Organización
 
-- `src/local_code_hermes/`: configuración, comandos seguros, gates, JSONL y verificador del fixture.
+- `src/local_code_hermes/`: configuración, preflight, runner, sandbox, benchmark y validadores.
 - `cases/B-CODE-003/`: proyecto sintético congelado, sin PII.
-- `contracts/`: schema estructural de evento `1.1`; el validador stdlib aplica además lifecycle y semántica por gate.
+- `contracts/`: schemas estructurales de preflight y benchmark, ambos en versión `1.1`.
 - `tests/`: pruebas deterministas con dobles.
 - `docs/humano/`: explicación, práctica, diagnóstico y evaluación.
-- `.local/`: corridas y copias de trabajo ignoradas por Git.
+- `.local/`: corridas, uso y workspaces ignorados por Git.
 
-> Estado: `F-LOCAL-CODE-004` implementado. `B-CODE-003`, contexto efectivo, 100 % GPU, tools, edición, pruebas y cero egress siguen pendientes de una corrida autorizada. OpenCode y Claude Code son laboratorios posteriores independientes.
+> Estado: preflight y harness de una corrida implementados. La comparación entre clientes, el score oficial y la prueba independiente de cero egress siguen siendo fases posteriores.

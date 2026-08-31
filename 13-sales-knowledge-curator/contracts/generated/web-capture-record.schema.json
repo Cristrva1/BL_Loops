@@ -1,0 +1,207 @@
+{
+  "$defs": {
+    "DocumentRights": {
+      "additionalProperties": false,
+      "properties": {
+        "rights_status": {
+          "$ref": "#/$defs/RightsStatus"
+        },
+        "license": {
+          "maxLength": 160,
+          "minLength": 2,
+          "title": "License",
+          "type": "string"
+        },
+        "usage_basis": {
+          "maxLength": 300,
+          "minLength": 8,
+          "title": "Usage Basis",
+          "type": "string"
+        },
+        "jurisdiction": {
+          "maxLength": 40,
+          "minLength": 2,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "retention_allowed": {
+          "title": "Retention Allowed",
+          "type": "boolean"
+        },
+        "extraction_allowed": {
+          "title": "Extraction Allowed",
+          "type": "boolean"
+        },
+        "quotation_allowed": {
+          "title": "Quotation Allowed",
+          "type": "boolean"
+        },
+        "redistribution_allowed": {
+          "title": "Redistribution Allowed",
+          "type": "boolean"
+        },
+        "notebooklm_upload_allowed": {
+          "title": "Notebooklm Upload Allowed",
+          "type": "boolean"
+        },
+        "evidence": {
+          "maxLength": 500,
+          "minLength": 8,
+          "title": "Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rights_status",
+        "license",
+        "usage_basis",
+        "jurisdiction",
+        "retention_allowed",
+        "extraction_allowed",
+        "quotation_allowed",
+        "redistribution_allowed",
+        "notebooklm_upload_allowed",
+        "evidence"
+      ],
+      "title": "DocumentRights",
+      "type": "object"
+    },
+    "RightsStatus": {
+      "enum": [
+        "public_domain",
+        "open_license",
+        "explicit_permission",
+        "restricted",
+        "unknown"
+      ],
+      "title": "RightsStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "capture_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Capture Id",
+      "type": "string"
+    },
+    "source_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "requested_url": {
+      "maxLength": 1000,
+      "minLength": 8,
+      "title": "Requested Url",
+      "type": "string"
+    },
+    "final_url": {
+      "maxLength": 1000,
+      "minLength": 8,
+      "title": "Final Url",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 400,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "language": {
+      "enum": [
+        "en",
+        "es"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "status_code": {
+      "exclusiveMaximum": 300,
+      "minimum": 200,
+      "title": "Status Code",
+      "type": "integer"
+    },
+    "extractor": {
+      "const": "crawl4ai",
+      "default": "crawl4ai",
+      "title": "Extractor",
+      "type": "string"
+    },
+    "extractor_version": {
+      "maxLength": 40,
+      "minLength": 1,
+      "title": "Extractor Version",
+      "type": "string"
+    },
+    "robots_allowed": {
+      "const": true,
+      "default": true,
+      "title": "Robots Allowed",
+      "type": "boolean"
+    },
+    "markdown_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Markdown Sha256",
+      "type": "string"
+    },
+    "size_bytes": {
+      "exclusiveMinimum": 0,
+      "maximum": 20000000,
+      "title": "Size Bytes",
+      "type": "integer"
+    },
+    "markdown_path": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Markdown Path",
+      "type": "string"
+    },
+    "manifest_path": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Manifest Path",
+      "type": "string"
+    },
+    "rights": {
+      "$ref": "#/$defs/DocumentRights"
+    },
+    "retrieved_at": {
+      "format": "date-time",
+      "title": "Retrieved At",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 30,
+      "title": "Warnings",
+      "type": "array"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "capture_id",
+    "source_id",
+    "requested_url",
+    "final_url",
+    "title",
+    "language",
+    "status_code",
+    "extractor_version",
+    "markdown_sha256",
+    "size_bytes",
+    "markdown_path",
+    "manifest_path",
+    "rights",
+    "retrieved_at",
+    "content_hash"
+  ],
+  "title": "WebCaptureRecord",
+  "type": "object"
+}

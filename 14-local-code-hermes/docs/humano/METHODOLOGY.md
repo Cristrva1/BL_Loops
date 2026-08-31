@@ -2,9 +2,7 @@
 
 ## Pregunta del experimento
 
-¿Hermes puede reparar el mismo proyecto sintético que OpenCode y Claude Code, desde el mismo SHA, con el mismo modelo, contexto, hardware y permisos?
-
-No se responde aún. Primero se elimina la ambigüedad del entorno con `F-LOCAL-CODE-004`.
+¿Hermes puede reparar el mismo proyecto sintético que OpenCode y Claude Code, desde el mismo SHA, con el mismo modelo, contexto, hardware y permisos? Este laboratorio ya puede producir una corrida Hermes; todavía no produce una comparación oficial.
 
 ## Cohortes
 
@@ -15,32 +13,36 @@ No se responde aún. Primero se elimina la ambigüedad del entorno con `F-LOCAL-
 
 ## Secuencia causal
 
-1. Congelar el caso, harness, permisos, modelo, contexto y `HEAD`.
-2. Ejecutar preflight sin alterar el host.
-3. Liberar conflictos y aplicar el perfil del servidor solo con autorización.
-4. Calentar el modelo con una ronda no puntuada.
-5. Ejecutar `B-CODE-003` tres veces por cliente.
-6. Verificar artefactos, tests, métricas de recursos y red.
-7. Exportar JSONL y comparar solo corridas compatibles.
-
-No se baja el contexto para conseguir un verde. Si el modelo no cabe, se cambia de cohorte conservando 64k.
+1. Congelar caso, harness, permisos, modelo, contexto y `HEAD`.
+2. Cerrar o liberar cualquier modelo de LM Studio y capturar el estado vacío.
+3. Aplicar el perfil autorizado de Ollama, crear el alias y capturar digest de alias/fuente.
+4. Ejecutar preflight formal; un worktree sucio bloquea.
+5. Si se necesita observar el flujo antes de una release limpia, usar el override explícito de smoke; no puntuarlo.
+6. Ejecutar `B-CODE-003` en Hermes con Docker sin red.
+7. Verificar workspace, tests, `ollama ps` y solo el delta de logs.
+8. Exportar JSONL, validarlo e importar su resumen en el comparador.
+9. Para la cohorte oficial, repetir tres veces por cliente y conservar la autorización humana contemporánea.
 
 ## Dos afirmaciones independientes
 
-- `local_inference`: toda generación se dirigió al Ollama de loopback.
-- `zero_egress`: una captura o política autorizada demuestra que el cliente y sus procesos hijos no abrieron conexiones no-loopback.
+- `local_inference`: la generación se dirigió al endpoint Ollama de loopback y el modelo observado fue el alias esperado.
+- `zero_egress`: una política o captura autorizada demuestra que el cliente y sus hijos no abrieron conexiones no-loopback.
 
-Una conexión externa invalida cero egress, pero por sí sola no prueba qué contenido se transmitió.
+El sandbox establece `--network=none` para los comandos del agente, pero el runner no inventa una prueba de firewall para el proceso padre. Por eso la corrida actual permanece `scored=false` y `comparable=false` aunque el fixture pase.
 
 ## Evidencia humana
 
-Los flags `--firewall-proof-id` y `--server-profile-proof-id` aceptan IDs con namespace `FW-` y `OLLAMA-`, no archivos ni secretos. El JSONL guarda únicamente su SHA-256 como referencia y nunca el ID original. La evidencia se obtiene y custodia fuera del JSONL; el harness no configura firewall ni puede certificar por sí solo un servidor ya iniciado.
+Los flags de evidencia aceptan IDs con namespace `FW-` y `OLLAMA-`, no archivos ni secretos. El JSONL guarda únicamente su SHA-256 como referencia. La evidencia de firewall, perfil, digest y estado de los runtimes debe existir fuera del JSONL antes de llamar formal al preflight.
+
+## Límites
+
+Una corrida `run.completed` indica que el proceso del runner terminó y que su resultado fue serializado; no equivale a éxito funcional ni a score oficial. La clasificación necesita que todas las observaciones exigidas estén verificadas y que las repeticiones sean comparables.
 
 ## Fuentes oficiales actuales
 
-- Ollama: contexto, FAQ, Modelfile e integración de clientes en `https://docs.ollama.com/`.
+- Ollama: contexto, Modelfile e integración local en `https://docs.ollama.com/`.
 - Hermes: proveedores locales en `https://hermes-agent.nousresearch.com/docs/integrations/providers`.
 - LM Studio: API y controles de carga en `https://lmstudio.ai/docs/`.
 - llama.cpp: servidor y parámetros en `https://github.com/ggml-org/llama.cpp/tree/master/tools/server`.
 
-Las capacidades y versiones deben revalidarse antes de una cohorte viva. Las fuentes externas justifican parámetros; no sustituyen evidencia producida en este equipo.
+Las capacidades y versiones se revalidan antes de cada cohorte. Las fuentes externas justifican parámetros; no sustituyen evidencia producida en este equipo.

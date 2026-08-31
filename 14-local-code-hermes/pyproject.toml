@@ -16,6 +16,7 @@ dev = [
 hermes-preflight = "local_code_hermes.preflight:main"
 hermes-fixture-verify = "local_code_hermes.fixture:main"
 hermes-run-validate = "local_code_hermes.validation:main"
+hermes-benchmark = "local_code_hermes.benchmark:main"
 
 [build-system]
 requires = ["hatchling"]

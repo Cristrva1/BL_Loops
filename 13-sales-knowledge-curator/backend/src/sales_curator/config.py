@@ -13,6 +13,16 @@ def lab_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def resolve_lab_output_root(path: Path) -> Path:
+    """Normaliza una salida y rechaza rutas o symlinks que salgan del laboratorio."""
+
+    root = lab_root().resolve()
+    resolved = path.resolve() if path.is_absolute() else (root / path).resolve()
+    if not resolved.is_relative_to(root):
+        raise ValueError("la salida de investigación debe quedar dentro del laboratorio")
+    return resolved
+
+
 def find_env_file() -> Path | None:
     start = lab_root()
     local_candidate = start / ".env"
@@ -61,13 +71,30 @@ class Settings(BaseSettings):
     max_bytes_per_source: int = Field(default=2_000_000, validation_alias="MAX_BYTES_PER_SOURCE")
     max_research_rounds: int = Field(default=3, validation_alias="MAX_RESEARCH_ROUNDS")
     max_claim_revisions: int = Field(default=2, validation_alias="MAX_CLAIM_REVISIONS")
+    max_llm_chunks_per_document: int = Field(
+        default=8,
+        validation_alias="MAX_LLM_CHUNKS_PER_DOCUMENT",
+    )
     telemetry_enabled: bool = Field(default=False, validation_alias="TELEMETRY_ENABLED")
     raw_content_in_run_logs: bool = Field(default=False, validation_alias="RAW_CONTENT_IN_RUN_LOGS")
     runtime_network: bool = Field(default=False, validation_alias="BL_LOOPS_RUNTIME_NETWORK")
     allow_external_writes: bool = Field(
         default=False, validation_alias="BL_LOOPS_ALLOW_EXTERNAL_WRITES"
     )
+    allow_real_connectors: bool = Field(
+        default=False, validation_alias="BL_LOOPS_ALLOW_REAL_CONNECTORS"
+    )
     telemetry: bool = Field(default=False, validation_alias="BL_LOOPS_TELEMETRY")
+    store_raw_pii: bool = Field(default=False, validation_alias="BL_LOOPS_STORE_RAW_PII")
+    research_domain: str = Field(
+        default="sales-books-education", validation_alias="RESEARCH_DOMAIN"
+    )
+    research_jurisdiction: str = Field(default="", validation_alias="RESEARCH_JURISDICTION")
+    research_languages: str = Field(default="en,es", validation_alias="RESEARCH_LANGUAGES")
+    research_user_agent: str = Field(
+        default="BL-Loops-SalesCurator/0.2 educational-research",
+        validation_alias="RESEARCH_USER_AGENT",
+    )
     data_dir: str = Field(default=".local/data", validation_alias="BL_LOOPS_DATA_DIR")
     runs_dir: str = Field(default=".local/runs", validation_alias="BL_LOOPS_RUNS_DIR")
 
@@ -83,6 +110,8 @@ class Settings(BaseSettings):
             raise ValueError("La telemetría remota está desactivada")
         if self.raw_content_in_run_logs:
             raise ValueError("RAW_CONTENT_IN_RUN_LOGS debe ser false en este corte")
+        if self.store_raw_pii:
+            raise ValueError("BL_LOOPS_STORE_RAW_PII debe ser false")
         if self.curator_embedding_model.strip():
             raise ValueError(
                 "Los embeddings no están habilitados hasta que un experimento los justifique"
@@ -93,9 +122,18 @@ class Settings(BaseSettings):
             raise ValueError("MAX_RESEARCH_ROUNDS debe estar entre 1 y 8")
         if not 1 <= self.max_claim_revisions <= 5:
             raise ValueError("MAX_CLAIM_REVISIONS debe estar entre 1 y 5")
+        if not 1 <= self.max_llm_chunks_per_document <= 64:
+            raise ValueError("MAX_LLM_CHUNKS_PER_DOCUMENT debe estar entre 1 y 64")
         tag = self.curator_model.casefold().rsplit(":", 1)[-1] if self.curator_model else ""
         if tag == "cloud" or tag.endswith("-cloud"):
             raise ValueError("CURATOR_MODEL debe ser un modelo local, no cloud")
+        languages = self.research_language_list
+        if not languages or any(item not in {"en", "es"} for item in languages):
+            raise ValueError("RESEARCH_LANGUAGES solo admite en,es")
+        if not self.research_user_agent.strip():
+            raise ValueError("RESEARCH_USER_AGENT no puede quedar vacío")
+        if not 3 <= len(self.research_domain.strip()) <= 80:
+            raise ValueError("RESEARCH_DOMAIN debe tener entre 3 y 80 caracteres")
         return self
 
     def resolve_lab_path(self, relative: str, name: str) -> Path:
@@ -127,6 +165,25 @@ class Settings(BaseSettings):
     def allowed_domain_list(self) -> tuple[str, ...]:
         return tuple(
             part.strip().casefold() for part in self.allowed_domains.split(",") if part.strip()
+        )
+
+    @property
+    def research_language_list(self) -> tuple[str, ...]:
+        return tuple(
+            part.strip().casefold() for part in self.research_languages.split(",") if part.strip()
+        )
+
+    def network_policy(self):
+        from sales_curator.connectors.network import NetworkPolicy
+
+        return NetworkPolicy(
+            network_enabled=self.network_enabled,
+            runtime_network=self.runtime_network,
+            real_connectors_enabled=self.allow_real_connectors,
+            allowed_domains=self.allowed_domain_list,
+            max_bytes=self.max_bytes_per_source,
+            max_url_budget=self.max_urls_per_run,
+            user_agent=self.research_user_agent,
         )
 
     def with_isolated_dirs(self, data_dir: Path, runs_dir: Path) -> Settings:

@@ -11,7 +11,7 @@ import re
 import shutil
 import subprocess
 import sys
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -22,6 +22,7 @@ PROJECT_ROOT = CASE_ROOT / "project"
 MANIFEST_PATH = CASE_ROOT / "manifest.json"
 WORKSPACES_ROOT = LAB_ROOT / ".local" / "workspaces"
 CACHE_PARTS = {"__pycache__", ".pytest_cache", ".ruff_cache"}
+CheckExecutor = Callable[[tuple[str, ...], float], int]
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,16 +88,17 @@ def verify_source_fixture(
             raise ValueError(f"Hash fuente inesperado: {relative}")
 
 
-def prepare_workspace(run_label: str) -> Path:
+def prepare_workspace(run_label: str, *, workspaces_root: Path | None = None) -> Path:
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{2,63}", run_label):
         raise ValueError("Identificador de workspace invalido.")
     verify_source_fixture()
-    destination = (WORKSPACES_ROOT / run_label).resolve()
-    if not destination.is_relative_to(WORKSPACES_ROOT.resolve()):
+    root = (workspaces_root or WORKSPACES_ROOT).resolve()
+    destination = (root / run_label).resolve()
+    if not destination.is_relative_to(root):
         raise ValueError("El workspace sale del laboratorio.")
     if destination.exists():
         raise FileExistsError("El workspace ya existe.")
-    WORKSPACES_ROOT.mkdir(parents=True, exist_ok=True)
+    root.mkdir(parents=True, exist_ok=True)
     shutil.copytree(PROJECT_ROOT, destination)
     return destination
 
@@ -106,19 +108,32 @@ def _safe_test_environment() -> dict[str, str]:
     return {name: os.environ[name] for name in allowed if name in os.environ}
 
 
-def _run_checks(workspace: Path) -> tuple[bool, bool, bool]:
+def _run_checks(
+    workspace: Path,
+    check_executor: CheckExecutor | None = None,
+) -> tuple[bool, bool, bool]:
     environment = _safe_test_environment()
-    unit = subprocess.run(
+
+    def execute(args: tuple[str, ...], timeout: float) -> int:
+        if check_executor is not None:
+            return check_executor(args, timeout)
+        completed = subprocess.run(
+            args,
+            cwd=workspace,
+            env=environment,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=timeout,
+            check=False,
+            shell=False,
+        )
+        return completed.returncode
+
+    unit_code = execute(
         (sys.executable, "-I", "-m", "unittest", "discover", "-s", "tests", "-v"),
-        cwd=workspace,
-        env=environment,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=30,
-        check=False,
-        shell=False,
+        30,
     )
     semantic_code = """
 import runpy
@@ -135,18 +150,7 @@ for args in ((-1, 0), (1000, -1), (1000, 101)):
     else:
         raise AssertionError(f"ValueError esperado para {args!r}")
 """.strip()
-    semantic = subprocess.run(
-        (sys.executable, "-I", "-c", semantic_code),
-        cwd=workspace,
-        env=environment,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=15,
-        check=False,
-        shell=False,
-    )
+    semantic_code_result = execute((sys.executable, "-I", "-c", semantic_code), 15)
     quality_code = """
 import runpy
 import unittest
@@ -184,19 +188,8 @@ for method_name, expected_call in test_cases.items():
     if result.wasSuccessful():
         raise AssertionError(f"El test no detecta una implementacion mutante: {method_name}")
 """.strip()
-    quality = subprocess.run(
-        (sys.executable, "-I", "-c", quality_code),
-        cwd=workspace,
-        env=environment,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=15,
-        check=False,
-        shell=False,
-    )
-    return unit.returncode == 0, semantic.returncode == 0, quality.returncode == 0
+    quality_code_result = execute((sys.executable, "-I", "-c", quality_code), 15)
+    return unit_code == 0, semantic_code_result == 0, quality_code_result == 0
 
 
 def verify_workspace(
@@ -204,6 +197,7 @@ def verify_workspace(
     *,
     manifest_path: Path = MANIFEST_PATH,
     execute_tests: bool = True,
+    check_executor: CheckExecutor | None = None,
 ) -> FixtureVerification:
     manifest = load_manifest(manifest_path)
     expected = manifest["files"]
@@ -246,7 +240,13 @@ def verify_workspace(
         codes.append("tests_missing")
 
     if execute_tests:
-        unit_passed, semantic_passed, quality_passed = _run_checks(workspace)
+        if check_executor is None:
+            unit_passed, semantic_passed, quality_passed = _run_checks(workspace)
+        else:
+            unit_passed, semantic_passed, quality_passed = _run_checks(
+                workspace,
+                check_executor,
+            )
         if not unit_passed:
             codes.append("unittest_failed")
         if not semantic_passed:

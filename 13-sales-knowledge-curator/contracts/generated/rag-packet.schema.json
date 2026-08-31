@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "packet_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Packet Id",
+      "type": "string"
+    },
+    "records_path": {
+      "title": "Records Path",
+      "type": "string"
+    },
+    "manifest_path": {
+      "title": "Manifest Path",
+      "type": "string"
+    },
+    "record_count": {
+      "minimum": 0,
+      "title": "Record Count",
+      "type": "integer"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "packet_id",
+    "records_path",
+    "manifest_path",
+    "record_count",
+    "content_hash"
+  ],
+  "title": "RagPacket",
+  "type": "object"
+}

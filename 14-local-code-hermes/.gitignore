@@ -1,6 +1,6 @@
 .env
 .local/
-.pytest-tmp/
+.pytest-tmp*/
 .pytest_cache/
 .ruff_cache/
 .venv/
