@@ -1,0 +1,5 @@
+{
+  "case_id": "I-PARALLEL-002@0.1.0",
+  "title": "Tres fuentes independientes del Taller Norte",
+  "task": "Extrae los hechos verificables de tres documentos independientes sobre el Taller Norte y construye una tabla consolidada. Cada hecho debe conservar la procedencia de su fuente. Una rama fallida no puede aparecer como completa."
+}

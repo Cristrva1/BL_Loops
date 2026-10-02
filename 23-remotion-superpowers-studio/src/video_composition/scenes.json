@@ -1,0 +1,50 @@
+[
+  {
+    "id": "scene-1",
+    "title": "Introducción a Remotion",
+    "startFrame": 0,
+    "durationInFrames": 90,
+    "headline": "Video con Código React",
+    "subheadline": "Componentes funcionales renderizados en el navegador.",
+    "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)",
+    "accentColor": "#6366f1",
+    "badge": "Concepto Base",
+    "code": "<App>\n  <VideoFrame>\n    <Component />\n  </VideoFrame>\n</App>"
+  },
+  {
+    "id": "scene-2",
+    "title": "Control de Tiempo",
+    "startFrame": 90,
+    "durationInFrames": 90,
+    "headline": "Precisión Fotograma a Fotograma",
+    "subheadline": "useCurrentFrame, spring(), interpolate().",
+    "bgGradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)",
+    "accentColor": "#818cf8",
+    "badge": "Animación",
+    "code": "const frame = useCurrentFrame();\nconst x = interpolate(frame, [0, 1], [0, 100]);"
+  },
+  {
+    "id": "scene-3",
+    "title": "Patrón Superpowers",
+    "startFrame": 180,
+    "durationInFrames": 90,
+    "headline": "Producción Agéntica y Audio-First",
+    "subheadline": "Transiciones fluidas y gestión de audio.",
+    "bgGradient": "linear-gradient(135deg, #312e81 0%, #4338ca 100%)",
+    "accentColor": "#a5b4fc",
+    "badge": "Superpowers",
+    "code": "const { useAudio } = require('remotion-superpowers');\n// Patrón agéntico"
+  },
+  {
+    "id": "scene-4",
+    "title": "Renderizado Local",
+    "startFrame": 270,
+    "durationInFrames": 90,
+    "headline": "Headless a MP4 con FFmpeg",
+    "subheadline": "Chrome + FFmpeg para exportación optimizada.",
+    "bgGradient": "linear-gradient(135deg, #4338ca 0%, #4f46e5 100%)",
+    "accentColor": "#c7d2fe",
+    "badge": "Exportación",
+    "code": "npx remotion render App -o output.mp4"
+  }
+]

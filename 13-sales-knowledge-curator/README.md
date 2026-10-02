@@ -11,7 +11,8 @@ idea, mientras la vigencia, independencia, derechos y aprobación se evalúan po
 - Revisión humana de claims y del candidato de release sobre hashes exactos.
 - Staging, publicación atómica, validación, rollback y JSONL sanitizado.
 - Importación local de PDF/DOCX autorizados con MarkItDown `0.1.7`.
-- Investigación bibliográfica de solo lectura en Open Library y Google Books.
+- Investigación bibliográfica en Open Library, Google Books, Project Gutenberg e Internet Archive.
+- Loop acotado sobre fichas de `Libros`: dossier local y descarga PDF solo con evidencia legal.
 - Captura estática estrecha de una página allowlisted con Crawl4AI `0.9.2`, JavaScript apagado y
   `robots.txt` fail-closed.
 - Paquetes locales para importación manual en NotebookLM y para un RAG portable.
@@ -61,13 +62,13 @@ uv run uvicorn sales_curator.api.main:app --host 127.0.0.1 --port 8013 --reload
 npm --prefix frontend run dev
 ```
 
-Abre `http://127.0.0.1:5174`. El grafo representa la corrida editorial del backend; los
-conectores nuevos producen artefactos por CLI y todavía no son nodos interactivos del dashboard.
+Abre `http://127.0.0.1:5174`. El grafo editorial pinta estados reales del backend. El panel de
+biblioteca lee `.local/library/index.json` y no dispara red. El loop de fichas se lanza por CLI.
 
 ## Límites deliberados
 
-- No descarga automáticamente copias de libros ni convierte préstamo, preview o lectura en línea
-  en permiso de copia.
+- No convierte préstamo, preview, lectura en línea ni “un PDF en la web” en permiso de copia.
+  Solo descarga si el catálogo marca `full_download` con derechos elegibles y evidencia.
 - No inicia sesión ni sube archivos a NotebookLM.
 - No llama ni escribe en `09-agentic-rag`; los paquetes se copian o importan manualmente.
 - No usa embeddings, CrewAI, ArchiveBox ni Langfuse.

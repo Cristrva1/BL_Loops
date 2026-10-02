@@ -1,0 +1,64 @@
+{
+  "$defs": {
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "fact_id": {
+          "maxLength": 40,
+          "minLength": 3,
+          "title": "Fact Id",
+          "type": "string"
+        },
+        "topic": {
+          "maxLength": 80,
+          "minLength": 2,
+          "title": "Topic",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "evidence": {
+          "maxLength": 240,
+          "minLength": 3,
+          "title": "Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fact_id",
+        "topic",
+        "value",
+        "evidence"
+      ],
+      "title": "Fact",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "pattern": "^source-[abc]$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/Fact"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Facts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_id",
+    "facts"
+  ],
+  "title": "FactBundle",
+  "type": "object"
+}

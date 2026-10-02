@@ -99,8 +99,8 @@ if ([string]::IsNullOrWhiteSpace($jurisdiction)) { throw "La jurisdiccion es obl
 $env:NETWORK_ENABLED="true"
 $env:BL_LOOPS_RUNTIME_NETWORK="true"
 $env:BL_LOOPS_ALLOW_REAL_CONNECTORS="true"
-$env:ALLOWED_DOMAINS="openlibrary.org,www.googleapis.com"
-$env:MAX_URLS_PER_RUN="6"
+$env:ALLOWED_DOMAINS="openlibrary.org,www.googleapis.com,gutendex.com,gutenberg.org,archive.org"
+$env:MAX_URLS_PER_RUN="80"
 $env:RESEARCH_JURISDICTION=$jurisdiction
 $env:RESEARCH_LANGUAGES="en,es"
 $env:RESEARCH_USER_AGENT="BL-Loops-SalesCurator/0.2 educational-research"
@@ -116,6 +116,28 @@ El `report.json` diferencia catálogo, lectura, preview, préstamo y descarga co
 Library se conserva como descubrimiento con derechos desconocidos. Google Books solo expone un
 enlace de descarga cuando declara simultáneamente dominio público, `FULL_PUBLIC_DOMAIN` y PDF
 disponible; aun así, la jurisdicción requiere revisión.
+
+## 5b. Loop de biblioteca sobre fichas
+
+Inventaría Markdown con `# título` y `**Autor:**`, investiga los cuatro catálogos y escribe
+dossiers en `.local/library`. Un PDF se guarda solo con `full_download` y derechos elegibles.
+Las fichas de `fixtures/library` sirven para un ensayo sin tocar el corpus real:
+
+```powershell
+uv run sales-curator library inventory --source .\fixtures\library
+uv run sales-curator library research --source .\fixtures\library --output .\.local\library --jurisdiction "$jurisdiction" --url-budget 80 --authorize-network
+```
+
+Para el corpus de obras del workspace (fuera del laboratorio) usa esa carpeta como `--source`.
+El loop no es infinito: `MAX_RESEARCH_ROUNDS` (por defecto 3) y el presupuesto de URL cierran
+cada ficha como `dossier_ready`, `copy_acquired` o `inconclusive`. Vuelve a lanzar el comando
+para reintentar las inconclusas; las suficientes se saltan.
+
+Exportar hacia las fichas originales es otra decisión, sin copiar PDF:
+
+```powershell
+uv run sales-curator library export --library .\.local\library --destination <ruta-de-fichas> --authorize-export
+```
 
 ## 6. Capturar una página allowlisted
 
@@ -148,3 +170,17 @@ uv run sales-curator rag export --report "$reportPath" --output .\.local\exports
 NotebookLM recibe fichas Markdown, guía y preguntas; no se inicia sesión ni se sube nada. El
 paquete RAG contiene metadatos JSONL y hashes, no el texto de libros restringidos. Copiarlo a otro
 laboratorio es una acción manual posterior.
+
+## 8. Recorrer el dashboard local
+
+Con el backend y el frontend en marcha:
+
+```powershell
+uv run uvicorn sales_curator.api.main:app --host 127.0.0.1 --port 8013 --reload
+npm --prefix frontend run dev
+```
+
+Abre `http://127.0.0.1:5174`. El recorte editorial es el mismo que el CLI: auditar fixtures, aprobar
+solo las afirmaciones que pasan el gate, construir staging y publicar el `candidate_hash` exacto.
+Un hash distinto o un staging alterado falla. El panel de biblioteca lee el `index.json` local y
+no lanza red. PDF, catálogos, Crawl4AI y `library research` se ejecutan por CLI.

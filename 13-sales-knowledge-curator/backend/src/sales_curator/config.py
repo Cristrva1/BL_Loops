@@ -97,6 +97,7 @@ class Settings(BaseSettings):
     )
     data_dir: str = Field(default=".local/data", validation_alias="BL_LOOPS_DATA_DIR")
     runs_dir: str = Field(default=".local/runs", validation_alias="BL_LOOPS_RUNS_DIR")
+    library_dir: str = Field(default=".local/library", validation_alias="BL_LOOPS_LIBRARY_DIR")
 
     @model_validator(mode="after")
     def enforce_local_runtime(self) -> Settings:
@@ -162,6 +163,10 @@ class Settings(BaseSettings):
         return self.resolve_lab_path(self.runs_dir, "BL_LOOPS_RUNS_DIR")
 
     @property
+    def library_path(self) -> Path:
+        return self.resolve_lab_path(self.library_dir, "BL_LOOPS_LIBRARY_DIR")
+
+    @property
     def allowed_domain_list(self) -> tuple[str, ...]:
         return tuple(
             part.strip().casefold() for part in self.allowed_domains.split(",") if part.strip()
@@ -194,9 +199,12 @@ class Settings(BaseSettings):
             root
         ):
             raise ValueError("Las rutas de prueba deben quedar dentro del laboratorio")
+        library_dir = data_dir.resolve().parent / "library"
+        library_dir.mkdir(parents=True, exist_ok=True)
         return self.model_copy(
             update={
                 "data_dir": data_dir.resolve().relative_to(root).as_posix(),
                 "runs_dir": runs_dir.resolve().relative_to(root).as_posix(),
+                "library_dir": library_dir.relative_to(root).as_posix(),
             }
         )

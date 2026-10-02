@@ -59,7 +59,8 @@ class _BrowserRequestGuard:
         if self.failure is None:
             self.failure = failure
 
-    async def handle(self, route) -> None:
+    async def handle(self, route, request=None) -> None:
+        del request
         method = str(route.request.method).upper()
         if method not in {"GET", "HEAD"}:
             self._remember_failure(WebCaptureError(f"método browser no permitido: {method}"))
@@ -213,7 +214,10 @@ def _browser_runner(
             guard = _BrowserRequestGuard(policy=policy, resolver=resolver)
 
             async def restrict_requests(page, context, **_kwargs):
-                await context.route("**/*", guard.handle)
+                async def restrict_route(route, request=None):
+                    await guard.handle(route, request)
+
+                await context.route("**/*", restrict_route)
                 return page
 
             crawler.crawler_strategy.set_hook("on_page_context_created", restrict_requests)

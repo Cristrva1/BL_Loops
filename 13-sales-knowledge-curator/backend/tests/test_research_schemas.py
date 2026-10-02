@@ -14,6 +14,10 @@ RESEARCH_SCHEMAS = {
     "notebook-source-set.schema.json",
     "notebook-packet.schema.json",
     "rag-packet.schema.json",
+    "library-card.schema.json",
+    "legal-copy-record.schema.json",
+    "library-work-record.schema.json",
+    "library-loop-report.schema.json",
 }
 
 

@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from sales_curator.connectors.book_catalogs import parse_google_books, parse_open_library
+from sales_curator.connectors.book_catalogs import (
+    apply_internet_archive_files,
+    parse_google_books,
+    parse_gutenberg,
+    parse_internet_archive,
+    parse_open_library,
+)
 from sales_curator.contracts.research import AccessMode, RightsStatus, can_download_automatically
 
 NOW = datetime(2026, 8, 30, tzinfo=UTC)
@@ -127,3 +133,120 @@ def test_google_books_does_not_trust_external_links_from_catalog_payload() -> No
     assert offer.access_mode == AccessMode.READ_ONLINE
     assert offer.rights_status == RightsStatus.RESTRICTED
     assert offer.download_url is None
+
+
+def test_gutenberg_pdf_on_official_host_is_downloadable() -> None:
+    rows = parse_gutenberg(
+        {
+            "results": [
+                {
+                    "id": 1342,
+                    "title": "Pride and Prejudice",
+                    "authors": [{"name": "Austen, Jane"}],
+                    "languages": ["en"],
+                    "copyright": False,
+                    "formats": {
+                        "application/pdf": "https://www.gutenberg.org/files/1342/1342-pdf.pdf",
+                        "text/html": "https://www.gutenberg.org/ebooks/1342.html.images",
+                    },
+                }
+            ]
+        },
+        retrieved_at=NOW,
+        jurisdiction="MX",
+    )
+    offer = rows[0]
+    assert offer.provider == "project_gutenberg"
+    assert offer.access_mode == AccessMode.FULL_DOWNLOAD
+    assert offer.rights_status == RightsStatus.PUBLIC_DOMAIN
+    assert can_download_automatically(offer, jurisdiction_approved=True) is True
+
+
+def test_gutenberg_ignores_off_host_pdf_and_copyrighted_rows() -> None:
+    rows = parse_gutenberg(
+        {
+            "results": [
+                {
+                    "id": 1,
+                    "title": "Tampered",
+                    "copyright": False,
+                    "formats": {"application/pdf": "https://evil.example/book.pdf"},
+                },
+                {
+                    "id": 2,
+                    "title": "Still Restricted",
+                    "copyright": True,
+                    "formats": {
+                        "application/pdf": "https://www.gutenberg.org/files/2/2-pdf.pdf",
+                    },
+                },
+            ]
+        },
+        retrieved_at=NOW,
+        jurisdiction="MX",
+    )
+    assert rows[0].download_url is None
+    assert can_download_automatically(rows[0], jurisdiction_approved=True) is False
+    assert rows[1].rights_status == RightsStatus.RESTRICTED
+    assert rows[1].download_url is None
+
+
+def test_internet_archive_borrow_and_unlicensed_rows_are_not_copies() -> None:
+    rows = parse_internet_archive(
+        {
+            "response": {
+                "docs": [
+                    {
+                        "identifier": "influence0000cial",
+                        "title": "Influence",
+                        "creator": "Cialdini",
+                        "access-restricted-item": True,
+                    },
+                    {
+                        "identifier": "unknown-scan",
+                        "title": "Unknown Scan",
+                    },
+                ]
+            }
+        },
+        retrieved_at=NOW,
+        jurisdiction="MX",
+    )
+    assert rows[0].access_mode == AccessMode.BORROW
+    assert rows[0].download_url is None
+    assert can_download_automatically(rows[0], jurisdiction_approved=True) is False
+    assert rows[1].rights_status == RightsStatus.UNKNOWN
+    assert rows[1].download_url is None
+
+
+def test_internet_archive_metadata_can_expose_legal_pdf() -> None:
+    [offer] = parse_internet_archive(
+        {
+            "response": {
+                "docs": [
+                    {
+                        "identifier": "prideandprejudice",
+                        "title": "Pride and Prejudice",
+                        "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+                    }
+                ]
+            }
+        },
+        retrieved_at=NOW,
+        jurisdiction="MX",
+    )
+    assert offer.download_url is None
+    enriched = apply_internet_archive_files(
+        offer,
+        {
+            "files": [
+                {"name": "../escape.pdf", "format": "Text PDF"},
+                {"name": "pride-and-prejudice.pdf", "format": "Text PDF"},
+            ]
+        },
+    )
+    assert enriched.access_mode == AccessMode.FULL_DOWNLOAD
+    assert enriched.download_url == (
+        "https://archive.org/download/prideandprejudice/pride-and-prejudice.pdf"
+    )
+    assert can_download_automatically(enriched, jurisdiction_approved=True) is True

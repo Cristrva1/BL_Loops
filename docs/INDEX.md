@@ -24,16 +24,26 @@
 - [Menú portable](../menu_portable/REPO_MENU.md): catálogo de repositorios y protocolo de selección.
 - [Laboratorio 01: fábrica de prompts y agentes](../01-prompt-agent-factory/README.md): primera aplicación educativa y visual.
 - [Laboratorio 02: agente único CLI](../02-single-agent/README.md): conversación mínima y local con `gemma4:e4b`.
+- [Laboratorio 03: orquestación multiagente](../03-orchestration/README.md): planificador, autor y revisor
+  frente a un agente único, grafo SSE y gate determinista del caso `I-ORCH-001`.
+- [Laboratorio 04: agentes en paralelo](../04-parallel-agents/README.md): fan-out/fan-in de tres
+  fuentes, tiempo secuencial frente a paralelo y agregador que no completa una rama fallida.
+- [Laboratorio 05: loops acotados](../05-agent-loops/README.md): mejora un prompt hasta un umbral
+  con score por iteración, presupuesto y el mejor candidato, no el último.
 - [Laboratorio 06: RAG léxico sencillo](../06-naive-rag/README.md): importación Markdown,
   SQLite FTS5, Ollama local, citas por líneas y exportación JSONL.
 - [Laboratorio 07: RAG vectorial híbrido](../07-vector-rag/README.md): FTS5, Qwen3 Embedding,
   RRF ponderado, filtro de secciones contaminadas y comparación de recuperación.
+- [Laboratorio 08: Graph RAG](../08-graph-rag/README.md): triples visibles, grafo SQLite,
+  rutas multi-hop, aristas extraídas frente a inferidas y contraste léxico.
 - [Laboratorio 09: agente experto en ventas](../09-agentic-rag/README.md): tool calling local,
   una búsqueda híbrida por turno, memoria en RAM, citas y trazas sanitizadas.
 - [Laboratorio 13: curador de conocimiento de ventas](../13-sales-knowledge-curator/README.md):
   auditoría local, afirmaciones trazables, conflictos y `KnowledgeRelease` versionado.
 - [Laboratorio 14: Hermes local](../14-local-code-hermes/README.md): preflight, sandbox Docker sin red,
   una corrida controlada y JSONL solo bajo `.local/` para el benchmark Ollama 64k.
+- [Laboratorio 25: resúmenes de videollamadas](../25-meeting-summarizer/README.md): transcripciones
+  de Google Meet, Zoom y Teams, extracción de acuerdos, matriz de compromisos y minutas con IA local.
 
 ## Benchmark local-code aprobado
 
@@ -46,6 +56,23 @@
 El contrato común está incorporado en el [plan maestro](PLAN_MAESTRO_DIDACTICO.md) y en los
 [casos de evaluación](CASOS_DE_EVALUACION.md). Los laboratorios planificados no se enlazan hasta
 que exista su entrada técnica para evitar enlaces muertos.
+
+## Mundos simulados y audiovisual (planificados)
+
+Aprobados en el plan 0.2.5. Todavía no hay carpetas ejecutables.
+
+| ID | Carpeta | Pregunta corta |
+|---|---|---|
+| 10 | `10-sales-deal-gym` | Trato con comprador, competidor y coach en un mercado simulado. |
+| 17 | `17-store-ops-gym` | Tienda con stock, demanda, reorden y margen. |
+| 18 | `18-campaign-gym` | Campaña de oleadas con presupuesto y veto de marca. |
+| 19 | `19-image-generation-studio` | Brief a imagen local con director y crítico. |
+| 20 | `20-image-edit-studio` | Editar una imagen existente sin regenerarla. |
+| 21 | `21-voice-studio` | Transcribir y sintetizar un diálogo con voces de fixture. |
+| 22 | `22-video-generation-studio` | Clip corto local; stills primero, video generativo después. |
+| 23 | `23-video-edit-studio` | Cortar, subtitular y montar un reel. |
+
+MCP ya no tiene laboratorio propio. El caso `I-MCP-006` sigue en la suite de evaluación.
 
 ## Corpus y referencias
 

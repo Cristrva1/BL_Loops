@@ -20,6 +20,12 @@ from sales_curator.evaluation.gate import claim_identity_hash
 from sales_curator.evaluation.jsonl import validate_run
 from sales_curator.orchestration.service import AuditRunFailed, CuratorService
 from sales_curator.research.books import BookResearcher, write_book_research_report
+from sales_curator.research.inventory import inventory_library_cards
+from sales_curator.research.library import (
+    DEFAULT_LIBRARY_PROVIDERS,
+    export_library_markdown,
+    run_library_loop,
+)
 from sales_curator.research.packages import build_notebooklm_packet, build_rag_packet
 
 PACKAGE_NAME = "bl-loops-sales-knowledge-curator"
@@ -118,7 +124,7 @@ def _parser() -> argparse.ArgumentParser:
     book_research.add_argument(
         "--provider",
         action="append",
-        choices=["open_library", "google_books"],
+        choices=["open_library", "google_books", "project_gutenberg", "internet_archive"],
         default=[],
     )
     book_research.add_argument("--max-results", type=int, default=10)
@@ -160,6 +166,42 @@ def _parser() -> argparse.ArgumentParser:
     rag_export = rag_actions.add_parser("export", help="Exportar JSONL sin dependencia viva.")
     rag_export.add_argument("--report", required=True, type=Path)
     rag_export.add_argument("--output", required=True, type=Path)
+
+    library = commands.add_parser(
+        "library",
+        help="Inventariar, investigar y exportar fichas de una biblioteca local.",
+    )
+    library_actions = library.add_subparsers(dest="library_action", required=True)
+    library_inventory = library_actions.add_parser(
+        "inventory",
+        help="Listar fichas Markdown con título y autor.",
+    )
+    library_inventory.add_argument("--source", required=True, type=Path)
+    library_research = library_actions.add_parser(
+        "research",
+        help="Loop acotado de catálogos y descarga legal.",
+    )
+    library_research.add_argument("--source", required=True, type=Path)
+    library_research.add_argument("--output", type=Path, default=Path(".local/library"))
+    library_research.add_argument("--jurisdiction")
+    library_research.add_argument("--language", action="append", choices=["en", "es"], default=[])
+    library_research.add_argument(
+        "--provider",
+        action="append",
+        choices=["open_library", "google_books", "project_gutenberg", "internet_archive"],
+        default=[],
+    )
+    library_research.add_argument("--max-rounds", type=int)
+    library_research.add_argument("--max-books", type=int)
+    library_research.add_argument("--url-budget", required=True, type=int)
+    library_research.add_argument("--authorize-network", required=True, action="store_true")
+    library_export = library_actions.add_parser(
+        "export",
+        help="Escribir dossiers en fichas Markdown existentes; no copia PDF.",
+    )
+    library_export.add_argument("--library", type=Path, default=Path(".local/library"))
+    library_export.add_argument("--destination", required=True, type=Path)
+    library_export.add_argument("--authorize-export", required=True, action="store_true")
 
     commands.add_parser("doctor", help="Mostrar preflight sanitizado de dependencias y gates.")
     return parser
@@ -279,6 +321,56 @@ def cli(
             print(f"document_id={record.document_id}", file=output)
             print(f"manifest={output_root / record.manifest_path}", file=output)
             print(f"content_hash={record.content_hash}", file=output)
+            return 0
+        if args.command == "library":
+            settings = _settings()
+            if args.library_action == "inventory":
+                source = args.source.resolve()
+                cards = inventory_library_cards(source)
+                print(f"cards={len(cards)}", file=output)
+                for card in cards:
+                    author = card.author or "desconocido"
+                    print(
+                        f"{card.work_id}\t{card.relative_path}\t{card.title}\t{author}",
+                        file=output,
+                    )
+                return 0
+            if args.library_action == "research":
+                jurisdiction = (args.jurisdiction or settings.research_jurisdiction).strip()
+                if not jurisdiction:
+                    raise ValueError("jurisdiction es obligatoria")
+                policy = settings.network_policy().authorize(
+                    run_authorized=args.authorize_network,
+                    url_budget=args.url_budget,
+                )
+                languages = tuple(args.language or settings.research_language_list)
+                providers = tuple(args.provider or DEFAULT_LIBRARY_PROVIDERS)
+                output_root = _resolve_path(root, args.output)
+                with SafeHttpClient(policy) as http:
+                    report = run_library_loop(
+                        source=args.source.resolve(),
+                        output_root=output_root,
+                        http=http,
+                        jurisdiction=jurisdiction,
+                        languages=languages,
+                        max_rounds=args.max_rounds or settings.max_research_rounds,
+                        jurisdiction_approved=True,
+                        providers=providers,
+                        max_books=args.max_books,
+                    )
+                print(f"loop_id={report.loop_id}", file=output)
+                print(f"works={len(report.works)} inventory={report.inventory_count}", file=output)
+                print(f"index={output_root / 'index.json'}", file=output)
+                return 0
+            library_root = _resolve_path(root, args.library)
+            written = export_library_markdown(
+                library_root,
+                args.destination.resolve(),
+                authorize_export=args.authorize_export,
+            )
+            print(f"exported={len(written)}", file=output)
+            for path in written:
+                print(path.as_posix(), file=output)
             return 0
         if args.command == "book":
             settings = _settings()

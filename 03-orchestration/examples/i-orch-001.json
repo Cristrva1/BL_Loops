@@ -1,0 +1,5 @@
+{
+  "case_id": "I-ORCH-001@0.1.0",
+  "title": "Guía breve para ejecutar un agente local",
+  "task": "Produce una guía breve en español para ejecutar un agente local en Windows 11. La audiencia es alguien que acaba de terminar el laboratorio de agente único. Debe servir para abrir Ollama, lanzar un comando en PowerShell y detener la sesión."
+}

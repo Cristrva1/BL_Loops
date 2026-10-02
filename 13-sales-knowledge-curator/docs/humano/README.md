@@ -17,7 +17,8 @@ flowchart LR
     C --> R[KnowledgeRelease]
 
     D[PDF/DOCX autorizado] --> M[MarkItDown]
-    O[Open Library + Google Books] --> B[Fichas de acceso]
+    O[Catálogos legales] --> B[Fichas de acceso]
+    B --> L[Loop de biblioteca]
     W[Web allowlisted] --> X[Crawl4AI]
     M --> E[Artefactos locales]
     B --> E
@@ -27,7 +28,8 @@ flowchart LR
 ```
 
 El carril editorial publica claims. El carril de investigación crea Markdown, manifiestos y
-metadatos para revisión; no descarga libros ni publica por sí solo.
+metadatos para revisión; no publica por sí solo. Un PDF solo se conserva si el catálogo declara
+descarga completa con derechos elegibles y evidencia.
 
 ## Qué está disponible
 
@@ -35,7 +37,8 @@ metadatos para revisión; no descarga libros ni publica por sí solo.
 |---|---|
 | Corpus local | Markdown/TXT, determinista y read-only |
 | PDF/DOCX | MarkItDown, solo desde inbox autorizado y con derechos explícitos |
-| Catálogos | Open Library y Google Books; lectura JSON de bajo volumen |
+| Catálogos | Open Library, Google Books, Gutenberg e Internet Archive |
+| Loop de biblioteca | Inventario de fichas, dossier acotado y PDF legal opcional |
 | Navegador | Una URL HTTPS allowlisted, `robots.txt` verificable, sin descargas ni sesión |
 | NotebookLM | Paquete local; la subida es manual y `upload_performed=false` |
 | RAG | JSONL de metadatos portable; sin conexión viva con otro laboratorio |
@@ -55,8 +58,8 @@ metadatos para revisión; no descarga libros ni publica por sí solo.
 El uso educativo o no comercial no concede automáticamente permiso para copiar. La máquina
 distingue `full_download`, `read_online`, `preview`, `borrow` y `catalog_only`; solo una
 descarga completa con dominio público, licencia abierta o permiso explícito y evidencia de derechos
-puede ser elegible. En este corte los catálogos únicamente descubren y clasifican: el operador
-revisa.
+puede ser elegible. Préstamo, preview y copias sin evidencia no se bajan. El operador exporta
+fichas a `docs/humano/Libros` solo con `--authorize-export`.
 
 ## Recorrido recomendado
 

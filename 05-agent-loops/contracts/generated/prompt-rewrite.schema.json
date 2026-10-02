@@ -1,0 +1,22 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "prompt": {
+      "maxLength": 4000,
+      "minLength": 8,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "rationale": {
+      "default": "",
+      "maxLength": 400,
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "PromptRewrite",
+  "type": "object"
+}

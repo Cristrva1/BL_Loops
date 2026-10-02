@@ -27,6 +27,17 @@ Compara después `audit --extractor deterministic` con `audit --extractor ollama
 de chunks insuficiente y confirma que el sistema falla antes de solicitar inferencia y conserva un
 JSONL `run.failed`.
 
+## Avanzado · loop de biblioteca
+
+1. Inventaría `fixtures/library` y comprueba que `Libros.md` no entra.
+2. Lanza `library research` con presupuesto y jurisdicción explícitos.
+3. Verifica que *Influence* queda en `dossier_ready` sin PDF y *Pride and Prejudice* puede
+   adquirir copia solo si el catálogo simulado o real marca descarga legal.
+4. Exporta con `--authorize-export` a una carpeta temporal y confirma que no hay `.pdf`.
+5. Intenta exportar sin `--authorize-export` y registra el rechazo.
+
+Resultado esperado: el loop enriquece fichas y no persigue PDFs comerciales.
+
 ## Avanzado · investigación multifuente
 
 Con jurisdicción y allowlist explícitas:

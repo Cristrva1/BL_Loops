@@ -249,3 +249,112 @@ class RagPacket(StrictModel):
     manifest_path: str
     record_count: int = Field(ge=0)
     content_hash: str = Field(pattern=HASH_PATTERN)
+
+
+class LibraryWorkStatus(StrEnum):
+    PENDING = "pending"
+    RESEARCHING = "researching"
+    DOSSIER_READY = "dossier_ready"
+    COPY_ACQUIRED = "copy_acquired"
+    INCONCLUSIVE = "inconclusive"
+    FAILED = "failed"
+
+
+class LibraryCard(StrictModel):
+    work_id: str = Field(pattern=ID_PATTERN)
+    title: str = Field(min_length=1, max_length=400)
+    author: str | None = Field(default=None, max_length=200)
+    year: str | None = Field(default=None, max_length=20)
+    isbn: str | None = Field(default=None, max_length=32)
+    relative_path: str = Field(min_length=1, max_length=500)
+    source_sha256: str = Field(pattern=HASH_PATTERN)
+    existing_links: dict[str, str] = Field(default_factory=dict)
+    excerpt: str = Field(default="", max_length=1200)
+
+
+class LegalCopyRecord(StrictModel):
+    copy_id: str = Field(pattern=ID_PATTERN)
+    work_id: str = Field(pattern=ID_PATTERN)
+    offer_id: str = Field(pattern=ID_PATTERN)
+    provider: str = Field(min_length=3, max_length=40)
+    filename: str = Field(min_length=1, max_length=260)
+    media_type: Literal["application/pdf"] = "application/pdf"
+    sha256: str = Field(pattern=HASH_PATTERN)
+    size_bytes: int = Field(gt=0, le=40_000_000)
+    source_host: str = Field(min_length=3, max_length=200)
+    rights_status: RightsStatus
+    downloaded_at: datetime
+    content_hash: str = Field(pattern=HASH_PATTERN)
+
+    @model_validator(mode="after")
+    def hash_copy(self) -> LegalCopyRecord:
+        if self.downloaded_at.tzinfo is None or self.downloaded_at.utcoffset() is None:
+            raise ValueError("downloaded_at debe incluir zona horaria")
+        payload = self.model_dump(mode="json", exclude={"content_hash"})
+        object.__setattr__(self, "content_hash", _hash_payload(payload))
+        return self
+
+
+class LibraryWorkRecord(StrictModel):
+    work_id: str = Field(pattern=ID_PATTERN)
+    status: LibraryWorkStatus
+    card: LibraryCard
+    rounds_used: int = Field(ge=0, le=8)
+    offers_count: int = Field(ge=0, le=1000)
+    downloadable_offers: int = Field(ge=0, le=1000)
+    legal_copy: LegalCopyRecord | None = None
+    gaps: list[str] = Field(default_factory=list, max_length=40)
+    warnings: list[str] = Field(default_factory=list, max_length=40)
+    dossier_path: str = Field(min_length=1, max_length=500)
+    report_path: str | None = Field(default=None, max_length=500)
+    updated_at: datetime
+    content_hash: str = Field(pattern=HASH_PATTERN)
+
+    @model_validator(mode="after")
+    def hash_work(self) -> LibraryWorkRecord:
+        if self.updated_at.tzinfo is None or self.updated_at.utcoffset() is None:
+            raise ValueError("updated_at debe incluir zona horaria")
+        payload = self.model_dump(mode="json", exclude={"content_hash"})
+        object.__setattr__(self, "content_hash", _hash_payload(payload))
+        return self
+
+
+class LibraryLoopReport(StrictModel):
+    loop_id: str = Field(pattern=ID_PATTERN)
+    jurisdiction: str = Field(min_length=2, max_length=40)
+    languages: list[str] = Field(min_length=1, max_length=10)
+    inventory_count: int = Field(ge=0, le=5000)
+    works: list[LibraryWorkRecord] = Field(default_factory=list, max_length=5000)
+    warnings: list[str] = Field(default_factory=list, max_length=200)
+    created_at: datetime
+    content_hash: str = Field(pattern=HASH_PATTERN)
+
+    @classmethod
+    def create(
+        cls,
+        *,
+        jurisdiction: str,
+        languages: list[str],
+        inventory_count: int,
+        works: list[LibraryWorkRecord],
+        warnings: list[str],
+        created_at: datetime | None = None,
+    ) -> LibraryLoopReport:
+        when = created_at or datetime.now(UTC)
+        identity = _hash_payload(
+            {
+                "jurisdiction": jurisdiction,
+                "languages": languages,
+                "works": [item.content_hash for item in works],
+            }
+        )
+        payload = {
+            "loop_id": f"lib_{identity[:16]}",
+            "jurisdiction": jurisdiction,
+            "languages": languages,
+            "inventory_count": inventory_count,
+            "works": works,
+            "warnings": warnings,
+            "created_at": when,
+        }
+        return cls(**payload, content_hash=_hash_payload(_jsonable(payload)))

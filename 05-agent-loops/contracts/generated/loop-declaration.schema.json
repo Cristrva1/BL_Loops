@@ -1,0 +1,103 @@
+{
+  "$defs": {
+    "BudgetView": {
+      "additionalProperties": false,
+      "properties": {
+        "max_iterations": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Max Iterations",
+          "type": "integer"
+        },
+        "max_errors": {
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Max Errors",
+          "type": "integer"
+        },
+        "timeout_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 1800,
+          "title": "Timeout Seconds",
+          "type": "number"
+        },
+        "threshold": {
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Threshold",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_iterations",
+        "max_errors",
+        "timeout_seconds",
+        "threshold"
+      ],
+      "title": "BudgetView",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "objective": {
+      "title": "Objective",
+      "type": "string"
+    },
+    "initial_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Initial Score"
+    },
+    "best_known_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Best Known Score"
+    },
+    "budget": {
+      "$ref": "#/$defs/BudgetView"
+    },
+    "improvement_condition": {
+      "title": "Improvement Condition",
+      "type": "string"
+    },
+    "stop_condition": {
+      "title": "Stop Condition",
+      "type": "string"
+    },
+    "stop_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stop Reason"
+    }
+  },
+  "required": [
+    "objective",
+    "budget",
+    "improvement_condition",
+    "stop_condition"
+  ],
+  "title": "LoopDeclaration",
+  "type": "object"
+}

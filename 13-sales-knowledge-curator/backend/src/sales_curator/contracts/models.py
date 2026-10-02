@@ -322,6 +322,27 @@ class SourceAssessment(StrictModel):
     content_hash: str = Field(pattern=HASH_PATTERN)
 
 
+class ReviewProjection(StrictModel):
+    """Aprobación exportable: metadatos y hashes, sin texto libre."""
+
+    decision_id: str = Field(pattern=ID_PATTERN)
+    object_type: Literal["claim", "release_candidate"]
+    object_id: str = Field(pattern=ID_PATTERN)
+    decision: ReviewVerdict
+    reviewer: str = Field(min_length=2, max_length=80)
+    decided_at: datetime
+    approved_hash: str = Field(pattern=HASH_PATTERN)
+    source_review_hash: str = Field(pattern=HASH_PATTERN)
+    content_hash: str = Field(pattern=HASH_PATTERN)
+
+    @field_validator("decided_at")
+    @classmethod
+    def require_timezone(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("decided_at debe incluir zona horaria")
+        return value
+
+
 class ReviewDecision(StrictModel):
     decision_id: str = Field(pattern=ID_PATTERN)
     object_type: Literal["claim", "release_candidate"]

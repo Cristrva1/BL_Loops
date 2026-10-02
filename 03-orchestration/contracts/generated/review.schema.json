@@ -1,0 +1,62 @@
+{
+  "$defs": {
+    "ReviewCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "maxLength": 60,
+          "minLength": 3,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "evidence": {
+          "maxLength": 240,
+          "minLength": 3,
+          "title": "Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_id",
+        "passed",
+        "evidence"
+      ],
+      "title": "ReviewCheck",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "passed": {
+      "title": "Passed",
+      "type": "boolean"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/ReviewCheck"
+      },
+      "maxItems": 12,
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "required_changes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "title": "Required Changes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "passed",
+    "checks"
+  ],
+  "title": "Review",
+  "type": "object"
+}

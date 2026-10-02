@@ -25,6 +25,8 @@ decisión legal ni como valor de configuración real.
 | SSRF/redirect | HTTP, credenciales, IP privada y salida de allowlist se rechazan |
 | Catálogos | Fallo parcial visible; préstamo/preview nunca producen descarga |
 | Google Books | Solo todas las señales de dominio público exponen `download_url` |
+| Gutenberg/IA | PDF solo con host confiable, licencia abierta o `copyright=false` y evidencia |
+| Loop de biblioteca | Ficha comercial → dossier sin PDF; clásico legal → copia con hash; export no copia binarios |
 | Documento | Conserva original/hash; path escape y extracción vacía fallan |
 | Ollama local | Modelo verificado una vez; chunk cap, JSON y cita literal fallan cerrados |
 | Web | `robots.txt` verificado, URL final allowlisted, solo Markdown/manifiesto |
@@ -33,7 +35,9 @@ decisión legal ni como valor de configuración real.
 | Claims | Conflictos tipados y supersesión explícita, no solo mismo tema |
 | Identidad | Todo campo editorial cambia el hash; estado/timestamps no |
 | Staging | No mueve `current.json` ni implica aprobación del candidato |
-| Publicación | Aprobación posterior exacta; manipulación invalida el paquete |
+| Dashboard | Auditar, aprobar, construir y publicar usan el `state` real; un hash distinto no publica |
+| Publicación | Aprobación posterior exacta; `current.json` es el último commit visible; manipulación invalida el paquete |
+| Approvals | El paquete no contiene `reason`/`conditions`; la última decisión exacta es la vigente |
 | Historia | IDs iguales se conservan de forma independiente por corrida |
 
 ## Métricas editoriales

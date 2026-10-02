@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -98,6 +100,7 @@ class CuratorStore:
         self._conn = sqlite3.connect(path, check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
         self._conn.execute("PRAGMA foreign_keys = ON")
+        self._in_transaction = False
         self._conn.executescript(SCHEMA)
         self._migrate_legacy_run_scoped_tables()
         self._conn.commit()
@@ -164,6 +167,22 @@ class CuratorStore:
             self._conn.rollback()
             raise
 
+    @contextmanager
+    def transaction(self) -> Iterator[None]:
+        if self._in_transaction:
+            yield
+            return
+        self._conn.execute("BEGIN IMMEDIATE")
+        self._in_transaction = True
+        try:
+            yield
+            self._conn.commit()
+        except Exception:
+            self._conn.rollback()
+            raise
+        finally:
+            self._in_transaction = False
+
     def close(self) -> None:
         self._conn.close()
 
@@ -181,7 +200,8 @@ class CuratorStore:
                 f"INSERT OR REPLACE INTO {table} ({key_col}, run_id, payload) VALUES (?, ?, ?)",
                 (key, run_id, blob),
             )
-        self._conn.commit()
+        if not self._in_transaction:
+            self._conn.commit()
 
     def _list(self, table: str, run_id: str | None = None) -> list[dict[str, Any]]:
         if run_id is None:
@@ -207,7 +227,8 @@ class CuratorStore:
             "INSERT INTO events (run_id, sequence, payload) VALUES (?, ?, ?)",
             (run_id, sequence, json.dumps(payload, ensure_ascii=False)),
         )
-        self._conn.commit()
+        if not self._in_transaction:
+            self._conn.commit()
 
     def events_after(self, run_id: str, sequence: int) -> list[dict[str, Any]]:
         rows = self._conn.execute(

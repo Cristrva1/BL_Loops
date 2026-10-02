@@ -8,6 +8,7 @@ import pytest
 from sales_curator.contracts.models import (
     ClaimStatus,
     ReviewDecision,
+    ReviewProjection,
     ReviewVerdict,
     WorkflowStatus,
 )
@@ -241,7 +242,7 @@ def test_autonomous_staging_validation_rejects_nonmatching_claim_reviews(
     folder = service.settings.staging_dir / staged.workflow.run_id
     review_path = folder / "review-decisions.jsonl"
     reviews = [
-        ReviewDecision.model_validate_json(line)
+        ReviewProjection.model_validate_json(line)
         for line in review_path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
@@ -487,6 +488,143 @@ def test_publish_and_rollback(service: CuratorService, corpus) -> None:
     service.rollback_release(first_id)
     assert read_current(service.settings.releases_dir)["release_id"] == first_id
     assert (service.settings.releases_dir / second.release_id).is_dir()
+
+
+def test_packaged_approvals_omit_free_text_for_included_claim_and_candidate(
+    service: CuratorService, corpus
+) -> None:
+    secret = "FRAGMENTO_RESTRINGIDO_EN_RAZON_DE_APROBACION"
+    snapshot = service.start_audit(corpus, as_of=date(2026, 8, 31))
+    service.approve_publishable_claims(
+        snapshot.workflow.run_id,
+        "operador-local",
+        f"Aprobacion didactica que cita {secret}",
+    )
+    staged = service.build_release(snapshot.workflow.run_id)
+    folder = service.settings.staging_dir / staged.workflow.run_id
+    review_text = (folder / "review-decisions.jsonl").read_text(encoding="utf-8")
+    assert secret not in review_text
+    assert '"reason"' not in review_text
+    assert '"conditions"' not in review_text
+    rows = [json.loads(line) for line in review_text.splitlines() if line.strip()]
+    assert rows
+    assert all(row["source_review_hash"] for row in rows)
+    assert all(row["decision"] == "approved" for row in rows)
+
+    service.submit_review(
+        staged.workflow.run_id,
+        object_type="release_candidate",
+        object_id=staged.candidate_id,
+        decision="approved",
+        reviewer="operador-local",
+        reason=f"Aprobacion posterior que cita {secret}",
+        expected_hash=staged.candidate_hash,
+    )
+    published = service.publish_release(staged.workflow.run_id)
+    release_folder = service.settings.releases_dir / published.release_id
+    approval_text = (release_folder / "candidate-approval.json").read_text(encoding="utf-8")
+    assert secret not in approval_text
+    assert "reason" not in json.loads(approval_text)
+    assert "conditions" not in json.loads(approval_text)
+    approval_payload = json.loads(approval_text)
+    assert approval_payload["object_id"] == staged.candidate_id
+    assert approval_payload["approved_hash"] == staged.candidate_hash
+    assert approval_payload["source_review_hash"]
+    package_reviews = (release_folder / "review-decisions.jsonl").read_text(encoding="utf-8")
+    assert secret not in package_reviews
+
+
+def test_later_rejection_revokes_earlier_claim_approval(service: CuratorService, corpus) -> None:
+    snapshot = service.start_audit(corpus, as_of=date(2026, 8, 31))
+    service.approve_publishable_claims(
+        snapshot.workflow.run_id,
+        "operador-local",
+        "Aprobacion didactica de afirmaciones publicables",
+    )
+    claim = next(
+        item
+        for item in service.get_run(snapshot.workflow.run_id).claims
+        if item.claim_id == "clm-ask-budget"
+    )
+    service.submit_review(
+        snapshot.workflow.run_id,
+        object_type="claim",
+        object_id=claim.claim_id,
+        decision="rejected",
+        reviewer="operador-local",
+        reason="Revocacion posterior de la misma identidad",
+        expected_hash=claim_identity_hash(claim),
+    )
+    staged = service.build_release(snapshot.workflow.run_id)
+    assert "clm-ask-budget" in staged.candidate_diff["excluded_claim_ids"]
+    review_text = (
+        service.settings.staging_dir / staged.workflow.run_id / "review-decisions.jsonl"
+    ).read_text(encoding="utf-8")
+    assert "clm-ask-budget" not in review_text or any(
+        json.loads(line).get("decision") == "rejected"
+        for line in review_text.splitlines()
+        if line.strip() and json.loads(line).get("object_id") == "clm-ask-budget"
+    )
+
+
+def test_later_candidate_rejection_blocks_publish(service: CuratorService, corpus) -> None:
+    staged = _stage(service, corpus)
+    service.submit_review(
+        staged.workflow.run_id,
+        object_type="release_candidate",
+        object_id=staged.candidate_id,
+        decision="approved",
+        reviewer="operador-local",
+        reason="Aprobacion editorial posterior sobre el hash exacto",
+        expected_hash=staged.candidate_hash,
+    )
+    service.submit_review(
+        staged.workflow.run_id,
+        object_type="release_candidate",
+        object_id=staged.candidate_id,
+        decision="rejected",
+        reviewer="operador-local",
+        reason="Revocacion posterior del candidato",
+        expected_hash=staged.candidate_hash,
+    )
+    with pytest.raises(ReleaseError, match="aprobación"):
+        service.publish_release(staged.workflow.run_id)
+    assert service.get_run(staged.workflow.run_id).workflow.state == WorkflowStatus.STAGING
+    assert read_current(service.settings.releases_dir) is None
+
+
+def test_later_approval_supersedes_earlier_rejection(service: CuratorService, corpus) -> None:
+    snapshot = service.start_audit(corpus, as_of=date(2026, 8, 31))
+    claim = next(item for item in snapshot.claims if item.claim_id == "clm-ask-budget")
+    digest = claim_identity_hash(claim)
+    service.submit_review(
+        snapshot.workflow.run_id,
+        object_type="claim",
+        object_id=claim.claim_id,
+        decision="rejected",
+        reviewer="operador-local",
+        reason="Rechazo inicial de la identidad",
+        expected_hash=digest,
+    )
+    service.approve_publishable_claims(
+        snapshot.workflow.run_id,
+        "operador-local",
+        "Aprobacion didactica de afirmaciones publicables",
+    )
+    staged = service.build_release(snapshot.workflow.run_id)
+    assert "clm-ask-budget" in staged.candidate_diff["included_claim_ids"]
+    rows = [
+        json.loads(line)
+        for line in (
+            service.settings.staging_dir / staged.workflow.run_id / "review-decisions.jsonl"
+        )
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line.strip()
+    ]
+    claim_rows = [row for row in rows if row["object_id"] == "clm-ask-budget"]
+    assert {row["decision"] for row in claim_rows} == {"rejected", "approved"}
+    assert all("reason" not in row for row in claim_rows)
 
 
 def test_published_package_is_autonomous_and_contains_candidate_approval(

@@ -104,6 +104,30 @@ uv run single-agent
 
 Su recorrido completo está en la [guía de inicio del agente único](../../../02-single-agent/docs/humano/QUICKSTART.md).
 
+Para ver un pipeline con línea base:
+
+```powershell
+Set-Location ..\03-orchestration
+```
+
+Su recorrido está en la [guía de inicio de orquestación](../../../03-orchestration/docs/humano/QUICKSTART.md).
+
+Para ver un fan-out de tres fuentes:
+
+```powershell
+Set-Location ..\04-parallel-agents
+```
+
+Su recorrido está en la [guía de inicio de agentes en paralelo](../../../04-parallel-agents/docs/humano/QUICKSTART.md).
+
+Para ver un loop con presupuesto y mejor candidato:
+
+```powershell
+Set-Location ..\05-agent-loops
+```
+
+Su recorrido está en la [guía de inicio de loops](../../../05-agent-loops/docs/humano/QUICKSTART.md).
+
 Para probar el RAG léxico con un corpus Markdown:
 
 ```powershell
@@ -132,6 +156,20 @@ uv run vector-rag-validate
 
 El recorrido y la política de filtrado están en la
 [guía del RAG híbrido](../../../07-vector-rag/docs/humano/QUICKSTART.md).
+
+Para recorrer relaciones explícitas en un grafo pequeño:
+
+```powershell
+Set-Location ..\08-graph-rag
+uv sync --locked --all-groups
+uv run graph-rag index --source .\fixtures\evaluation-corpus
+uv run graph-rag search --mode compare "¿Qué fecha de congelación afecta el proyecto de Ana Ruiz?"
+uv run graph-rag ask "¿Qué fecha de congelación afecta el proyecto de Ana Ruiz?"
+uv run graph-rag-validate
+```
+
+El grafo es propio del laboratorio y no usa Neo4j ni Microsoft GraphRAG. Sigue la
+[guía del Graph RAG](../../../08-graph-rag/docs/humano/QUICKSTART.md).
 
 Para probar el agente experto en ventas con una sola herramienta local:
 

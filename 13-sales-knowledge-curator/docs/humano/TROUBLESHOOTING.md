@@ -18,7 +18,8 @@ valor aprobado o usa `--jurisdiction`; no lo deduzcas de la IP o del idioma.
 ## `dominio fuera de allowlist` o DNS privado
 
 Incluye únicamente el host exacto necesario. Open Library usa `openlibrary.org`; Google Books API
-usa `www.googleapis.com`. No añadas `*`, esquemas, rutas ni un dominio padre demasiado amplio.
+usa `www.googleapis.com`; Gutenberg JSON usa `gutendex.com` y el PDF `gutenberg.org`; Internet
+Archive usa `archive.org`. No añadas `*`, esquemas, rutas ni un dominio padre demasiado amplio.
 Un redirect se vuelve a validar y una resolución a IP privada/no enrutable se rechaza.
 
 ## Presupuesto de URL agotado
@@ -33,7 +34,8 @@ El argumento de la corrida no puede superar el máximo configurado y cero deshab
 
 `--output` debe resolver dentro de `13-sales-knowledge-curator`, también después de seguir
 symlinks. Usa una ruta relativa bajo `.local/`; `BL_LOOPS_ALLOW_EXTERNAL_WRITES=false` no se puede
-anular en este laboratorio.
+anular en este laboratorio. `library export --destination` es la única escritura local fuera del
+laboratorio y exige `--authorize-export`; no copia PDF.
 
 ## `source_id duplicado en la corrida`
 
@@ -54,6 +56,12 @@ una URL remota ni esperes fallback. Si una línea supera el tamaño de chunk, el
 preprocesamiento explícito. Si se excede `MAX_LLM_CHUNKS_PER_DOCUMENT`, aumenta la cuota solo tras
 revisar el documento. JSON con fences, claves duplicadas, citas inexistentes o paráfrasis no
 literales se rechaza y la corrida fallida conserva su `run_id` y JSONL.
+
+## Crawl4AI dice `'_BrowserRequestGuard' object has no attribute`
+
+Playwright envuelve un bound method con `setattr` sobre la instancia. El hook instala una función
+anidada, no `guard.handle`. JavaScript, subrecursos e iframes siguen bloqueados. Si el error
+reaparece, no pases el dataclass frozen al `context.route`.
 
 ## El navegador no inicia
 
@@ -81,6 +89,13 @@ las señales de dominio público tampoco lo es.
 Es intencional: el export actual contiene fichas, fuentes, guía y preguntas, con
 `upload_performed=false`. Importa manualmente únicamente material que pueda transferirse a
 Google. No automatices login ni conviertas un permiso local de lectura en permiso de subida.
+
+## El dashboard no conecta o no avanza el grafo
+
+El frontend en `http://127.0.0.1:5174` espera el API en `127.0.0.1:8013`. Si el backend no
+está levantado, el recuadro de error aparece al cargar. El grafo no marca `done` por clic: solo
+sigue el `state` que devolvió el backend. Publicar desde la interfaz exige `state=staging` y el
+`candidate_hash` exacto; un hash distinto deja la corrida en staging.
 
 ## `release publish` rechaza candidato o hash
 

@@ -16,12 +16,20 @@ from sales_curator.contracts.models import (
     KnowledgeDraft,
     KnowledgeRelease,
     ReviewDecision,
+    ReviewProjection,
     ReviewVerdict,
     SourceRecord,
 )
 from sales_curator.domain.editor import drafts_from_claims
 from sales_curator.domain.threats import find_sensitive_hits
-from sales_curator.evaluation.gate import claim_identity_hash, claim_passes_technical_gate
+from sales_curator.evaluation.gate import (
+    candidate_approval as gate_candidate_approval,
+)
+from sales_curator.evaluation.gate import (
+    claim_identity_hash,
+    claim_passes_technical_gate,
+    matching_approval,
+)
 from sales_curator.hashing import has_valid_content_hash, sha256_text, with_content_hash
 
 MANIFEST_NAME = "manifest.json"
@@ -93,7 +101,23 @@ def manifest_hash(folder: Path) -> str:
     return _hash_text_file(path)
 
 
-def _is_exact_claim_approval(review: ReviewDecision, claim: ClaimRecord) -> bool:
+def project_review(review: ReviewDecision) -> ReviewProjection:
+    return with_content_hash(
+        ReviewProjection(
+            decision_id=review.decision_id,
+            object_type=review.object_type,
+            object_id=review.object_id,
+            decision=review.decision,
+            reviewer=review.reviewer,
+            decided_at=review.decided_at,
+            approved_hash=review.approved_hash,
+            source_review_hash=review.content_hash,
+            content_hash="0" * 64,
+        )
+    )
+
+
+def _is_exact_claim_approval(review: ReviewDecision | ReviewProjection, claim: ClaimRecord) -> bool:
     return (
         review.object_type == "claim"
         and review.object_id == claim.claim_id
@@ -126,7 +150,8 @@ def _release_claims(
             continue
         if claim_passes_technical_gate(claim):
             continue
-        if not any(_is_exact_claim_approval(review, claim) for review in reviews):
+        latest = matching_approval(claim, reviews)
+        if latest is None or not _is_exact_claim_approval(latest, claim):
             continue
         exported.append(claim)
     return exported
@@ -134,15 +159,14 @@ def _release_claims(
 
 def _release_reviews(
     claims: list[ClaimRecord], reviews: list[ReviewDecision]
-) -> list[ReviewDecision]:
-    """Incluye sólo aprobaciones exactas de los claims realmente exportados."""
+) -> list[ReviewProjection]:
+    """Proyecta el historial de los claims exportados, sin texto libre."""
 
-    claim_by_id = {claim.claim_id: claim for claim in claims}
+    exported_ids = {claim.claim_id for claim in claims}
     return [
-        review
+        project_review(review)
         for review in reviews
-        if (claim := claim_by_id.get(review.object_id)) is not None
-        and _is_exact_claim_approval(review, claim)
+        if review.object_type == "claim" and review.object_id in exported_ids
     ]
 
 
@@ -254,17 +278,17 @@ def _read_sources(folder: Path) -> tuple[list[SourceRecord], list[str]]:
     return sources, errors
 
 
-def _read_reviews(folder: Path) -> tuple[list[ReviewDecision], list[str]]:
+def _read_reviews(folder: Path) -> tuple[list[ReviewProjection], list[str]]:
     path = folder / "review-decisions.jsonl"
     if not path.is_file():
         return [], ["falta review-decisions.jsonl"]
-    reviews: list[ReviewDecision] = []
+    reviews: list[ReviewProjection] = []
     errors: list[str] = []
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
         try:
-            reviews.append(ReviewDecision.model_validate_json(line))
+            reviews.append(ReviewProjection.model_validate_json(line))
         except ValidationError:
             errors.append(f"review-decisions.jsonl inválido en línea {line_number}")
     return reviews, errors
@@ -351,10 +375,13 @@ def validate_staging(folder: Path, claims: list[ClaimRecord] | None = None) -> l
         claim = package_by_id.get(review.object_id)
         if claim is None:
             errors.append(f"review de claim no incluido: {review.decision_id}")
-        elif not _is_exact_claim_approval(review, claim):
+        elif review.decision == ReviewVerdict.APPROVED and not _is_exact_claim_approval(
+            review, claim
+        ):
             errors.append(f"review stale o no aprobada: {review.decision_id}")
     for claim in package_claims:
-        if not any(_is_exact_claim_approval(review, claim) for review in package_reviews):
+        latest = matching_approval(claim, package_reviews)
+        if latest is None or not _is_exact_claim_approval(latest, claim):
             errors.append(f"claim sin aprobación exacta: {claim.claim_id}")
 
     source_by_id = {source.source_id: source for source in sources}
@@ -416,18 +443,14 @@ def validate_staging(folder: Path, claims: list[ClaimRecord] | None = None) -> l
 
 
 def _matching_candidate_approval(
-    reviews: list[ReviewDecision], candidate_id: str, candidate_hash: str
-) -> ReviewDecision | None:
-    for review in reviews:
-        if (
-            review.object_type == "release_candidate"
-            and review.object_id == candidate_id
-            and review.decision == ReviewVerdict.APPROVED
-            and review.approved_hash == candidate_hash
-            and has_valid_content_hash(review)
-        ):
-            return review
-    return None
+    reviews: list[ReviewDecision] | list[ReviewProjection],
+    candidate_id: str,
+    candidate_hash: str,
+) -> ReviewDecision | ReviewProjection | None:
+    approval = gate_candidate_approval(candidate_id, candidate_hash, reviews)
+    if approval is None or not has_valid_content_hash(approval):
+        return None
+    return approval
 
 
 def make_release(
@@ -450,7 +473,8 @@ def make_release(
     approval = _matching_candidate_approval(reviews, candidate_id, candidate_hash)
     if approval is None:
         raise ReleaseError("Falta aprobación exacta del candidato")
-    atomic_write(folder / CANDIDATE_APPROVAL_NAME, _dump(approval))
+    projected = approval if isinstance(approval, ReviewProjection) else project_review(approval)
+    atomic_write(folder / CANDIDATE_APPROVAL_NAME, _dump(projected))
 
     package_claims, claim_errors = _read_claims(folder)
     package_reviews, review_errors = _read_reviews(folder)
@@ -572,7 +596,9 @@ def validate_release_package(folder: Path) -> tuple[KnowledgeRelease | None, lis
         errors.append(f"falta {CANDIDATE_APPROVAL_NAME}")
     else:
         try:
-            approval = ReviewDecision.model_validate_json(approval_path.read_text(encoding="utf-8"))
+            approval = ReviewProjection.model_validate_json(
+                approval_path.read_text(encoding="utf-8")
+            )
         except ValidationError:
             errors.append("aprobación del candidato inválida")
         else:
@@ -594,7 +620,7 @@ def validate_release_package(folder: Path) -> tuple[KnowledgeRelease | None, lis
     return release, errors
 
 
-def publish(staging_folder: Path, releases_dir: Path, release: KnowledgeRelease) -> Path:
+def relocate_release(staging_folder: Path, releases_dir: Path, release: KnowledgeRelease) -> Path:
     validated, errors = validate_release_package(staging_folder)
     if errors or validated is None:
         raise ReleaseError("; ".join(errors or ["KnowledgeRelease ausente"]))
@@ -609,6 +635,10 @@ def publish(staging_folder: Path, releases_dir: Path, release: KnowledgeRelease)
     except PermissionError:
         shutil.copytree(staging_folder, destination)
         shutil.rmtree(staging_folder, ignore_errors=True)
+    return destination
+
+
+def write_current_pointer(releases_dir: Path, release: KnowledgeRelease, destination: Path) -> None:
     pointer = {
         "release_id": release.release_id,
         "path": destination.name,
@@ -616,6 +646,21 @@ def publish(staging_folder: Path, releases_dir: Path, release: KnowledgeRelease)
         "release_hash": _hash_text_file(destination / KNOWLEDGE_RELEASE_NAME),
     }
     atomic_write(releases_dir / "current.json", _dump(pointer))
+
+
+def restore_staging(destination: Path, staging_folder: Path) -> None:
+    if staging_folder.exists() or not destination.exists():
+        return
+    try:
+        destination.replace(staging_folder)
+    except PermissionError:
+        shutil.copytree(destination, staging_folder)
+        shutil.rmtree(destination, ignore_errors=True)
+
+
+def publish(staging_folder: Path, releases_dir: Path, release: KnowledgeRelease) -> Path:
+    destination = relocate_release(staging_folder, releases_dir, release)
+    write_current_pointer(releases_dir, release, destination)
     return destination
 
 

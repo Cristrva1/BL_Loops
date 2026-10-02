@@ -151,6 +151,40 @@ def test_json_client_enforces_streamed_size_and_mime() -> None:
     client.close()
 
 
+def test_bytes_client_accepts_pdf_and_rejects_html() -> None:
+    def pdf(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            headers={"content-type": "application/pdf"},
+            content=b"%PDF-1.4\n%%EOF\n",
+        )
+
+    client = SafeHttpClient(
+        _policy().authorize(run_authorized=True, url_budget=1),
+        transport=httpx.MockTransport(pdf),
+        resolver=_public_resolver,
+    )
+    body = client.get_bytes(
+        "https://openlibrary.org/files/book.pdf", allowed_types={"application/pdf"}
+    )
+    client.close()
+    assert body.startswith(b"%PDF")
+
+    def html(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, headers={"content-type": "text/html"}, content=b"<html></html>")
+
+    client = SafeHttpClient(
+        _policy().authorize(run_authorized=True, url_budget=1),
+        transport=httpx.MockTransport(html),
+        resolver=_public_resolver,
+    )
+    with pytest.raises(NetworkPolicyError, match="MIME"):
+        client.get_bytes(
+            "https://openlibrary.org/files/book.pdf", allowed_types={"application/pdf"}
+        )
+    client.close()
+
+
 def test_json_client_rejects_malformed_content_length_as_policy_error() -> None:
     def malformed(_request: httpx.Request) -> httpx.Response:
         return httpx.Response(

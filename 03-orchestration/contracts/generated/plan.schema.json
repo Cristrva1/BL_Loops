@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "PlanSection": {
+      "additionalProperties": false,
+      "properties": {
+        "section_id": {
+          "maxLength": 40,
+          "minLength": 1,
+          "title": "Section Id",
+          "type": "string"
+        },
+        "heading": {
+          "maxLength": 80,
+          "minLength": 3,
+          "title": "Heading",
+          "type": "string"
+        },
+        "must_include": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "minItems": 1,
+          "title": "Must Include",
+          "type": "array"
+        }
+      },
+      "required": [
+        "section_id",
+        "heading",
+        "must_include"
+      ],
+      "title": "PlanSection",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "maxLength": 160,
+      "minLength": 4,
+      "title": "Title",
+      "type": "string"
+    },
+    "audience": {
+      "maxLength": 200,
+      "minLength": 4,
+      "title": "Audience",
+      "type": "string"
+    },
+    "outline": {
+      "items": {
+        "$ref": "#/$defs/PlanSection"
+      },
+      "maxItems": 8,
+      "minItems": 3,
+      "title": "Outline",
+      "type": "array"
+    },
+    "success_checks": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 3,
+      "title": "Success Checks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "title",
+    "audience",
+    "outline",
+    "success_checks"
+  ],
+  "title": "Plan",
+  "type": "object"
+}

@@ -108,7 +108,7 @@ en vivo, una base compartida ni una escritura automática hacia `09-agentic-rag`
 | `CONFIRMADA` | Red, navegador, telemetría y conectores reales estarán desactivados por defecto. |
 | `CONFIRMADA` | El resultado se exportará como archivos; no habrá dependencia en ejecución entre laboratorios. |
 | `IMPLEMENTADA` | Orquestador Python propio, tipado, con dashboard de la corrida editorial. |
-| `IMPLEMENTADA` | MarkItDown para PDF/DOCX autorizados, Open Library y Google Books, Crawl4AI estrecho y paquetes manuales NotebookLM/RAG. |
+| `IMPLEMENTADA` | MarkItDown para PDF/DOCX autorizados, Open Library, Google Books, Gutenberg, Internet Archive, loop de biblioteca acotado, Crawl4AI estrecho y paquetes manuales NotebookLM/RAG. |
 | `IMPLEMENTADA` | Staging separado de publicación y aprobación humana posterior sobre el hash exacto del candidato. |
 | `APROBADA` | Red como capacidad, allowlist e idiomas inglés/español; cualquier operador identificado puede aprobar desde el CLI. |
 | `CONFIGURABLE` | El dominio real existe, pero no se proporcionó su identificador; no se inventa. |
@@ -783,8 +783,8 @@ usó `TEST` como centinela técnico; no resolvió la jurisdicción real.
   CLI versionado; PDF/DOCX; Open Library y Google Books; Crawl4AI estrecho; paquetes manuales
   NotebookLM/RAG; staging, aprobación y publicación separados.
 - **Gate técnico disponible, no aceptación final:** tests, lint, compile, frontend, `--version`,
-  `doctor`, demo, release, JSONL y ayudas del CLI. La sección 26 registra cuatro defectos altos
-  descubiertos después del último gate y prevalece sobre cualquier evidencia verde anterior.
+  `doctor`, demo, release, JSONL y ayudas del CLI. La sección 26 conserva los cuatro defectos altos
+  como evidencia histórica; la sección 27 registra su cierre. No hay aceptación editorial final.
 - **Configurable:** dominio, jurisdicción y allowlist concretos.
 - **Pendiente editorial:** ejecutar investigación sobre libros reales autorizados y revisar sus
   derechos/ediciones antes de enriquecer un corpus real.
@@ -869,3 +869,31 @@ abiertos. No se hizo commit, push, despliegue ni publicación.
 Siguen faltando los valores operativos concretos de dominio, jurisdicción y hosts de allowlist.
 `TEST` es únicamente un centinela técnico. NotebookLM permanece manual; no automatizar sesión,
 cookies ni interfaz de consumidor.
+
+## 27. Cierre de los cuatro defectos altos — 2026-09-02
+
+Los cuatro defectos de la sección 26 se corrigieron en el checkout actual, sin rama nueva y sin
+publicar un release de demostración. Los cambios del dashboard (`POST /api/releases/publish`) se
+conservaron.
+
+| Defecto | Reparación |
+|---|---|
+| Hook Crawl4AI / Playwright | El interceptor se instala como función, no como bound method de un dataclass `frozen`+`slots`. Regresión: `test_installed_route_handler_survives_playwright_method_wrapping`. |
+| Texto libre en approvals | El paquete exporta `ReviewProjection` (metadatos + `source_review_hash`). `reason` y `conditions` quedan en SQLite. |
+| Última decisión vigente | `latest_review` ordena por `decided_at` y `decision_id`. Un `REJECTED` posterior excluye el claim o bloquea `publish`. |
+| `current.json` prematuro | Relocate → transacción SQLite → puntero. Fallo de SQLite restaura staging y vuelve a `staging`. Fallo del puntero no anuncia el release. |
+
+No se hizo commit, push ni publicación. Dominio, jurisdicción y allowlist reales siguen
+configurables. `TEST` sigue siendo solo un centinela técnico.
+
+Evidencia de esta sesión:
+
+- Suite: `160` pruebas; Ruff, formato, `compileall`, `uv lock --check`, `npm test` y `npm run build`.
+- Captura live: `https://openlibrary.org/works/OL66554W/Pride_and_Prejudice` →
+  `web_a414ab37787cca5f`, `robots_allowed=true`, `redistribution_allowed=false`, sin `raw_html`.
+  Jurisdicción centinela `TEST`.
+- Demo nueva (no publicada): `run_4e4f5c08629a`, `can_d4d27f2f316a`, hash
+  `da0326c4630e009886bd816adc4fdd9ba5b7f07d2fd12be14338525fa1bb401b`, dirs
+  `.local/data-fix-gate` y `.local/runs-fix-gate`. Staging autónomo sin
+  `candidate-approval.json` ni `knowledge-release.json`. **No aprobar ni publicar** hasta
+  revisión humana del operador.

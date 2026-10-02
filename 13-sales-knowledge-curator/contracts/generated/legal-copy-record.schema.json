@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "RightsStatus": {
+      "enum": [
+        "public_domain",
+        "open_license",
+        "explicit_permission",
+        "restricted",
+        "unknown"
+      ],
+      "title": "RightsStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "copy_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Copy Id",
+      "type": "string"
+    },
+    "work_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Work Id",
+      "type": "string"
+    },
+    "offer_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Offer Id",
+      "type": "string"
+    },
+    "provider": {
+      "maxLength": 40,
+      "minLength": 3,
+      "title": "Provider",
+      "type": "string"
+    },
+    "filename": {
+      "maxLength": 260,
+      "minLength": 1,
+      "title": "Filename",
+      "type": "string"
+    },
+    "media_type": {
+      "const": "application/pdf",
+      "default": "application/pdf",
+      "title": "Media Type",
+      "type": "string"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Sha256",
+      "type": "string"
+    },
+    "size_bytes": {
+      "exclusiveMinimum": 0,
+      "maximum": 40000000,
+      "title": "Size Bytes",
+      "type": "integer"
+    },
+    "source_host": {
+      "maxLength": 200,
+      "minLength": 3,
+      "title": "Source Host",
+      "type": "string"
+    },
+    "rights_status": {
+      "$ref": "#/$defs/RightsStatus"
+    },
+    "downloaded_at": {
+      "format": "date-time",
+      "title": "Downloaded At",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "copy_id",
+    "work_id",
+    "offer_id",
+    "provider",
+    "filename",
+    "sha256",
+    "size_bytes",
+    "source_host",
+    "rights_status",
+    "downloaded_at",
+    "content_hash"
+  ],
+  "title": "LegalCopyRecord",
+  "type": "object"
+}

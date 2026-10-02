@@ -2,8 +2,18 @@
 
 from __future__ import annotations
 
-from sales_curator.contracts.models import ClaimRecord, ClaimStatus, ReviewDecision, ReviewVerdict
+from collections.abc import Sequence
+
+from sales_curator.contracts.models import (
+    ClaimRecord,
+    ClaimStatus,
+    ReviewDecision,
+    ReviewProjection,
+    ReviewVerdict,
+)
 from sales_curator.hashing import compute_content_hash
+
+ReviewLike = ReviewDecision | ReviewProjection
 
 
 def claim_identity_hash(claim: ClaimRecord) -> str:
@@ -42,30 +52,48 @@ def claim_passes_technical_gate(claim: ClaimRecord) -> list[str]:
     return errors
 
 
-def matching_approval(claim: ClaimRecord, reviews: list[ReviewDecision]) -> ReviewDecision | None:
-    digest = claim_identity_hash(claim)
-    for review in reviews:
-        if (
-            review.object_type == "claim"
-            and review.object_id == claim.claim_id
-            and review.decision == ReviewVerdict.APPROVED
-            and review.approved_hash == digest
-        ):
-            return review
-    return None
+def latest_review(
+    *,
+    object_type: str,
+    object_id: str,
+    approved_hash: str,
+    reviews: Sequence[ReviewLike],
+) -> ReviewLike | None:
+    matching = [
+        review
+        for review in reviews
+        if review.object_type == object_type
+        and review.object_id == object_id
+        and review.approved_hash == approved_hash
+    ]
+    if not matching:
+        return None
+    return max(matching, key=lambda item: (item.decided_at, item.decision_id))
+
+
+def matching_approval(claim: ClaimRecord, reviews: Sequence[ReviewLike]) -> ReviewLike | None:
+    latest = latest_review(
+        object_type="claim",
+        object_id=claim.claim_id,
+        approved_hash=claim_identity_hash(claim),
+        reviews=reviews,
+    )
+    if latest is None or latest.decision != ReviewVerdict.APPROVED:
+        return None
+    return latest
 
 
 def candidate_approval(
     candidate_id: str,
     candidate_hash: str,
-    reviews: list[ReviewDecision],
-) -> ReviewDecision | None:
-    for review in reviews:
-        if (
-            review.object_type == "release_candidate"
-            and review.object_id == candidate_id
-            and review.decision == ReviewVerdict.APPROVED
-            and review.approved_hash == candidate_hash
-        ):
-            return review
-    return None
+    reviews: Sequence[ReviewLike],
+) -> ReviewLike | None:
+    latest = latest_review(
+        object_type="release_candidate",
+        object_id=candidate_id,
+        approved_hash=candidate_hash,
+        reviews=reviews,
+    )
+    if latest is None or latest.decision != ReviewVerdict.APPROVED:
+        return None
+    return latest

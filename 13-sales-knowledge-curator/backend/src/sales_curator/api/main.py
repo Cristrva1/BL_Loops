@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 
 from sales_curator import __version__
 from sales_curator.config import Settings, configuration_scope, find_env_file, lab_root
+from sales_curator.contracts.research import LibraryLoopReport
 from sales_curator.evaluation.gate import claim_identity_hash
 from sales_curator.orchestration.machine import VISIBLE_NODES
 from sales_curator.orchestration.service import CuratorService, RunSnapshot
@@ -44,6 +45,14 @@ class ReleaseBuildRequest(BaseModel):
     reason: str = Field(min_length=8)
 
 
+class ReleasePublishRequest(BaseModel):
+    run_id: str
+    candidate_id: str
+    expected_hash: str = Field(min_length=64, max_length=64)
+    reviewer: str
+    reason: str = Field(min_length=8)
+
+
 def _dump_snapshot(snapshot: RunSnapshot) -> dict[str, Any]:
     return {
         "run_id": snapshot.workflow.run_id,
@@ -70,6 +79,7 @@ def _dump_snapshot(snapshot: RunSnapshot) -> dict[str, Any]:
         "release_id": snapshot.release_id,
         "candidate_id": snapshot.candidate_id,
         "candidate_hash": snapshot.candidate_hash,
+        "candidate_diff": snapshot.candidate_diff,
         "jsonl_path": snapshot.jsonl_path,
     }
 
@@ -185,6 +195,50 @@ def create_app(service: CuratorService | None = None) -> FastAPI:
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         return _dump_snapshot(snapshot)
+
+    @app.post("/api/releases/publish")
+    def publish_release(request: ReleasePublishRequest) -> dict[str, Any]:
+        try:
+            runtime.submit_review(
+                request.run_id,
+                object_type="release_candidate",
+                object_id=request.candidate_id,
+                decision="approved",
+                reviewer=request.reviewer,
+                reason=request.reason,
+                expected_hash=request.expected_hash,
+            )
+            snapshot = runtime.publish_release(request.run_id)
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return _dump_snapshot(snapshot)
+
+    @app.get("/api/library")
+    def library_index() -> dict[str, Any]:
+        index_path = runtime.settings.library_path / "index.json"
+        if not index_path.is_file():
+            return {"loop_id": None, "works": [], "inventory_count": 0}
+        try:
+            report = LibraryLoopReport.model_validate_json(index_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return {
+            "loop_id": report.loop_id,
+            "inventory_count": report.inventory_count,
+            "works": [
+                {
+                    "work_id": work.work_id,
+                    "title": work.card.title,
+                    "author": work.card.author,
+                    "status": work.status.value,
+                    "offers_count": work.offers_count,
+                    "has_legal_copy": work.legal_copy is not None,
+                    "gaps": work.gaps,
+                    "rounds_used": work.rounds_used,
+                }
+                for work in report.works
+            ],
+        }
 
     @app.get("/api/releases/current")
     def current_release() -> dict[str, Any]:

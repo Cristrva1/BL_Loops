@@ -1,12 +1,15 @@
 # BL_Loops
 
-Laboratorio didáctico y visual para aprender, construir y comparar agentes de IA local desde un agente sencillo hasta orquestaciones, loops, RAG, MCP y evaluación.
+Laboratorio didáctico y visual para aprender, construir y comparar agentes de IA local desde un agente sencillo hasta orquestaciones, loops, RAG, mundos simulados, audiovisual local y evaluación.
 
 > Estado actual: fase 1 sigue en construcción. La fábrica tiene su base determinista,
-> `02-single-agent` ofrece el primer chat real y la rama RAG ya incluye una línea base léxica,
-> una variante híbrida y un agente experto en ventas con una herramienta local acotada. El
-> benchmark local-code está aprobado y `14-local-code-hermes` ya incluye preflight y el harness
-> de una corrida autorizada; todavía no hay una comparación entre clientes.
+> `02-single-agent` ofrece el primer chat real, `03-orchestration` compara ese agente único con
+> un pipeline planificador-autor-revisor, `04-parallel-agents` mide un fan-out de tres fuentes
+> y `05-agent-loops` muestra un ciclo con presupuesto y mejor candidato.
+> La rama RAG ya incluye una línea base léxica, una
+> variante híbrida, un grafo multi-hop y un agente experto en ventas con una herramienta local
+> acotada. El benchmark local-code está aprobado y `14-local-code-hermes` ya incluye preflight y
+> el harness de una corrida autorizada; todavía no hay una comparación entre clientes.
 
 ## Qué se va a construir
 
@@ -16,7 +19,7 @@ flowchart LR
     B --> C[Ejecutar un agente local]
     C --> D[Visualizar nodos y trazas]
     D --> E[Orquestar y crear loops]
-    E --> F[Probar familias RAG y MCP]
+    E --> F[Probar RAG, mundos y audiovisual local]
     F --> G[Exportar JSONL]
     G --> H[Comparar resultados]
 ```
@@ -72,10 +75,18 @@ La decisión sobre dependencias está explicada en [Configuración y entornos](d
 
 - [`01-prompt-agent-factory/`](01-prompt-agent-factory/README.md): contratos, validación y flujo visual sin invocar todavía un modelo.
 - [`02-single-agent/`](02-single-agent/README.md): chat mínimo en la terminal de Windows 11 con Ollama local y `gemma4:e4b`.
+- [`03-orchestration/`](03-orchestration/README.md): pipeline planificador-autor-revisor comparado con un
+  agente único, dashboard React Flow y JSONL del caso `I-ORCH-001`.
+- [`04-parallel-agents/`](04-parallel-agents/README.md): tres fuentes independientes en serie y en
+  fan-out, agregador con timeout explícito y JSONL del caso `I-PARALLEL-002`.
+- [`05-agent-loops/`](05-agent-loops/README.md): loop acotado que mejora un prompt con score,
+  presupuesto y mejor candidato, dashboard SSE y JSONL del caso `I-LOOP-003`.
 - [`06-naive-rag/`](06-naive-rag/README.md): Markdown a SQLite FTS5, recuperación léxica,
   `qwen3.5:4b`, citas por líneas y corridas JSONL sanitizadas.
 - [`07-vector-rag/`](07-vector-rag/README.md): recuperación híbrida FTS5 + embeddings Qwen3,
   filtro explícito de ruido, comparación lexical/vectorial y citas.
+- [`08-graph-rag/`](08-graph-rag/README.md): triples visibles en SQLite, rutas multi-hop,
+  aristas extraídas frente a inferidas y contraste léxico del caso `A-RAG-GRAPH-001`.
 - [`09-agentic-rag/`](09-agentic-rag/README.md): agente de ventas que formula y ejecuta una sola
   consulta al RAG híbrido, conserva memoria en RAM y declara los límites de sus fuentes.
 - [`13-sales-knowledge-curator/`](13-sales-knowledge-curator/README.md): audita fuentes locales,

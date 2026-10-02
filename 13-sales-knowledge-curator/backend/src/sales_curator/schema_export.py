@@ -10,6 +10,7 @@ from sales_curator.contracts.models import (
     ConflictRecord,
     KnowledgeRelease,
     ReviewDecision,
+    ReviewProjection,
     RunEvent,
     RunRecord,
     SourceRecord,
@@ -19,6 +20,10 @@ from sales_curator.contracts.research import (
     BookResearchReport,
     DocumentImportRecord,
     DocumentRights,
+    LegalCopyRecord,
+    LibraryCard,
+    LibraryLoopReport,
+    LibraryWorkRecord,
     NotebookPacket,
     NotebookSourceSet,
     RagPacket,
@@ -30,6 +35,7 @@ SCHEMAS = {
     "claim-record.schema.json": ClaimRecord,
     "conflict-record.schema.json": ConflictRecord,
     "review-decision.schema.json": ReviewDecision,
+    "review-projection.schema.json": ReviewProjection,
     "knowledge-release.schema.json": KnowledgeRelease,
     "run-event.schema.json": RunEvent,
     "run-record.schema.json": RunRecord,
@@ -41,6 +47,10 @@ SCHEMAS = {
     "notebook-source-set.schema.json": NotebookSourceSet,
     "notebook-packet.schema.json": NotebookPacket,
     "rag-packet.schema.json": RagPacket,
+    "library-card.schema.json": LibraryCard,
+    "legal-copy-record.schema.json": LegalCopyRecord,
+    "library-work-record.schema.json": LibraryWorkRecord,
+    "library-loop-report.schema.json": LibraryLoopReport,
 }
 
 

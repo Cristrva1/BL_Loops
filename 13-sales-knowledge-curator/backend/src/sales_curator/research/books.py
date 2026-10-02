@@ -9,7 +9,12 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from sales_curator.config import resolve_lab_output_root
-from sales_curator.connectors.book_catalogs import parse_google_books, parse_open_library
+from sales_curator.connectors.book_catalogs import (
+    parse_google_books,
+    parse_gutenberg,
+    parse_internet_archive,
+    parse_open_library,
+)
 from sales_curator.connectors.network import NetworkDisabled, NetworkPolicyError, SafeHttpClient
 from sales_curator.contracts.research import BookAccessOffer, BookResearchReport
 
@@ -43,7 +48,12 @@ class BookResearcher:
             raise ValueError("languages solo admite en/es")
         if not 1 <= max_results <= 40:
             raise ValueError("max_results debe estar entre 1 y 40")
-        allowed_providers = {"open_library", "google_books"}
+        allowed_providers = {
+            "open_library",
+            "google_books",
+            "project_gutenberg",
+            "internet_archive",
+        }
         unknown = set(providers) - allowed_providers
         if unknown:
             raise ValueError(f"proveedores no soportados: {', '.join(sorted(unknown))}")
@@ -69,6 +79,24 @@ class BookResearcher:
                     )
                     offers.extend(
                         parse_google_books(
+                            payload,
+                            retrieved_at=now,
+                            jurisdiction=jurisdiction,
+                        )
+                    )
+                elif provider == "project_gutenberg":
+                    payload = self.http.get_json(_gutenberg_url(title, author))
+                    offers.extend(
+                        parse_gutenberg(
+                            payload,
+                            retrieved_at=now,
+                            jurisdiction=jurisdiction,
+                        )
+                    )
+                elif provider == "internet_archive":
+                    payload = self.http.get_json(_internet_archive_url(title, author, max_results))
+                    offers.extend(
+                        parse_internet_archive(
                             payload,
                             retrieved_at=now,
                             jurisdiction=jurisdiction,
@@ -139,6 +167,39 @@ def _google_books_url(
         "projection": "full",
     }
     return f"https://www.googleapis.com/books/v1/volumes?{urlencode(params)}"
+
+
+def _gutenberg_url(title: str, author: str | None) -> str:
+    query = title.strip()
+    if author and author.strip():
+        query += f" {author.strip()}"
+    return f"https://gutendex.com/books?{urlencode({'search': query})}"
+
+
+def _internet_archive_url(title: str, author: str | None, limit: int) -> str:
+    parts = [f'title:("{title.strip()}")', "mediatype:texts"]
+    if author and author.strip():
+        parts.append(f'creator:("{author.strip()}")')
+    params = [
+        ("q", " AND ".join(parts)),
+        ("fl[]", "identifier"),
+        ("fl[]", "title"),
+        ("fl[]", "creator"),
+        ("fl[]", "year"),
+        ("fl[]", "licenseurl"),
+        ("fl[]", "access-restricted-item"),
+        ("fl[]", "language"),
+        ("output", "json"),
+        ("rows", str(limit)),
+    ]
+    return f"https://archive.org/advancedsearch.php?{urlencode(params)}"
+
+
+def internet_archive_metadata_url(identifier: str) -> str:
+    safe = identifier.strip()
+    if not safe or "/" in safe or ".." in safe:
+        raise ValueError("identificador de Internet Archive inválido")
+    return f"https://archive.org/metadata/{safe}"
 
 
 def write_book_research_report(report: BookResearchReport, output_root: Path) -> Path:

@@ -60,11 +60,13 @@ from sales_curator.storage.releases import (
     build_staging,
     make_release,
     manifest_hash,
-    publish,
     read_current,
+    relocate_release,
+    restore_staging,
     rollback,
     validate_release_package,
     validate_staging,
+    write_current_pointer,
 )
 from sales_curator.storage.sqlite import CuratorStore
 
@@ -683,6 +685,15 @@ class CuratorService:
                 )
             )
             self.store.save_claim(run_id, updated.model_dump(mode="json"))
+        elif (
+            object_type == "claim"
+            and review.decision in {ReviewVerdict.REJECTED, ReviewVerdict.CHANGES_REQUESTED}
+            and claim.status == ClaimStatus.HUMAN_APPROVED
+        ):
+            updated = with_content_hash(
+                claim.model_copy(update={"status": ClaimStatus.CANDIDATE, "content_hash": "0" * 64})
+            )
+            self.store.save_claim(run_id, updated.model_dump(mode="json"))
         snapshot = self.get_run(run_id)
         self._emit(
             snapshot,
@@ -729,7 +740,10 @@ class CuratorService:
         if snapshot.workflow.state != WorkflowStatus.REVIEW_PENDING:
             raise ReleaseError("Solo se construye staging desde review_pending")
         approved_claims = [
-            item for item in snapshot.claims if item.status == ClaimStatus.HUMAN_APPROVED
+            item
+            for item in snapshot.claims
+            if item.status == ClaimStatus.HUMAN_APPROVED
+            and matching_approval(item, snapshot.reviews) is not None
         ]
         if not approved_claims:
             raise ReleaseError("Ninguna afirmación aprobada; el release no puede publicarse")
@@ -845,24 +859,51 @@ class CuratorService:
                 "llm": self.settings.curator_model or "none",
             },
         )
-        destination = publish(folder, self.settings.releases_dir, release)
-        self.store.save_release(release.model_dump(mode="json"))
-        included_claim_ids = set(release.included_claim_ids)
-        for claim in snapshot.claims:
-            if claim.status == ClaimStatus.HUMAN_APPROVED and claim.claim_id in included_claim_ids:
-                published = with_content_hash(
-                    claim.model_copy(
-                        update={"status": ClaimStatus.PUBLISHED, "content_hash": "0" * 64}
-                    )
+        destination: Path | None = None
+        durable = False
+        try:
+            destination = relocate_release(folder, self.settings.releases_dir, release)
+            with self.store.transaction():
+                self.store.save_release(release.model_dump(mode="json"))
+                included_claim_ids = set(release.included_claim_ids)
+                snapshot = self.get_run(run_id)
+                for claim in snapshot.claims:
+                    if (
+                        claim.status == ClaimStatus.HUMAN_APPROVED
+                        and claim.claim_id in included_claim_ids
+                    ):
+                        published = with_content_hash(
+                            claim.model_copy(
+                                update={
+                                    "status": ClaimStatus.PUBLISHED,
+                                    "content_hash": "0" * 64,
+                                }
+                            )
+                        )
+                        self.store.save_claim(run_id, published.model_dump(mode="json"))
+                snapshot.release_id = release_id
+                self._persist_run(snapshot)
+                self._transition(
+                    snapshot,
+                    WorkflowStatus.PUBLISHED,
+                    "publisher",
+                    f"publicado {destination.name}",
                 )
-                self.store.save_claim(run_id, published.model_dump(mode="json"))
-        snapshot = self.get_run(run_id)
-        snapshot.release_id = release_id
-        self._persist_run(snapshot)
-        self._transition(
-            snapshot, WorkflowStatus.PUBLISHED, "publisher", f"publicado {destination.name}"
-        )
-        self._flush_jsonl(snapshot, terminal="run.completed")
+            durable = True
+            write_current_pointer(self.settings.releases_dir, release, destination)
+        except Exception:
+            if destination is not None and not durable:
+                restore_staging(destination, folder)
+                snapshot = self.get_run(run_id)
+                if snapshot.workflow.state == WorkflowStatus.VALIDATING:
+                    self._transition(
+                        snapshot,
+                        WorkflowStatus.STAGING,
+                        "publisher",
+                        "compensar publicación fallida; staging recuperable",
+                    )
+            raise
+        self._flush_jsonl(self.get_run(run_id), terminal="run.completed")
         return self.get_run(run_id)
 
     def validate_release(self, release_id: str) -> dict:

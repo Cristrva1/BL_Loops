@@ -134,7 +134,7 @@ class NetworkPolicy:
 
 
 class SafeHttpClient:
-    """Cliente GET JSON sin proxy ambiental y con validación en cada redirect."""
+    """Cliente GET sin proxy ambiental y con validación en cada redirect."""
 
     def __init__(
         self,
@@ -155,10 +155,7 @@ class SafeHttpClient:
             trust_env=False,
             timeout=timeout_seconds,
             transport=transport,
-            headers={
-                "user-agent": policy.user_agent,
-                "accept": "application/json",
-            },
+            headers={"user-agent": policy.user_agent},
         )
 
     def close(self) -> None:
@@ -171,13 +168,42 @@ class SafeHttpClient:
         self.close()
 
     def get_json(self, url: str) -> dict:
+        _final_url, content_type, body = self._stream_get(url, accept="application/json")
+        if not (content_type == "application/json" or content_type.endswith("+json")):
+            raise NetworkPolicyError("la respuesta no tiene MIME JSON")
+        try:
+            payload = json.loads(body)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise NetworkPolicyError("la respuesta JSON es inválida") from exc
+        if not isinstance(payload, dict):
+            raise NetworkPolicyError("el catálogo debe responder un objeto JSON")
+        return payload
+
+    def get_bytes(self, url: str, *, allowed_types: set[str]) -> bytes:
+        allowed = {item.casefold() for item in allowed_types}
+        accept = ", ".join(sorted(allowed))
+        _final_url, content_type, body = self._stream_get(url, accept=accept)
+        pdf_wanted = "application/pdf" in allowed
+        if content_type in allowed:
+            if pdf_wanted and content_type == "application/pdf" and not body.startswith(b"%PDF"):
+                raise NetworkPolicyError("el cuerpo no es un PDF")
+            return body
+        if pdf_wanted and content_type == "application/octet-stream" and body.startswith(b"%PDF"):
+            return body
+        raise NetworkPolicyError("la respuesta no tiene MIME permitido")
+
+    def _stream_get(self, url: str, *, accept: str) -> tuple[str, str, bytes]:
         current = url
         redirects = 0
         while True:
             normalized = self.policy.validate_url(current, resolver=self.resolver)
             self.policy = self.policy.consume_url()
             try:
-                response_context = self._client.stream("GET", normalized)
+                response_context = self._client.stream(
+                    "GET",
+                    normalized,
+                    headers={"accept": accept},
+                )
                 with response_context as response:
                     if response.status_code in {301, 302, 303, 307, 308}:
                         location = response.headers.get("location")
@@ -190,9 +216,9 @@ class SafeHttpClient:
                         continue
                     if not 200 <= response.status_code < 300:
                         raise NetworkPolicyError(f"HTTP {response.status_code}")
-                    content_type = response.headers.get("content-type", "").split(";", 1)[0]
-                    if not (content_type == "application/json" or content_type.endswith("+json")):
-                        raise NetworkPolicyError("la respuesta no tiene MIME JSON")
+                    content_type = (
+                        response.headers.get("content-type", "").split(";", 1)[0].strip().casefold()
+                    )
                     declared = response.headers.get("content-length")
                     if declared:
                         try:
@@ -210,15 +236,9 @@ class SafeHttpClient:
                         if size > self.policy.max_bytes:
                             raise NetworkPolicyError("la respuesta supera el tamaño permitido")
                         chunks.append(chunk)
+                    return normalized, content_type, b"".join(chunks)
             except httpx.HTTPError as exc:
                 raise NetworkPolicyError(f"fallo HTTP: {type(exc).__name__}") from exc
-            try:
-                payload = json.loads(b"".join(chunks))
-            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-                raise NetworkPolicyError("la respuesta JSON es inválida") from exc
-            if not isinstance(payload, dict):
-                raise NetworkPolicyError("el catálogo debe responder un objeto JSON")
-            return payload
 
 
 def fetch_url(

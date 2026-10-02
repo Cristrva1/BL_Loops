@@ -1,8 +1,8 @@
 # Casos de evaluación de BL_Loops
 
 **Suite:** `bl-loops-generic`  
-**Versión:** 0.2.0  
-**Fecha:** 2026-08-30  
+**Versión:** 0.2.1  
+**Fecha:** 2026-09-02  
 **Datos:** sintéticos y locales
 
 ## 1. Objetivo
@@ -21,7 +21,7 @@ No basta con que una respuesta “se vea bien”. La corrida debe conservar evid
 flowchart LR
     F[Fundamentos\nprompt y contratos] --> B[Básico\nagente y tools]
     B --> I[Intermedio\norquestación, loops y RAG]
-    I --> A[Avanzado\ngrafos, RAG agéntico y evolución]
+    I --> A[Avanzado\ngrafos, mundos y audiovisual]
 ```
 
 | Nivel | Qué aprende | Riesgo permitido |
@@ -144,11 +144,19 @@ La corrida descalificada se conserva para aprender del fallo.
 | `I-LOOP-003` | Intermedio | Mejorar hasta un umbral | Score, presupuesto y parada. |
 | `I-RAG-NAIVE-004` | Intermedio | Responder con búsqueda léxica | Recuperación y citas. |
 | `I-RAG-VECTOR-005` | Intermedio | Recuperar una paráfrasis | Embeddings, top-k y reranking. |
-| `I-MCP-006` | Intermedio | Consultar un MCP simulado | Descubrimiento, permisos y resultados. |
+| `I-MCP-006` | Intermedio | Consultar un MCP simulado | Sin laboratorio dueño; protocolo aplazado. |
+| `I-WORLD-DEAL-007` | Intermedio | Cerrar, estancar o perder un trato simulado | Mundo, roles, rúbrica y ticks. |
+| `I-WORLD-STORE-008` | Intermedio | Operar una tienda dos días con stock | Quiebre, reorden, margen. |
+| `I-WORLD-CAMP-009` | Intermedio | Tres oleadas de campaña simulada | Presupuesto, lift, veto de marca. |
 | `A-RAG-GRAPH-001` | Avanzado | Resolver una pregunta multi-hop | Entidades, relaciones y trazabilidad. |
 | `A-RAG-AGENTIC-002` | Avanzado | Decidir si buscar y corregir consulta | Routing, reflexión y recuperación. |
 | `A-REPO-GRAPH-003` | Avanzado | Explicar el flujo de un repositorio | Grafo de código y evidencia de ruta. |
 | `A-PROMPT-EVOLVE-004` | Avanzado | Proponer una mejora versionada | Experimento, comparación y aprobación. |
+| `A-IMAGE-GEN-005` | Avanzado | Brief a imagen local con crítica | Director, engine, seed, rechazo. |
+| `A-IMAGE-EDIT-006` | Avanzado | Editar una imagen sin regenerarla | Máscara, consistencia, no pedido. |
+| `A-VOICE-007` | Avanzado | Diálogo local con timings | STT, TTS, diarización de fixture. |
+| `A-VIDEO-GEN-008` | Avanzado | Clip corto local de 10–15 s | Storyboard, stills o engine de video. |
+| `A-VIDEO-EDIT-009` | Avanzado | Montar un reel y alinear subtítulos | Cortes, sync, hash del mp4. |
 
 ## 6. Casos de fundamentos
 
@@ -295,6 +303,10 @@ Una variante posterior simulará un fallo después de una escritura ambigua; en 
 - La salida final conserva las correcciones aprobadas.
 - Se compara contra un agente único con la misma entrada.
 
+El corte A0 de este caso está implementado en [`03-orchestration/`](../03-orchestration/README.md).
+El gate determinista busca headings, Ollama, PowerShell, condición de parada y ausencia de marcas
+cloud. El revisor LLM es una opinión visible, no la autoridad de aprobado.
+
 ### I-PARALLEL-002 — Fan-out/fan-in
 
 **Tarea:** extraer hechos de tres documentos independientes y crear una tabla consolidada.
@@ -306,6 +318,10 @@ Una variante posterior simulará un fallo después de una escritura ambigua; en 
 - El agregador espera resultados o timeouts explícitos.
 - Una rama fallida no se presenta como completa.
 - Se mide tiempo secuencial frente a paralelo.
+
+El corte A de este caso está implementado en [`04-parallel-agents/`](../04-parallel-agents/README.md).
+El agregador es determinista: espera resultados o timeouts y excluye las ramas fallidas de la tabla.
+El speedup se mide; un modelo Ollama compartido puede serializar y eso también es un resultado válido.
 
 ### I-LOOP-003 — Mejora acotada
 
@@ -346,6 +362,8 @@ Una variante posterior simulará un fallo después de una escritura ambigua; en 
 
 ### I-MCP-006 — MCP simulado
 
+**Estado:** sin laboratorio dueño desde el plan 0.2.5. El protocolo no ocupa el slot 10.
+
 **Servidor fixture:** expone `list_notes` y `get_note`; los recursos viven en una carpeta temporal.
 
 **Criterios de aprobado:**
@@ -355,6 +373,42 @@ Una variante posterior simulará un fallo después de una escritura ambigua; en 
 - Respeta el alcance de rutas.
 - Representa visualmente request, response y error.
 - No accede a red externa.
+
+### I-WORLD-DEAL-007 — Trato simulado
+
+**Mundo fixture:** un lead, un techo de precio secreto, un competidor que entra en el turno 4 y una fecha de vencimiento.
+
+**Criterios de aprobado:**
+
+- El vendedor no lee las restricciones secretas del comprador.
+- Cada acción pasa por el motor; una oferta ilegal se rechaza.
+- El desenlace es ganado, perdido o estancado según el estado, no según un relato.
+- El coach emite rúbrica por eje (diagnóstico, pregunta, propuesta, objeción, cierre, ética).
+- Existe línea base de agente único sobre el mismo mundo.
+
+### I-WORLD-STORE-008 — Tienda con stock
+
+**Mundo fixture:** cinco SKU, demanda por hora, un quiebre forzado y un reorden con demora.
+
+**Criterios de aprobado:**
+
+- Una venta sin stock se niega; no se inventa inventario.
+- El reorden no llega en el mismo tick.
+- El auditor reporta margen, quiebre, merma y espera desde el estado.
+- El gerente no escribe existencias a mano.
+- Hay comparación contra un dependiente único.
+
+### I-WORLD-CAMP-009 — Campaña simulada
+
+**Mundo fixture:** un segmento, dos canales simulados, presupuesto finito y una claim prohibida.
+
+**Criterios de aprobado:**
+
+- No hay envío real de correo ni publicación.
+- El crítico tumba la pieza con claim prohibida.
+- El gasto no supera el presupuesto.
+- El lift sale del modelo del fixture, no de un adjetivo del redactor.
+- Tres oleadas quedan registradas como ticks.
 
 ## 9. Casos avanzados
 
@@ -405,6 +459,62 @@ La suite contiene tres preguntas:
 - Exige mejora sin regresiones de seguridad.
 - No reemplaza v1 sin aprobación humana.
 - Permite rechazar o revertir v2.
+
+### A-IMAGE-GEN-005 — Brief a imagen
+
+**Entrada fixture:** tres briefs sintéticos (producto, diagrama, escena) sin marcas reales.
+
+**Criterios de aprobado:**
+
+- El director llama a un engine local; no hay API cloud.
+- El crítico puede rechazar y forzar un reintento dentro de presupuesto.
+- El artefacto queda hasheado en `.local/`.
+- Se registra seed, engine y VRAM.
+- Un prompt único sin crítica es la línea base.
+
+### A-IMAGE-EDIT-006 — Editar sin regenerar
+
+**Entrada fixture:** una imagen de catálogo sintético, una máscara y la instrucción de quitar fondo sin cambiar el SKU.
+
+**Criterios de aprobado:**
+
+- No se genera una imagen nueva desde cero.
+- El crítico detecta un cambio no pedido si se introduce en el fallo didáctico.
+- La máscara y el resultado se conservan como artefactos.
+- No aparecen rostros ni marcas ajenas al fixture.
+
+### A-VOICE-007 — Diálogo local
+
+**Entrada fixture:** un guion de dos hablantes y dos voces sintéticas.
+
+**Criterios de aprobado:**
+
+- Transcripción y síntesis son locales.
+- Hay timings por turno.
+- Un turno se regraba tras crítica.
+- No se clona la voz de una persona real.
+
+### A-VIDEO-GEN-008 — Clip corto
+
+**Entrada fixture:** un guion de 10–15 s y stills o un retrato sintético.
+
+**Criterios de aprobado:**
+
+- El primer corte viable usa stills + voz (variante A0).
+- El storyboard es visible y corresponde al mp4.
+- Se registra engine y VRAM.
+- LivePortrait o Wan2GP solo si el spike previo lo autoriza.
+
+### A-VIDEO-EDIT-009 — Montaje con subtítulos
+
+**Entrada fixture:** un bruto con silencios y una frase que no coincide con el audio.
+
+**Criterios de aprobado:**
+
+- El editor corta silencios y exporta mp4 hasheado.
+- Los subtítulos se alinean con timings, no se pegan a ojo.
+- El crítico marca el desajuste audio-texto del fallo didáctico.
+- No hay publicación ni red.
 
 ## 10. Contrato JSONL
 

@@ -146,6 +146,10 @@ input {
   gap: 12px;
 }
 
+.hero-actions .button.ghost {
+  margin-top: 0;
+}
+
 .button {
   min-height: 46px;
   padding: 11px 17px;
@@ -254,6 +258,11 @@ input {
   background: #ffe8ea;
 }
 
+.library-summary {
+  margin: 14px 0 10px;
+  color: var(--muted);
+}
+
 .panels {
   margin-top: 28px;
 }
@@ -295,6 +304,13 @@ input {
 .tab-bar button.active {
   color: white;
   background: var(--navy);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .table-list,

@@ -5,8 +5,8 @@ Estas reglas se aplican a todo el laboratorio. Dentro de BL_Loops se suman al `A
 ## Objetivo y estado
 
 - Enseña a convertir una biblioteca débil en un `KnowledgeRelease` trazable: fuentes, afirmaciones, evidencia, conflictos y aprobación humana.
-- El corte editorial local y determinista está implementado. También existen importación PDF/DOCX con MarkItDown, consulta de Open Library y Google Books, captura web estrecha con Crawl4AI y paquetes manuales para NotebookLM y RAG.
-- Las capacidades de investigación son CLI/adaptadores separados: no descargan automáticamente libros, no suben a NotebookLM y no publican por sí mismas un release.
+- El corte editorial local y determinista está implementado. También existen importación PDF/DOCX con MarkItDown, catálogos (Open Library, Google Books, Gutenberg, Internet Archive), un loop de biblioteca acotado, captura web estrecha con Crawl4AI y paquetes manuales para NotebookLM y RAG.
+- Las capacidades de investigación son CLI/adaptadores separados: no suben a NotebookLM y no publican por sí mismas un release. Solo descargan un PDF si el catálogo marca `full_download` con dominio público, licencia abierta o permiso explícito y evidencia.
 - CrewAI, ArchiveBox, Langfuse y embeddings siguen aplazados.
 - Ollama es opcional mediante `audit --extractor ollama`: preflight de modelo local, chunks
   acotados y JSON estricto. Una salida malformada se rechaza, no se repara ni cae a otro extractor.

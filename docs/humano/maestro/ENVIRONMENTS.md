@@ -86,6 +86,9 @@ Valores como `.local/data` deben resolverse contra la raíz del **laboratorio qu
 ```text
 01-prompt-agent-factory/.local/data
 02-single-agent/.local/data
+03-orchestration/.local/runs
+04-parallel-agents/.local/runs
+05-agent-loops/.local/runs
 ```
 
 ## Comandos recomendados

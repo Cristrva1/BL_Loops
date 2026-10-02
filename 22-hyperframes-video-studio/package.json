@@ -1,0 +1,15 @@
+{
+  "name": "22-hyperframes-video-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx hyperframes preview",
+    "check": "npx hyperframes check",
+    "render": "npx hyperframes render",
+    "doctor": "npx hyperframes doctor"
+  },
+  "dependencies": {
+    "hyperframes": "^0.8.34"
+  }
+}

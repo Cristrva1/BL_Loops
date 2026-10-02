@@ -1,8 +1,8 @@
 # Plan maestro didáctico y visual de BL_Loops
 
 **Estado:** aprobado para implementación incremental  
-**Versión:** 0.2.4  
-**Fecha de corte:** 2026-08-30  
+**Versión:** 0.2.5  
+**Fecha de corte:** 2026-09-02  
 **Entorno objetivo:** Windows 11, PowerShell, ejecución local con Ollama
 
 ## 1. Propósito
@@ -14,6 +14,8 @@ BL_Loops será un repositorio de aprendizaje y experimentación para responder, 
 - ¿Cómo se ve por dentro una ejecución con herramientas?
 - ¿Cuándo conviene un agente único, una orquestación, trabajo paralelo o un loop?
 - ¿Qué cambia entre RAG simple, vectorial, Graph RAG y RAG agéntico?
+- ¿Cómo se evalúa un equipo de agentes dentro de un mundo simulado con reglas, stock, presupuesto o un trato, y no solo dentro de un chat?
+- ¿Qué se puede generar y editar en imagen, voz y video con engines locales y un director en Ollama?
 - ¿Qué framework, repositorio y modelo local funciona mejor para cada tipo de trabajo?
 - ¿Cómo se comparan calidad, fidelidad, velocidad, consumo y estabilidad sin depender de impresiones?
 
@@ -36,6 +38,9 @@ El objetivo no es crear una plataforma monolítica. El objetivo es construir una
 13. Git se inicializa en `main`; el repositorio permanece privado y sin licencia pública por ahora.
 14. Cada laboratorio tendrá su propio `pyproject.toml`, `uv.lock` y `.venv`; solo se compartirán las cachés globales de herramientas.
 15. Se aprueba un benchmark de tres clientes de programación en laboratorios autónomos, con la misma tarea, SHA, permisos, modelo, contexto y hardware: `14-local-code-hermes`, `15-local-code-opencode` y `16-local-code-claude`.
+16. Se aprueba una familia de mundos simulados con orquestación, loops y roles: gimnasio de tratos (`10-sales-deal-gym`), gimnasio de tienda (`17-store-ops-gym`) y gimnasio de campaña (`18-campaign-gym`). El mundo es un motor determinista; los personajes son modelos locales; no hay CRM, correo, redes ni pagos reales.
+17. Se aprueba una familia audiovisual local: generación de imagen, edición de imagen, voz, generación de video y edición de video (`19` a `23`). El director y el crítico usan Ollama; los píxeles, las voces y los fotogramas salen de engines locales del menú portable. Los pesos viven fuera de Git. No hay APIs cloud ni publicación en redes.
+18. MCP deja de ocupar un laboratorio propio. El caso `I-MCP-006` permanece en la suite de evaluación sin dueño de runtime. El protocolo podrá reaparecer como variante de tools en el laboratorio 02 o como capacidad de los clientes 14 a 16, no como proyecto 10.
 
 ## 3. Jerarquía de conocimiento
 
@@ -64,43 +69,56 @@ flowchart TD
 ```mermaid
 flowchart TB
     ENV[(.env global\nsolo configuración)]
-    PF[01 Prompt & Agent Factory]
-    SA[02 Single Agent]
-    OR[03 Orchestration]
-    PA[04 Parallel Agents]
-    LO[05 Loops]
-    RN[06 Naive RAG]
-    RV[07 Vector RAG]
-    RG[08 Graph RAG]
-    RA[09 Agentic RAG]
-    MC[10 MCP & Connectors]
-    GR[11 Repository Graphs]
-    EV[12 Evaluator Dashboard]
 
-    ENV -. configuración .-> PF
-    ENV -. configuración .-> SA
-    ENV -. configuración .-> OR
-    ENV -. configuración .-> PA
-    ENV -. configuración .-> LO
-    ENV -. configuración .-> RN
-    ENV -. configuración .-> RV
-    ENV -. configuración .-> RG
-    ENV -. configuración .-> RA
-    ENV -. configuración .-> MC
-    ENV -. configuración .-> GR
+    subgraph CORE[01 a 09 · agentes y RAG]
+        PF[01 Factory]
+        SA[02 Single Agent]
+        OR[03 Orchestration]
+        PA[04 Parallel]
+        LO[05 Loops]
+        RN[06 Naive RAG]
+        RV[07 Vector RAG]
+        RG[08 Graph RAG]
+        RA[09 Agentic RAG]
+    end
+
+    subgraph WORLDS[Mundos simulados]
+        DG[10 Deal Gym]
+        ST[17 Store Gym]
+        CG[18 Campaign Gym]
+    end
+
+    subgraph CODE[Código y conocimiento]
+        GR[11 Repo Graphs]
+        SK[13 Sales Curator]
+        H14[14 Hermes]
+        H15[15 OpenCode]
+        H16[16 Claude]
+    end
+
+    subgraph MEDIA[Audiovisual local]
+        IG[19 Image Gen]
+        IE[20 Image Edit]
+        VO[21 Voice]
+        VG[22 Video Gen]
+        VE[23 Video Edit]
+    end
+
+    EV[12 Evaluator Dashboard]
+    X[(artifacts/)]
+    J[(JSONL)]
+
+    ENV -. configuración .-> CORE
+    ENV -. configuración .-> WORLDS
+    ENV -. configuración .-> CODE
+    ENV -. configuración .-> MEDIA
     ENV -. configuración .-> EV
 
-    PF -- exporta archivos copiables --> X[(artifacts/)]
-    SA -- exporta --> J[(JSONL)]
-    OR -- exporta --> J
-    PA -- exporta --> J
-    LO -- exporta --> J
-    RN -- exporta --> J
-    RV -- exporta --> J
-    RG -- exporta --> J
-    RA -- exporta --> J
-    MC -- exporta --> J
-    GR -- exporta --> J
+    PF -- exporta archivos copiables --> X
+    CORE --> J
+    WORLDS --> J
+    CODE --> J
+    MEDIA --> J
     J -- importación manual --> EV
 ```
 
@@ -138,6 +156,49 @@ flowchart TB
 ```
 
 No se adopta un workspace de `uv` ni una `.venv` raíz porque ambos acoplarían la resolución de dependencias. El ahorro de descargas se obtiene mediante la caché global, sin perder aislamiento ni reproducibilidad. Cada laboratorio incluye un `.env.example` para conservar portabilidad fuera de BL_Loops.
+
+### 4.4 Patrón de un mundo simulado
+
+Los laboratorios 10, 17 y 18 comparten este patrón. No comparten código ni estado.
+
+```mermaid
+flowchart LR
+    W[Motor del mundo\nestado SQLite] --> T[Tick de tiempo simulado]
+    T --> R[Personajes Ollama]
+    R --> A[Acción tipada]
+    A --> W
+    W --> S[Coach o auditor]
+    S --> O[JSONL + marcador]
+```
+
+Reglas:
+
+- El mundo es un motor determinista. Los personajes no escriben el estado a mano.
+- Cada acción es una propuesta con schema. El motor la acepta, la rechaza o la aplica en parte.
+- El tiempo es un tick (turno, hora o día), no el reloj de Windows.
+- Un agente único juega el mismo mundo como línea base. Sin esa línea no se afirma que la orquestación ganó.
+- Correo, CRM, redes, pasarelas de pago y stock real permanecen apagados.
+
+### 4.5 Patrón de un estudio audiovisual
+
+Los laboratorios 19 a 23 comparten este patrón. No se encadenan en ejecución.
+
+```mermaid
+flowchart LR
+    B[Brief] --> D[Director Ollama]
+    D --> E[Engine local\nimagen voz o video]
+    E --> C[Crítico Ollama]
+    C -->|reintento con presupuesto| D
+    C -->|aceptar| ART[.local/artefacto]
+```
+
+Reglas:
+
+- Ollama dirige y critica. El engine local produce píxeles, audio o fotogramas.
+- Base propia primero; máximo dos variantes. ComfyUI, Fooocus, InvokeAI, WhisperX, MoviePy, Remotion y Wan2GP no se apilan “por si acaso”.
+- Pesos y checkpoints fuera de Git.
+- Por defecto: `qwen3.5:4b` como director más un engine. No se carga un 9B junto a difusión o video hasta un spike de VRAM.
+- Fixtures sintéticos o con consentimiento explícito. Nada de rostros, voces o marcas reales no autorizadas, ni publicación en redes.
 
 ## 5. Decisión del dashboard
 
@@ -198,13 +259,20 @@ BL_Loops/
 ├── 07-vector-rag/                 # autónomo
 ├── 08-graph-rag/                  # autónomo
 ├── 09-agentic-rag/                # autónomo
-├── 10-mcp-connectors/             # autónomo
+├── 10-sales-deal-gym/             # planificado; mundo simulado
 ├── 11-repository-graphs/          # autónomo
 ├── 12-evaluator-dashboard/        # importa JSONL manualmente
 ├── 13-sales-knowledge-curator/    # autónomo; no escribe en 09
 ├── 14-local-code-hermes/          # preflight inicial; benchmark pendiente
 ├── 15-local-code-opencode/        # planificado
-└── 16-local-code-claude/          # planificado
+├── 16-local-code-claude/          # planificado
+├── 17-store-ops-gym/              # planificado; mundo simulado
+├── 18-campaign-gym/               # planificado; mundo simulado
+├── 19-image-generation-studio/    # planificado; audiovisual
+├── 20-image-edit-studio/          # planificado; audiovisual
+├── 21-voice-studio/               # planificado; audiovisual
+├── 22-video-generation-studio/    # planificado; audiovisual
+└── 23-video-edit-studio/          # planificado; audiovisual
 ```
 
 Las carpetas ejecutables se crearán una por una. No se generarán cascarones vacíos que aparenten avance.
@@ -288,11 +356,16 @@ El primer corte, solicitado explícitamente el 29 de agosto de 2026, reduce temp
 
 | Variante | Combinación | Patrón principal |
 |---|---|---|
+| A0, acotada | Python + Ollama + FastAPI + React Flow | Pipeline secuencial propio con handoffs y gate determinista. |
 | A | LangGraphJS + Ollama + React Flow | Grafo de estado determinista. |
 | B | CrewAI + Ollama + FastAPI + visualizador propio | Equipo basado en roles y tareas. |
 | C | AG2 + Ollama + FastAPI + visualizador propio | Conversación y redes de agentes. |
 
 El experimento siempre incluirá una línea base de agente único. Sin ella no puede afirmarse que la orquestación mejoró el resultado.
+
+El primer corte A0 está implementado en [`03-orchestration/`](../03-orchestration/README.md):
+planificador, autor, revisor, una corrección máxima, comparación contra el agente único, SSE y
+JSONL sanitizado. LangGraphJS, CrewAI y AG2 siguen aplazados hasta que esta base permita medirlos.
 
 ### 8.4 Trabajo paralelo
 
@@ -303,6 +376,11 @@ El experimento siempre incluirá una línea base de agente único. Sin ella no p
 | A | FastAPI `asyncio` + un modelo Ollama compartido | Fan-out/fan-in mínimo. |
 | B | LangGraphJS con ramas paralelas | Dependencias y unión tipada. |
 | C | CrewAI o AG2, según el ganador del laboratorio anterior | Paralelismo propio del framework. |
+
+El primer corte A está implementado en [`04-parallel-agents/`](../04-parallel-agents/README.md):
+tres fuentes independientes, línea secuencial, `asyncio.gather` con tope `max_in_flight`,
+agregador determinista, timeout explícito por rama, SSE y JSONL sanitizado. LangGraphJS,
+CrewAI/AG2 y varios modelos simultáneos en VRAM siguen aplazados.
 
 Primero se compartirán los pesos de un solo modelo. La ejecución simultánea de varios modelos será un experimento avanzado separado.
 
@@ -317,6 +395,11 @@ Primero se compartirán los pesos de un solo modelo. La ejecución simultánea d
 | C, avanzada | OpenEvolve + Ollama | Solo problemas de optimización de código con función de fitness. |
 
 Todo loop debe declarar: objetivo, score inicial, presupuesto, condición de mejora, condición de parada y mejor resultado conocido.
+
+El primer corte A está implementado en [`05-agent-loops/`](../05-agent-loops/README.md):
+loop Python propio, evaluador determinista de cinco assertions, máximo cinco iteraciones,
+dos errores o tres minutos, conservación del mejor candidato, SSE y JSONL sanitizado.
+LangGraphJS, OpenEvolve y el CLI de `loop-engineering` siguen aplazados.
 
 ### 8.6 RAG sencillo
 
@@ -362,6 +445,11 @@ variantes B/C permanecen pendientes hasta demostrar una necesidad adicional.
 
 El clon actual de Microsoft GraphRAG declara modo de mantenimiento. Se usará como referencia de investigación, no como fundamento transversal.
 
+El primer corte de una base propia está implementado en [`08-graph-rag/`](../08-graph-rag/README.md):
+triples visibles en Markdown, grafo SQLite, BFS acotado, distinción `extracted`/`inferred` y
+contraste léxico FTS5 para el caso `A-RAG-GRAPH-001`. Microsoft GraphRAG, CodeGraph, Graphify y
+Neo4j siguen aplazados.
+
 ### 8.9 RAG agéntico
 
 **Pregunta:** ¿Puede el agente decidir cuándo buscar, reformular, validar y volver a recuperar?
@@ -378,17 +466,28 @@ agente experto en ventas. El modelo formula la consulta, pero el runtime autoriz
 máximo una herramienta local; si la llamada es inválida usa un fallback determinista. Este corte
 no afirma completar todavía el ciclo de reformular, evaluar y volver a recuperar de la variante A.
 
-### 8.10 MCP y conectores
+### 8.10 Gimnasio de tratos
 
-**Pregunta:** ¿Qué añade MCP frente a llamar una función local directamente?
+**Carpeta:** `10-sales-deal-gym`  
+**Pregunta:** ¿Un vendedor local cierra, estanca o pierde un trato cuando el comprador, el competidor y el coach viven en un mercado simulado con reglas, y no en un chat libre?
 
-| Variante | Combinación | Alcance inicial |
+El runtime avanza días de calendario ficticio. Entran leads, cambia el techo de precio del comprador, aparece un competidor y vence una oferta. El vendedor solo propone acciones tipadas. El motor del mundo aplica o rechaza. El coach puntúa con rúbrica.
+
+| Rol | Función |
+|---|---|
+| Comprador | Restricciones secretas (precio techo, plazo, miedo) que el vendedor no ve. |
+| Vendedor | Humano o modelo local; habla y propone; no reescribe el mundo. |
+| Competidor | Ofertas y objeciones que aparecen en el tiempo simulado. |
+| Coach | Rúbrica: diagnóstico, pregunta, propuesta, objeción, cierre, ética. |
+
+| Variante | Combinación | Uso |
 |---|---|---|
-| A, base | Servidor MCP mínimo + filesystem sandbox + SQLite | Entender protocolo, schemas y permisos. |
-| B | `mcp-use` + Inspector local + Ollama | Construcción tipada y visualización de llamadas. |
-| C | Servidores oficiales de referencia + adaptador local | Interoperabilidad y pruebas de contrato. |
+| A, base | FastAPI + SQLite + orquestador propio + Ollama + React Flow | Un trato, diez turnos, tres desenlaces. |
+| B | LangGraphJS + el mismo motor de mundo | Comparar estado explícito de roles. |
+| C | CrewAI + el mismo motor de mundo | Comparar equipo por roles frente a la base. |
 
-Correo, CRM, mensajería, navegador y APIs reales se documentarán en la guía, pero permanecerán desactivados.
+**Corte vertical:** un trato, un comprador, diez turnos, desenlace ganado / perdido / estancado, JSONL con cada tick del mundo. Caso `I-WORLD-DEAL-007`.  
+El laboratorio 09 responde preguntas de ventas. Este **juega** un trato. El 13 publica conocimiento. Este **entrena conducta**. No se importan releases ni índices de esos laboratorios.
 
 ### 8.11 Grafos de repositorios
 
@@ -466,6 +565,130 @@ si la comparación Ollama termina o documenta una incompatibilidad. llama.cpp di
 una herramienta diagnóstica. El modelo 27B queda fuera del uso cotidiano y, si se evalúa, será un
 revisor adversarial aislado y sin escritura.
 
+### 8.17 Gimnasio de tienda
+
+**Carpeta:** `17-store-ops-gym`  
+**Pregunta:** ¿Un equipo de tienda mantiene margen y disponibilidad durante una semana simulada cuando el stock, la demanda y el reabastecimiento son reglas del mundo, no texto improvisado?
+
+El mundo tiene SKU, existencias, precios, cola de clientes y pedidos a almacén. Cada tick es una hora de tienda. Un stockout no se “narra”: el motor niega la venta. El gerente orquesta; el auditor puntúa margen, quiebre, merma y espera.
+
+| Rol | Función |
+|---|---|
+| Cliente | Demanda muestreadas del fixture; se va si espera demasiado. |
+| Dependiente | Atiende, consulta stock, propone sustituto. |
+| Almacén | Recibe pedidos, entrega con demora simulada. |
+| Gerente | Orquesta turnos, precios y reorden dentro de un presupuesto. |
+| Auditor | Score de operación; no vende. |
+
+| Variante | Combinación | Uso |
+|---|---|---|
+| A, base | FastAPI + SQLite + orquestador propio + Ollama + React Flow | Una semana, catálogo pequeño, demanda determinista. |
+| B | LangGraphJS + el mismo motor | Loops de reorden visibles como grafo. |
+| C | Misma semana, agente único vs equipo | Medir si la orquestación reduce quiebres sin hundir margen. |
+
+**Corte vertical:** cinco SKU, dos días, un quiebre forzado y un reorden que llega tarde. Caso `I-WORLD-STORE-008`.
+
+### 8.18 Gimnasio de campaña
+
+**Carpeta:** `18-campaign-gym`  
+**Pregunta:** ¿Una orquestación de marketing mejora alcance y conversión simulados a lo largo de oleadas, sin gastar de más ni romper la marca, frente a un redactor único?
+
+El mundo tiene segmentos, canales simulados (no hay correo ni redes reales), presupuesto, fatiga de audiencia y banderas de marca. Cada oleada produce creatividades de texto, el mercado responde con un modelo de lift del fixture, y el crítico puede tumbar una pieza.
+
+| Rol | Función |
+|---|---|
+| Estratega | Elige segmento, canal simulado y objetivo de la oleada. |
+| Redactor | Escribe variantes con contrato de tono y prohibiciones. |
+| Planificador de medios | Asigna presupuesto por canal simulado. |
+| Mercado | Responde con un modelo determinista más ruido acotado. |
+| Crítico de marca | Bloquea claims no permitidos y fatiga excesiva. |
+
+| Variante | Combinación | Uso |
+|---|---|---|
+| A, base | FastAPI + SQLite + orquestador propio + Ollama + React Flow | Tres oleadas, un presupuesto, un segmento. |
+| B | Referencia de `marketingskills` copiada como rúbrica, no como runtime | Comparar briefs propios con un catálogo de procedimientos. |
+| C | Referencia de `agency-agents` como plantillas de rol | Solo si B demuestra hueco; no se instala la agencia completa. |
+
+**Corte vertical:** una campaña de tres oleadas, presupuesto finito, una pieza rechazada por marca y un JSONL con gasto y lift simulado. Caso `I-WORLD-CAMP-009`.  
+No publica en redes ni envía correo. No llama al estudio de imagen: el brief visual, si existe, es texto.
+
+### 8.19 Estudio de generación de imagen
+
+**Carpeta:** `19-image-generation-studio`  
+**Pregunta:** ¿Un director local convierte un brief en una imagen usable, con el grafo de generación visible, mejor que un prompt único sin crítica?
+
+Candidatos del menú: `diffusers`, `comfyui`, `fooocus`. No se combinan ComfyUI y Stable Diffusion WebUI: cumplen la misma función.
+
+| Variante | Combinación | Uso |
+|---|---|---|
+| A, base | FastAPI + Diffusers local + Ollama director/crítico + React Flow | Un brief, un seed, un reintento, artefacto hasheado. |
+| B | ComfyUI como engine, el laboratorio propio como director | Control nodal reproducible. |
+| C | Fooocus como engine simple | Medir velocidad de llegada frente a control. |
+
+**Corte vertical:** tres briefs sintéticos (producto, diagrama, escena), rechazo del crítico y una imagen aceptada en `.local/`. Caso `A-IMAGE-GEN-005`.
+
+### 8.20 Estudio de edición de imagen
+
+**Carpeta:** `20-image-edit-studio`  
+**Pregunta:** ¿El sistema edita una imagen existente (inpaint, recorte de producto, consistencia de estilo) sin regenerar todo y sin inventar marcas o rostros no autorizados?
+
+Candidatos: `diffusers` (inpaint), `comfyui-ipadapter-plus`, `invokeai`, `real-esrgan`. GFPGAN y face-swap quedan fuera salvo fixture de consentimiento y necesidad demostrada.
+
+| Variante | Combinación | Uso |
+|---|---|---|
+| A, base | Diffusers inpaint + máscara + Ollama + React Flow | Editar un catálogo sintético. |
+| B | InvokeAI canvas como engine | Comparar edición interactiva con pipeline por código. |
+| C | ComfyUI + IPAdapter | Consistencia de un producto entre tomas. |
+
+**Corte vertical:** una foto fixture, una máscara, una instrucción (“quita el fondo, no cambies el SKU”) y un crítico que detecta un cambio no pedido. Caso `A-IMAGE-EDIT-006`.
+
+### 8.21 Estudio de voz
+
+**Carpeta:** `21-voice-studio`  
+**Pregunta:** ¿Se puede transcribir, diarizar y sintetizar un diálogo local con voces de fixture, y que un director recorte o rehaga turnos con evidencia de timings?
+
+Candidatos: `faster-whisper` o `whisper` local, `whisperx`, `supertonic`, `tts`, `omnivoice-studio`. El menú marca algunos como cloud; en este laboratorio solo se usan si el spike demuestra inferencia local.
+
+| Variante | Combinación | Uso |
+|---|---|---|
+| A, base | faster-whisper + SuperTonic + Ollama + React Flow | Guion → voces → transcripción de vuelta. |
+| B | WhisperX + Coqui TTS | Timings por palabra y diarización. |
+| C | OmniVoice-Studio como suite de referencia | Solo si A/B no cubren clonación de fixture. |
+
+**Corte vertical:** un diálogo de dos voces sintéticas, subtítulos alineados y un turno regrabado tras crítica. Caso `A-VOICE-007`.  
+Prohibido clonar la voz de una persona real.
+
+### 8.22 Estudio de generación de video
+
+**Carpeta:** `22-video-generation-studio`  
+**Pregunta:** ¿Qué basta para un clip corto local: stills con voz, retrato animado o generación de video, y cuándo la VRAM de 16 GB lo impide?
+
+Candidatos: `moviepy`, `liveportrait`, `wan2gp`. `deep-live-cam` queda fuera por riesgo de deepfake. Cosmos queda fuera hasta un spike de hardware.
+
+| Variante | Combinación | Uso |
+|---|---|---|
+| A0, acotada | MoviePy + stills + TTS local + Ollama | Siempre viable; enseña timeline y cortes. |
+| B | LivePortrait | Foto fixture + audio → talking head. |
+| C | Wan2GP | Clip corto; solo tras spike de VRAM. |
+
+**Corte vertical:** un clip de 10–15 s a partir de un guion fixture, con storyboard visible. Caso `A-VIDEO-GEN-008`.  
+La variante A0 es el primer corte obligatorio. B y C no se instalan para “completar el menú”.
+
+### 8.23 Estudio de edición de video
+
+**Carpeta:** `23-video-edit-studio`  
+**Pregunta:** ¿Un editor-agente corta, subtitula y ensambla un reel a partir de material local mejor que concatenar archivos a ciegas?
+
+Candidatos de la receta del menú “Pipeline de Reels”: `whisperx` → `tts` → `moviepy` / `remotion` / `lossless-cut`. `videofy-minimal` es la variante de artículo a clip. `video-use` y `openmontage` son skills de referencia, no runtime.
+
+| Variante | Combinación | Uso |
+|---|---|---|
+| A, base | FFmpeg + MoviePy + WhisperX + Ollama editor + React Flow | Cortar silencio, pegar subtítulos, exportar mp4. |
+| B | Remotion | Variantes programáticas del mismo guion. |
+| C | videofy-minimal | Artículo fixture → clip de señalética. |
+
+**Corte vertical:** un bruto sintético con silencios y una frase falsa; el editor corta, subtitula y el crítico marca el desajuste audio-texto. Caso `A-VIDEO-EDIT-009`.
+
 ## 9. Modelos locales: escalera inicial
 
 | Nivel | Modelo | Primer uso | Motivo experimental |
@@ -484,6 +707,21 @@ Reglas:
 - No traducir etiquetas como `medium` o `high` de clientes cloud a una capacidad supuesta del modelo local; registrar el control literal solo cuando el cliente lo exponga y usar `null` cuando no aplique.
 - No descargar modelos nuevos hasta que un caso de prueba identifique una necesidad no cubierta.
 
+### 9.1 Engines audiovisuales locales
+
+No son modelos de chat. Se evalúan aparte y no sustituyen a Ollama como director.
+
+| Engine | Laboratorios | Nota |
+|---|---|---|
+| Diffusers / ComfyUI / Fooocus | 19, 20 | Un solo engine por corrida. Spike de VRAM antes de Flux. |
+| InvokeAI / IPAdapter | 20 | Edición y consistencia; no se instala junto a Fooocus. |
+| faster-whisper / WhisperX | 21, 23 | El menú puede marcarlos cloud; solo se usan si el spike demuestra local. |
+| SuperTonic / Coqui TTS | 21, 22 A0 | Voces de fixture. Sin clonación de personas. |
+| MoviePy + FFmpeg | 22 A0, 23 | Primer corte de video; cabe en este hardware. |
+| LivePortrait / Wan2GP | 22 B/C | Opcionales tras spike. Wan2GP es el candidato “GPU pobre” del menú. |
+
+Los pesos se guardan fuera de Git, junto a la política de Ollama en `D:/` u otra ruta local documentada en el `.env.example` del laboratorio. No se imprimen rutas con secretos.
+
 ## 10. Configuración global e independencia
 
 El `.env` raíz contiene únicamente endpoints locales, nombres de modelo, rutas y banderas de seguridad. No contiene estado de ejecución.
@@ -501,9 +739,11 @@ leer secretos durante una inspección. Usa defaults seguros y flags CLI; su `.en
 el contrato portable para la futura fase de ejecución, no una capacidad activa del preflight.
 
 `Inferencia local` y `cero egress` son afirmaciones distintas. La primera exige que toda generación
-llegue únicamente al Ollama de loopback. La segunda requiere evidencia de que el cliente y su árbol
-de procesos no abrieron conexiones no-loopback. Observar una conexión externa invalida
-`zero_egress`, pero no demuestra por sí solo que se enviaron prompts.
+de lenguaje llegue únicamente al Ollama de loopback. En los laboratorios 19 a 23, los píxeles, el
+audio y el video pueden salir de un engine local documentado (Diffusers, ComfyUI, Whisper, TTS,
+MoviePy, Wan2GP); eso no autoriza un proveedor cloud. La segunda requiere evidencia de que el
+cliente y su árbol de procesos no abrieron conexiones no-loopback. Observar una conexión externa
+invalida `zero_egress`, pero no demuestra por sí solo que se enviaron prompts.
 
 ## 11. Contratos mínimos
 
@@ -542,6 +782,8 @@ Todo laboratorio exportará:
 - Scores por métrica y score agregado.
 - Estado final y motivos de fallo.
 - Referencias a artefactos, sin incrustar secretos ni PII.
+- En mundos simulados: tick, estado del mundo, acciones aceptadas o rechazadas y score de rúbrica.
+- En estudios audiovisuales: hash del artefacto, engine, seed o timings, y decisión del crítico.
 
 El contrato detallado vive en [CASOS_DE_EVALUACION.md](CASOS_DE_EVALUACION.md).
 
@@ -554,8 +796,10 @@ El contrato detallado vive en [CASOS_DE_EVALUACION.md](CASOS_DE_EVALUACION.md).
 | 2 | Orquestación y paralelismo | Comparación contra agente único con evidencia. |
 | 3 | Loops acotados | Mejora medible sin ejecución infinita. |
 | 4 | Cuatro familias RAG | Corpus y preguntas idénticos, citas verificables. |
-| 5 | MCP y grafos de repositorios | Herramientas locales, permisos visibles y fixtures. |
-| 6 | Benchmark integrado | Matriz de modelos/repositorios y recomendaciones reproducibles. |
+| 5 | Grafos de repositorios | Herramientas locales, permisos visibles y fixtures. |
+| 6 | Benchmark local-code | Tres clientes, mismo SHA, mismo gate, JSONL comparable. |
+| 7 | Mundos simulados | Trato, tienda y campaña con motor de mundo, línea base de agente único y rúbrica. |
+| 8 | Audiovisual local | Imagen, edición, voz, clip y montaje con director Ollama y engine local. |
 
 ### Estado de ejecución al 2026-08-30
 
@@ -582,6 +826,21 @@ El contrato detallado vive en [CASOS_DE_EVALUACION.md](CASOS_DE_EVALUACION.md).
 - El mismo día se añadió [`13-sales-knowledge-curator/`](../13-sales-knowledge-curator/README.md)
   como fábrica local de conocimiento: fixtures sintéticos, ledger de afirmaciones, conflictos,
   aprobación humana y release versionado. No cura todavía el corpus real de ventas ni activa la web.
+- El 2 de septiembre de 2026 se implementó [`03-orchestration/`](../03-orchestration/README.md)
+  como corte A0 de la fase 2: orquestador propio, línea base de agente único y dashboard SSE.
+- El mismo 2 de septiembre se implementó [`04-parallel-agents/`](../04-parallel-agents/README.md)
+  como corte A de fan-out/fan-in: tres fuentes, tiempo secuencial frente a paralelo y agregador
+  que no completa una rama fallida. LangGraph, CrewAI, AG2 y varios modelos simultáneos siguen
+  pendientes. Esto no cierra los pendientes de la fase 1.
+- El mismo 2 de septiembre se implementó [`05-agent-loops/`](../05-agent-loops/README.md) como
+  corte A0 de la fase 3: loop tipado, score por iteración, mejor candidato y motivo de parada.
+  LangGraph, OpenEvolve y el runtime de `loop-engineering` siguen pendientes.
+- El mismo 2 de septiembre se implementó [`08-graph-rag/`](../08-graph-rag/README.md) como corte
+  CLI de Graph RAG: grafo propio en SQLite, pregunta multi-hop y contraste léxico. No instala
+  Microsoft GraphRAG ni Neo4j. Esto no cierra las variantes B/C de la sección 8.8 ni el dashboard.
+- El 2 de septiembre de 2026 se sustituyó el laboratorio 10 de MCP por la familia de mundos
+  simulados y se planificaron los estudios audiovisuales 19 a 23. Ninguna de esas carpetas se
+  crea todavía. MCP queda como caso de evaluación sin runtime propio.
 
 No se inicia una fase avanzada para ocultar un fallo de la fase anterior.
 
@@ -611,6 +870,10 @@ Un laboratorio se considera terminado cuando:
 - Los prompts maestros evolucionan mediante propuestas versionadas y aprobación humana.
 - La UI no mostrará cadenas de pensamiento privadas; mostrará decisiones resumidas, eventos y evidencia observable.
 - Los logs no guardarán PII cruda por defecto.
+- Los mundos simulados no ejecutan correo, CRM, cobros ni publicaciones. Un canal “email” o
+  “red social” es un objeto del fixture.
+- Los estudios audiovisuales no clonan voces ni rostros de personas reales, no hacen face-swap
+  y no publican. Los fixtures son sintéticos o tienen consentimiento escrito en el laboratorio.
 
 ## 15. Riesgos que deben medirse
 
@@ -624,6 +887,9 @@ Un laboratorio se considera terminado cuando:
 | LLM-as-judge favorece su propia familia | Tests deterministas, juez fijo, marca de conflicto y revisión humana. |
 | Repositorios cambian con el tiempo | Registrar SHA y nunca evaluar “latest” sin fijarlo. |
 | Corpus contiene instrucciones maliciosas | Separar datos de instrucciones y probar inyección indirecta. |
+| Un mundo simulado es solo roleplay | El motor niega acciones ilegales; el score sale de estado, no del relato. |
+| Difusión y un 9B se pelean la VRAM | Director 4B + un engine; spike antes de mezclar. |
+| Un reel “bonito” oculta desync | Subtítulos alineados, hash del mp4 y crítico con timings. |
 
 ## 16. Snapshot de repositorios candidatos
 
@@ -644,9 +910,31 @@ Todos estos clones estaban limpios al verificarse el 2026-08-28.
 | `codegraph` | Grafo local de código | `44e1812d3b1c` |
 | `graphify` | Visualización de grafo | `b2cd36267456` |
 | `langfuse` | Observabilidad avanzada | `3c3ca18eed76` |
-| `mcp-use` | Variante MCP tipada | `b7bd10b37a45` |
+| `mcp-use` | Referencia aplazada; ya no tiene laboratorio propio | `b7bd10b37a45` |
 
-Antes de usar cualquiera como dependencia se verificará su licencia completa, manifest, requisitos, compatibilidad con Ollama y comportamiento sin telemetría.
+Candidatos del menú portable para mundos y audiovisual. SHA, licencia y localidad se verifican
+antes de instalar. No se clonan “por adelantado”.
+
+| Repositorio | Rol previsto | Familia |
+|---|---|---|
+| `marketingskills` | Rúbrica y procedimientos de campaña, no runtime | 18 |
+| `agency-agents` | Plantillas de rol, solo si hay hueco | 18 |
+| `diffusers` | Base de generación y edición por código | 19, 20 |
+| `comfyui` | Engine nodal comparable | 19, 20 |
+| `fooocus` | Engine simple comparable | 19 |
+| `invokeai` | Canvas de edición | 20 |
+| `comfyui-ipadapter-plus` | Consistencia de producto | 20 |
+| `real-esrgan` | Upscale opcional tras spike | 20 |
+| `faster-whisper` / `whisperx` | Transcripción local | 21, 23 |
+| `supertonic` / `tts` | Síntesis de voz de fixture | 21, 22 |
+| `omnivoice-studio` | Suite de voz de referencia | 21 |
+| `moviepy` + FFmpeg | Timeline y montaje | 22 A0, 23 |
+| `liveportrait` | Talking head opcional | 22 |
+| `wan2gp` | Video generativo “GPU pobre” | 22 |
+| `remotion` | Video programático | 23 |
+| `videofy-minimal` | Artículo a clip | 23 |
+
+Antes de usar cualquiera como dependencia se verificará su licencia completa, manifest, requisitos, compatibilidad con Ollama o engine local y comportamiento sin telemetría.
 
 ## 17. Primera entrega ejecutable
 
@@ -668,6 +956,9 @@ La fase 1 construirá, en este orden:
 - Plataforma visual ganadora frente a la UI propia.
 - Uso simultáneo de varios modelos.
 - Conectores reales y permisos externos.
+- Laboratorio propio de MCP; el protocolo no desaparece del corpus, no ocupa el slot 10.
+- Instalación de Wan2GP, LivePortrait, OmniVoice o ComfyUI antes del spike de VRAM y licencia.
+- Canales reales de campaña, inventario real de tienda y publicación de media.
 - Casos reales anonimizados; se añadirán cuando exista una muestra concreta aprobada.
 - Cohortes A/B con LM Studio o llama.cpp directo; solo después de cerrar la cohorte Ollama o documentar su incompatibilidad.
 - Revisión adversarial aislada con el modelo 27B, siempre sin permisos de escritura.

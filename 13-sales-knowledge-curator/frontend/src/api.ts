@@ -1,4 +1,4 @@
-import type { Health, RunSnapshot } from "./types";
+import type { Health, LibraryIndex, RunSnapshot } from "./types";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -66,8 +66,26 @@ export function buildRelease(body: {
   }).then((response) => readJson<RunSnapshot>(response));
 }
 
+export function publishRelease(body: {
+  run_id: string;
+  candidate_id: string;
+  expected_hash: string;
+  reviewer: string;
+  reason: string;
+}): Promise<RunSnapshot> {
+  return fetch("/api/releases/publish", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  }).then((response) => readJson<RunSnapshot>(response));
+}
+
 export function getCurrentRelease(): Promise<Record<string, string>> {
   return fetch("/api/releases/current").then((response) =>
     readJson<Record<string, string>>(response),
   );
+}
+
+export function fetchLibrary(): Promise<LibraryIndex> {
+  return fetch("/api/library").then((response) => readJson<LibraryIndex>(response));
 }

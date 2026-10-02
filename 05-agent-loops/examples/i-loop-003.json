@@ -1,0 +1,12 @@
+{
+  "case_id": "I-LOOP-003@0.1.0",
+  "title": "Mejorar un prompt hasta cinco assertions estructurales",
+  "task": "Redacta un briefing operativo en español para un asistente de ventas local. La salida debe ser un objeto JSON con title, steps, limits y stop_condition.",
+  "initial_prompt": "Escribe algo útil.",
+  "budget": {
+    "max_iterations": 5,
+    "max_errors": 2,
+    "timeout_seconds": 180,
+    "threshold": 5
+  }
+}

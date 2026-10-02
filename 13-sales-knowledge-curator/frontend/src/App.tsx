@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Background,
   BackgroundVariant,
@@ -10,36 +10,99 @@ import {
   type Edge,
   type Node,
 } from "@xyflow/react";
-import { ApiError, buildRelease, fetchHealth, getCurrentRelease, getRun, startAudit, submitReview } from "./api";
-import type { ClaimRecord, Health, RunSnapshot, WorkflowState } from "./types";
+import {
+  ApiError,
+  buildRelease,
+  fetchHealth,
+  fetchLibrary,
+  getCurrentRelease,
+  getRun,
+  publishRelease,
+  startAudit,
+  submitReview,
+} from "./api";
+import type { ClaimRecord, Health, LibraryIndex, RunSnapshot, WorkflowState } from "./types";
 
 const GRAPH_NODES = [
-  { id: "ingest", title: "Ingesta y cuarentena", states: ["scope_draft", "inventory_running"] },
-  { id: "registry", title: "Registro de fuentes", states: ["sources_normalized"] },
-  { id: "extraction", title: "Extracción", states: ["claims_extracted"] },
-  { id: "ledger", title: "Ledger de claims", states: ["claims_extracted"] },
-  { id: "research", title: "Plan e investigación", states: ["gaps_ready", "research_planned", "awaiting_external_authorization", "collecting_local"] },
-  { id: "verification", title: "Verificación", states: ["verification_running", "conflicts_open"] },
-  { id: "review", title: "Revisión humana", states: ["review_pending", "changes_requested", "approved", "rejected"] },
-  { id: "staging", title: "Staging", states: ["staging"] },
-  { id: "gate", title: "Gate reproducible", states: ["validating"] },
-  { id: "release", title: "KnowledgeRelease", states: ["published", "failed"] },
+  { id: "ingest", title: "Ingesta y cuarentena" },
+  { id: "registry", title: "Registro de fuentes" },
+  { id: "extraction", title: "Extracción" },
+  { id: "ledger", title: "Ledger de claims" },
+  { id: "research", title: "Plan e investigación" },
+  { id: "verification", title: "Verificación" },
+  { id: "review", title: "Revisión humana" },
+  { id: "staging", title: "Staging" },
+  { id: "gate", title: "Gate reproducible" },
+  { id: "release", title: "KnowledgeRelease" },
 ] as const;
+
+const NODE_FOR_STATE: Record<WorkflowState, string> = {
+  scope_draft: "ingest",
+  inventory_running: "ingest",
+  gaps_ready: "research",
+  research_planned: "research",
+  awaiting_external_authorization: "research",
+  collecting_local: "research",
+  sources_normalized: "registry",
+  claims_extracted: "extraction",
+  verification_running: "verification",
+  conflicts_open: "verification",
+  review_pending: "review",
+  changes_requested: "review",
+  approved: "review",
+  rejected: "review",
+  staging: "staging",
+  validating: "gate",
+  published: "release",
+  failed: "release",
+};
+
+const STATE_RANK: Record<WorkflowState, number> = {
+  scope_draft: 0,
+  inventory_running: 1,
+  gaps_ready: 2,
+  research_planned: 3,
+  awaiting_external_authorization: 4,
+  collecting_local: 5,
+  sources_normalized: 6,
+  claims_extracted: 7,
+  verification_running: 8,
+  conflicts_open: 9,
+  review_pending: 10,
+  changes_requested: 10,
+  approved: 12,
+  rejected: 10,
+  staging: 13,
+  validating: 14,
+  published: 15,
+  failed: 99,
+};
+
+const NODE_DONE_AT: Record<string, number> = {
+  ingest: 2,
+  research: 6,
+  registry: 7,
+  extraction: 8,
+  ledger: 8,
+  verification: 10,
+  review: 13,
+  staging: 14,
+  gate: 15,
+  release: 16,
+};
 
 type NodeVisual = "idle" | "running" | "done" | "failed" | "blocked";
 
 function visualFor(state: WorkflowState | null, nodeId: string): NodeVisual {
   if (!state) return "idle";
-  if (state === "failed" && nodeId === "release") return "failed";
-  const current = GRAPH_NODES.find((item) => item.states.includes(state as never));
-  const currentIndex = GRAPH_NODES.findIndex((item) => item.id === current?.id);
-  const thisIndex = GRAPH_NODES.findIndex((item) => item.id === nodeId);
-  if (thisIndex < currentIndex) return "done";
-  if (thisIndex === currentIndex) {
+  const currentId = NODE_FOR_STATE[state];
+  if (state === "failed") return nodeId === "release" ? "failed" : "idle";
+  if (nodeId === currentId) {
     if (state === "awaiting_external_authorization") return "blocked";
     if (state === "published") return "done";
     return "running";
   }
+  if (STATE_RANK[state] >= (NODE_DONE_AT[nodeId] ?? 99)) return "done";
   return "idle";
 }
 
@@ -133,6 +196,122 @@ function FlowBoard({ state }: { state: WorkflowState | null }) {
   );
 }
 
+const LIBRARY_NODES = [
+  { id: "inventory", title: "Inventario de fichas" },
+  { id: "catalogs", title: "Catálogos" },
+  { id: "rights", title: "Gate de derechos" },
+  { id: "copy", title: "Copia legal o dossier" },
+  { id: "export", title: "Exportación explícita" },
+] as const;
+
+function libraryVisual(
+  library: LibraryIndex,
+  nodeId: string,
+): NodeVisual {
+  if (!library.loop_id) return "idle";
+  const hasCopy = library.works.some((item) => item.has_legal_copy);
+  const hasFailed = library.works.some((item) => item.status === "failed");
+  const hasReady = library.works.some(
+    (item) => item.status === "dossier_ready" || item.status === "copy_acquired",
+  );
+  if (nodeId === "inventory") return library.inventory_count > 0 || library.works.length > 0 ? "done" : "idle";
+  if (nodeId === "catalogs") return library.works.some((item) => item.offers_count > 0) ? "done" : "running";
+  if (nodeId === "rights") return hasReady || hasFailed ? "done" : "running";
+  if (nodeId === "copy") {
+    if (hasFailed) return "failed";
+    if (hasCopy) return "done";
+    return hasReady ? "done" : "running";
+  }
+  return "blocked";
+}
+
+function LibraryBoard({ library }: { library: LibraryIndex }) {
+  const nodes = useMemo<Node[]>(
+    () =>
+      LIBRARY_NODES.map((item, index) => {
+        const visual = libraryVisual(library, item.id);
+        return {
+          id: item.id,
+          position: { x: index * 250, y: 24 },
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          draggable: false,
+          data: {
+            label: (
+              <div className="flow-node-label">
+                <div className="flow-node-topline">
+                  <span className="node-number">{String(index + 1).padStart(2, "0")}</span>
+                  <span className={`status-pill status-${visual}`}>{VISUAL_LABEL[visual]}</span>
+                </div>
+                <strong>{item.title}</strong>
+              </div>
+            ),
+          },
+          style: {
+            width: 220,
+            minHeight: 96,
+            borderRadius: 18,
+            border: `2px solid ${VISUAL_COLOR[visual]}`,
+            background: "#fffdf7",
+          },
+        };
+      }),
+    [library],
+  );
+  const edges = useMemo<Edge[]>(() => {
+    const pairs: Array<[string, string]> = [
+      ["inventory", "catalogs"],
+      ["catalogs", "rights"],
+      ["rights", "copy"],
+      ["copy", "export"],
+    ];
+    return pairs.map(([source, target]) => ({
+      id: `${source}-${target}`,
+      source,
+      target,
+      markerEnd: { type: MarkerType.ArrowClosed, color: "#cbd5e1" },
+      style: { stroke: "#cbd5e1", strokeWidth: 2 },
+    }));
+  }, []);
+  const copies = library.works.filter((item) => item.has_legal_copy).length;
+  return (
+    <div>
+      <div className="flow-canvas" aria-label="Grafo del loop de biblioteca">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          fitView
+          fitViewOptions={{ padding: 0.16 }}
+          minZoom={0.4}
+          maxZoom={1.2}
+          nodesConnectable={false}
+          proOptions={{ hideAttribution: false }}
+        >
+          <Background variant={BackgroundVariant.Dots} gap={18} size={1.4} color="#d8ded8" />
+          <Controls showInteractive={false} />
+        </ReactFlow>
+      </div>
+      <p className="library-summary">
+        {library.loop_id
+          ? `${library.works.length} fichas · ${copies} copias legales · loop ${library.loop_id}`
+          : "Sin índice en .local/library. Ejecuta sales-curator library research."}
+      </p>
+      <div className="table-list">
+        {library.works.map((work) => (
+          <article key={work.work_id}>
+            <strong>{work.title}</strong>
+            <p>
+              {work.author ?? "sin autor"} · {work.status} · ofertas {work.offers_count} ·{" "}
+              {work.has_legal_copy ? "copia legal" : "sin PDF legal"}
+            </p>
+            <small>{work.gaps[0] ?? "sin huecos"}</small>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ClaimRow({
   claim,
   onApprove,
@@ -170,17 +349,48 @@ export default function App() {
   const [reason, setReason] = useState("Aprobacion humana sobre el hash visible");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<"sources" | "claims" | "conflicts" | "release">("sources");
+  const [tab, setTab] = useState<"sources" | "claims" | "conflicts" | "events" | "release">(
+    "sources",
+  );
+  const [library, setLibrary] = useState<LibraryIndex>({
+    loop_id: null,
+    inventory_count: 0,
+    works: [],
+  });
 
-  async function refreshExtras(runId?: string) {
+  async function refreshExtras() {
     const info = await fetchHealth();
     setHealth(info);
     const pointer = await getCurrentRelease();
     setCurrent(pointer);
-    if (runId) {
-      // SSE replay is pulled with the snapshot already in hand.
-    }
+    const libraryIndex = await fetchLibrary();
+    setLibrary(libraryIndex);
   }
+
+  useEffect(() => {
+    refreshExtras().catch(() => {
+      setError("No se pudo conectar al backend en el puerto 8013.");
+    });
+  }, []);
+
+  const runId = run?.run_id;
+
+  useEffect(() => {
+    if (!runId) return;
+    const source = new EventSource(`/api/runs/${runId}/events`);
+    const onTerminal = () => {
+      getRun(runId)
+        .then(setRun)
+        .catch(() => undefined);
+      source.close();
+    };
+    source.addEventListener("run.terminal", onTerminal);
+    source.onerror = () => source.close();
+    return () => {
+      source.removeEventListener("run.terminal", onTerminal);
+      source.close();
+    };
+  }, [runId]);
 
   async function handleAudit() {
     setBusy(true);
@@ -188,7 +398,7 @@ export default function App() {
     try {
       const snapshot = await startAudit();
       setRun(snapshot);
-      await refreshExtras(snapshot.run_id);
+      await refreshExtras();
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : "No se pudo auditar. ¿El backend está en el puerto 8013?");
     } finally {
@@ -219,6 +429,47 @@ export default function App() {
     }
   }
 
+  async function handleApprovePublishable() {
+    if (!run) return;
+    setBusy(true);
+    setError(null);
+    try {
+      let approvedCount = 0;
+      for (const claim of run.claims) {
+        if (
+          claim.status === "human_approved" ||
+          claim.status === "published" ||
+          claim.status === "disputed"
+        ) {
+          continue;
+        }
+        try {
+          await submitReview({
+            run_id: run.run_id,
+            object_type: "claim",
+            object_id: claim.claim_id,
+            decision: "approved",
+            reviewer,
+            reason,
+            expected_hash: claim.identity_hash,
+          });
+          approvedCount += 1;
+        } catch {
+          // El gate técnico rechaza claims no publicables; se dejan visibles.
+        }
+      }
+      const snapshot = await getRun(run.run_id);
+      setRun(snapshot);
+      if (approvedCount === 0) {
+        setError("Ninguna afirmación nueva pasó el gate técnico.");
+      }
+    } catch (caught) {
+      setError(caught instanceof ApiError ? caught.message : "La revisión falló");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleBuild() {
     if (!run) return;
     setBusy(true);
@@ -226,10 +477,32 @@ export default function App() {
     try {
       const snapshot = await buildRelease({ run_id: run.run_id, reviewer, reason });
       setRun(snapshot);
-      await refreshExtras(snapshot.run_id);
+      await refreshExtras();
       setTab("release");
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : "No se pudo publicar");
+      setError(caught instanceof ApiError ? caught.message : "No se pudo construir el staging");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handlePublish() {
+    if (!run?.candidate_id || !run.candidate_hash) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const snapshot = await publishRelease({
+        run_id: run.run_id,
+        candidate_id: run.candidate_id,
+        expected_hash: run.candidate_hash,
+        reviewer,
+        reason,
+      });
+      setRun(snapshot);
+      await refreshExtras();
+      setTab("release");
+    } catch (caught) {
+      setError(caught instanceof ApiError ? caught.message : "No se pudo publicar el candidato");
     } finally {
       setBusy(false);
     }
@@ -248,8 +521,12 @@ export default function App() {
           </span>
         </a>
         <div className="topbar-badges">
-          <span className="badge badge-mint">Ollama local</span>
-          <span className="badge badge-outline">NETWORK_ENABLED=false</span>
+          <span className="badge badge-mint">
+            {health?.model_configured ? "Modelo Ollama configurado" : "Extractor determinista"}
+          </span>
+          <span className="badge badge-outline">
+            {health?.network_enabled ? "red habilitada" : "NETWORK_ENABLED=false"}
+          </span>
           {health && <span className="badge badge-blue">{health.phase}</span>}
         </div>
       </header>
@@ -260,14 +537,36 @@ export default function App() {
           <h1>Auditar, contrastar y publicar sin inventar evidencia.</h1>
           <p>
             El dashboard pinta estados reales del backend. Una cita demuestra procedencia, no verdad. La red,
-            el CRM y el laboratorio 09 permanecen fuera de este corte.
+            el CRM y el laboratorio 09 permanecen fuera de este corte. Publicar exige el hash exacto del
+            candidato en staging.
           </p>
           <div className="hero-actions">
             <button type="button" className="button primary" onClick={handleAudit} disabled={busy}>
               Auditar fixtures
             </button>
-            <button type="button" className="button secondary" onClick={handleBuild} disabled={busy || !run}>
-              Construir release
+            <button
+              type="button"
+              className="button ghost"
+              onClick={handleApprovePublishable}
+              disabled={busy || !run || run.state !== "review_pending"}
+            >
+              Aprobar claims publicables
+            </button>
+            <button
+              type="button"
+              className="button secondary"
+              onClick={handleBuild}
+              disabled={busy || run?.state !== "review_pending"}
+            >
+              Construir staging
+            </button>
+            <button
+              type="button"
+              className="button primary"
+              onClick={handlePublish}
+              disabled={busy || run?.state !== "staging" || !run?.candidate_hash}
+            >
+              Publicar hash exacto
             </button>
           </div>
         </div>
@@ -290,6 +589,10 @@ export default function App() {
               <dt>Release actual</dt>
               <dd>{current.release_id ?? "ninguno"}</dd>
             </div>
+            <div>
+              <dt>Claims aprobados</dt>
+              <dd>{approved.length}</dd>
+            </div>
           </dl>
         </aside>
       </section>
@@ -307,6 +610,16 @@ export default function App() {
             {error}
           </p>
         )}
+      </section>
+
+      <section className="workspace-section" id="library">
+        <div className="section-heading">
+          <div>
+            <p className="panel-kicker">Biblioteca</p>
+            <h2>El loop de fichas vive en CLI; aquí solo se lee el índice local.</h2>
+          </div>
+        </div>
+        <LibraryBoard library={library} />
       </section>
 
       <section className="panels">
@@ -330,7 +643,7 @@ export default function App() {
         </form>
 
         <div className="tab-bar" role="tablist">
-          {(["sources", "claims", "conflicts", "release"] as const).map((item) => (
+          {(["sources", "claims", "conflicts", "events", "release"] as const).map((item) => (
             <button
               key={item}
               type="button"
@@ -383,6 +696,29 @@ export default function App() {
             ))}
           </div>
         )}
+        {tab === "events" && (
+          <div className="table-list">
+            <div className="metrics-grid">
+              {Object.entries(run?.metrics ?? {}).map(([key, value]) => (
+                <article key={key}>
+                  <strong>{key}</strong>
+                  <p>{value ?? "—"}</p>
+                </article>
+              ))}
+            </div>
+            {(run?.events ?? []).map((event) => (
+              <article key={`${event.node_id}-${event.sequence}`}>
+                <strong>
+                  {event.sequence}. {event.node_id}
+                </strong>
+                <p>
+                  {event.state}
+                  {event.error ? ` · ${event.error}` : ""}
+                </p>
+              </article>
+            ))}
+          </div>
+        )}
         {tab === "release" && (
           <div className="release-panel">
             <p>
@@ -397,7 +733,13 @@ export default function App() {
             <p>
               JSONL: <code>{run?.jsonl_path ?? "—"}</code>
             </p>
-            <p>Incluidas {run?.claims.filter((item) => item.status === "published").length ?? 0} afirmaciones publicadas.</p>
+            <p>
+              Incluidas {run?.candidate_diff?.included_claim_ids.length ?? 0} afirmaciones;
+              excluidas {run?.candidate_diff?.excluded_claim_ids.length ?? 0}.
+            </p>
+            <p>
+              Publicadas ahora: {run?.claims.filter((item) => item.status === "published").length ?? 0}.
+            </p>
           </div>
         )}
       </section>

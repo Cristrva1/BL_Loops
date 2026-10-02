@@ -83,6 +83,13 @@ export interface RunSnapshot {
   release_id: string | null;
   candidate_id: string | null;
   candidate_hash: string | null;
+  candidate_diff: {
+    previous_release_id?: string | null;
+    included_claim_ids: string[];
+    excluded_claim_ids: string[];
+    source_count: number;
+    conflict_count: number;
+  } | null;
   jsonl_path: string | null;
 }
 
@@ -91,5 +98,24 @@ export interface Health {
   network_enabled: boolean;
   telemetry: boolean;
   extractor: string;
+  model_configured: boolean;
+  configuration_scope: string;
   phase: string;
+}
+
+export interface LibraryWorkSummary {
+  work_id: string;
+  title: string;
+  author: string | null;
+  status: string;
+  offers_count: number;
+  has_legal_copy: boolean;
+  gaps: string[];
+  rounds_used: number;
+}
+
+export interface LibraryIndex {
+  loop_id: string | null;
+  inventory_count: number;
+  works: LibraryWorkSummary[];
 }

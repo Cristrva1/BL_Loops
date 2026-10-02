@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 23: Remotion Superpowers Studio</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="studio-header">
+      <div class="logo-area">
+        <span class="logo-badge">⚡ Lab 23</span>
+        <h1>Remotion Superpowers Studio</h1>
+        <span class="tagline">React Video + IA Local Ollama</span>
+      </div>
+      <div class="header-status">
+        <span id="ollama-status" class="status-pill status-ready">Ollama: Conectado</span>
+        <span id="remotion-status" class="status-pill status-ready">Remotion CLI: Listo</span>
+      </div>
+    </header>
+
+    <!-- State Graph -->
+    <section class="pipeline-graph">
+      <div class="step-node" id="node-ANALYZING_BRIEF">
+        <div class="node-icon">📋</div>
+        <div class="node-title">Brief</div>
+        <div class="node-sub">Concepto</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-node" id="node-PLANNING_SCENES">
+        <div class="node-icon">🧠</div>
+        <div class="node-title">Ollama Director</div>
+        <div class="node-sub">Guión & Storyboard</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-node" id="node-CALCULATING_FRAMES">
+        <div class="node-icon">⏱️</div>
+        <div class="node-title">Fotogramas</div>
+        <div class="node-sub">FPS * Segundos</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-node" id="node-WRITING_REACT_PROPS">
+        <div class="node-icon">⚛️</div>
+        <div class="node-title">React Props</div>
+        <div class="node-sub">scenes.json</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-node" id="node-RENDERING_VIDEO">
+        <div class="node-icon">🎬</div>
+        <div class="node-title">Remotion Render</div>
+        <div class="node-sub">Chrome Headless</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-node" id="node-EVALUATING">
+        <div class="node-icon">📊</div>
+        <div class="node-title">Evaluación</div>
+        <div class="node-sub">JSONL</div>
+      </div>
+    </section>
+
+    <!-- Main Workspace Grid -->
+    <main class="workspace-grid">
+      <aside class="panel controls-panel">
+        <h2>Parámetros del Video</h2>
+        <div class="form-group">
+          <label for="topic-input">Tema del Video</label>
+          <textarea id="topic-input" rows="3">Demostrar Remotion y el patrón Remotion Superpowers con React y IA Local</textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="duration-input">Duración (seg)</label>
+            <input type="number" id="duration-input" value="12" min="4" max="60">
+          </div>
+          <div class="form-group">
+            <label for="model-select">Modelo Ollama</label>
+            <select id="model-select">
+              <option value="qwen3.5:9b" selected>qwen3.5:9b</option>
+              <option value="qwen3.5:4b">qwen3.5:4b</option>
+              <option value="gemma4:e4b">gemma4:e4b</option>
+              <option value="gemma4:e2b">gemma4:e2b</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="btn-run" class="btn btn-primary">
+          <span class="btn-icon">▶</span> Generar con Remotion
+        </button>
+
+        <div class="metrics-card">
+          <h3>Métricas de Fotogramas</h3>
+          <div class="metric-item">
+            <span>Resolución:</span> <strong id="metric-res">1920x1080</strong>
+          </div>
+          <div class="metric-item">
+            <span>Total Frames:</span> <strong id="metric-frames">360</strong>
+          </div>
+          <div class="metric-item">
+            <span>Duración:</span> <strong id="metric-duration">--</strong>
+          </div>
+          <div class="metric-item">
+            <span>Tiempo de Render:</span> <strong id="metric-time">--</strong>
+          </div>
+          <div class="metric-item">
+            <span>Tamaño Archivo:</span> <strong id="metric-size">--</strong>
+          </div>
+          <div class="metric-item">
+            <span>Estado:</span> <strong id="metric-status" class="status-idle">En espera</strong>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Video & Preview Area -->
+      <section class="panel preview-panel">
+        <div class="tab-bar">
+          <button class="tab active" data-tab="video-view">Reproductor MP4</button>
+          <button class="tab" data-tab="scenes-view">Secuencias JSON</button>
+          <button class="tab" data-tab="logs-view">Trazas SSE</button>
+        </div>
+
+        <div id="video-view" class="tab-content active">
+          <div class="video-wrapper">
+            <video id="output-video" controls poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><rect width='100%' height='100%' fill='%230f172a'/><text x='50%' y='50%' fill='%2364748b' font-family='sans-serif' font-size='20' text-anchor='middle'>El video Remotion aparecerá aquí</text></svg>">
+              Tu navegador no soporta video HTML5.
+            </video>
+          </div>
+        </div>
+
+        <div id="scenes-view" class="tab-content">
+          <pre id="scenes-code-block" class="code-view"></pre>
+        </div>
+
+        <div id="logs-view" class="tab-content">
+          <div class="console-logs" id="console-logs">
+            <div class="log-line info">[Sistema] Remotion Superpowers Studio listo...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

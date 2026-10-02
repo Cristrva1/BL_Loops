@@ -1,0 +1,13 @@
+[00:00:10] Carlos Mendoza: Buenos días a todos. Iniciamos la planificación del Sprint 4. Tenemos como meta entregar el módulo de reportes y resolver los cuellos de botella de la API.
+[00:00:25] Valeria Rios: Hola Carlos. He revisado los tickets prioritarios. El conector con SQLite necesita índices en la tabla de eventos para acelerar las consultas de métricas.
+[00:00:45] Roberto Díaz: Por mi lado, los mocks para las pruebas de integración ya están al 80%. Puedo tener la suite completa mañana mismo.
+[00:01:05] Carlos Mendoza: Muy bien. Respecto a la biblioteca de gráficos para el frontend, ¿nos quedamos con Recharts o usamos CSS nativo?
+[00:01:20] Valeria Rios: Propongo usar CSS limpio y componentes nativos en React. Eso evita dependencias pesadas y garantiza compatibilidad total con Vite y TypeScript.
+[00:01:38] Carlos Mendoza: De acuerdo, decisión aprobada: usaremos CSS nativo sin librerías externas de gráficos para mantener el bundle liviano.
+[00:01:50] Carlos Mendoza: Vamos con la asignación de tareas: Valeria, encárgate de crear los índices en SQLite y medir la latencia antes del miércoles a las 3:00 PM.
+[00:02:05] Valeria Rios: Entendido, lo agendo para el miércoles a las 3:00 PM.
+[00:02:12] Carlos Mendoza: Roberto, tú finalizas la suite de pruebas unitarias de la API para el jueves al mediodía.
+[00:02:25] Roberto Díaz: Listo Carlos, para el jueves a las 12:00 PM estará subido.
+[00:02:35] Carlos Mendoza: Yo prepararé la documentación didáctica en docs/humano/ para el viernes por la mañana.
+[00:02:48] Valeria Rios: Una duda: ¿tenemos límite de tokens para las pruebas con Ollama?
+[00:03:00] Carlos Mendoza: Configuramos num_ctx en 16384 para evitar desbordes de memoria en las tarjetas de 12GB. Cerramos aquí, ¡buena semana a todos!

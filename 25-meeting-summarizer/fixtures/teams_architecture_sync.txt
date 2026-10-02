@@ -1,0 +1,23 @@
+Daniela Castro  00:10
+Hola a todos. Hoy debemos definir la estrategia de partición de contexto para transcripciones de más de 60 minutos.
+
+Andrés Morales  00:25
+Estuve evaluando el comportamiento de Qwen 3.5 con ventanas de 16k y 32k tokens. Funciona muy bien hasta 15,000 palabras en single-pass.
+
+Daniela Castro  00:45
+Sin embargo, para llamadas de 90 minutos con múltiples hablantes, ¿es preferible usar Map-Reduce jerárquico?
+
+Andrés Morales  01:05
+Sí, definitivamente. Si dividimos por bloques de 3,000 palabras con solapamiento de 250 palabras, evitamos perder acuerdos al inicio y final de cada turno.
+
+Daniela Castro  01:25
+De acuerdo. Decisión técnica: implementaremos Map-Reduce automático cuando la reunión supere las 3,200 palabras, y single-pass para reuniones cortas.
+
+Daniela Castro  01:45
+Tareas: Andrés, implementa el algoritmo de chunking en backend/src/meeting_summarizer/chunker.py para mañana a las 2:00 PM.
+
+Andrés Morales  02:00
+Entendido Daniela, tendré los tests unitarios y el benchmark de partición listo a esa hora.
+
+Daniela Castro  02:15
+Yo integraré el evento SSE para mostrar el progreso de cada bloque en el frontend para el jueves.

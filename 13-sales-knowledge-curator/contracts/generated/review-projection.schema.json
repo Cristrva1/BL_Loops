@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "ReviewVerdict": {
+      "enum": [
+        "approved",
+        "rejected",
+        "changes_requested"
+      ],
+      "title": "ReviewVerdict",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Aprobación exportable: metadatos y hashes, sin texto libre.",
+  "properties": {
+    "decision_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "object_type": {
+      "enum": [
+        "claim",
+        "release_candidate"
+      ],
+      "title": "Object Type",
+      "type": "string"
+    },
+    "object_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Object Id",
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "#/$defs/ReviewVerdict"
+    },
+    "reviewer": {
+      "maxLength": 80,
+      "minLength": 2,
+      "title": "Reviewer",
+      "type": "string"
+    },
+    "decided_at": {
+      "format": "date-time",
+      "title": "Decided At",
+      "type": "string"
+    },
+    "approved_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Approved Hash",
+      "type": "string"
+    },
+    "source_review_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Review Hash",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "decision_id",
+    "object_type",
+    "object_id",
+    "decision",
+    "reviewer",
+    "decided_at",
+    "approved_hash",
+    "source_review_hash",
+    "content_hash"
+  ],
+  "title": "ReviewProjection",
+  "type": "object"
+}

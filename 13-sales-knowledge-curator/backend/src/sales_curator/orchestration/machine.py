@@ -49,7 +49,9 @@ TRANSITIONS: dict[WorkflowStatus, frozenset[WorkflowStatus]] = {
     WorkflowStatus.APPROVED: frozenset({WorkflowStatus.STAGING, WorkflowStatus.FAILED}),
     WorkflowStatus.REJECTED: frozenset({WorkflowStatus.FAILED}),
     WorkflowStatus.STAGING: frozenset({WorkflowStatus.VALIDATING, WorkflowStatus.FAILED}),
-    WorkflowStatus.VALIDATING: frozenset({WorkflowStatus.PUBLISHED, WorkflowStatus.FAILED}),
+    WorkflowStatus.VALIDATING: frozenset(
+        {WorkflowStatus.PUBLISHED, WorkflowStatus.FAILED, WorkflowStatus.STAGING}
+    ),
     WorkflowStatus.PUBLISHED: frozenset(),
     WorkflowStatus.FAILED: frozenset(),
 }

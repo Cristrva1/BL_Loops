@@ -1,0 +1,29 @@
+WEBVTT
+
+1
+00:00:02.000 --> 00:00:07.500
+Elena Gómez: Buen día equipo, standup rápido de 10 minutos. Empecemos por diseño.
+
+2
+00:00:08.000 --> 00:00:15.200
+Marcos Peña: Hola Elena. Terminé los prototipos del dashboard con tema oscuro y tabla interactiva de compromisos.
+
+3
+00:00:16.000 --> 00:00:23.000
+Elena Gómez: ¿Pudiste validar los contrastes de color y la accesibilidad de los badges?
+
+4
+00:00:24.000 --> 00:00:32.500
+Marcos Peña: Sí, cumplen con el estándar WCAG AA. Decidimos usar bordes contrastados para estados de alta prioridad.
+
+5
+00:00:33.000 --> 00:00:41.000
+Elena Gómez: Perfecto. Queda aprobada la paleta de colores de diseño. Marcos, pásale las especificaciones a desarrollo hoy mismo.
+
+6
+00:00:42.000 --> 00:00:50.000
+Marcos Peña: De acuerdo, las exporto en formato CSS antes de las 4:00 PM.
+
+7
+00:00:51.000 --> 00:00:58.000
+Elena Gómez: Por mi lado revisaré el pull request del parser de transcripciones antes del final del día. ¡Buen trabajo a todos!

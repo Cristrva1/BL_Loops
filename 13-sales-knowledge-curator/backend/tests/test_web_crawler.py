@@ -356,6 +356,77 @@ def test_browser_guard_blocks_child_frame_document_without_network() -> None:
     assert guard.policy.url_budget == 1
 
 
+def test_installed_route_handler_survives_playwright_method_wrapping(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Playwright envuelve bound methods con setattr sobre la instancia.
+
+    Un dataclass frozen+slots hace fallar `context.route(..., guard.handle)` con
+    AttributeError sobre `_BrowserRequestGuard`. El hook debe instalar una función.
+    """
+
+    captured: dict[str, object] = {}
+
+    class FakeCacheMode:
+        DISABLED = "disabled"
+
+    class FakeStrategy:
+        hook = None
+
+        def set_hook(self, _name: str, hook) -> None:
+            self.hook = hook
+
+    class FakeContext:
+        async def route(self, _pattern: str, handler) -> None:
+            from playwright._impl._impl_to_api_mapping import ImplToApiMapping
+
+            captured["handler"] = handler
+            captured["wrapped"] = ImplToApiMapping().wrap_handler(handler)
+
+    class FakeCrawler:
+        def __init__(self, **_kwargs) -> None:
+            self.crawler_strategy = FakeStrategy()
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_args) -> None:
+            return None
+
+        async def arun(self, *, url: str, config):
+            del config
+            context = FakeContext()
+            await self.crawler_strategy.hook(object(), context)
+            route = _FakeRoute(url)
+            wrapped = captured["wrapped"]
+            assert callable(wrapped)
+            await wrapped(route, route.request)
+            return SimpleNamespace(
+                success=True,
+                error_message=None,
+                markdown=SimpleNamespace(raw_markdown="# Pride and Prejudice"),
+                metadata={"title": "Pride and Prejudice"},
+                redirected_url=url,
+                url=url,
+                status_code=200,
+            )
+
+    monkeypatch.setattr("crawl4ai.AsyncWebCrawler", FakeCrawler)
+    monkeypatch.setattr("crawl4ai.BrowserConfig", lambda **kwargs: kwargs)
+    monkeypatch.setattr("crawl4ai.CrawlerRunConfig", lambda **kwargs: kwargs)
+    monkeypatch.setattr("crawl4ai.CacheMode", FakeCacheMode)
+
+    output = _browser_runner(
+        "https://openlibrary.org/works/OL66554W/Pride_and_Prejudice",
+        _policy(url_budget=2),
+        resolver=_resolver,
+    )
+    handler = captured["handler"]
+    assert not hasattr(handler, "__self__")
+    assert output.status_code == 200
+    assert "Pride and Prejudice" in output.markdown
+
+
 def test_browser_runner_fails_when_budget_overflows_even_if_crawl_succeeds(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -374,7 +445,9 @@ def test_browser_runner_fails_when_budget_overflows_even_if_crawl_succeeds(
         handler = None
 
         async def route(self, _pattern: str, handler) -> None:
-            self.handler = handler
+            from playwright._impl._impl_to_api_mapping import ImplToApiMapping
+
+            self.handler = ImplToApiMapping().wrap_handler(handler)
 
     class FakeCrawler:
         def __init__(self, **_kwargs) -> None:

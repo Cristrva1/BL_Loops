@@ -1,0 +1,87 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "work_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Work Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 400,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "author": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Author"
+    },
+    "year": {
+      "anyOf": [
+        {
+          "maxLength": 20,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Year"
+    },
+    "isbn": {
+      "anyOf": [
+        {
+          "maxLength": 32,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Isbn"
+    },
+    "relative_path": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Relative Path",
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "existing_links": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Existing Links",
+      "type": "object"
+    },
+    "excerpt": {
+      "default": "",
+      "maxLength": 1200,
+      "title": "Excerpt",
+      "type": "string"
+    }
+  },
+  "required": [
+    "work_id",
+    "title",
+    "relative_path",
+    "source_sha256"
+  ],
+  "title": "LibraryCard",
+  "type": "object"
+}

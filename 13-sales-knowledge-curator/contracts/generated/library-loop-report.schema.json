@@ -1,0 +1,365 @@
+{
+  "$defs": {
+    "LegalCopyRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "copy_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Copy Id",
+          "type": "string"
+        },
+        "work_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Work Id",
+          "type": "string"
+        },
+        "offer_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Offer Id",
+          "type": "string"
+        },
+        "provider": {
+          "maxLength": 40,
+          "minLength": 3,
+          "title": "Provider",
+          "type": "string"
+        },
+        "filename": {
+          "maxLength": 260,
+          "minLength": 1,
+          "title": "Filename",
+          "type": "string"
+        },
+        "media_type": {
+          "const": "application/pdf",
+          "default": "application/pdf",
+          "title": "Media Type",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 40000000,
+          "title": "Size Bytes",
+          "type": "integer"
+        },
+        "source_host": {
+          "maxLength": 200,
+          "minLength": 3,
+          "title": "Source Host",
+          "type": "string"
+        },
+        "rights_status": {
+          "$ref": "#/$defs/RightsStatus"
+        },
+        "downloaded_at": {
+          "format": "date-time",
+          "title": "Downloaded At",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "copy_id",
+        "work_id",
+        "offer_id",
+        "provider",
+        "filename",
+        "sha256",
+        "size_bytes",
+        "source_host",
+        "rights_status",
+        "downloaded_at",
+        "content_hash"
+      ],
+      "title": "LegalCopyRecord",
+      "type": "object"
+    },
+    "LibraryCard": {
+      "additionalProperties": false,
+      "properties": {
+        "work_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Work Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 400,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author"
+        },
+        "year": {
+          "anyOf": [
+            {
+              "maxLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Year"
+        },
+        "isbn": {
+          "anyOf": [
+            {
+              "maxLength": 32,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Isbn"
+        },
+        "relative_path": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Relative Path",
+          "type": "string"
+        },
+        "source_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Sha256",
+          "type": "string"
+        },
+        "existing_links": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Existing Links",
+          "type": "object"
+        },
+        "excerpt": {
+          "default": "",
+          "maxLength": 1200,
+          "title": "Excerpt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "work_id",
+        "title",
+        "relative_path",
+        "source_sha256"
+      ],
+      "title": "LibraryCard",
+      "type": "object"
+    },
+    "LibraryWorkRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "work_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+          "title": "Work Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/LibraryWorkStatus"
+        },
+        "card": {
+          "$ref": "#/$defs/LibraryCard"
+        },
+        "rounds_used": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Rounds Used",
+          "type": "integer"
+        },
+        "offers_count": {
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Offers Count",
+          "type": "integer"
+        },
+        "downloadable_offers": {
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Downloadable Offers",
+          "type": "integer"
+        },
+        "legal_copy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LegalCopyRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "gaps": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 40,
+          "title": "Gaps",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 40,
+          "title": "Warnings",
+          "type": "array"
+        },
+        "dossier_path": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Dossier Path",
+          "type": "string"
+        },
+        "report_path": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Report Path"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "work_id",
+        "status",
+        "card",
+        "rounds_used",
+        "offers_count",
+        "downloadable_offers",
+        "dossier_path",
+        "updated_at",
+        "content_hash"
+      ],
+      "title": "LibraryWorkRecord",
+      "type": "object"
+    },
+    "LibraryWorkStatus": {
+      "enum": [
+        "pending",
+        "researching",
+        "dossier_ready",
+        "copy_acquired",
+        "inconclusive",
+        "failed"
+      ],
+      "title": "LibraryWorkStatus",
+      "type": "string"
+    },
+    "RightsStatus": {
+      "enum": [
+        "public_domain",
+        "open_license",
+        "explicit_permission",
+        "restricted",
+        "unknown"
+      ],
+      "title": "RightsStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "loop_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,80}$",
+      "title": "Loop Id",
+      "type": "string"
+    },
+    "jurisdiction": {
+      "maxLength": 40,
+      "minLength": 2,
+      "title": "Jurisdiction",
+      "type": "string"
+    },
+    "languages": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Languages",
+      "type": "array"
+    },
+    "inventory_count": {
+      "maximum": 5000,
+      "minimum": 0,
+      "title": "Inventory Count",
+      "type": "integer"
+    },
+    "works": {
+      "items": {
+        "$ref": "#/$defs/LibraryWorkRecord"
+      },
+      "maxItems": 5000,
+      "title": "Works",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 200,
+      "title": "Warnings",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "loop_id",
+    "jurisdiction",
+    "languages",
+    "inventory_count",
+    "created_at",
+    "content_hash"
+  ],
+  "title": "LibraryLoopReport",
+  "type": "object"
+}

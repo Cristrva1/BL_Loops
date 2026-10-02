@@ -21,7 +21,8 @@ un modelo en evidencia suficiente?
 |---|---|
 | Implementada | MarkItDown `0.1.7` con extras PDF/DOCX y plugins desactivados |
 | Implementada | Crawl4AI `0.9.2`, Chromium dedicado/headless y controles fail-closed |
-| Implementada | Open Library y Google Books mediante JSON oficial |
+| Implementada | Open Library, Google Books, Gutendex/Gutenberg e Internet Archive |
+| Implementada | Loop de biblioteca acotado: dossier determinista y PDF solo con evidencia legal |
 | Implementada | `audit --extractor ollama`, modelo loopback explícito, chunk cap y salida/citas estrictas |
 | Implementada | Paquete NotebookLM manual, máximo configurable de 1 a 50 fichas por notebook |
 | Implementada | Paquete RAG de metadatos JSONL, sin texto restringido |
@@ -47,6 +48,10 @@ catálogo y manifiesto; no configura ni valida la jurisdicción real del proyect
 - Google Books: [uso de API](https://developers.google.com/books/docs/v1/using),
   [campos de acceso](https://developers.google.com/books/docs/v1/reference/volumes) y
   [términos](https://developers.google.com/books/terms).
+- Project Gutenberg / Gutendex: [licencia](https://www.gutenberg.org/policy/license.html) y
+  [API JSON](https://gutendex.com/).
+- Internet Archive: [búsqueda avanzada](https://archive.org/advancedsearch.php) y
+  [Metadata API](https://archive.org/developers/md-read.html).
 - NotebookLM: [fuentes admitidas](https://support.google.com/gemininotebook/answer/16215270?co=GENIE.Platform%3DDesktop&hl=en),
   [límites](https://support.google.com/gemininotebook/answer/16213268?hl=es-MX) y
   [notas/exportación](https://support.google.com/gemininotebook/answer/16262519?hl=en).
@@ -74,13 +79,11 @@ texto añadido a su `LICENSE`; esta documentación y la ayuda del CLI deben mant
 
 ## Catálogos siguientes, no implementados
 
-Estos son candidatos oficiales, no proveedores activos:
+Gutenberg e Internet Archive ya están activos con el mismo gate de derechos. Siguen aplazados:
 
 | Catálogo | Entrada primaria para una fase posterior |
 |---|---|
-| Project Gutenberg | [OPDS y catálogos offline](https://www.gutenberg.org/ebooks/offline_catalogs.html) |
 | DOAB/OAPEN | [metadata DOAB](https://www.doabooks.org/en/resources/metadata-harvesting-and-content-dissemination) y [metadata OAPEN](https://www.oapen.org/article/metadata) |
-| Internet Archive | [Metadata API](https://archive.org/developers/md-read.html) |
 | HathiTrust | [Bibliographic API](https://www.hathitrust.org/member-libraries/resources-for-librarians/data-resources/bibliographic-api/) |
 | Library of Congress | [JSON/YAML API](https://www.loc.gov/apis/json-and-yaml/) |
 | BNE Digital | [datos enlazados BNE](https://datos.bne.es/) |
