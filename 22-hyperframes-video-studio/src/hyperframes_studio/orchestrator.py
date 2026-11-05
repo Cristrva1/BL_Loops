@@ -1,12 +1,13 @@
 """Orquestador agéntico para la generación y renderizado de video en HyperFrames."""
 
 import asyncio
-from datetime import datetime, timezone
-import json
+import contextlib
 import logging
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import AsyncGenerator
 
+from hyperframes_studio.ollama_client import OllamaVideoDirector
+from hyperframes_studio.renderer import HyperFramesRenderer
 from hyperframes_studio.schemas import (
     EvaluationRecord,
     PipelineEvent,
@@ -15,9 +16,7 @@ from hyperframes_studio.schemas import (
     SceneSpec,
     VideoBrief,
 )
-from hyperframes_studio.ollama_client import OllamaVideoDirector
-from hyperframes_studio.templates import generate_hyperframes_html
-from hyperframes_studio.renderer import HyperFramesRenderer
+from hyperframes_studio.templates import generate_hyperframes_html, lint_composition
 
 logger = logging.getLogger(__name__)
 
@@ -51,17 +50,38 @@ class HyperFramesOrchestrator:
     async def _emit(self, state: PipelineState, node: str, message: str, data: dict | None = None) -> None:
         self.state = state
         event = PipelineEvent(
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             state=state,
             node=node,
             message=message,
             data=data or {},
         )
         for q in list(self.event_subscribers):
-            try:
+            # Una cola llena o cerrada no debe detener el pipeline.
+            with contextlib.suppress(asyncio.QueueFull):
                 q.put_nowait(event)
-            except Exception:
-                pass
+
+    async def _emit_director_source(self, scenes_count: int) -> None:
+        """Publica de dónde salieron las escenas: el respaldo calibrado nunca es silencioso."""
+
+        if self.director.last_source == "ollama":
+            await self._emit(
+                PipelineState.GENERATING_SCRIPT,
+                node="OllamaDirector",
+                message=f"Ollama entregó {scenes_count} escenas válidas.",
+                data={"director_source": "ollama"},
+            )
+            return
+        reason = self.director.last_fallback_reason or "motivo desconocido"
+        await self._emit(
+            PipelineState.GENERATING_SCRIPT,
+            node="OllamaDirector",
+            message=(
+                f"Fallback visible: {reason}. Se usan {scenes_count} escenas calibradas; "
+                "el video no refleja una decisión del modelo."
+            ),
+            data={"director_source": "fallback", "fallback_reason": reason},
+        )
 
     async def run_pipeline(self, brief: VideoBrief, output_path: str = ".local/output/tutorial_hyperframes.mp4") -> RenderResult:
         """Ejecuta el pipeline completo de creación audiovisual."""
@@ -81,6 +101,7 @@ class HyperFramesOrchestrator:
         )
         scenes = await self.director.generate_scenes(brief)
         self.last_scenes = scenes
+        await self._emit_director_source(len(scenes))
         await self._emit(
             PipelineState.BUILDING_COMPOSITION,
             node="HtmlComposer",
@@ -93,13 +114,40 @@ class HyperFramesOrchestrator:
         self.last_html = html_code
         self.renderer.prepare_workspace(html_code)
 
-        # 3. Validación de estructura y tiempos
+        # 3. Lint local: un clip por escena, sin clips inesperados y con tiempos contiguos
+        problems = lint_composition(html_code, scenes)
+        total = round(sum(scene.duration for scene in scenes), 2)
         await self._emit(
             PipelineState.VALIDATING_LINT,
             node="HyperFramesLinter",
-            message="Validando consistencia de selectores, atributos data-* y timelines GSAP...",
-            data={"html_length_bytes": len(html_code.encode("utf-8"))},
+            message=(
+                f"Lint local superado: {len(scenes)} escenas contiguas de 0 a {total} s, "
+                "sin clips inesperados ni ids repetidos."
+                if not problems
+                else f"La composición no supera el lint: {'; '.join(problems)}"
+            ),
+            data={"html_length_bytes": len(html_code.encode("utf-8")), "lint_problems": problems},
         )
+        if problems:
+            failed = RenderResult(
+                video_path=str(Path(output_path).resolve()),
+                duration=0.0,
+                width=0,
+                height=0,
+                fps=0,
+                file_size_bytes=0,
+                render_elapsed_seconds=0.0,
+                success=False,
+                error=f"La composición no supera el lint: {'; '.join(problems)}",
+            )
+            self.last_render = failed
+            await self._emit(
+                PipelineState.FAILED,
+                node="HyperFramesLinter",
+                message=failed.error or "",
+                data=failed.model_dump(),
+            )
+            return failed
 
         # 4. Renderizado a MP4
         await self._emit(
@@ -162,5 +210,7 @@ class HyperFramesOrchestrator:
                 "duration_delta_seconds": round(duration_diff, 2),
                 "deterministic": True,
                 "has_min_size": has_min_size,
+                "duration_measured": render_res.duration > 0,
+                "director_source": self.director.last_source,
             },
         )

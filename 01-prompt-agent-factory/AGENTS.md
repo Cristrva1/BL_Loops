@@ -25,7 +25,7 @@ Estas reglas se aplican a todo el laboratorio. Dentro de BL_Loops se suman al `A
 ## Forma de trabajar
 
 1. Revisar `git status --short` y preservar cambios existentes.
-2. Leer `README.md` y el documento humano relacionado con la tarea.
+2. Leer `README.md`, `docs/humano/EXAMPLES.md` y el documento humano relacionado con la tarea.
 3. Construir el corte vertical más pequeño que enseñe la capacidad nueva.
 4. Mantener contratos estrictos, permisos denegados por defecto y salidas dentro del laboratorio.
 5. Actualizar la guía, arquitectura, metodología, ejercicios, diagnóstico o evaluación que resulten afectados.
@@ -42,7 +42,10 @@ uv run pytest
 uv run ruff check .
 uv run factory-export-schemas
 npm --prefix frontend run build
-uv run factory-demo
+uv run factory-demo --all
 ```
+
+`factory-demo --all` debe terminar con `0 inválidos`. Si añades un briefing a `examples/intakes/`,
+actualiza la tabla de `docs/humano/README.md` y, si cambia el recuento, `docs/humano/EXAMPLES.md`.
 
 Si cambia la interfaz, verificar también el recorrido real en navegador, la consola y los estados derivados de la API. Si aparece una corrida evaluable, comprobar su exportación JSONL e importación antes de declararla terminada.

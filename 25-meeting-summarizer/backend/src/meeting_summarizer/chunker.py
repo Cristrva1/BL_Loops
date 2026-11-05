@@ -28,6 +28,11 @@ def format_turns_to_text(turns: list[SpeakerTurn]) -> str:
     return "\n".join(lines)
 
 
+# Límites usados por el resumidor. `meeting-summarizer parse` los muestra sin llamar a Ollama.
+SUMMARY_MAX_WORDS_PER_CHUNK = 3200
+SUMMARY_OVERLAP_WORDS = 250
+
+
 def chunk_turns(
     turns: list[SpeakerTurn],
     max_words_per_chunk: int = 2500,

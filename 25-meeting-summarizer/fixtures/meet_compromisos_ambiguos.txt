@@ -1,0 +1,11 @@
+[00:00:05] Lucía Ferrer: Gracias por conectaros. Revisamos el lanzamiento del boletín interno y cerramos responsables.
+[00:00:18] Tomás Ibarra: El borrador del boletín está listo. Falta revisar el tono de la sección de novedades.
+[00:00:31] Lucía Ferrer: Decisión: el boletín se publica en formato Markdown dentro del repositorio, sin herramientas externas.
+[00:00:44] Nora Salas: Sugiero añadir una encuesta de satisfacción, aunque quizá no da tiempo para esta edición.
+[00:00:58] Lucía Ferrer: Dejemos la encuesta como idea para más adelante; hoy no la aprobamos.
+[00:01:10] Tomás Ibarra: Yo corrijo el tono de la sección de novedades antes del jueves a las 10:00.
+[00:01:22] Lucía Ferrer: Alguien debería revisar los enlaces rotos del boletín.
+[00:01:35] Nora Salas: También habría que avisar al equipo de diseño, pero no sé quién tiene el contacto.
+[00:01:47] Lucía Ferrer: Nora, ¿puedes preparar la lista de destinatarios para el viernes?
+[00:01:55] Nora Salas: Sí, la lista de destinatarios queda lista el viernes por la mañana.
+[00:02:08] Lucía Ferrer: Perfecto. Cerramos aquí; nos vemos la próxima semana.

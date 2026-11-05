@@ -28,7 +28,7 @@ Estas reglas se suman a las de `BL_Loops/AGENTS.md` y permanecen vigentes si el 
 ## Forma de trabajar
 
 1. Revisar Git y preservar cualquier cambio ajeno.
-2. Leer `README.md` y el documento humano relacionado.
+2. Leer `README.md`, `docs/humano/EXAMPLES.md` y el documento humano relacionado. Si cambian los gates del preflight o los códigos del verificador del fixture, actualiza las tablas de `EXAMPLES.md` en el mismo cambio.
 3. Mantener separadas preparación, preflight, smoke, benchmark puntuado y decisión humana.
 4. Usar dobles herméticos en tests; nunca invocar servicios locales reales desde pytest.
 5. Actualizar código, contratos y enseñanza en la misma tanda.

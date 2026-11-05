@@ -78,3 +78,19 @@ git diff -- contracts/generated
 ```
 
 El primer comando regenera; el segundo permite inspeccionar qué cambió. No aceptes un cambio de schema sin actualizar pruebas y documentación.
+
+## `factory-demo` termina con código 1 o 2
+
+| Código | Significado | Qué hacer |
+|---|---|---|
+| `1` | El briefing está incompleto; se imprimieron las preguntas pendientes | Completa los campos indicados. No es un error del programa |
+| `2` | El JSON no cumple el contrato o el archivo no existe | Lee la lista `- campo: mensaje` y corrige ese campo |
+
+`--intake` acepta una ruta relativa al directorio actual, a la raíz del laboratorio o solo el nombre
+de un archivo de `examples/intakes/`.
+
+## `uv run pytest` falla en un clon recién descargado
+
+Las pruebas no dependen de tu `.env` ni de `.local/`: usan `--basetemp=.pytest-tmp` y construyen un
+workspace sintético para probar el descubrimiento de configuración. Si una prueba nueva necesita un
+archivo real de tu máquina, la prueba está mal escrita.

@@ -36,7 +36,16 @@ npm --prefix frontend install
 
 El resultado esperado es `03-orchestration/.venv` y `frontend/node_modules`.
 
-## 4. Arrancar API y dashboard
+## 4. Probar el gate sin modelo
+
+```powershell
+uv run orchestration-score ".\examples\guides\*.md"
+```
+
+Resultado esperado: `guia-aprobada.md` con `checks=9/9`, `guia-con-fallos.md` con `checks=7/9` y
+`poema-fuera-de-caso.md` con `checks=1/9`. Así conoces la vara de medir antes de llamar al modelo.
+
+## 5. Arrancar API y dashboard
 
 Terminal A:
 
@@ -61,7 +70,7 @@ Qué debes ver:
 
 La primera llamada puede tardar mientras Ollama carga el modelo. No hay reintento automático.
 
-## 5. Demostración CLI
+## 6. Demostración CLI
 
 Si prefieres no abrir el navegador:
 
@@ -72,7 +81,7 @@ uv run orchestration-validate
 
 El resultado esperado comienza con `JSONL valido` e informa eventos, evento terminal y `run_id`.
 
-## 6. Verificar el proyecto
+## 7. Verificar el proyecto
 
 ```powershell
 uv run pytest

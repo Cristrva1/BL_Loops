@@ -842,6 +842,16 @@ El contrato detallado vive en [CASOS_DE_EVALUACION.md](CASOS_DE_EVALUACION.md).
   simulados y se planificaron los estudios audiovisuales 19 a 23. Ninguna de esas carpetas se
   crea todavía. MCP queda como caso de evaluación sin runtime propio.
 
+- El 1 de octubre de 2026 se publicaron, fuera de la numeración original de este plan, cuatro
+  laboratorios exploratorios: `22-hyperframes-video-studio`, `23-remotion-superpowers-studio`,
+  `24-open-generative-ai-studio` y `25-meeting-summarizer`. Los dos primeros ocupan números
+  reservados en las secciones 8.22 y 8.23, cuyas preguntas siguen vigentes; la renumeración queda
+  pendiente de una decisión explícita del usuario.
+- El 5 de noviembre de 2026 se reforzó el material didáctico de todos los laboratorios ejecutables
+  (ejemplos resueltos, soluciones de ejercicios, ruta de aprendizaje y glosario), se corrigieron
+  pruebas que dependían de `.env` o `.local/` reales y se completó el runtime mínimo del 24. No se
+  cambió ninguna decisión de arquitectura; el detalle está en [NOVEDADES.md](NOVEDADES.md).
+
 No se inicia una fase avanzada para ocultar un fallo de la fase anterior.
 
 ## 13. Criterios de aceptación por laboratorio

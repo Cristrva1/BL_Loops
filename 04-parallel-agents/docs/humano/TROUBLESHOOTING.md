@@ -64,3 +64,16 @@ uv run parallel-agents-validate
 ```
 
 Debe empezar en `run.started` y terminar en `run.completed` o `run.failed`, con `lab_id=04-parallel-agents` y secuencia consecutiva. Si el archivo está a medias, la corrida todavía corre. Tampoco puede contener el texto de los documentos fuente.
+
+## El speedup es cercano a 1 aunque `max_in_flight=3`
+
+Ollama puede estar atendiendo una petición a la vez. Comprueba `overlap_peak` en el JSONL: si vale
+`1`, nunca hubo dos llamadas simultáneas. La configuración del servidor (`OLLAMA_NUM_PARALLEL`) y la
+VRAM disponible deciden cuántas atiende de verdad; el laboratorio no la cambia por ti.
+
+## El panel final aparecía vacío al terminar una corrida
+
+Era una carrera corregida el 2026-11-05: el evento `run.completed` marcaba la corrida como terminada
+antes de guardar las variantes. Ahora los eventos terminales se publican junto con el resultado y el
+stream SSE lee eventos y snapshot bajo el mismo candado
+(`test_terminal_event_is_published_together_with_the_final_result`).

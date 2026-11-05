@@ -36,7 +36,16 @@ npm --prefix frontend install
 
 El resultado esperado es `05-agent-loops/.venv` y `frontend/node_modules`.
 
-## 4. Arrancar API y dashboard
+## 4. Probar las assertions sin modelo
+
+```powershell
+uv run agent-loops-score ".\examples\outputs\*"
+```
+
+Resultado esperado: `salida-debil.txt` con `checks=0/5`, `salida-parcial.json` con `checks=2/5` y
+`salida-completa.json` con `checks=5/5`. Es la misma vara que usará el loop en cada iteración.
+
+## 5. Arrancar API y dashboard
 
 Terminal A:
 
@@ -61,7 +70,7 @@ Qué debes ver:
 
 La primera llamada puede tardar mientras Ollama carga el modelo. El presupuesto de tres minutos cubre toda la corrida, no cada llamada.
 
-## 5. Demostración CLI
+## 6. Demostración CLI
 
 Si prefieres no abrir el navegador:
 
@@ -72,7 +81,7 @@ uv run agent-loops-validate
 
 El resultado esperado comienza con `JSONL valido` e informa eventos, motivo de salida y scores.
 
-## 6. Verificar el proyecto
+## 7. Verificar el proyecto
 
 ```powershell
 uv run pytest

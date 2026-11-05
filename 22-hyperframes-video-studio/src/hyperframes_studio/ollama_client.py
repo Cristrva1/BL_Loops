@@ -2,7 +2,9 @@
 
 import json
 import logging
+
 import httpx
+
 from hyperframes_studio.schemas import SceneSpec, VideoBrief
 
 logger = logging.getLogger(__name__)
@@ -75,6 +77,10 @@ class OllamaVideoDirector:
     def __init__(self, base_url: str = "http://127.0.0.1:11434", model: str = "qwen3.5:9b"):
         self.base_url = base_url.rstrip("/")
         self.model = model
+        # Procedencia de las últimas escenas: "ollama" o "fallback". El orquestador la publica
+        # como evento y métrica para que el respaldo nunca sea silencioso.
+        self.last_source = "none"
+        self.last_fallback_reason: str | None = None
 
     async def generate_scenes(self, brief: VideoBrief) -> list[SceneSpec]:
         """Genera el desglose de escenas cinematográficas usando el modelo local Ollama."""
@@ -105,8 +111,10 @@ Formato de cada elemento:
   "code_snippet": "Comando o código de ejemplo"
 }}
 """
+        self.last_source = "fallback"
+        self.last_fallback_reason = "la respuesta no contenía escenas válidas"
         try:
-            async with httpx.AsyncClient(timeout=120.0) as client:
+            async with httpx.AsyncClient(timeout=120.0, trust_env=False) as client:
                 res = await client.post(
                     f"{self.base_url}/api/generate",
                     json={
@@ -116,7 +124,9 @@ Formato de cada elemento:
                         "options": {"temperature": 0.3},
                     },
                 )
-                if res.status_code == 200:
+                if res.status_code != 200:
+                    self.last_fallback_reason = f"Ollama respondió HTTP {res.status_code}"
+                else:
                     raw_text = res.json().get("response", "").strip()
                     # Clean markdown codeblocks if present
                     if "```json" in raw_text:
@@ -134,8 +144,10 @@ Formato de cada elemento:
                                 SceneSpec(
                                     id=item.get("id", f"scene-{idx+1}"),
                                     title=item.get("title", f"Escena {idx+1}"),
-                                    start_time=float(item.get("start_time", current_start)),
-                                    duration=float(item.get("duration", duration_per_scene)),
+                                    # La línea de tiempo la fija el estudio: escenas contiguas
+                                    # que suman exactamente la duración pedida.
+                                    start_time=round(current_start, 2),
+                                    duration=round(duration_per_scene, 2),
                                     headline=item.get("headline", "HyperFrames"),
                                     body=item.get("body", "Framework de video HTML."),
                                     bg_gradient=item.get("bg_gradient", "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)"),
@@ -145,9 +157,12 @@ Formato de cada elemento:
                                 )
                             )
                             current_start += duration_per_scene
+                        self.last_source = "ollama"
+                        self.last_fallback_reason = None
                         return scenes
-        except Exception as e:
-            logger.warning("Fallo o timeout al consultar Ollama: %s. Usando escenas deterministas de respaldo.", e)
+        except Exception as exc:  # noqa: BLE001 - cualquier fallo del modelo activa el respaldo visible
+            self.last_fallback_reason = f"{type(exc).__name__} al consultar Ollama"
+            logger.warning("Ollama no entregó escenas (%s); se usan escenas calibradas.", exc)
 
         # Fallback determinista respetando la duración solicitada
         duration_per_scene = brief.target_duration / len(DEFAULT_SCENES)

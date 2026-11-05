@@ -87,7 +87,8 @@ Cada laboratorio debe conservar un `AGENTS.md` propio y suficiente para trabajar
 | Tipo de cambio | Evidencia mínima |
 |---|---|
 | Solo Markdown | enlaces locales, estructura y coherencia con `AGENTS.md` |
-| Backend Python | pruebas, lint y demostración del recorrido afectado |
+| Ejemplos didácticos | cada comando de `EXAMPLES.md` ejecutado y su salida copiada sin editar |
+| Backend Python | pruebas (también en un clon limpio, sin `.env` ni `.local/`), lint y demostración del recorrido afectado |
 | Frontend | build y recorrido visual en navegador sin errores de consola |
 | Contrato | schema generado, fixture válido y fixture inválido rechazado |
 | Corrida de agente | eventos completos, métricas y JSONL importable |

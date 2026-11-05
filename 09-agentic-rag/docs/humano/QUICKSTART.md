@@ -5,8 +5,8 @@ Todos los comandos se ejecutan en PowerShell. No copies `.env` reales ni imprima
 ## 1. Entrar y crear el entorno aislado
 
 ```powershell
-cd C:\Users\criss\Desktop\Claude\BL_Loops\09-agentic-rag
-uv sync
+Set-Location .\09-agentic-rag          # desde la raíz de BL_Loops
+uv sync --locked --all-groups
 ```
 
 Resultado esperado: `.venv` y `uv.lock` pertenecen únicamente a este laboratorio.
@@ -22,8 +22,17 @@ ni usa APIs pagadas como fallback.
 
 ## 3. Construir el índice privado
 
+Empieza por el corpus sintético, que tarda segundos:
+
 ```powershell
-uv run sales-agent index --source "C:\Users\criss\Desktop\Claude\BL_Loops\docs\humano\Libros"
+uv run sales-agent index --source .\fixtures\evaluation-corpus
+```
+
+Resultado esperado: `Indice listo: 2/3 docs, 2 vectores, 2 secciones excluidas, 0 fuentes no
+revisadas.` Después, si quieres el corpus completo de libros:
+
+```powershell
+uv run sales-agent index --source ..\docs\humano\Libros
 ```
 
 Resultado observado el 30 de agosto de 2026: 49 Markdown descubiertos, 24 con contenido

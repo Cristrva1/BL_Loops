@@ -57,7 +57,8 @@ No uses `Get-Content .env`. Dentro de BL_Loops debe bastar el `.env` raíz; fuer
 
 ### Causas probables
 
-- Existe un `.env` local y sustituye al de la raíz.
+- En un laboratorio de *archivo único* (01, 13, 25) existe un `.env` local y sustituye por
+  completo al de la raíz. Consulta la [tabla de estrategias](ENVIRONMENTS.md#precedencia-actual).
 - Una variable del proceso tiene prioridad sobre dotenv.
 - El nombre no coincide con el alias esperado por Pydantic.
 - El valor no pasa validación.
@@ -76,13 +77,34 @@ Si falla, comprueba el proceso local y el endpoint configurado. No actives un fa
 
 ## Conflicto de puertos
 
+Cada laboratorio tiene puertos propios; consulta el [mapa de puertos](QUICKSTART.md#mapa-de-puertos).
+
 ```powershell
 Get-NetTCPConnection -State Listen |
-    Where-Object LocalPort -In 5173,8011,11434 |
+    Where-Object LocalPort -In 5172,5173,5174,5175,5176,5177,8011,8012,8013,8014,8015,8022,8023,8024,8025,11434 |
     Select-Object LocalAddress,LocalPort,OwningProcess
 ```
 
-Identifica primero el proceso propietario. No termines procesos desconocidos. Usa otro puerto documentado para la sesión si corresponde.
+Identifica primero el proceso propietario. No termines procesos desconocidos. Si dos laboratorios
+compiten por el mismo puerto, es un error de configuración que debe corregirse en el laboratorio,
+no una razón para cerrar el otro.
+
+## `uv run pytest` falla en un clon recién descargado
+
+### Síntoma
+
+`FileNotFoundError` sobre `.local/pytest`, o una prueba que exige un `.env` real en la raíz.
+
+### Causa
+
+Una prueba que depende del estado de **tu** máquina no es determinista. Antes, algunos laboratorios
+usaban `--basetemp=.local/pytest`, que falla si `.local/` todavía no existe.
+
+### Solución vigente
+
+Todos los laboratorios usan `--basetemp=.pytest-tmp` y las pruebas de configuración construyen un
+workspace sintético en una carpeta temporal. Si reaparece el síntoma en un laboratorio nuevo,
+corrige la prueba; no crees `.local/` a mano para tapar el problema.
 
 ## El frontend compila pero la pantalla falla
 

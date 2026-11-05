@@ -29,7 +29,7 @@ Estas reglas se aplican a todo este laboratorio. Dentro de BL_Loops se suman al 
 ## Forma de trabajar
 
 1. Revisar `git status --short` y preservar todo cambio previo.
-2. Leer `README.md` y el documento humano relacionado con la tarea.
+2. Leer `README.md`, `docs/humano/EXAMPLES.md` y el documento humano relacionado con la tarea.
 3. Mantener una única ruta de ejecución fácil de explicar: tarea → variantes → handoffs → gate → JSONL.
 4. Actualizar documentación y pruebas en el mismo cambio.
 5. Distinguir lo implementado de lo aplazado.
@@ -44,8 +44,16 @@ uv sync --all-groups
 uv run pytest
 uv run ruff check .
 npm --prefix frontend run build
+uv run orchestration-score ".\examples\guides\*.md"
 uv run orchestration-demo
 uv run orchestration-validate
 ```
 
 Las pruebas usan dobles locales y no invocan Ollama. La demostración sí requiere el modelo configurado.
+
+## Reglas al tocar el gate o el store
+
+- Si cambias `scoring.py`, revisa los veredictos esperados de `examples/guides/` (9/9, 7/9 y 1/9),
+  sus pruebas y `docs/humano/EXAMPLES.md` en el mismo cambio.
+- Los eventos `run.completed` y `run.failed` se publican mediante `STORE.finish` o `STORE.fail`,
+  nunca antes de guardar el resultado. El stream SSE debe leer con `STORE.read_since`.

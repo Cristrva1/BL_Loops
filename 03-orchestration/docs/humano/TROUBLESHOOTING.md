@@ -64,3 +64,16 @@ Debe empezar en `run.started` y terminar en `run.completed` o `run.failed`, con 
 ## El revisor LLM dice que sí y el gate dice que no
 
 No es un bug. El laboratorio enseña esa discrepancia. El ganador usa el gate determinista.
+
+## `orchestration-score` no encuentra archivos con `*`
+
+PowerShell no expande comodines para programas nativos; el comando los expande él mismo, pero
+necesita el patrón entre comillas: `uv run orchestration-score ".\.local\artifacts\*\*.md"`.
+Si no hay coincidencias, informa `No existe el archivo` y termina con código `2`.
+
+## El panel final aparecía vacío al terminar una corrida
+
+Era una carrera corregida el 2026-11-05: el evento `run.completed` marcaba la corrida como terminada
+antes de guardar las variantes. Ahora los eventos terminales se publican junto con el resultado y el
+stream SSE lee eventos y snapshot bajo el mismo candado. Lo cubre
+`test_terminal_event_is_published_together_with_the_final_result`.

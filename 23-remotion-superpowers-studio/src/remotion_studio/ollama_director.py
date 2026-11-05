@@ -2,7 +2,9 @@
 
 import json
 import logging
+
 import httpx
+
 from remotion_studio.schemas import RemotionBrief, RemotionScene
 
 logger = logging.getLogger(__name__)
@@ -63,6 +65,9 @@ class RemotionOllamaDirector:
     def __init__(self, base_url: str = "http://127.0.0.1:11434", model: str = "qwen3.5:9b"):
         self.base_url = base_url.rstrip("/")
         self.model = model
+        # Procedencia de las últimas escenas: "ollama" o "fallback"; el orquestador la publica.
+        self.last_source = "none"
+        self.last_fallback_reason: str | None = None
 
     async def generate_scenes(self, brief: RemotionBrief) -> list[RemotionScene]:
         """Genera escenas de video calculando los fotogramas exactos con Ollama."""
@@ -96,8 +101,10 @@ Formato de cada elemento:
   "code": "Código React o comando"
 }}
 """
+        self.last_source = "fallback"
+        self.last_fallback_reason = "la respuesta no contenía escenas válidas"
         try:
-            async with httpx.AsyncClient(timeout=120.0) as client:
+            async with httpx.AsyncClient(timeout=120.0, trust_env=False) as client:
                 res = await client.post(
                     f"{self.base_url}/api/generate",
                     json={
@@ -107,7 +114,9 @@ Formato de cada elemento:
                         "options": {"temperature": 0.3},
                     },
                 )
-                if res.status_code == 200:
+                if res.status_code != 200:
+                    self.last_fallback_reason = f"Ollama respondió HTTP {res.status_code}"
+                else:
                     raw_text = res.json().get("response", "").strip()
                     if "```json" in raw_text:
                         raw_text = raw_text.split("```json")[1].split("```")[0].strip()
@@ -135,9 +144,12 @@ Formato de cada elemento:
                                 )
                             )
                             current_frame += calc_frames
+                        self.last_source = "ollama"
+                        self.last_fallback_reason = None
                         return scenes
-        except Exception as e:
-            logger.warning("Fallo o timeout en Ollama para Remotion: %s. Usando fallback.", e)
+        except Exception as exc:  # noqa: BLE001 - cualquier fallo del modelo activa el respaldo visible
+            self.last_fallback_reason = f"{type(exc).__name__} al consultar Ollama"
+            logger.warning("Ollama no entregó escenas (%s); se usan escenas calibradas.", exc)
 
         # Fallback calibrado
         calibrated = []

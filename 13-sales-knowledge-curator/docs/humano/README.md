@@ -6,6 +6,39 @@ Este laboratorio convierte fuentes permitidas en evidencia auditable y, solo des
 decisión humana, en un `KnowledgeRelease`. También ayuda a descubrir ediciones y accesos legales
 sin confundir “está en Internet” con “se puede copiar”.
 
+## Antes de empezar
+
+- **Laboratorios previos recomendados:** [06-naive-rag](../../../06-naive-rag/docs/humano/README.md)
+  (citas a archivo y líneas) y [09-agentic-rag](../../../09-agentic-rag/docs/humano/README.md), cuyo
+  agente sufre exactamente el problema que este laboratorio ataca: un corpus débil.
+- **Software:** `uv`. Ollama y la red son **opcionales** y están apagados por defecto.
+- **Vocabulario:** [aprobación humana](../../../docs/humano/maestro/GLOSARIO.md#aprobación-humana-hitl),
+  [huella](../../../docs/humano/maestro/GLOSARIO.md#huella-content_hash) e
+  [inyección indirecta](../../../docs/humano/maestro/GLOSARIO.md#inyección-indirecta).
+
+## Una analogía
+
+Es la mesa de edición de un periódico. Cada dato llega con su fuente; el editor comprueba si sigue
+vigente, si dos fuentes se contradicen, si el texto tiene permiso de uso y si alguien intentó colar
+una orden disfrazada de noticia. Solo después, una persona firma **esta** edición concreta, y la
+imprenta publica exactamente lo firmado.
+
+## Los estados de una afirmación
+
+| Estado | Significa | ¿Llega al release? |
+|---|---|---|
+| `candidate` | Recién extraída, sin verificar | No |
+| `supported_single_source` / `corroborated` | Una fuente la sostiene / varias independientes | Solo tras aprobación |
+| `human_approved` | Una persona la aprobó sobre su hash | Sí |
+| `disputed` | Choca con otra afirmación | No, hasta resolver el conflicto |
+| `outdated` / `superseded` | Fuera de su ventana de vigencia / reemplazada | No |
+| `unsupported` | Afirmación sin método ni evidencia suficiente | No |
+| `quarantined` | Derechos o procedencia dudosos | No |
+| `rejected` | Inyección o contenido inadmisible | No, nunca |
+
+El [ejemplo 3](EXAMPLES.md#ejemplo-3--nueve-afirmaciones-seis-estados) recorre seis de estos estados
+con el corpus sintético.
+
 ## Dos carriles separados
 
 ```mermaid
@@ -63,9 +96,16 @@ fichas a `docs/humano/Libros` solo con `--authorize-export`.
 
 ## Recorrido recomendado
 
-1. Ejecuta [QUICKSTART.md](QUICKSTART.md).
+1. Ejecuta [QUICKSTART.md](QUICKSTART.md) y la demo de [EXAMPLES.md](EXAMPLES.md).
 2. Entiende los gates en [ARCHITECTURE.md](ARCHITECTURE.md).
 3. Revisa decisiones y fuentes oficiales en [METHODOLOGY.md](METHODOLOGY.md).
 4. Practica con [EXERCISES.md](EXERCISES.md).
 5. Diagnostica con [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 6. Aplica el gate de [EVALUATION.md](EVALUATION.md).
+
+## Dónde encaja en la ruta
+
+- **Antes:** [25-meeting-summarizer](../../../25-meeting-summarizer/docs/humano/README.md) o la familia
+  RAG (06–09).
+- **Después:** [14-local-code-hermes](../../../14-local-code-hermes/docs/humano/README.md), donde la
+  misma disciplina de evidencia se aplica a un benchmark de clientes de programación.

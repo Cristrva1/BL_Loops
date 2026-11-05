@@ -1,0 +1,13 @@
+{
+  "artifact_type": "agent",
+  "idea": "Quiero un agente que me ayude a organizar mis archivos de la carpeta de descargas.",
+  "title": "Organizador de descargas",
+  "success_criteria": [],
+  "constraints": [],
+  "source_refs": [],
+  "allowed_tools": [
+    "local_file_reader"
+  ],
+  "tools_confirmed": false,
+  "requires_human_approval": true
+}

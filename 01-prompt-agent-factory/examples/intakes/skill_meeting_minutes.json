@@ -1,0 +1,25 @@
+{
+  "artifact_type": "skill",
+  "idea": "Crear una skill portable que convierta una transcripción sintética de reunión en una minuta con decisiones, responsables y fechas, sin inventar compromisos.",
+  "title": "Minuta trazable de reunión",
+  "audience": "Coordinadora de equipo que revisa la minuta antes de compartirla",
+  "context": "La transcripción es un fixture sintético con marcas de hablante. La skill solo lee el texto recibido y nunca envía mensajes ni crea tareas reales.",
+  "input_name": "meeting_transcript",
+  "output_format": "markdown",
+  "success_criteria": [
+    "Cada decisión cita la línea o el hablante que la respalda",
+    "Cada compromiso tiene responsable y fecha, o queda marcado como pendiente de confirmar",
+    "Las ideas discutidas pero no aprobadas no aparecen como decisiones"
+  ],
+  "constraints": [
+    "No enviar correos ni mensajes",
+    "No crear tareas en herramientas externas",
+    "No completar responsables ni fechas que no aparezcan en la transcripción"
+  ],
+  "source_refs": [
+    "docs/CASOS_DE_EVALUACION.md#F-SKILL-003"
+  ],
+  "allowed_tools": [],
+  "tools_confirmed": true,
+  "requires_human_approval": true
+}

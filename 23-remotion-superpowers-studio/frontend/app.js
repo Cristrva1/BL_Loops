@@ -84,6 +84,8 @@ async function loadScenes() {
 }
 
 // SSE Connection
+let eventsLost = false;
+
 function connectEvents() {
   const eventSource = new EventSource(`${API_BASE}/api/pipeline/events`);
   eventSource.onmessage = (e) => {
@@ -110,8 +112,13 @@ function connectEvents() {
       metricStatus.style.color = "#ef4444";
     }
   };
+  // EventSource se reconecta solo: abrir otra conexión aquí duplicaría cada evento.
+  eventSource.onopen = () => {
+    eventsLost = false;
+  };
   eventSource.onerror = () => {
-    setTimeout(connectEvents, 3000);
+    if (!eventsLost) log("Conexión de eventos perdida; el navegador reintentará automáticamente.", "error");
+    eventsLost = true;
   };
 }
 
@@ -134,7 +141,10 @@ btnRun.addEventListener("click", async () => {
       body: JSON.stringify(brief)
     });
     if (!res.ok) {
-      throw new Error(`HTTP error: ${res.status}`);
+      // 409: ya hay un render en curso; 422: el brief no cumple el contrato (p. ej. modelo cloud).
+      const body = await res.json().catch(() => ({}));
+      const detail = Array.isArray(body.detail) ? body.detail.map((d) => d.msg).join("; ") : body.detail;
+      throw new Error(detail || `HTTP ${res.status}`);
     }
   } catch (err) {
     log(`Error al iniciar pipeline: ${err.message}`, "error");
@@ -142,5 +152,25 @@ btnRun.addEventListener("click", async () => {
   }
 });
 
+// Estado real del backend: las píldoras no muestran nada que no se haya comprobado.
+async function refreshStatus() {
+  const ollamaPill = document.getElementById("ollama-status");
+  const rendererPill = document.getElementById("remotion-status");
+  try {
+    const res = await fetch(`${API_BASE}/api/status`);
+    const status = await res.json();
+    ollamaPill.textContent = status.ollama_reachable
+      ? "Ollama: conectado"
+      : "Ollama: no disponible (se usarán escenas calibradas)";
+    ollamaPill.className = `status-pill ${status.ollama_reachable ? "status-ready" : "status-warning"}`;
+    rendererPill.textContent = status.npx_available ? "npx: disponible" : "npx: no encontrado";
+    rendererPill.className = `status-pill ${status.npx_available ? "status-ready" : "status-warning"}`;
+  } catch (err) {
+    ollamaPill.textContent = "API no disponible";
+    ollamaPill.className = "status-pill status-warning";
+  }
+}
+
+refreshStatus();
 connectEvents();
 loadScenes();

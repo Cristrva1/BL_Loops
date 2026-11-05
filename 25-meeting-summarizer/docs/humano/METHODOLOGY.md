@@ -24,3 +24,28 @@ Para mitigar esto, la metodología aplica:
 2. **Temperatura baja (`0.2`)**: Reduce la aleatoriedad y prioriza la extracción determinista.
 3. **Campo `context` y `rationale`**: Cada tarea y decisión debe incluir el motivo o contexto que la respalda en la conversación.
 4. **Respuesta estructurada en JSON**: Evita dispersión de texto libre y obliga al LLM a clasificar en categorías fijas.
+
+## 4. Privacidad de la evidencia
+
+Una minuta contiene nombres, tareas y acuerdos. Por eso el laboratorio separa dos destinos:
+
+| Destino | Contenido | Para qué |
+|---|---|---|
+| `.local/data/meetings.db` | Informe completo | Consultar y reutilizar la minuta en tu equipo |
+| `.local/runs/*.jsonl` | Recuentos, modelo, duración y `report_sha256` | Comparar modelos sin exponer a nadie |
+
+Antes del 2026-11-05 el JSONL incluía el informe completo; se retiró para cumplir la regla del
+repositorio de trazas sanitizadas.
+
+## 5. Ver antes de generar
+
+`meeting-summarizer parse` muestra el formato detectado, los hablantes y el plan de bloques **sin**
+llamar al modelo. Es la misma idea que `naive-rag search` en el laboratorio 06: comprobar primero qué
+recibirá el modelo, para distinguir un fallo de entrada (el parser no reconoció a los hablantes) de un
+fallo de generación (el modelo inventó un responsable).
+
+## 6. Límites deliberados
+
+- No transcribe audio ni se conecta a Meet, Zoom o Teams: parte de un texto ya exportado.
+- No envía la minuta por correo ni mensajería; se copia a mano.
+- La evaluación de calidad es manual, con la clave de `meet_compromisos_ambiguos.txt`.

@@ -8,9 +8,20 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
+
 from hyperframes_studio.schemas import RenderResult
 
 logger = logging.getLogger(__name__)
+
+# HyperFrames envía telemetría anónima (PostHog) salvo que se desactive. BL_Loops no permite
+# telemetría por defecto: el CLI respeta estas dos variables con los valores 1/true/yes/on.
+TELEMETRY_OPT_OUT = {"HYPERFRAMES_NO_TELEMETRY": "1", "DO_NOT_TRACK": "1"}
+
+
+def render_environment() -> dict[str, str]:
+    """Entorno del subproceso de render: el del sistema más la exclusión de telemetría."""
+
+    return {**os.environ, **TELEMETRY_OPT_OUT}
 
 
 class HyperFramesRenderer:
@@ -53,26 +64,33 @@ class HyperFramesRenderer:
         out_path = Path(output_mp4_path).resolve()
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
-        cmd = [
-            "npx", "--yes", "hyperframes@0.8.34",
-            "render",
-            "-o", str(out_path)
-        ]
-
         start_time = time.time()
+        npx = shutil.which("npx")
+        if npx is None:
+            return _failed_render(
+                out_path,
+                start_time,
+                "No se encontró npx: instala Node.js para renderizar con HyperFrames.",
+            )
+        cmd = [npx, "--yes", "hyperframes@0.8.34", "render", "-o", str(out_path)]
+        if os.name == "nt" and npx.lower().endswith((".cmd", ".bat")):
+            # En Windows, npx es un script .cmd que se ejecuta a través de cmd.exe.
+            cmd = ["cmd.exe", "/c", *cmd]
         logger.info("Iniciando renderizado con HyperFrames: %s", " ".join(cmd))
 
-        # En Windows usamos shell=True o powershell/cmd para resolver npx
-        proc = await asyncio.create_subprocess_exec(
-            "cmd.exe", "/c", "npx", "--yes", "hyperframes@0.8.34", "render", "-o", str(out_path),
-            cwd=str(self.workspace_dir),
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                *cmd,
+                cwd=str(self.workspace_dir),
+                env=render_environment(),
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+        except OSError as exc:
+            return _failed_render(out_path, start_time, f"No se pudo iniciar HyperFrames: {exc}")
 
-        stdout_bytes, stderr_bytes = await proc.communicate()
+        _stdout_bytes, stderr_bytes = await proc.communicate()
         elapsed = time.time() - start_time
-        stdout_str = stdout_bytes.decode(errors="replace")
         stderr_str = stderr_bytes.decode(errors="replace")
 
         if proc.returncode != 0 or not out_path.exists() or out_path.stat().st_size == 0:
@@ -95,10 +113,10 @@ class HyperFramesRenderer:
 
         return RenderResult(
             video_path=str(out_path),
-            duration=metadata.get("duration", 0.0),
-            width=metadata.get("width", 1920),
-            height=metadata.get("height", 1080),
-            fps=metadata.get("fps", 30),
+            duration=metadata["duration"],
+            width=metadata["width"],
+            height=metadata["height"],
+            fps=metadata["fps"],
             file_size_bytes=out_path.stat().st_size,
             render_elapsed_seconds=round(elapsed, 2),
             success=True,
@@ -121,18 +139,34 @@ class HyperFramesRenderer:
             format_info = info.get("format", {})
             duration = float(format_info.get("duration", 0.0))
 
-            width, height, fps = 1920, 1080, 30
+            # Sin pista de video no hay medición: ceros, nunca una resolución supuesta.
+            width, height, fps = 0, 0, 0
             for stream in info.get("streams", []):
                 if stream.get("codec_type") == "video":
-                    width = int(stream.get("width", 1920))
-                    height = int(stream.get("height", 1080))
-                    r_frame_rate = stream.get("r_frame_rate", "30/1")
-                    if "/" in r_frame_rate:
-                        num, den = r_frame_rate.split("/")
-                        fps = round(float(num) / float(den))
+                    width = int(stream.get("width", 0))
+                    height = int(stream.get("height", 0))
+                    num, _, den = str(stream.get("r_frame_rate", "0/1")).partition("/")
+                    denominator = float(den or 1)
+                    fps = round(float(num) / denominator) if denominator else 0
                     break
 
             return {"duration": round(duration, 2), "width": width, "height": height, "fps": fps}
-        except Exception as e:
-            logger.warning("No se pudo inspeccionar ffprobe: %s. Usando valores estándar.", e)
-            return {"duration": 15.0, "width": 1920, "height": 1080, "fps": 30}
+        except (OSError, subprocess.CalledProcessError, ValueError) as exc:
+            # Sin ffprobe no hay medición: duración 0 para que la evaluación no apruebe a ciegas.
+            logger.warning("No se pudo inspeccionar el video con ffprobe: %s", exc)
+            return {"duration": 0.0, "width": 0, "height": 0, "fps": 0}
+
+
+def _failed_render(out_path: Path, start_time: float, message: str) -> RenderResult:
+    logger.error(message)
+    return RenderResult(
+        video_path=str(out_path),
+        duration=0.0,
+        width=0,
+        height=0,
+        fps=0,
+        file_size_bytes=0,
+        render_elapsed_seconds=round(time.time() - start_time, 2),
+        success=False,
+        error=message,
+    )

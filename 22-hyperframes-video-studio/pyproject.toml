@@ -3,7 +3,7 @@ name = "bl-loops-hyperframes-video-studio"
 version = "0.1.0"
 description = "Laboratorio didáctico para HyperFrames y generación de video con IA Local (Ollama)"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi>=0.115.0",
     "pydantic>=2.10.0",
@@ -31,9 +31,14 @@ packages = ["src/hyperframes_studio"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
-addopts = "-q --basetemp=.local/pytest"
+addopts = "-q --basetemp=.pytest-tmp"
 
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]

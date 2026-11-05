@@ -45,6 +45,11 @@ npm --prefix frontend run build
 
 El aprobado técnico exige cero fallos. Un build verde no sustituye la revisión del recorrido humano.
 
+`backend/tests/test_demo.py` comprueba además que los seis briefings de ejemplo son JSON válidos,
+que el incompleto produce preguntas sin exportar, que la skill se construye y que un briefing
+inválido explica cada error. Así los ejemplos de [EXAMPLES.md](EXAMPLES.md) no pueden quedar
+desactualizados sin que falle una prueba.
+
 ## Revisión humana
 
 Usa esta lista después de probar la pantalla:

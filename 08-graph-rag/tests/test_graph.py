@@ -2,7 +2,15 @@ from pathlib import Path
 
 import pytest
 
-from graph_rag.graph import GraphIndex, IndexingError, SearchError
+from graph_rag.graph import (
+    GraphIndex,
+    IndexingError,
+    PathHop,
+    SearchError,
+    _path_from_hops,
+    ascii_path,
+    mermaid_path,
+)
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "evaluation-corpus"
 MULTI_HOP_QUESTION = "¿Qué fecha de congelación afecta el proyecto de Ana Ruiz?"
@@ -85,6 +93,32 @@ def test_reverse_traversal_answers_who_owns_a_seed_object(tmp_path: Path) -> Non
         hop.direction == "reverse" and hop.object == "Ana Ruiz" and hop.predicate == "owns"
         for hop in hops
     )
+
+
+def test_reverse_hop_is_drawn_in_the_direction_of_the_written_triple(tmp_path: Path) -> None:
+    index = GraphIndex(tmp_path / "graph.sqlite3")
+    index.build(_tiny_corpus(tmp_path), chunk_chars=400)
+
+    retrieval = index.search_graph("¿Quién es responsable de AtlasCRM?", max_hops=1)
+    reverse = next(
+        path for path in retrieval.paths if path.hops and path.hops[0].direction == "reverse"
+    )
+
+    assert ascii_path(reverse) == "AtlasCRM <--owns-- Ana Ruiz"
+    assert "Ana_Ruiz -->|owns| AtlasCRM" in mermaid_path(reverse)
+    assert "AtlasCRM -->|owns| Ana_Ruiz" not in mermaid_path(reverse)
+
+
+def test_inferred_edge_marks_reverse_hops_with_a_caret() -> None:
+    hops = (
+        PathHop("MailRelay", "depends_on", "PortalClientes", "reverse", "extracted", "a.md", 1, 1),
+        PathHop("PortalClientes", "owns", "Luis Soto", "reverse", "extracted", "b.md", 2, 2),
+    )
+    path = _path_from_hops(hops)
+
+    assert path.inferred is not None
+    assert path.inferred.predicate == "^depends_on/^owns"
+    assert "Luis_Soto -->|owns| PortalClientes" in mermaid_path(path)
 
 
 def test_empty_rebuild_fails_without_destroying_previous_index(tmp_path: Path) -> None:

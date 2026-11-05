@@ -1,11 +1,14 @@
 """Contratos de datos Pydantic para Remotion Superpowers Studio."""
 
-from enum import Enum
-from typing import Any
-from pydantic import BaseModel, Field
+from enum import StrEnum
+from typing import Any, Literal
+
+from pydantic import BaseModel, Field, field_validator
+
+from remotion_studio.config import validate_model
 
 
-class RemotionState(str, Enum):
+class RemotionState(StrEnum):
     IDLE = "IDLE"
     ANALYZING_BRIEF = "ANALYZING_BRIEF"
     PLANNING_SCENES = "PLANNING_SCENES"
@@ -35,11 +38,17 @@ class RemotionBrief(BaseModel):
         default="Demostrar Remotion y el patrón Remotion Superpowers con React y IA Local",
         description="Tema a cubrir en el video",
     )
-    target_duration: float = Field(default=12.0, description="Duración en segundos")
-    fps: int = Field(default=30, description="Fotogramas por segundo")
-    width: int = Field(default=1920, description="Ancho")
-    height: int = Field(default=1080, description="Alto")
+    target_duration: float = Field(default=12.0, ge=4.0, le=60.0, description="Duración en segundos")
+    # Root.tsx fija la composición en 1920x1080 a 30 fps: el contrato no admite otros valores.
+    fps: Literal[30] = Field(default=30, description="Fotogramas por segundo")
+    width: Literal[1920] = Field(default=1920, description="Ancho")
+    height: Literal[1080] = Field(default=1080, description="Alto")
     model: str = Field(default="qwen3.5:9b", description="Modelo Ollama")
+
+    @field_validator("model")
+    @classmethod
+    def _local_model(cls, value: str) -> str:
+        return validate_model(value)
 
 
 class PipelineEvent(BaseModel):
@@ -73,4 +82,4 @@ class EvaluationRecord(BaseModel):
     file_size_kb: float
     total_frames: int
     scenes_count: int
-    metrics: dict[str, float | str | bool]
+    metrics: dict[str, int | float | str | bool]

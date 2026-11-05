@@ -1,11 +1,18 @@
-"""Contratos Pydantic para Open Generative AI Studio."""
+"""Contratos Pydantic para Open Generative AI Studio.
 
-from enum import Enum
+Los límites (`ge`, `max_length`) y el validador de modelo protegen la frontera de la API: una
+petición fuera de contrato recibe un 422 antes de llegar a Ollama o a FFmpeg.
+"""
+
+from enum import StrEnum
 from typing import Any
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel, Field, field_validator
+
+from open_genai_studio.config import DEFAULT_MODEL, validate_model
 
 
-class StudioState(str, Enum):
+class StudioState(StrEnum):
     IDLE = "IDLE"
     ANALYZING_CONCEPT = "ANALYZING_CONCEPT"
     EXPANDING_PROMPTS = "EXPANDING_PROMPTS"
@@ -16,7 +23,7 @@ class StudioState(str, Enum):
     FAILED = "FAILED"
 
 
-class ShotType(str, Enum):
+class ShotType(StrEnum):
     EXTREME_WIDE = "Extreme Wide Shot"
     WIDE = "Wide Shot"
     MEDIUM = "Medium Shot"
@@ -25,7 +32,7 @@ class ShotType(str, Enum):
     DRONE_AERIAL = "Drone Aerial"
 
 
-class CameraMovement(str, Enum):
+class CameraMovement(StrEnum):
     STATIC = "Static"
     SLOW_PAN_RIGHT = "Slow Pan Right"
     SLOW_PAN_LEFT = "Slow Pan Left"
@@ -53,21 +60,39 @@ class StoryboardShot(BaseModel):
 class PromptExpansionRequest(BaseModel):
     raw_idea: str = Field(
         default="Un astronauta descubre ruinas antiguas en un desierto alienígena bioluminiscente",
+        min_length=3,
+        max_length=500,
         description="Idea o brief inicial del usuario",
     )
-    style: str = "Cinematográfico Sci-Fi 35mm"
-    model: str = "qwen3.5:9b"
+    style: str = Field(default="Cinematográfico Sci-Fi 35mm", max_length=120)
+    model: str = DEFAULT_MODEL
+
+    @field_validator("model")
+    @classmethod
+    def _local_model(cls, value: str) -> str:
+        return validate_model(value)
 
 
 class StoryboardProject(BaseModel):
-    title: str = "Expedición Nebular"
+    title: str = Field(default="Expedición Nebular", min_length=1, max_length=120)
     narrative_concept: str = Field(
-        default="Un equipo de exploración descubre una señal alienígena enterrada en un cañón de hielo",
+        default=(
+            "Un equipo de exploración descubre una señal alienígena enterrada en un cañón de hielo"
+        ),
+        min_length=10,
+        max_length=600,
         description="Sinopsis del proyecto",
     )
-    total_duration_target: float = 12.0
+    total_duration_target: float = Field(
+        default=12.0, ge=4.0, le=60.0, description="Segundos totales; se reparten entre 4 planos"
+    )
     shots: list[StoryboardShot] = Field(default_factory=list)
-    model: str = "qwen3.5:9b"
+    model: str = DEFAULT_MODEL
+
+    @field_validator("model")
+    @classmethod
+    def _local_model(cls, value: str) -> str:
+        return validate_model(value)
 
 
 class PipelineEvent(BaseModel):
@@ -100,4 +125,4 @@ class EvaluationRecord(BaseModel):
     render_time_seconds: float
     file_size_kb: float
     shots_count: int
-    metrics: dict[str, float | str | bool]
+    metrics: dict[str, int | float | str | bool]

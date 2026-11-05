@@ -6,6 +6,7 @@ import asyncio
 import json
 import threading
 from collections.abc import AsyncIterator
+from typing import Any
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
@@ -27,7 +28,7 @@ from .ollama_client import OllamaClient, OllamaError
 from .orchestrator import ExperimentRequest, OrchestrationError, run_experiment, variant_id_for
 from .prompts import CASE_ID, DEFAULT_TASK
 from .run_log import LAB_ID, RunLogger
-from .store import STORE
+from .store import STORE, TERMINAL_EVENTS
 
 app = FastAPI(
     title="BL_Loops · Orquestación multiagente",
@@ -191,15 +192,15 @@ async def stream_events(run_id: str) -> StreamingResponse:
     async def generate() -> AsyncIterator[str]:
         last = 0
         while True:
-            snapshot = STORE.get(run_id)
-            if snapshot is None:
+            batch = STORE.read_since(run_id, last)
+            if batch is None:
                 break
-            while last < len(snapshot.events):
-                event = snapshot.events[last]
+            events, public_snapshot, finished = batch
+            for event in events:
                 last += 1
-                envelope = {"event": event, "snapshot": snapshot.public_dict()}
+                envelope = {"event": event, "snapshot": public_snapshot}
                 yield f"data: {json.dumps(envelope, ensure_ascii=False)}\n\n"
-            if snapshot.status in {"completed", "failed"} and last >= len(snapshot.events):
+            if finished:
                 break
             await asyncio.sleep(0.15)
 
@@ -211,12 +212,21 @@ async def stream_events(run_id: str) -> StreamingResponse:
 
 
 def _execute_run(run_id: str, request: ExperimentRequest, settings: Settings) -> None:
+    terminal_events: list[dict[str, Any]] = []
+
+    def listener(event: dict[str, Any]) -> None:
+        # run.completed/run.failed esperan al resultado: ver STORE.finish y STORE.fail.
+        if event["event_type"] in TERMINAL_EVENTS:
+            terminal_events.append(event)
+        else:
+            STORE.apply(run_id, event)
+
     logger = RunLogger(
         settings.runs_dir,
         settings.model,
         settings.base_url,
         variant_id_for(request),
-        listener=lambda event: STORE.apply(run_id, event),
+        listener=listener,
         run_id=run_id,
     )
     try:
@@ -224,21 +234,15 @@ def _execute_run(run_id: str, request: ExperimentRequest, settings: Settings) ->
         result = run_experiment(request, settings, client, logger)
     except (OllamaError, OrchestrationError, ConfigurationError) as exc:
         logger.finish(status="failed", reason=str(exc))
-        snapshot = STORE.get(run_id)
-        if snapshot is not None:
-            snapshot.status = "failed"
-            snapshot.error = str(exc)
+        STORE.fail(run_id, str(exc), terminal_events)
         return
     except Exception:
         logger.finish(status="failed", reason="Fallo interno del orquestador.")
-        snapshot = STORE.get(run_id)
-        if snapshot is not None:
-            snapshot.status = "failed"
-            snapshot.error = "Fallo interno del orquestador."
+        STORE.fail(run_id, "Fallo interno del orquestador.", terminal_events)
         return
 
     try:
         relative = result.jsonl_path.resolve().relative_to(settings.root.resolve()).as_posix()
     except ValueError:
         relative = result.jsonl_path.name
-    STORE.finish(run_id, result, relative)
+    STORE.finish(run_id, result, relative, terminal_events)

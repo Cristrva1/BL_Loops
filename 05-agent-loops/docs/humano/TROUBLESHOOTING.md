@@ -64,3 +64,15 @@ Debe empezar en `run.started` y terminar en `run.completed` o `run.failed`, con 
 ## El mejor score no es el de la última iteración
 
 No es un bug. El laboratorio enseña a conservar el máximo. Mira `is_best` en cada `iteration.recorded`.
+
+## `agent-loops-score` no encuentra archivos con `*`
+
+PowerShell no expande comodines para programas nativos; el comando los expande él mismo si el patrón
+va entre comillas: `uv run agent-loops-score ".\.local\artifacts\*\best-output.txt"`.
+
+## El panel final aparecía vacío al terminar una corrida
+
+Era una carrera corregida el 2026-11-05: el evento `run.completed` marcaba la corrida como terminada
+antes de guardar las iteraciones y el mejor candidato. Ahora los eventos terminales se publican junto
+con el resultado y el stream SSE lee eventos y snapshot bajo el mismo candado
+(`test_terminal_event_is_published_together_with_the_final_result`).

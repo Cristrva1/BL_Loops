@@ -39,6 +39,7 @@ Las pruebas cubren:
 - contrato exacto enviado a `/api/chat`;
 - exclusión del campo de pensamiento;
 - contexto entre turnos;
+- comandos locales que nunca llaman al modelo, `/memoria` sin contenido y `/olvidar` que reinicia el historial;
 - errores sin retry automático;
 - sanitización y reimportación del JSONL;
 - independencia respecto de documentación y otros laboratorios.

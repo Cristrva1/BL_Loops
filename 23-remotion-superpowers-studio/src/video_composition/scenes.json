@@ -1,50 +1,50 @@
 [
   {
-    "id": "scene-1",
-    "title": "Introducción a Remotion",
+    "id": "scene-1-react-video",
+    "title": "Remotion: Video en React",
     "startFrame": 0,
     "durationInFrames": 90,
-    "headline": "Video con Código React",
-    "subheadline": "Componentes funcionales renderizados en el navegador.",
-    "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)",
+    "headline": "Remotion: Video Programático en React",
+    "subheadline": "Aprovecha componentes, hooks de React, estilos CSS y el ecosistema web para crear video real.",
+    "bgGradient": "linear-gradient(135deg, #090d16 0%, #1e1b4b 100%)",
     "accentColor": "#6366f1",
-    "badge": "Concepto Base",
-    "code": "<App>\n  <VideoFrame>\n    <Component />\n  </VideoFrame>\n</App>"
+    "badge": "React + Video",
+    "code": "<Composition id='MainVideo' component={Main} />"
   },
   {
-    "id": "scene-2",
-    "title": "Control de Tiempo",
+    "id": "scene-2-timing",
+    "title": "Control por Fotogramas",
     "startFrame": 90,
     "durationInFrames": 90,
-    "headline": "Precisión Fotograma a Fotograma",
-    "subheadline": "useCurrentFrame, spring(), interpolate().",
-    "bgGradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)",
-    "accentColor": "#818cf8",
-    "badge": "Animación",
-    "code": "const frame = useCurrentFrame();\nconst x = interpolate(frame, [0, 1], [0, 100]);"
+    "headline": "Sincronía Milimétrica por Fotogramas",
+    "subheadline": "Usa useCurrentFrame(), interpolate() y spring() para animaciones fluidas sin caídas de cuadros.",
+    "bgGradient": "linear-gradient(135deg, #090d16 0%, #064e3b 100%)",
+    "accentColor": "#10b981",
+    "badge": "Frame Accuracy",
+    "code": "const frame = useCurrentFrame();"
   },
   {
-    "id": "scene-3",
+    "id": "scene-3-superpowers",
     "title": "Patrón Superpowers",
     "startFrame": 180,
     "durationInFrames": 90,
-    "headline": "Producción Agéntica y Audio-First",
-    "subheadline": "Transiciones fluidas y gestión de audio.",
-    "bgGradient": "linear-gradient(135deg, #312e81 0%, #4338ca 100%)",
-    "accentColor": "#a5b4fc",
-    "badge": "Superpowers",
-    "code": "const { useAudio } = require('remotion-superpowers');\n// Patrón agéntico"
+    "headline": "Remotion Superpowers: IA Agéntica",
+    "subheadline": "Metodología donde un agente diseña guión, secuencias, ritmo auditivo y transiciones.",
+    "bgGradient": "linear-gradient(135deg, #090d16 0%, #701a75 100%)",
+    "accentColor": "#d946ef",
+    "badge": "Superpowers Pattern",
+    "code": "npx remotion render src/index.ts MainVideo"
   },
   {
-    "id": "scene-4",
+    "id": "scene-4-local-render",
     "title": "Renderizado Local",
     "startFrame": 270,
     "durationInFrames": 90,
-    "headline": "Headless a MP4 con FFmpeg",
-    "subheadline": "Chrome + FFmpeg para exportación optimizada.",
-    "bgGradient": "linear-gradient(135deg, #4338ca 0%, #4f46e5 100%)",
-    "accentColor": "#c7d2fe",
-    "badge": "Exportación",
-    "code": "npx remotion render App -o output.mp4"
+    "headline": "Render Headless 100% Local",
+    "subheadline": "Compilación a MP4 de alta velocidad con Chrome Headless y FFmpeg en tu propia GPU.",
+    "bgGradient": "linear-gradient(135deg, #090d16 0%, #7c2d12 100%)",
+    "accentColor": "#f97316",
+    "badge": "Local Production",
+    "code": "BL_Loops Lab 23 · Remotion Superpowers"
   }
 ]

@@ -12,6 +12,37 @@ from single_agent.ollama_client import OllamaClient, OllamaError
 from single_agent.run_log import RunLogger
 
 EXIT_COMMANDS = frozenset({"/salir", "salir", "/exit", "exit", "/quit", "quit"})
+HELP_COMMANDS = frozenset({"/ayuda", "/help"})
+MEMORY_COMMANDS = frozenset({"/memoria", "/memory"})
+FORGET_COMMANDS = frozenset({"/olvidar", "/forget"})
+HELP_TEXT = (
+    "Comandos locales (nunca se envían al modelo):\n"
+    "  /ayuda    muestra esta lista\n"
+    "  /memoria  cuenta los mensajes y caracteres que se reenviarán en el próximo turno\n"
+    "  /olvidar  vacía el historial y conserva solo la instrucción de sistema\n"
+    "  /salir    termina la sesión y cierra la traza JSONL\n"
+)
+
+
+def memory_summary(
+    history: list[dict[str, str]],
+    turns: int,
+    last_prompt_tokens: int | None,
+) -> str:
+    """Describe el tamaño del contexto sin mostrar su contenido."""
+
+    conversation_messages = len(history) - 1
+    history_chars = sum(len(message["content"]) for message in history)
+    tokens = "sin dato todavía" if last_prompt_tokens is None else str(last_prompt_tokens)
+    messages_label = "mensaje" if len(history) == 1 else "mensajes"
+    turns_label = "turno completo" if turns == 1 else "turnos completos"
+    return (
+        f"Memoria > {len(history)} {messages_label} en RAM: 1 de sistema y "
+        f"{conversation_messages} de conversación ({turns} {turns_label}).\n"
+        f"Memoria > En el próximo turno se reenviarán {history_chars} caracteres "
+        "más tu nuevo mensaje.\n"
+        f"Memoria > Tokens de entrada del último turno según Ollama: {tokens}.\n"
+    )
 
 
 def run_chat(
@@ -29,6 +60,7 @@ def run_chat(
     logger = RunLogger(settings.runs_dir, settings.model, settings.base_url)
     history = [{"role": "system", "content": settings.system_prompt}]
     turns = 0
+    last_prompt_tokens: int | None = None
     final_status = "completed"
     final_reason = "user_exit"
 
@@ -42,7 +74,7 @@ def run_chat(
     )
     _write(output, f"Agente local | modelo: {settings.model}")
     _write(output, "Flujo: humano -> Ollama local -> agente")
-    _write(output, "Escribe /salir para terminar.\n")
+    _write(output, "Escribe /ayuda para ver los comandos locales o /salir para terminar.\n")
 
     try:
         while True:
@@ -56,9 +88,26 @@ def run_chat(
                 final_reason = "keyboard_interrupt"
                 break
 
-            if user_text.casefold() in EXIT_COMMANDS:
+            command = user_text.casefold()
+            if command in EXIT_COMMANDS:
                 break
             if not user_text:
+                continue
+            if command in HELP_COMMANDS:
+                _write(output, HELP_TEXT)
+                continue
+            if command in MEMORY_COMMANDS:
+                _write(output, memory_summary(history, turns, last_prompt_tokens))
+                continue
+            if command in FORGET_COMMANDS:
+                history = [{"role": "system", "content": settings.system_prompt}]
+                turns = 0
+                last_prompt_tokens = None
+                _write(
+                    output,
+                    "Memoria > Historial vaciado. El modelo ya no recibirá los turnos "
+                    "anteriores.\n",
+                )
                 continue
 
             turn_number = turns + 1
@@ -111,6 +160,7 @@ def run_chat(
                 ]
             )
             turns += 1
+            last_prompt_tokens = result.prompt_tokens
             metrics = {
                 "wall_duration_ms": elapsed_ms,
                 "ollama_duration_ms": result.total_duration_ms,

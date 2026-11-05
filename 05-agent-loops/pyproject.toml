@@ -21,6 +21,7 @@ dev = [
 agent-loops-demo = "agent_loops.demo:main"
 agent-loops-validate = "agent_loops.validation:main"
 agent-loops-export-schemas = "agent_loops.schema_export:main"
+agent-loops-score = "agent_loops.score_cli:main"
 
 [build-system]
 requires = ["hatchling"]

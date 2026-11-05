@@ -31,7 +31,9 @@ Estas reglas complementan el `AGENTS.md` de BL_Loops y viajan con el laboratorio
 1. Revisar `git status --short` y preservar cambios ajenos.
 2. Escribir o ajustar primero la prueba que demuestra el comportamiento.
 3. Implementar el corte mínimo sin crear dependencias entre laboratorios.
-4. Actualizar la documentación humana y el contrato si cambia un evento.
+4. Actualizar la documentación humana y el contrato si cambia un evento. Los ejemplos 1 y 2 de
+   `docs/humano/EXAMPLES.md` llaman a `_select_tool_call` y `_history_messages`: si cambias esas
+   reglas, vuelve a ejecutarlos y actualiza su salida.
 5. Ejecutar:
 
 ```powershell

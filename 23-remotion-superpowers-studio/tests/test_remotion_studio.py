@@ -1,25 +1,24 @@
 """Pruebas unitarias para 23-remotion-superpowers-studio."""
 
 import json
-from pathlib import Path
-import pytest
 from unittest.mock import AsyncMock, patch
 
+import pytest
+
+from remotion_studio.evaluation import export_evaluation_jsonl
+from remotion_studio.ollama_director import (
+    DEFAULT_REMOTION_SCENES,
+    RemotionOllamaDirector,
+)
+from remotion_studio.orchestrator import RemotionOrchestrator
+from remotion_studio.remotion_renderer import RemotionRenderer
 from remotion_studio.schemas import (
     EvaluationRecord,
-    PipelineEvent,
     RemotionBrief,
     RemotionScene,
     RemotionState,
     RenderResult,
 )
-from remotion_studio.ollama_director import (
-    DEFAULT_REMOTION_SCENES,
-    RemotionOllamaDirector,
-)
-from remotion_studio.evaluation import export_evaluation_jsonl
-from remotion_studio.remotion_renderer import RemotionRenderer
-from remotion_studio.orchestrator import RemotionOrchestrator
 
 
 def test_schemas_validation():
@@ -131,7 +130,12 @@ async def test_orchestrator_pipeline_mock(tmp_path):
         success=True,
     )
 
-    with patch.object(orch.renderer, "render_video", new=AsyncMock(return_value=fake_render)):
+    # Director y renderer simulados: la prueba nunca llama a Ollama ni a Remotion reales.
+    scenes = await RemotionOllamaDirector(base_url="http://127.0.0.1:9").generate_scenes(brief)
+    with (
+        patch.object(orch.director, "generate_scenes", new=AsyncMock(return_value=scenes)),
+        patch.object(orch.renderer, "render_video", new=AsyncMock(return_value=fake_render)),
+    ):
         res = await orch.run_pipeline(brief, output_path=str(tmp_path / "mock.mp4"))
 
     assert res.success is True

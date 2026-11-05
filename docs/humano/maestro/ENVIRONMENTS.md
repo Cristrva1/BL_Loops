@@ -64,32 +64,48 @@ Así deja de depender del workspace sin cambiar su contrato.
 
 ### Precedencia actual
 
+En todos los laboratorios una **variable del proceso** gana a cualquier archivo. Lo que cambia es
+cómo se combinan el `.env` raíz y el `.env` del laboratorio. Hay tres estrategias implementadas:
+
+| Estrategia | Laboratorios | Comportamiento |
+|---|---|---|
+| **Fusión por clave** | 02, 03, 04, 05, 06, 07, 08, 09, 22, 23, 24 | Lee el `.env` raíz, después el del laboratorio sobreescribe **clave a clave** y, por último, gana el proceso. |
+| **Archivo único** | 01, 13, 25 | Usa el `.env` del laboratorio si existe; si no, el de la raíz. **No los mezcla.** |
+| **Sin dotenv** | 14 (preflight) | No lee ningún `.env` para no tocar secretos durante el diagnóstico; usa defaults seguros y flags CLI. |
+
 ```mermaid
 flowchart LR
     A[Variable del proceso] --> B{¿Existe?}
     B -- sí --> Z[Usar valor del proceso]
-    B -- no --> C{¿Hay .env del laboratorio?}
-    C -- sí --> D[Usar ese archivo completo]
-    C -- no --> E{¿Está dentro de BL_Loops?}
-    E -- sí --> F[Usar .env raíz]
-    E -- no --> G[Usar defaults seguros]
+    B -- no --> C{Estrategia del laboratorio}
+    C -- fusión --> D[.env raíz + .env local<br/>el local gana por clave]
+    C -- archivo único --> E{¿Hay .env local?}
+    E -- sí --> F[Solo .env local]
+    E -- no --> G[Solo .env raíz]
+    C -- sin dotenv --> H[Defaults seguros]
 ```
 
-La implementación actual selecciona un solo archivo dotenv: el local si existe o el de la raíz. No mezcla ambos. Por eso, dentro del workspace se recomienda usar solo el `.env` raíz; un `.env` de laboratorio debe contener el contrato completo cuando se copie o se use como sustituto deliberado.
+Consecuencia práctica: dentro del workspace basta con el `.env` raíz. Si creas un `.env` dentro de
+un laboratorio de **archivo único**, debe contener el contrato completo, porque deja de leerse el
+de la raíz. En los laboratorios de **fusión** puedes poner solo las claves que quieras cambiar.
 
-Pydantic Settings da prioridad a variables del proceso sobre valores del archivo dotenv. El código debe validar tipos y rechazar configuraciones peligrosas, nunca asumir que un texto del `.env` es seguro.
+El código debe validar tipos y rechazar configuraciones peligrosas (por ejemplo, un endpoint que no
+sea loopback), nunca asumir que un texto del `.env` es seguro.
 
 ## Rutas relativas
 
 Valores como `.local/data` deben resolverse contra la raíz del **laboratorio que está ejecutándose**, no contra BL_Loops. De esta manera dos proyectos pueden leer la misma cadena del `.env` y aun así escribir en carpetas distintas.
 
 ```text
-01-prompt-agent-factory/.local/data
-02-single-agent/.local/data
+01-prompt-agent-factory/.local/exports
+02-single-agent/.local/runs
 03-orchestration/.local/runs
-04-parallel-agents/.local/runs
-05-agent-loops/.local/runs
+06-naive-rag/.local/data/books.sqlite3
+25-meeting-summarizer/.local/data/meetings.db
 ```
+
+Las pruebas usan otra carpeta temporal propia, `.pytest-tmp/`, también ignorada por Git. Así
+`uv run pytest` funciona en un clon recién descargado aunque `.local/` todavía no exista.
 
 ## Comandos recomendados
 

@@ -38,6 +38,8 @@ npm --prefix frontend run build
 
 La suite cubre configuración local, parseo JSON, scoring, overlap con dobles, timeout de rama, API, contrato de Ollama, JSONL e independencia de otros laboratorios y de `docs/humano/`.
 
+También comprueba que el evento terminal nunca se publica antes que el resultado, ni en el snapshot ni en el stream SSE.
+
 ## Métricas disponibles
 
 | Métrica | Fuente | Significado |

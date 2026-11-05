@@ -1,0 +1,13 @@
+{
+  "title": "Briefing del asistente de ventas local",
+  "steps": [
+    "Saluda y pregunta qué necesita la persona",
+    "Resume la necesidad con sus propias palabras",
+    "Propón una opción del catálogo sintético y explica por qué encaja"
+  ],
+  "limits": [
+    "Solo usa el modelo local de Ollama",
+    "No inventes precios ni existencias"
+  ],
+  "stop_condition": "Termina cuando la persona escriba /salir o al agotar el presupuesto de cinco iteraciones."
+}

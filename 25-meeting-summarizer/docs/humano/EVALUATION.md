@@ -16,13 +16,15 @@ Para que una minuta generada por IA sea considerada aprobada (**PASS**), debe cu
 
 ## 2. Contrato de la corrida JSONL
 
-Cada procesamiento exitoso genera un registro en `.local/runs/` con la siguiente estructura:
+Cada procesamiento exitoso genera un archivo en `.local/runs/` con **un registro sanitizado**: métricas
+y una huella del informe, nunca su contenido. El informe completo (nombres, tareas, minuta) se guarda
+únicamente en `.local/data/meetings.db`.
 
 ```json
 {
   "run_id": "run_meet_1234_abc89f",
   "meeting_id": "meet_1234",
-  "timestamp": "2026-09-19T11:00:00Z",
+  "timestamp": "2026-11-05T11:00:00+00:00",
   "model": "qwen3.5:9b",
   "mode": "completo",
   "duration_ms": 12450.5,
@@ -35,8 +37,30 @@ Cada procesamiento exitoso genera un registro en `.local/runs/` con la siguiente
     "topics_count": 3,
     "open_questions_count": 1
   },
-  "report": { ... }
+  "report_sha256": "<huella SHA-256 del informe guardado en SQLite>",
+  "raw_content_stored": false
 }
 ```
 
-Estos registros pueden ser importados en cualquier momento por el dashboard de evaluación transversal de `BL_Loops` para comparar la calidad entre diferentes modelos de Ollama (`qwen3.5:9b`, `qwen3.5:4b`, `gemma4:e4b`).
+(Valores ilustrativos.) `report_sha256` permite comprobar que una traza corresponde a un informe
+concreto de SQLite sin copiarlo. Antes del 2026-11-05 la traza incluía el informe completo; ese
+comportamiento se retiró porque exponía datos personales al comparador.
+
+## 3. Caso de práctica con clave de corrección
+
+`fixtures/meet_compromisos_ambiguos.txt` tiene una clave conocida (ver el
+[ejemplo 6](EXAMPLES.md#ejemplo-6--resumir-una-reunión-con-compromisos-ambiguos-necesita-ollama)): una
+decisión, una idea no aprobada, dos compromisos completos, un compromiso sin responsable y una
+pregunta abierta. Úsalo para calcular a mano el recall de compromisos y las alucinaciones de cada
+modelo antes de confiar en una transcripción larga.
+
+## 4. Verificación automática
+
+```powershell
+uv run pytest
+uv run ruff check .
+```
+
+Las pruebas cubren el parser de cada formato, el troceador con solapamiento, el comando `parse`, la
+validación de endpoint y modelo locales, el descubrimiento seguro del `.env`, el almacenamiento SQLite,
+la API y la sanitización del JSONL.

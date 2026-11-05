@@ -56,6 +56,18 @@ cierre:  la lista desaparece
 
 No hay SQLite ni archivos de conversación. Esto hace visible la idea básica antes de estudiar memoria persistente.
 
+## Comandos locales
+
+| Comando | Efecto en `history` | Evento JSONL |
+|---|---|---|
+| `/ayuda` | Ninguno | Ninguno |
+| `/memoria` | Ninguno; calcula mensajes, caracteres y último `prompt_tokens` | Ninguno |
+| `/olvidar` | Sustituye la lista por `[system]` y reinicia el contador de turnos | Ninguno; se nota en el siguiente `history_messages` |
+| `/salir` | Termina el bucle | `run.completed` |
+
+Los comandos se resuelven antes de construir la solicitud, así que nunca llegan a Ollama. `/memoria`
+muestra tamaños, no contenido, para mantener la misma disciplina que la traza.
+
 ## Configuración portable
 
 Dentro de BL_Loops se lee primero el `.env` de la raíz. Un `.env` dentro del laboratorio puede sobreescribirlo y permite copiar el proyecto fuera del repositorio. Las variables explícitas del proceso tienen la prioridad final.

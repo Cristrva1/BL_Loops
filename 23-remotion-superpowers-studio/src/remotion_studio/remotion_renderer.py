@@ -3,6 +3,9 @@
 import asyncio
 import json
 import logging
+import os
+import re
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -10,6 +13,20 @@ from pathlib import Path
 from remotion_studio.schemas import RemotionScene, RenderResult
 
 logger = logging.getLogger(__name__)
+
+# Los colores y gradientes del modelo acaban en `style` de React: solo se aceptan formas seguras.
+HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
+SAFE_GRADIENT = re.compile(r"^linear-gradient\([0-9A-Za-z#%,.\s-]+\)$")
+DEFAULT_GRADIENT = RemotionScene.model_fields["bg_gradient"].default
+DEFAULT_ACCENT = RemotionScene.model_fields["accent_color"].default
+
+
+def safe_accent(value: str) -> str:
+    return value if HEX_COLOR.match(value) else DEFAULT_ACCENT
+
+
+def safe_gradient(value: str) -> str:
+    return value if SAFE_GRADIENT.match(value.strip()) else DEFAULT_GRADIENT
 
 
 class RemotionRenderer:
@@ -29,8 +46,8 @@ class RemotionRenderer:
                 "durationInFrames": s.duration_in_frames,
                 "headline": s.headline,
                 "subheadline": s.subheadline,
-                "bgGradient": s.bg_gradient,
-                "accentColor": s.accent_color,
+                "bgGradient": safe_gradient(s.bg_gradient),
+                "accentColor": safe_accent(s.accent_color),
                 "badge": s.badge,
                 "code": s.code,
             }
@@ -44,19 +61,33 @@ class RemotionRenderer:
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
         start_time = time.time()
-        logger.info("Iniciando renderizado con Remotion CLI...")
-
-        # Usamos cmd.exe /c npx remotion render
-        proc = await asyncio.create_subprocess_exec(
-            "cmd.exe", "/c",
-            "npx", "--yes", "-p", "@remotion/cli@4.0.523",
+        npx = shutil.which("npx")
+        if npx is None:
+            return _failed_render(
+                out_path,
+                start_time,
+                "No se encontró npx: instala Node.js y ejecuta npm install en este laboratorio.",
+            )
+        cmd = [
+            npx, "--yes", "-p", "@remotion/cli@4.0.523",
             "remotion", "render",
             self.entry_ts, "MainVideo", str(out_path),
             "--concurrency=4",
-            cwd=str(self.root_dir),
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
+        ]
+        if os.name == "nt" and npx.lower().endswith((".cmd", ".bat")):
+            # En Windows, npx es un script .cmd que se ejecuta a través de cmd.exe.
+            cmd = ["cmd.exe", "/c", *cmd]
+        logger.info("Iniciando renderizado con Remotion CLI...")
+
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                *cmd,
+                cwd=str(self.root_dir),
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+        except OSError as exc:
+            return _failed_render(out_path, start_time, f"No se pudo iniciar Remotion: {exc}")
 
         stdout_bytes, stderr_bytes = await proc.communicate()
         elapsed = time.time() - start_time
@@ -83,11 +114,11 @@ class RemotionRenderer:
 
         return RenderResult(
             video_path=str(out_path),
-            duration=metadata.get("duration", 0.0),
-            width=metadata.get("width", 1920),
-            height=metadata.get("height", 1080),
-            fps=metadata.get("fps", 30),
-            total_frames=metadata.get("nb_frames", 360),
+            duration=metadata["duration"],
+            width=metadata["width"],
+            height=metadata["height"],
+            fps=metadata["fps"],
+            total_frames=metadata["nb_frames"],
             file_size_bytes=out_path.stat().st_size,
             render_elapsed_seconds=round(elapsed, 2),
             success=True,
@@ -109,16 +140,16 @@ class RemotionRenderer:
             format_info = info.get("format", {})
             duration = float(format_info.get("duration", 0.0))
 
-            width, height, fps, nb_frames = 1920, 1080, 30, 360
+            # Sin pista de video no hay medición: ceros, nunca una resolución supuesta.
+            width, height, fps, nb_frames = 0, 0, 0, 0
             for stream in info.get("streams", []):
                 if stream.get("codec_type") == "video":
-                    width = int(stream.get("width", 1920))
-                    height = int(stream.get("height", 1080))
-                    nb_frames = int(stream.get("nb_frames", 360))
-                    r_frame_rate = stream.get("r_frame_rate", "30/1")
-                    if "/" in r_frame_rate:
-                        num, den = r_frame_rate.split("/")
-                        fps = round(float(num) / float(den))
+                    width = int(stream.get("width", 0))
+                    height = int(stream.get("height", 0))
+                    nb_frames = int(stream.get("nb_frames", 0))
+                    num, _, den = str(stream.get("r_frame_rate", "0/1")).partition("/")
+                    denominator = float(den or 1)
+                    fps = round(float(num) / denominator) if denominator else 0
                     break
 
             return {
@@ -128,6 +159,23 @@ class RemotionRenderer:
                 "fps": fps,
                 "nb_frames": nb_frames,
             }
-        except Exception as e:
-            logger.warning("ffprobe fallo en Remotion: %s", e)
-            return {"duration": 12.0, "width": 1920, "height": 1080, "fps": 30, "nb_frames": 360}
+        except (OSError, subprocess.CalledProcessError, ValueError) as exc:
+            # Sin ffprobe no hay medición: valores en cero para que la evaluación no apruebe a ciegas.
+            logger.warning("No se pudo inspeccionar el video con ffprobe: %s", exc)
+            return {"duration": 0.0, "width": 0, "height": 0, "fps": 0, "nb_frames": 0}
+
+
+def _failed_render(out_path: Path, start_time: float, message: str) -> RenderResult:
+    logger.error(message)
+    return RenderResult(
+        video_path=str(out_path),
+        duration=0.0,
+        width=0,
+        height=0,
+        fps=0,
+        total_frames=0,
+        file_size_bytes=0,
+        render_elapsed_seconds=round(time.time() - start_time, 2),
+        success=False,
+        error=message,
+    )

@@ -30,7 +30,7 @@ build-backend = "hatchling.build"
 packages = ["backend/src/meeting_summarizer"]
 
 [tool.pytest.ini_options]
-addopts = "-q --basetemp=.local/pytest"
+addopts = "-q --basetemp=.pytest-tmp"
 testpaths = ["backend/tests"]
 pythonpath = ["backend/src"]
 
