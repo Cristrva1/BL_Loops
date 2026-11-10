@@ -1,11 +1,14 @@
 """Contratos Pydantic para HyperFrames Video Studio."""
 
-from enum import Enum
-from typing import Any
-from pydantic import BaseModel, Field
+from enum import StrEnum
+from typing import Any, Literal
+
+from pydantic import BaseModel, Field, field_validator
+
+from hyperframes_studio.config import validate_model
 
 
-class PipelineState(str, Enum):
+class PipelineState(StrEnum):
     IDLE = "IDLE"
     ANALYZING_BRIEF = "ANALYZING_BRIEF"
     GENERATING_SCRIPT = "GENERATING_SCRIPT"
@@ -40,11 +43,19 @@ class VideoBrief(BaseModel):
         default="Explicar qué es HyperFrames, cómo usarlo y qué puede hacer",
         description="Tema central del video",
     )
-    target_duration: float = Field(default=15.0, description="Duración objetivo en segundos")
-    width: int = Field(default=1920, description="Ancho en píxeles")
-    height: int = Field(default=1080, description="Alto en píxeles")
-    fps: int = Field(default=30, description="Cuadros por segundo")
+    target_duration: float = Field(
+        default=15.0, ge=5.0, le=60.0, description="Duración objetivo en segundos"
+    )
+    # hyperframes.json fija 1920x1080 a 30 fps: el contrato no admite otros valores.
+    width: Literal[1920] = Field(default=1920, description="Ancho en píxeles")
+    height: Literal[1080] = Field(default=1080, description="Alto en píxeles")
+    fps: Literal[30] = Field(default=30, description="Cuadros por segundo")
     model: str = Field(default="qwen3.5:9b", description="Modelo Ollama a utilizar")
+
+    @field_validator("model")
+    @classmethod
+    def _local_model(cls, value: str) -> str:
+        return validate_model(value)
 
 
 class PipelineEvent(BaseModel):
@@ -76,4 +87,4 @@ class EvaluationRecord(BaseModel):
     render_time_seconds: float
     file_size_kb: float
     scenes_count: int
-    metrics: dict[str, float | str | bool]
+    metrics: dict[str, int | float | str | bool]

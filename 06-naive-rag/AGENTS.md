@@ -33,7 +33,7 @@ la raíz; al copiar la carpeta conservan los límites esenciales.
 ## Forma de trabajar
 
 1. Revisar `git status --short` y preservar todos los cambios previos.
-2. Leer este archivo, `README.md` y el documento humano relacionado con la tarea.
+2. Leer este archivo, `README.md`, `docs/humano/EXAMPLES.md` y el documento humano relacionado con la tarea.
 3. Mantener una sola ruta explicable y estados observables derivados de eventos reales.
 4. Escribir o ajustar pruebas deterministas antes de ampliar el runtime.
 5. Actualizar documentación y pruebas en el mismo cambio.
@@ -47,6 +47,7 @@ uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 uv run naive-rag index --source .\fixtures\evaluation-corpus
+uv run naive-rag search "¿Cuál es el plazo vigente para el primer seguimiento LUNA?"
 uv run naive-rag ask "¿Cuál es el plazo vigente de seguimiento LUNA y qué debe confirmarse?"
 uv run naive-rag-validate
 ```
@@ -54,3 +55,5 @@ uv run naive-rag-validate
 Antes de declarar el corte listo, repetir la indexación con el corpus objetivo, realizar una
 pregunta real a Ollama y validar el JSONL resultante.
 
+`search` no invoca Ollama ni escribe JSONL; si cambias el ranking, el chunking o las etiquetas de
+cita, vuelve a ejecutar los ejemplos de `docs/humano/EXAMPLES.md` y actualiza su salida.

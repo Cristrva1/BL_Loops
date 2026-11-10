@@ -1,10 +1,13 @@
 """Orquestador agéntico para Remotion Superpowers."""
 
 import asyncio
-from datetime import datetime, timezone
+import contextlib
 import logging
+from datetime import UTC, datetime
 from pathlib import Path
 
+from remotion_studio.ollama_director import RemotionOllamaDirector
+from remotion_studio.remotion_renderer import RemotionRenderer
 from remotion_studio.schemas import (
     EvaluationRecord,
     PipelineEvent,
@@ -13,8 +16,6 @@ from remotion_studio.schemas import (
     RemotionState,
     RenderResult,
 )
-from remotion_studio.ollama_director import RemotionOllamaDirector
-from remotion_studio.remotion_renderer import RemotionRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -47,17 +48,38 @@ class RemotionOrchestrator:
     async def _emit(self, state: RemotionState, node: str, message: str, data: dict | None = None) -> None:
         self.state = state
         event = PipelineEvent(
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             state=state,
             node=node,
             message=message,
             data=data or {},
         )
         for q in list(self.event_subscribers):
-            try:
+            # Una cola llena o cerrada no debe detener el pipeline.
+            with contextlib.suppress(asyncio.QueueFull):
                 q.put_nowait(event)
-            except Exception:
-                pass
+
+    async def _emit_director_source(self, scenes_count: int) -> None:
+        """Publica de dónde salieron las escenas: el respaldo calibrado nunca es silencioso."""
+
+        if self.director.last_source == "ollama":
+            await self._emit(
+                RemotionState.PLANNING_SCENES,
+                node="OllamaDirector",
+                message=f"Ollama entregó {scenes_count} escenas válidas.",
+                data={"director_source": "ollama"},
+            )
+            return
+        reason = self.director.last_fallback_reason or "motivo desconocido"
+        await self._emit(
+            RemotionState.PLANNING_SCENES,
+            node="OllamaDirector",
+            message=(
+                f"Fallback visible: {reason}. Se usan {scenes_count} escenas calibradas; "
+                "el video no refleja una decisión del modelo."
+            ),
+            data={"director_source": "fallback", "fallback_reason": reason},
+        )
 
     async def run_pipeline(
         self,
@@ -84,6 +106,7 @@ class RemotionOrchestrator:
         )
         scenes = await self.director.generate_scenes(brief)
         self.last_scenes = scenes
+        await self._emit_director_source(len(scenes))
 
         # 3. Calcular fotogramas exactos
         await self._emit(
@@ -166,5 +189,7 @@ class RemotionOrchestrator:
                 "duration_delta_seconds": round(duration_diff, 2),
                 "deterministic": True,
                 "react_component_root": "MainVideo",
+                "duration_measured": render_res.duration > 0,
+                "director_source": self.director.last_source,
             },
         )

@@ -14,6 +14,9 @@ El `AGENTS.md` de la raíz es la autoridad operativa. Este archivo solo añade r
 - Preservar los documentos humanos recibidos; no reescribirlos para uniformarlos sin solicitud explícita.
 - Al aprobar una decisión, actualizar primero el plan o contrato correspondiente, después la guía humana afectada y finalmente `INDEX.md`.
 - Usar español claro, diagramas Mermaid pequeños, ejemplos concretos y comandos PowerShell explicados.
+- Escribir para una persona con conocimientos básicos de LLM: definir cada término nuevo la primera vez o enlazar `humano/maestro/GLOSARIO.md`.
+- En ejercicios, ofrecer la solución dentro de `<details>` para que el estudiante intente primero.
+- En ejemplos, mostrar solo salidas obtenidas al ejecutar el comando; si dependen del modelo, indicarlo y mostrar únicamente la forma esperada.
 - Distinguir siempre comportamiento implementado, límite deliberado, propuesta y trabajo futuro.
 - Mantener enlaces relativos válidos.
 - No colocar código, configuración ejecutable, schemas, fixtures, resultados o secretos dentro de `humano/`.

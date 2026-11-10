@@ -19,7 +19,7 @@
 body {
   background-color: var(--bg-dark);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   min-height: 100vh;
 }
 
@@ -82,6 +82,12 @@ body {
   background: rgba(16, 185, 129, 0.1);
   color: var(--success);
   border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.35);
 }
 
 .pipeline-graph {
@@ -231,7 +237,7 @@ video { max-width: 100%; max-height: 100%; }
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
   font-size: 13px;
   color: #38bdf8;
   height: 100%;
@@ -243,7 +249,7 @@ video { max-width: 100%; max-height: 100%; }
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 14px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
   font-size: 12px;
   height: 100%;
   overflow-y: auto;

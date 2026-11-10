@@ -9,7 +9,12 @@ import uuid
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
 
-from .chunker import chunk_turns, format_turns_to_text
+from .chunker import (
+    SUMMARY_MAX_WORDS_PER_CHUNK,
+    SUMMARY_OVERLAP_WORDS,
+    chunk_turns,
+    format_turns_to_text,
+)
 from .contracts import (
     ActionItem,
     ChatResponse,
@@ -101,7 +106,11 @@ class MeetingSummarizerEngine:
         )
 
         # Paso 2: Partición y verificación de contexto
-        chunks = chunk_turns(turns, max_words_per_chunk=3200, overlap_words=250)
+        chunks = chunk_turns(
+            turns,
+            max_words_per_chunk=SUMMARY_MAX_WORDS_PER_CHUNK,
+            overlap_words=SUMMARY_OVERLAP_WORDS,
+        )
         total_chunks = len(chunks)
 
         yield PipelineEvent(

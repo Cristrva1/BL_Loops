@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import time
 
 from fastapi.testclient import TestClient
@@ -73,3 +74,49 @@ def test_experiment_round_trip_with_scripted_model(lab_settings, monkeypatch) ->
     assert snapshot["jsonl_path"] is not None
     assert snapshot["jsonl_path"].endswith(".jsonl")
     assert "http://" not in snapshot["jsonl_path"]
+
+
+def test_terminal_event_is_published_together_with_the_final_result(
+    lab_settings, monkeypatch
+) -> None:
+    """Regresión: run.completed no puede marcar `completed` antes de guardar el mejor candidato."""
+
+    from agent_loops.engine import LoopRequest
+    from agent_loops.main import _execute_run
+    from agent_loops.store import STORE
+
+    scripted = ScriptedClient([PASSING_OUTPUT])
+    monkeypatch.setattr("agent_loops.main.get_client", lambda _settings: scripted)
+    run_id = "run-regression-terminal"
+    STORE.create(run_id, case_id=CASE_ID, model=lab_settings.model)
+    statuses_seen: list[str] = []
+    real_apply = STORE.apply
+
+    def spy(target_run: str, event: dict) -> object:
+        snapshot = real_apply(target_run, event)
+        statuses_seen.append(snapshot.status)
+        return snapshot
+
+    monkeypatch.setattr(STORE, "apply", spy)
+
+    request = LoopRequest(task=DEFAULT_TASK, initial_prompt=INITIAL_PROMPT)
+    _execute_run(run_id, request, lab_settings)
+
+    snapshot = STORE.get(run_id)
+    assert "completed" not in statuses_seen
+    assert snapshot is not None
+    assert snapshot.status == "completed"
+    assert snapshot.best is not None
+    assert snapshot.stop_reason is not None
+    assert snapshot.events[-1]["event_type"] == "run.completed"
+
+    with client.stream("GET", f"/api/v1/runs/{run_id}/events") as response:
+        envelopes = [
+            json.loads(line.removeprefix("data: "))
+            for line in response.iter_lines()
+            if line.startswith("data: ")
+        ]
+    assert envelopes[-1]["event"]["event_type"] == "run.completed"
+    assert envelopes[-1]["snapshot"]["status"] == "completed"
+    assert envelopes[-1]["snapshot"]["best"] is not None
+    assert envelopes[-1]["snapshot"]["stop_reason"] is not None

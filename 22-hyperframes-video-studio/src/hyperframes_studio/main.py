@@ -1,23 +1,26 @@
 """Servidor FastAPI y CLI para 22-hyperframes-video-studio."""
 
 import asyncio
-import os
+import shutil
 import sys
 from pathlib import Path
+
+import httpx
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
-import uvicorn
 
+from hyperframes_studio.config import ConfigurationError, Settings, lab_root
+from hyperframes_studio.evaluation import export_evaluation_jsonl
 from hyperframes_studio.orchestrator import HyperFramesOrchestrator
 from hyperframes_studio.schemas import VideoBrief
-from hyperframes_studio.evaluation import export_evaluation_jsonl
 
 # Configurar stdout para evitar fallos de encoding en Windows cp1252
 try:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-except Exception:
+except (AttributeError, OSError):
     pass
 
 app = FastAPI(
@@ -26,18 +29,55 @@ app = FastAPI(
     version="0.1.0",
 )
 
+# Configuración validada: Ollama solo en loopback y servidor solo en una interfaz local.
+try:
+    SETTINGS = Settings.load()
+except ConfigurationError as exc:
+    print(f"Configuracion invalida: {exc}", file=sys.stderr)
+    raise SystemExit(2) from exc
+LOCAL_DIR = lab_root() / ".local"
+OUTPUT_PATH = LOCAL_DIR / "output" / "tutorial_hyperframes.mp4"
+EVAL_PATH = LOCAL_DIR / "eval_results.jsonl"
+OLLAMA_URL = SETTINGS.ollama_base_url
+OLLAMA_MODEL = SETTINGS.ollama_model
+
+# El panel se sirve desde esta misma API; solo se aceptan orígenes locales del laboratorio.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=[
+        f"http://127.0.0.1:{SETTINGS.port}",
+        f"http://localhost:{SETTINGS.port}",
+    ],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
-# Inicialización de estado y orquestador
-OLLAMA_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3.5:9b")
-orchestrator = HyperFramesOrchestrator(ollama_url=OLLAMA_URL, model=OLLAMA_MODEL)
+orchestrator = HyperFramesOrchestrator(
+    ollama_url=OLLAMA_URL,
+    model=OLLAMA_MODEL,
+    workspace_dir=str(LOCAL_DIR / "workspace"),
+)
+
+
+# Referencia a la corrida activa: evita dos renders simultáneos sobre el mismo workspace y que el
+# recolector de basura elimine la tarea a mitad de camino.
+_current_run: asyncio.Task | None = None
+
+
+def _run_in_progress() -> bool:
+    return _current_run is not None and not _current_run.done()
+
+
+async def _ollama_reachable() -> bool:
+    """Comprueba de verdad si Ollama responde, para que el panel no muestre un estado inventado."""
+
+    try:
+        async with httpx.AsyncClient(timeout=1.5, trust_env=False) as client:
+            response = await client.get(f"{OLLAMA_URL}/api/tags")
+            return response.status_code == 200
+    except httpx.HTTPError:
+        return False
 
 
 @app.get("/api/status")
@@ -45,8 +85,11 @@ async def get_status():
     return {
         "status": "ok",
         "orchestrator_state": orchestrator.state,
+        "run_in_progress": _run_in_progress(),
         "ollama_url": OLLAMA_URL,
         "model": OLLAMA_MODEL,
+        "ollama_reachable": await _ollama_reachable(),
+        "npx_available": shutil.which("npx") is not None,
         "last_render": orchestrator.last_render.model_dump() if orchestrator.last_render else None,
         "last_eval": orchestrator.last_eval.model_dump() if orchestrator.last_eval else None,
     }
@@ -54,8 +97,14 @@ async def get_status():
 
 @app.post("/api/pipeline/run")
 async def run_pipeline(brief: VideoBrief):
-    # Ejecuta el pipeline en segundo plano
-    asyncio.create_task(orchestrator.run_pipeline(brief))
+    global _current_run
+    if _run_in_progress():
+        raise HTTPException(status_code=409, detail="Ya hay un render en curso; espera a que termine")
+    if "model" not in brief.model_fields_set:
+        brief.model = OLLAMA_MODEL  # sin modelo explícito, manda el .env
+    _current_run = asyncio.create_task(
+        orchestrator.run_pipeline(brief, output_path=str(OUTPUT_PATH))
+    )
     return {"message": "Pipeline iniciado", "brief": brief}
 
 
@@ -68,7 +117,7 @@ async def pipeline_events():
             while True:
                 event = await queue.get()
                 yield f"data: {event.model_dump_json()}\n\n"
-        except asyncio.CancelledError:
+        finally:
             orchestrator.unsubscribe(queue)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
@@ -95,12 +144,22 @@ async def get_composition_html():
 async def export_eval():
     if not orchestrator.last_eval:
         raise HTTPException(status_code=400, detail="No hay evaluación para exportar")
-    target = export_evaluation_jsonl(orchestrator.last_eval)
-    return {"status": "exported", "path": str(target)}
+    target = export_evaluation_jsonl(orchestrator.last_eval, output_path=EVAL_PATH)
+    return {"status": "exported", "path": str(target.relative_to(lab_root()))}
 
 
 # Servir Frontend
-FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
+FRONTEND_DIR = lab_root() / "frontend"
+
+
+@app.get("/app.js", include_in_schema=False)
+async def serve_app_js():
+    return FileResponse(FRONTEND_DIR / "app.js", media_type="text/javascript")
+
+
+@app.get("/styles.css", include_in_schema=False)
+async def serve_styles():
+    return FileResponse(FRONTEND_DIR / "styles.css", media_type="text/css")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -122,14 +181,19 @@ def run_demo_cli():
     print(f"1. Conectando a Ollama ({OLLAMA_URL}) con modelo: {brief.model}")
     print(f"2. Brief de video: '{brief.topic}' ({brief.target_duration}s)")
 
-    orch = HyperFramesOrchestrator(ollama_url=OLLAMA_URL, model=brief.model)
+    orch = HyperFramesOrchestrator(
+        ollama_url=OLLAMA_URL, model=brief.model, workspace_dir=str(LOCAL_DIR / "workspace")
+    )
 
     async def main_coro():
-        res = await orch.run_pipeline(brief)
+        res = await orch.run_pipeline(brief, output_path=str(OUTPUT_PATH))
+        source = orch.director.last_source
+        reason = orch.director.last_fallback_reason
+        print(f"3. Origen de las escenas: {source}" + (f" ({reason})" if reason else ""))
         if res.success:
             print("\n========================================================")
             print("[OK] VIDEO RENDERIZADO EXITOSAMENTE:")
-            print(f"   - Archivo: {res.video_path}")
+            print(f"   - Archivo: {Path(res.video_path).relative_to(lab_root()).as_posix()}")
             print(f"   - Duración: {res.duration}s")
             print(f"   - Resolución: {res.width}x{res.height} ({res.fps} FPS)")
             print(f"   - Tamaño: {round(res.file_size_bytes / 1024.0, 2)} KB")
@@ -137,8 +201,9 @@ def run_demo_cli():
             print("========================================================\n")
             # Exportar evaluación
             if orch.last_eval:
-                target_jsonl = export_evaluation_jsonl(orch.last_eval)
-                print(f"[OK] Evaluación exportada a: {target_jsonl}")
+                target_jsonl = export_evaluation_jsonl(orch.last_eval, output_path=EVAL_PATH)
+                print(f"[OK] Evaluación exportada a: {target_jsonl.relative_to(lab_root())}")
+                print(f"[OK] Aprobada: {orch.last_eval.success}")
         else:
             print(f"[ERROR] Error durante el renderizado: {res.error}")
             sys.exit(1)
@@ -147,4 +212,4 @@ def run_demo_cli():
 
 
 if __name__ == "__main__":
-    uvicorn.run("hyperframes_studio.main:app", host="127.0.0.1", port=8022, reload=True)
+    uvicorn.run("hyperframes_studio.main:app", host=SETTINGS.host, port=SETTINGS.port, reload=True)

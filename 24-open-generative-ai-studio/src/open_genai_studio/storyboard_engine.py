@@ -1,8 +1,15 @@
-"""Motor de Storyboard y expansión de planos con IA Local."""
+"""Storyboard Studio: pide a Ollama un desglose de planos y valida el contrato antes de usarlo.
 
-import json
+Si Ollama no responde o devuelve algo que no cumple el contrato, se usan planos calibrados y el
+motivo queda en `last_fallback_reason` para que el orquestador lo publique: nunca es silencioso.
+"""
+
 import logging
+from enum import Enum
+
 import httpx
+
+from open_genai_studio.model_output import load_json, short_reason
 from open_genai_studio.schemas import (
     CameraMovement,
     ShotType,
@@ -12,6 +19,8 @@ from open_genai_studio.schemas import (
 
 logger = logging.getLogger(__name__)
 
+TARGET_SHOTS = 4
+
 DEFAULT_SHOTS = [
     StoryboardShot(
         shot_number=1,
@@ -20,7 +29,7 @@ DEFAULT_SHOTS = [
         duration_seconds=3.0,
         headline="El Vasto Glaciar de Europa",
         description="Vista panorámica de una cordillera de hielo azul bajo una atmósfera cargada de tormentas magnéticas.",
-        prompt_expansion="Ultra-wide cinematic establishing shot of an alien frozen canyon, colossal towering ice spikes, electric teal fissures glowing from beneath, volumetric fog rolling across glaciers, anamorphic lens flare, 8k resolution, photorealistic, Kodak Vision3 500T 35mm film grain, directed by Denis Villeneuve.",
+        prompt_expansion="Ultra-wide cinematic establishing shot of an alien frozen canyon, colossal towering ice spikes, electric teal fissures glowing from beneath, volumetric fog rolling across glaciers, anamorphic lens flare, 8k resolution, photorealistic, Kodak Vision3 500T 35mm film grain, slow contemplative pacing.",
         lighting="Cold twilight ambient, electric cyan bioluminescent subsurface glow",
         accent_color="#38bdf8",
     ),
@@ -60,87 +69,128 @@ DEFAULT_SHOTS = [
 ]
 
 
+def _options(enum_cls: type[Enum]) -> str:
+    return ", ".join(f"'{member.value}'" for member in enum_cls)
+
+
+def build_prompt(narrative_concept: str, duration_seconds: float) -> str:
+    """Instrucción para el modelo; las opciones válidas salen de los enums del contrato."""
+
+    return f"""Actúa como director de fotografía de un estudio de previsualización.
+Necesito un storyboard de {TARGET_SHOTS} planos para esta sinopsis:
+"{narrative_concept}"
+
+Cada plano dura {duration_seconds} segundos. Para cada plano indica:
+1. shot_number (1 a {TARGET_SHOTS})
+2. shot_type (uno de: {_options(ShotType)})
+3. camera_movement (uno de: {_options(CameraMovement)})
+4. headline (título breve del plano, en español)
+5. description (acción visible, en español)
+6. prompt_expansion (prompt cinematográfico detallado en inglés para generadores de imagen o video)
+7. lighting (estilo de iluminación)
+8. accent_color (código hex como '#38bdf8')
+
+RESPONDE ÚNICAMENTE CON UN ARREGLO JSON VÁLIDO DE {TARGET_SHOTS} OBJETOS. SIN TEXTO ADICIONAL.
+"""
+
+
+def _enum_member(enum_cls: type[Enum], raw: object, field: str) -> Enum:
+    lookup = {str(member.value).casefold(): member for member in enum_cls}
+    member = lookup.get(str(raw).strip().casefold())
+    if member is None:
+        raise ValueError(f"{field} desconocido: {str(raw)[:40]!r}")
+    return member
+
+
+def parse_shots(
+    raw_text: str, duration_seconds: float, expected: int = TARGET_SHOTS
+) -> list[StoryboardShot]:
+    """Convierte la respuesta del modelo en planos o lanza ValueError explicando qué falló.
+
+    Se acepta una lista JSON o un objeto con la lista en `shots`/`storyboard`. Los tipos de plano y
+    movimientos se comparan sin distinguir mayúsculas. La duración la fija el estudio, no el modelo,
+    para que la suma de planos coincida con la duración pedida.
+    """
+
+    parsed = load_json(raw_text)
+    if isinstance(parsed, dict):
+        parsed = parsed.get("shots") or parsed.get("storyboard")
+    if not isinstance(parsed, list):
+        raise ValueError("la respuesta no contiene una lista de planos")
+    if len(parsed) != expected:
+        raise ValueError(f"se esperaban {expected} planos y llegaron {len(parsed)}")
+
+    shots: list[StoryboardShot] = []
+    for number, item in enumerate(parsed, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f"el plano {number} no es un objeto JSON")
+        shots.append(
+            StoryboardShot(
+                shot_number=number,
+                shot_type=_enum_member(
+                    ShotType, item.get("shot_type", ShotType.WIDE.value), "shot_type"
+                ),
+                camera_movement=_enum_member(
+                    CameraMovement,
+                    item.get("camera_movement", CameraMovement.DOLLY_IN.value),
+                    "camera_movement",
+                ),
+                duration_seconds=duration_seconds,
+                headline=str(item.get("headline") or f"Plano {number}"),
+                description=str(item.get("description") or ""),
+                prompt_expansion=str(item.get("prompt_expansion") or ""),
+                lighting=str(item.get("lighting") or "Volumetric lighting"),
+                accent_color=str(item.get("accent_color") or "#6366f1"),
+            )
+        )
+    return shots
+
+
+def calibrated_shots(duration_seconds: float) -> list[StoryboardShot]:
+    """Copia de los planos de respaldo con la duración del proyecto actual."""
+
+    return [
+        shot.model_copy(update={"duration_seconds": duration_seconds}) for shot in DEFAULT_SHOTS
+    ]
+
+
 class OpenGenAIStoryboardEngine:
     def __init__(self, base_url: str = "http://127.0.0.1:11434", model: str = "qwen3.5:9b"):
         self.base_url = base_url.rstrip("/")
         self.model = model
+        # Procedencia de los últimos planos: "ollama" o "fallback"; el orquestador la publica.
+        self.last_source = "none"
+        self.last_fallback_reason: str | None = None
+
+    def _fallback(self, reason: str, duration_seconds: float) -> list[StoryboardShot]:
+        self.last_source = "fallback"
+        self.last_fallback_reason = reason
+        logger.warning("Storyboard calibrado en uso: %s", reason)
+        return calibrated_shots(duration_seconds)
 
     async def generate_storyboard(self, project: StoryboardProject) -> list[StoryboardShot]:
-        """Genera el desglose cinematográfico de planos usando Ollama."""
-        target_shots = 4
-        dur_per_shot = project.total_duration_target / target_shots
+        """Genera el desglose de planos con Ollama o, si falla, devuelve el respaldo visible."""
 
-        prompt = f"""Actúa como Director Cinematográfico de Open Generative AI.
-El usuario necesita un storyboard de 4 planos para la siguiente sinopsis:
-"{project.narrative_concept}"
-
-Duración de cada plano: {dur_per_shot} segundos.
-Para cada plano debes especificar:
-1. shot_number (1 a 4)
-2. shot_type (uno de: 'Extreme Wide Shot', 'Wide Shot', 'Medium Shot', 'Close-up', 'Drone Aerial')
-3. camera_movement (uno de: 'Static', 'Slow Pan Right', 'Dolly In (Push In)', 'Tracking Shot', 'Crane Down')
-4. duration_seconds ({dur_per_shot})
-5. headline (título breve del plano)
-6. description (acción visible)
-7. prompt_expansion (prompt cinematográfico en inglés muy detallado para modelos de video/imagen)
-8. lighting (estilo de iluminación)
-9. accent_color (código hex como '#38bdf8')
-
-RESPONDE ÚNICAMENTE CON UN ARREGLO JSON VÁLIDO. SIN TEXTO ADICIONAL.
-"""
+        duration = round(project.total_duration_target / TARGET_SHOTS, 2)
         try:
-            async with httpx.AsyncClient(timeout=120.0) as client:
+            async with httpx.AsyncClient(timeout=120.0, trust_env=False) as client:
                 res = await client.post(
                     f"{self.base_url}/api/generate",
                     json={
                         "model": project.model or self.model,
-                        "prompt": prompt,
+                        "prompt": build_prompt(project.narrative_concept, duration),
                         "stream": False,
                         "options": {"temperature": 0.4},
                     },
                 )
-                if res.status_code == 200:
-                    raw_text = res.json().get("response", "").strip()
-                    if "```json" in raw_text:
-                        raw_text = raw_text.split("```json")[1].split("```")[0].strip()
-                    elif "```" in raw_text:
-                        raw_text = raw_text.split("```")[1].split("```")[0].strip()
-
-                    parsed = json.loads(raw_text)
-                    if isinstance(parsed, list) and len(parsed) > 0:
-                        shots = []
-                        for idx, item in enumerate(parsed):
-                            shots.append(
-                                StoryboardShot(
-                                    shot_number=idx + 1,
-                                    shot_type=ShotType(item.get("shot_type", "Wide Shot")),
-                                    camera_movement=CameraMovement(item.get("camera_movement", "Dolly In (Push In)")),
-                                    duration_seconds=dur_per_shot,
-                                    headline=item.get("headline", f"Plano {idx+1}"),
-                                    description=item.get("description", "Acción cinematográfica."),
-                                    prompt_expansion=item.get("prompt_expansion", "Cinematic 8k shot"),
-                                    lighting=item.get("lighting", "Volumetric lighting"),
-                                    accent_color=item.get("accent_color", "#6366f1"),
-                                )
-                            )
-                        return shots
-        except Exception as e:
-            logger.warning("Fallo en Ollama Storyboard: %s. Usando planos calibrados.", e)
-
-        # Retornar planos calibrados
-        calibrated = []
-        for s in DEFAULT_SHOTS:
-            calibrated.append(
-                StoryboardShot(
-                    shot_number=s.shot_number,
-                    shot_type=s.shot_type,
-                    camera_movement=s.camera_movement,
-                    duration_seconds=dur_per_shot,
-                    headline=s.headline,
-                    description=s.description,
-                    prompt_expansion=s.prompt_expansion,
-                    lighting=s.lighting,
-                    accent_color=s.accent_color,
-                )
-            )
-        return calibrated
+        except httpx.HTTPError as exc:
+            return self._fallback(f"{type(exc).__name__} al consultar Ollama", duration)
+        if res.status_code != 200:
+            return self._fallback(f"Ollama respondió HTTP {res.status_code}", duration)
+        try:
+            shots = parse_shots(res.json().get("response", ""), duration)
+        except (ValueError, AttributeError) as exc:
+            return self._fallback(f"respuesta no válida: {short_reason(exc)}", duration)
+        self.last_source = "ollama"
+        self.last_fallback_reason = None
+        return shots

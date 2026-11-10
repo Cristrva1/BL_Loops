@@ -40,13 +40,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
+    # Solo el dashboard propio del laboratorio (puerto 5177 por defecto) puede llamar a la API.
     allow_origins=[
         f"http://127.0.0.1:{settings.frontend_port}",
         f"http://localhost:{settings.frontend_port}",
-        "http://127.0.0.1:5173",
-        "http://localhost:5173",
-        "http://127.0.0.1:5175",
-        "http://localhost:5175",
     ],
     allow_credentials=False,
     allow_methods=["*"],

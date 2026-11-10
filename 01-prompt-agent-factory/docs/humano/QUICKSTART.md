@@ -53,15 +53,30 @@ Abre la URL exacta que muestre Vite, normalmente `http://127.0.0.1:5173`.
 6. Revisa el panel JSON y localiza `permissions`, `stop_conditions` y `content_hash`.
 7. Pulsa **Exportar JSON** y confirma que el nodo final queda verde.
 
-## 5. Verificación por consola
+## 5. Practicar sin interfaz
+
+```powershell
+uv run factory-demo --list
+uv run factory-demo --intake incomplete_agent_brief.json
+uv run factory-demo --intake skill_meeting_minutes.json
+```
+
+Resultado esperado: la lista muestra seis briefings y uno incompleto; el segundo comando imprime
+siete preguntas y no exporta nada; el tercero termina con `Exportado: .local/exports/skill_….json`.
+El recorrido completo está en [EXAMPLES.md](EXAMPLES.md).
+
+## 6. Verificación por consola
 
 ```powershell
 uv run pytest
 uv run ruff check .
 uv run factory-export-schemas
 npm --prefix frontend run build
-uv run factory-demo
+uv run factory-demo --all
 ```
+
+Resultado esperado: todas las pruebas en verde, `All checks passed!`, un build sin errores y el
+resumen `5 exportados, 1 incompleto, 0 inválidos`.
 
 ## Si copias el laboratorio fuera de BL_Loops
 

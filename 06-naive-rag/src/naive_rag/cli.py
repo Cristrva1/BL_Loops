@@ -12,6 +12,16 @@ from naive_rag.config import ConfigurationError, Settings
 from naive_rag.corpus import CorpusIndex, IndexingError, SearchError
 from naive_rag.ollama_client import OllamaError
 from naive_rag.pipeline import run_question
+from naive_rag.prompting import citation_label
+
+PREVIEW_CHARS = 160
+
+
+def _preview(text: str, limit: int = PREVIEW_CHARS) -> str:
+    compact = " ".join(text.split())
+    if len(compact) <= limit:
+        return compact
+    return compact[: limit - 1].rstrip() + "…"
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -22,6 +32,11 @@ def _build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
     index_parser = subparsers.add_parser("index", help="Recrear el indice desde Markdown.")
     index_parser.add_argument("--source", required=True, type=Path, help="Carpeta fuente de .md")
+    search_parser = subparsers.add_parser(
+        "search",
+        help="Ver los fragmentos que recibiria el modelo, sin invocar Ollama.",
+    )
+    search_parser.add_argument("question", nargs="+", help="Pregunta a buscar.")
     ask_parser = subparsers.add_parser("ask", help="Responder una pregunta con el indice.")
     ask_parser.add_argument("question", nargs="*", help="Pregunta; omitir abre un prompt.")
     subparsers.add_parser("stats", help="Mostrar el tamano de la proyeccion local.")
@@ -73,6 +88,9 @@ def cli(
         print(f"Corpus SHA-256: {stats.corpus_hash}", file=output)
         return 0
 
+    if args.command == "search":
+        return _search(index, settings, " ".join(args.question).strip(), output, error_output)
+
     question = " ".join(args.question).strip()
     if not question:
         try:
@@ -91,6 +109,40 @@ def cli(
     except KeyboardInterrupt:
         print("\nConsulta cancelada.", file=output)
         return 130
+    return 0
+
+
+def _search(
+    index: CorpusIndex,
+    settings: Settings,
+    question: str,
+    output: TextIO,
+    error_output: TextIO,
+) -> int:
+    """Muestra el contexto que `ask` entregaria al modelo; no genera ni registra JSONL."""
+
+    try:
+        results = index.search(question, top_k=settings.top_k)
+    except SearchError as exc:
+        print(f"Busqueda fallida: {exc}", file=error_output)
+        return 1
+    print(
+        f"Recuperador: SQLite FTS5 (BM25) | top_k={settings.top_k} | Ollama no se invoca",
+        file=output,
+    )
+    if not results:
+        print(
+            "Sin coincidencias lexicas: `ask` se abstendria sin llamar al modelo.",
+            file=output,
+        )
+        return 0
+    print("bm25 de SQLite: cuanto mas negativo, mas relevante.", file=output)
+    for position, result in enumerate(results, 1):
+        print(
+            f"{citation_label(position, result)} bm25={result.score:.3f} | {result.heading}",
+            file=output,
+        )
+        print(f"    {_preview(result.content)}", file=output)
     return 0
 
 

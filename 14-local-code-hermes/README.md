@@ -1,6 +1,21 @@
-# 14-local-code-hermes
+# 14 · Hermes local-code: preparar un benchmark de clientes de programación
 
-Laboratorio didáctico para preparar y ejecutar una corrida controlada de Hermes contra Ollama local. El corte incluye el preflight, el alias `local-code-9b-64k`, un sandbox Docker sin red, la reparación del fixture `B-CODE-003` y la exportación JSONL sanitaria.
+> **Pregunta:** ¿cómo se prepara una corrida de un cliente de código que sea local, aislada y comparable?
+> **Nivel:** 5 · **Tiempo:** ~60 min · **Necesita Ollama:** solo para la corrida viva (preflight y fixture no)
+
+Laboratorio didáctico para preparar y ejecutar una corrida controlada de Hermes contra Ollama local. El corte incluye el preflight, el alias `local-code-9b-64k`, un sandbox Docker sin red, la reparación del fixture `B-CODE-003` y la exportación JSONL sanitizada.
+
+Sin ningún servicio puedes recorrer el preflight y reparar el fixture a mano:
+
+```powershell
+Set-Location .\14-local-code-hermes
+uv sync --locked --all-groups
+uv run hermes-preflight --mode exploratory          # termina en run.blocked si faltan requisitos
+uv run hermes-fixture-verify prepare mi-intento     # copia el proyecto con el error de borde
+uv run hermes-fixture-verify verify mi-intento      # "Fixture no aprobado: ..." hasta repararlo
+```
+
+El recorrido completo, con salidas reales, está en [docs/humano/EXAMPLES.md](docs/humano/EXAMPLES.md).
 
 ## Qué existe
 
@@ -68,7 +83,7 @@ El flag de worktree sucio es deliberado para este checkout de desarrollo y no co
 - `cases/B-CODE-003/`: proyecto sintético congelado, sin PII.
 - `contracts/`: schemas estructurales de preflight y benchmark, ambos en versión `1.1`.
 - `tests/`: pruebas deterministas con dobles.
-- `docs/humano/`: explicación, práctica, diagnóstico y evaluación.
+- `docs/humano/`: explicación, ejemplos resueltos, práctica, diagnóstico y evaluación.
 - `.local/`: corridas, uso y workspaces ignorados por Git.
 
 > Estado: preflight y harness de una corrida implementados. La comparación entre clientes, el score oficial y la prueba independiente de cero egress siguen siendo fases posteriores.

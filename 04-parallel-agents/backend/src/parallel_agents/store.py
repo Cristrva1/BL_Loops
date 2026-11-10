@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 import threading
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from .contracts import ComparisonView, LaneView, NodeView
 from .orchestrator import GRAPH_NODES, ExperimentResult
+
+# Los eventos terminales se aplican junto con el resultado final (ver `finish` y `fail`):
+# así ningún snapshot dice "completed" mientras faltan variantes o métricas.
+TERMINAL_EVENTS = frozenset({"run.completed", "run.failed"})
 
 NodeState = Literal["idle", "queued", "running", "waiting", "retrying", "done", "failed", "blocked"]
 VALID_STATES: frozenset[str] = frozenset(
@@ -104,6 +109,25 @@ class RunStore:
         with self._lock:
             return self._runs.get(run_id)
 
+    def read_since(
+        self, run_id: str, start: int
+    ) -> tuple[list[dict[str, Any]], dict[str, Any], bool] | None:
+        """Lee eventos nuevos, snapshot público y fin de corrida bajo el mismo candado.
+
+        El stream SSE usa esta lectura atómica para no enviar nunca un evento terminal con un
+        snapshot a medias, ni cerrar la conexión antes de entregar ese evento.
+        """
+
+        with self._lock:
+            snapshot = self._runs.get(run_id)
+            if snapshot is None:
+                return None
+            return (
+                list(snapshot.events[start:]),
+                snapshot.public_dict(),
+                snapshot.status in {"completed", "failed"},
+            )
+
     def apply(self, run_id: str, event: dict[str, Any]) -> RunSnapshot | None:
         with self._lock:
             snapshot = self._runs.get(run_id)
@@ -130,17 +154,35 @@ class RunStore:
         run_id: str,
         result: ExperimentResult,
         jsonl_relative: str,
+        terminal_events: Sequence[dict[str, Any]] = (),
     ) -> RunSnapshot | None:
         with self._lock:
             snapshot = self._runs.get(run_id)
             if snapshot is None:
                 return None
-            snapshot.status = result.status
             snapshot.sequential = result.sequential
             snapshot.parallel = result.parallel
             snapshot.comparison = result.comparison
             snapshot.error = result.error
             snapshot.jsonl_path = jsonl_relative
+            # El estado terminal y su evento se publican al final, con el resultado ya visible.
+            snapshot.status = result.status
+            snapshot.events.extend(terminal_events)
+            return snapshot
+
+    def fail(
+        self,
+        run_id: str,
+        message: str,
+        terminal_events: Sequence[dict[str, Any]] = (),
+    ) -> RunSnapshot | None:
+        with self._lock:
+            snapshot = self._runs.get(run_id)
+            if snapshot is None:
+                return None
+            snapshot.error = message
+            snapshot.status = "failed"
+            snapshot.events.extend(terminal_events)
             return snapshot
 
 

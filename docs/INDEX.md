@@ -4,7 +4,9 @@
 
 - [Biblioteca humana](humano/README.md): separa intención, guía vigente y referencias recibidas.
 - [Entrada y recorrido](humano/maestro/README.md): objetivo, mapa general y orden de aprendizaje.
-- [Inicio rápido](humano/maestro/QUICKSTART.md): reconocimiento seguro del workspace y primer laboratorio.
+- [Ruta de aprendizaje](humano/maestro/RUTA_DE_APRENDIZAJE.md): orden de los laboratorios, tiempos, checkpoints y ruta sin Ollama.
+- [Glosario](humano/maestro/GLOSARIO.md): vocabulario común con ejemplo y laboratorio donde verlo.
+- [Inicio rápido](humano/maestro/QUICKSTART.md): reconocimiento seguro del workspace, primer comando de cada laboratorio y mapa de puertos.
 - [Arquitectura](humano/maestro/ARCHITECTURE.md): límites entre raíz, laboratorios, configuración y resultados.
 - [Metodología](humano/maestro/METHODOLOGY.md): forma simple y progresiva de construir cada parte.
 - [Flujo de futuras sesiones de Codex](humano/maestro/CODEX_WORKFLOW.md): apertura, implementación, verificación y cierre.
@@ -18,6 +20,7 @@
 - [Plan maestro didáctico](PLAN_MAESTRO_DIDACTICO.md): alcance, arquitectura, laboratorios, combinaciones y fases.
 - [Casos de evaluación](CASOS_DE_EVALUACION.md): suite genérica, métricas, protocolo y contrato JSONL.
 - [Sistema original](humano/sistema.md): intención inicial del usuario.
+- [Novedades](NOVEDADES.md): registro de cambios visibles para estudiantes y mantenedores.
 
 ## Aplicaciones y descubrimiento
 
@@ -42,6 +45,13 @@
   auditoría local, afirmaciones trazables, conflictos y `KnowledgeRelease` versionado.
 - [Laboratorio 14: Hermes local](../14-local-code-hermes/README.md): preflight, sandbox Docker sin red,
   una corrida controlada y JSONL solo bajo `.local/` para el benchmark Ollama 64k.
+- [Laboratorio 22: estudio de video HyperFrames](../22-hyperframes-video-studio/README.md): director
+  Ollama, composición HTML/GSAP con texto escapado, lint local antes del render, HyperFrames sin
+  telemetría y fallback calibrado visible.
+- [Laboratorio 23: estudio Remotion](../23-remotion-superpowers-studio/README.md): plan de escenas,
+  cálculo de fotogramas y video programático con React y `@remotion/cli` (render verificado).
+- [Laboratorio 24: estudio Open Generative AI](../24-open-generative-ai-studio/README.md): Prompt
+  Studio, storyboard de cuatro planos validado contra un contrato y animatic MP4 con FFmpeg.
 - [Laboratorio 25: resúmenes de videollamadas](../25-meeting-summarizer/README.md): transcripciones
   de Google Meet, Zoom y Teams, extracción de acuerdos, matriz de compromisos y minutas con IA local.
 
@@ -59,7 +69,13 @@ que exista su entrada técnica para evitar enlaces muertos.
 
 ## Mundos simulados y audiovisual (planificados)
 
-Aprobados en el plan 0.2.5. Todavía no hay carpetas ejecutables.
+Aprobados en el plan 0.2.5. Todavía no hay carpetas ejecutables para estos IDs.
+
+> **Conflicto de numeración pendiente de decisión.** Las carpetas existentes
+> `22-hyperframes-video-studio` y `23-remotion-superpowers-studio` son estudios exploratorios que
+> ocupan los números reservados abajo para `22-video-generation-studio` y `23-video-edit-studio`.
+> Las preguntas planificadas siguen vigentes; su numeración definitiva requiere una decisión
+> explícita del usuario.
 
 | ID | Carpeta | Pregunta corta |
 |---|---|---|
@@ -83,10 +99,11 @@ MCP ya no tiene laboratorio propio. El caso `I-MCP-006` sigue en la suite de eva
 
 ## Estado
 
-Estado al 2026-08-30: solo `14-local-code-hermes` tiene un corte ejecutable de Hermes; OpenCode y
-Claude Code siguen planificados. La rama `main` ya tiene un commit base; cada corrida y revisión
-debe registrar su SHA exacto. Todavía no existe una comparación formal ni una recomendación entre
-clientes.
+Estado al 2026-11-05: existen quince laboratorios ejecutables (01–09, 13, 14 y 22–25). Todos
+incluyen `docs/humano/EXAMPLES.md` con ejemplos resueltos y pruebas que pasan en un clon limpio sin
+Ollama. Solo `14-local-code-hermes` tiene un corte ejecutable del benchmark local-code; OpenCode y
+Claude Code siguen planificados. Cada corrida y revisión debe registrar su SHA exacto. Todavía no
+existe una comparación formal ni una recomendación entre clientes.
 
 Este índice distingue reglas, decisiones, enseñanza y materiales de estudio. Cuando una decisión
 cambie, primero se actualiza el plan maestro, después el laboratorio afectado y finalmente las

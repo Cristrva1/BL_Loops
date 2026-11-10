@@ -1,8 +1,9 @@
 """Módulo de evaluación y exportación JSONL según contrato de BL_Loops."""
 
-from datetime import datetime, timezone
 import json
+from datetime import UTC, datetime
 from pathlib import Path
+
 from hyperframes_studio.schemas import EvaluationRecord
 
 
@@ -12,7 +13,7 @@ def export_evaluation_jsonl(record: EvaluationRecord, output_path: str | Path = 
     target.parent.mkdir(parents=True, exist_ok=True)
 
     entry = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "lab_id": "22-hyperframes-video-studio",
         "case_id": record.case_id,
         "model": record.model,

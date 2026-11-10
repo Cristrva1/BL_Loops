@@ -55,6 +55,14 @@ Endpoints remotos, HTTPS, credenciales embebidas y rutas adicionales se rechazan
 
 Es el comportamiento esperado. El historial solo vive en RAM durante la sesión actual. Este corte no implementa memoria persistente.
 
+Lo mismo ocurre tras `/olvidar`: ejecuta `/memoria` y verás `1 mensaje en RAM`, solo la instrucción
+de sistema.
+
+## `/memoria` dice «sin dato todavía» en los tokens
+
+Todavía no se completó ningún turno o Ollama no devolvió `prompt_eval_count`. Los caracteres sí se
+calculan siempre, porque los cuenta el programa.
+
 ## La respuesta no es siempre igual
 
 El modelo genera texto de forma probabilística. Evalúa congruencia y cumplimiento, no identidad literal. Los parámetros usados quedan registrados en el JSONL.

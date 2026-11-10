@@ -1,7 +1,7 @@
 # Inicio rápido
 
 ```powershell
-Set-Location C:\Users\criss\Desktop\Claude\BL_Loops\08-graph-rag
+Set-Location .\08-graph-rag          # desde la raíz de BL_Loops
 uv sync --locked --all-groups
 uv run graph-rag index --source .\fixtures\evaluation-corpus
 uv run graph-rag stats
@@ -34,3 +34,5 @@ uv run graph-rag-validate
 
 Cada hop extraído cita archivo y líneas. La arista compuesta se etiqueta `inferred` y no se guarda
 en SQLite.
+
+Siguiente paso: los siete [ejemplos resueltos](EXAMPLES.md), seis de ellos sin Ollama.

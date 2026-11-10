@@ -49,7 +49,17 @@ Tu > Recuerda que el código de prueba es luna azul.
 Tu > ¿Cuál es el código de prueba?
 ```
 
-La segunda respuesta debe recuperar el dato del primer turno de forma congruente. Finaliza con:
+La segunda respuesta debe recuperar el dato del primer turno de forma congruente. Ahora mira dentro
+de la memoria y vacíala:
+
+```text
+Tu > /memoria
+Tu > /olvidar
+Tu > ¿Cuál es el código de prueba?
+```
+
+`/memoria` muestra cuántos mensajes y caracteres se reenviarán; tras `/olvidar` el modelo ya no
+recibe el primer turno y no debería conocer el código. Finaliza con:
 
 ```text
 Tu > /salir

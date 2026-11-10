@@ -9,10 +9,22 @@ uv sync --locked --all-groups
 
 Resultado esperado: `uv` usa Python 3.12 y crea únicamente `06-naive-rag\.venv`.
 
-## 2. Importar los libros Markdown
+## 2. Empezar por el corpus sintético
 
 ```powershell
-uv run naive-rag index --source "C:\Users\criss\Desktop\Claude\BL_Loops\docs\humano\Libros"
+uv run naive-rag index --source .\fixtures\evaluation-corpus
+uv run naive-rag search "¿Cuál es el plazo vigente para el primer seguimiento LUNA?"
+```
+
+Resultado esperado: `Indice listo: 5/5 documentos, 5 fragmentos` y una lista `[S1]…[S4]` encabezada
+por `01-politica-vigente.md`. `search` no llama al modelo: muestra el contexto que recibiría. Los
+cinco documentos están diseñados para enseñar una trampa de vigencia y otra léxica; el recorrido
+completo está en [EXAMPLES.md](EXAMPLES.md).
+
+## 3. Importar los libros Markdown
+
+```powershell
+uv run naive-rag index --source ..\docs\humano\Libros
 ```
 
 El comando lee recursivamente archivos `.md`, omite duplicados byte a byte y reemplaza el índice
@@ -25,7 +37,7 @@ Comprueba el resultado:
 uv run naive-rag stats
 ```
 
-## 3. Hacer una pregunta
+## 4. Hacer una pregunta
 
 ```powershell
 uv run naive-rag ask "¿Qué explica SPIN Selling sobre la venta consultiva?"
@@ -45,7 +57,7 @@ Fuentes recuperadas:
 Una advertencia de citas significa que Ollama respondió, pero no respetó el contrato `[S#]`; las
 fuentes se muestran igualmente para revisión humana.
 
-## 4. Importar la corrida JSONL
+## 5. Importar la corrida JSONL
 
 ```powershell
 uv run naive-rag-validate
@@ -54,7 +66,7 @@ uv run naive-rag-validate
 Resultado esperado: secuencia consecutiva, un solo `run_id` y evento terminal
 `run.completed`. La traza contiene estados y métricas, no la pregunta ni la respuesta.
 
-## 5. Probar la abstención
+## 6. Probar la abstención
 
 ```powershell
 uv run naive-rag ask "xilófono cuántico ultravioleta"

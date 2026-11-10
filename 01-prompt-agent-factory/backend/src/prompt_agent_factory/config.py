@@ -13,15 +13,19 @@ def lab_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
-def find_env_file() -> Path | None:
-    """Busca un `.env` local o el del workspace BL_Loops, no uno ajeno."""
+def find_env_file(start: Path | None = None) -> Path | None:
+    """Busca un `.env` local o el del workspace BL_Loops, no uno ajeno.
 
-    start = lab_root()
-    local_candidate = start / ".env"
+    `start` permite que las pruebas usen un workspace sintético; el runtime
+    siempre parte de la raíz real del laboratorio.
+    """
+
+    root = start or lab_root()
+    local_candidate = root / ".env"
     if local_candidate.is_file():
         return local_candidate
 
-    for candidate_root in start.parents:
+    for candidate_root in root.parents:
         is_workspace = all(
             (
                 (candidate_root / "AGENTS.md").is_file(),
@@ -36,10 +40,10 @@ def find_env_file() -> Path | None:
     return None
 
 
-def configuration_scope(env_file: Path | None) -> str:
+def configuration_scope(env_file: Path | None, root: Path | None = None) -> str:
     if env_file is None:
         return "defaults"
-    if env_file.parent == lab_root():
+    if env_file.parent == (root or lab_root()):
         return "lab"
     return "workspace"
 

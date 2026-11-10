@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import time
 
 from fastapi.testclient import TestClient
@@ -69,3 +70,54 @@ def test_experiment_round_trip_with_scripted_model(lab_settings, monkeypatch) ->
     assert snapshot["jsonl_path"] is not None
     assert snapshot["jsonl_path"].endswith(".jsonl")
     assert "http://" not in snapshot["jsonl_path"]
+
+
+def test_terminal_event_is_published_together_with_the_final_result(
+    lab_settings, monkeypatch
+) -> None:
+    """Regresión: run.completed no puede marcar `completed` antes de guardar las variantes."""
+
+    from orchestration.main import _execute_run
+    from orchestration.orchestrator import ExperimentRequest
+    from orchestration.store import STORE
+
+    scripted = ScriptedClient([PASSING_GUIDE, PLAN_JSON, PASSING_GUIDE, REVIEW_PASS_JSON])
+    monkeypatch.setattr("orchestration.main.get_client", lambda _settings: scripted)
+    run_id = "run-regression-terminal"
+    STORE.create(
+        run_id,
+        case_id=CASE_ID,
+        model=lab_settings.model,
+        include_baseline=True,
+        include_orchestrated=True,
+    )
+    statuses_seen: list[str] = []
+    real_apply = STORE.apply
+
+    def spy(target_run: str, event: dict) -> object:
+        snapshot = real_apply(target_run, event)
+        statuses_seen.append(snapshot.status)
+        return snapshot
+
+    monkeypatch.setattr(STORE, "apply", spy)
+
+    _execute_run(run_id, ExperimentRequest(task=DEFAULT_TASK), lab_settings)
+
+    snapshot = STORE.get(run_id)
+    assert "completed" not in statuses_seen
+    assert snapshot is not None
+    assert snapshot.status == "completed"
+    assert snapshot.baseline is not None
+    assert snapshot.comparison is not None
+    assert snapshot.events[-1]["event_type"] == "run.completed"
+
+    with client.stream("GET", f"/api/v1/runs/{run_id}/events") as response:
+        envelopes = [
+            json.loads(line.removeprefix("data: "))
+            for line in response.iter_lines()
+            if line.startswith("data: ")
+        ]
+    assert envelopes[-1]["event"]["event_type"] == "run.completed"
+    assert envelopes[-1]["snapshot"]["status"] == "completed"
+    assert envelopes[-1]["snapshot"]["baseline"] is not None
+    assert envelopes[-1]["snapshot"]["comparison"] is not None

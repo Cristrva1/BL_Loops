@@ -21,6 +21,7 @@ dev = [
 orchestration-demo = "orchestration.demo:main"
 orchestration-validate = "orchestration.validation:main"
 orchestration-export-schemas = "orchestration.schema_export:main"
+orchestration-score = "orchestration.score_cli:main"
 
 [build-system]
 requires = ["hatchling"]

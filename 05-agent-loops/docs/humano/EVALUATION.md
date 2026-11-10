@@ -37,6 +37,8 @@ npm --prefix frontend run build
 
 La suite cubre configuración local, parseo JSON, scoring, motor del loop con dobles, API, contrato de Ollama, JSONL e independencia de otros laboratorios y de `docs/humano/`.
 
+También comprueba que las salidas de `examples/outputs/` mantienen su puntaje (0/5, 2/5 y 5/5) y que el evento terminal nunca se publica antes que el resultado, ni en el snapshot ni en el stream SSE.
+
 ## Métricas disponibles
 
 | Métrica | Fuente | Significado |

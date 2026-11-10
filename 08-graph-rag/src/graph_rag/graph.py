@@ -496,7 +496,11 @@ def mermaid_path(path: GraphPath) -> str:
     for hop in path.hops:
         left = _mermaid_id(hop.subject)
         right = _mermaid_id(hop.object)
-        lines.append(f"  {left} -->|{hop.predicate}| {right}")
+        if hop.direction == "forward":
+            lines.append(f"  {left} -->|{hop.predicate}| {right}")
+        else:
+            # El salto se recorrió al revés: el triple escrito va de `object` a `subject`.
+            lines.append(f"  {right} -->|{hop.predicate}| {left}")
     return "\n".join(lines)
 
 
@@ -510,7 +514,10 @@ def _path_from_hops(hops: tuple[PathHop, ...]) -> GraphPath:
     if len(hops) >= 2:
         inferred = InferredEdge(
             subject=hops[0].subject,
-            predicate="/".join(hop.predicate for hop in hops),
+            # `^predicado` marca un salto inverso, como los caminos inversos de SPARQL 1.1.
+            predicate="/".join(
+                hop.predicate if hop.direction == "forward" else f"^{hop.predicate}" for hop in hops
+            ),
             object=hops[-1].object,
             hops=len(hops),
         )

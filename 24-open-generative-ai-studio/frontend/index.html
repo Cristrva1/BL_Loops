@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 24: Open Generative AI Studio</title>
+  <!-- Sin fuentes ni scripts remotos: el panel funciona 100 % local. -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="studio-header">
+      <div class="brand">
+        <span class="badge">Lab 24</span>
+        <div>
+          <h1>Open Generative AI Studio</h1>
+          <p class="tagline">Idea → storyboard → animatic MP4 · IA local con Ollama y FFmpeg</p>
+        </div>
+      </div>
+      <div class="status-row">
+        <span id="ollama-status" class="pill">Ollama: comprobando…</span>
+        <span id="ffmpeg-status" class="pill">FFmpeg: comprobando…</span>
+        <span id="events-status" class="pill">Eventos: conectando…</span>
+      </div>
+    </header>
+
+    <section class="pipeline" aria-label="Nodos del pipeline">
+      <div class="node" id="node-ANALYZING_CONCEPT">
+        <span class="node-title">1 · Concepto</span>
+        <span class="node-sub">Recibe la sinopsis</span>
+      </div>
+      <div class="edge" aria-hidden="true"></div>
+      <div class="node" id="node-GENERATING_STORYBOARD">
+        <span class="node-title">2 · Storyboard</span>
+        <span class="node-sub">Ollama o respaldo visible</span>
+      </div>
+      <div class="edge" aria-hidden="true"></div>
+      <div class="node" id="node-RENDERING_ANIMATIC">
+        <span class="node-title">3 · Animatic</span>
+        <span class="node-sub">FFmpeg 1920×1080</span>
+      </div>
+      <div class="edge" aria-hidden="true"></div>
+      <div class="node" id="node-EVALUATING">
+        <span class="node-title">4 · Evaluación</span>
+        <span class="node-sub">ffprobe + JSONL</span>
+      </div>
+    </section>
+    <p id="source-banner" class="banner" hidden></p>
+
+    <main class="grid">
+      <aside class="panel">
+        <h2>Proyecto</h2>
+        <form id="project-form">
+          <label for="title-input">Título</label>
+          <input id="title-input" value="Expedición Nebular" maxlength="120" required>
+
+          <label for="concept-input">Sinopsis (10 a 600 caracteres)</label>
+          <textarea id="concept-input" rows="4" minlength="10" maxlength="600" required>Un equipo de exploración descubre una señal alienígena enterrada en un cañón de hielo</textarea>
+
+          <div class="row">
+            <div>
+              <label for="duration-input">Duración total (s)</label>
+              <input type="number" id="duration-input" value="12" min="4" max="60" step="1">
+            </div>
+            <div>
+              <label for="model-select">Modelo local</label>
+              <select id="model-select">
+                <option value="">El del .env</option>
+                <option value="qwen3.5:9b">qwen3.5:9b</option>
+                <option value="qwen3.5:4b">qwen3.5:4b</option>
+                <option value="gemma4:e4b">gemma4:e4b</option>
+                <option value="gemma4:e2b">gemma4:e2b</option>
+              </select>
+            </div>
+          </div>
+          <p class="hint">La duración se reparte entre 4 planos: 12 s son 4 planos de 3 s.</p>
+          <button type="submit" id="btn-run" class="btn primary">Generar storyboard y animatic</button>
+        </form>
+
+        <div class="metrics">
+          <h3>Métricas medidas</h3>
+          <dl>
+            <dt>Estado</dt><dd id="metric-status">En espera</dd>
+            <dt>Origen de los planos</dt><dd id="metric-source">--</dd>
+            <dt>Duración (ffprobe)</dt><dd id="metric-duration">--</dd>
+            <dt>Resolución</dt><dd id="metric-res">--</dd>
+            <dt>Tamaño</dt><dd id="metric-size">--</dd>
+            <dt>Tiempo de render</dt><dd id="metric-time">--</dd>
+            <dt>Evaluación</dt><dd id="metric-eval">--</dd>
+          </dl>
+          <button id="btn-export" class="btn" type="button" disabled>Exportar evaluación JSONL</button>
+          <p id="export-result" class="hint" aria-live="polite"></p>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div class="tabs" role="tablist">
+          <button class="tab active" type="button" data-tab="tab-video">Animatic MP4</button>
+          <button class="tab" type="button" data-tab="tab-storyboard">Storyboard</button>
+          <button class="tab" type="button" data-tab="tab-prompt">Prompt Studio</button>
+          <button class="tab" type="button" data-tab="tab-logs">Trazas SSE</button>
+        </div>
+
+        <div id="tab-video" class="tab-content active">
+          <video id="output-video" controls preload="metadata"></video>
+          <p id="video-hint" class="hint">El animatic aparecerá aquí cuando el pipeline termine.</p>
+        </div>
+
+        <div id="tab-storyboard" class="tab-content">
+          <div id="shots" class="shots">
+            <p class="hint">Los planos aparecerán cuando termine el nodo Storyboard.</p>
+          </div>
+        </div>
+
+        <div id="tab-prompt" class="tab-content">
+          <form id="prompt-form">
+            <label for="idea-input">Idea breve (3 a 500 caracteres)</label>
+            <textarea id="idea-input" rows="3" minlength="3" maxlength="500" required>Un astronauta descubre ruinas antiguas en un desierto alienígena bioluminiscente</textarea>
+            <label for="style-input">Estilo</label>
+            <input id="style-input" value="Cinematográfico Sci-Fi 35mm" maxlength="120">
+            <button type="submit" id="btn-expand" class="btn">Expandir prompt</button>
+          </form>
+          <div id="prompt-result" class="prompt-result" hidden>
+            <p id="prompt-source" class="banner"></p>
+            <h3>Prompt positivo</h3>
+            <p id="prompt-positive" class="mono"></p>
+            <h3>Prompt negativo</h3>
+            <p id="prompt-negative" class="mono"></p>
+            <h3>Cámara</h3>
+            <p id="prompt-camera"></p>
+            <h3>Paleta</h3>
+            <div id="prompt-palette" class="palette"></div>
+          </div>
+        </div>
+
+        <div id="tab-logs" class="tab-content">
+          <div id="console-logs" class="console" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

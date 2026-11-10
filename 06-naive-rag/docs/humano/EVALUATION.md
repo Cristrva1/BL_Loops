@@ -49,6 +49,8 @@ La suite cubre configuración local, rutas confinadas, proyección exacta, prese
 vacía, deduplicación, líneas citables, puntuación segura, abstención, contrato de Ollama, falta de
 citas, sanitización JSONL e independencia de otros laboratorios y de la documentación humana.
 
+`tests/test_cli.py` comprueba además que `search` muestra el contexto citable sin invocar Ollama ni escribir JSONL, que explica la abstención cuando no hay coincidencias y que exige un índice previo.
+
 ## Métricas disponibles
 
 | Métrica | Fuente | Significado |

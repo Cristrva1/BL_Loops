@@ -42,10 +42,29 @@ Guía de soluciones ante fallos comunes al procesar transcripciones.
 
 ---
 
-### 5. Fallo de puertos (`Port 8025 or 5175 already in use`)
-- **Causa:** Otra sesión o proceso anterior sigue ejecutándose en ese puerto.
-- **Solución:**
-  En PowerShell, localiza y detén el proceso colgado:
+### 5. Fallo de puertos (`Port 8025 or 5177 already in use`)
+- **Causa:** otra sesión de este laboratorio sigue abierta, u otro programa usa el puerto.
+- **Comprobación:** identifica primero el proceso, sin cerrarlo todavía:
   ```powershell
-  Get-Process -Id (Get-NetTCPConnection -LocalPort 8025).OwningProcess | Stop-Process -Force
+  Get-NetTCPConnection -State Listen | Where-Object LocalPort -In 8025,5177 |
+      Select-Object LocalPort,OwningProcess
   ```
+- **Solución:** si es una sesión antigua de este laboratorio, ciérrala desde su terminal con `Ctrl+C`.
+  No termines procesos que no reconozcas. Antes del 2026-11-05 el dashboard usaba `5175`, el mismo
+  puerto que el laboratorio 04; ahora usa `5177`.
+
+---
+
+### 6. `Configuracion invalida: OLLAMA_BASE_URL debe ser HTTP local`
+- **Causa:** el endpoint configurado no es `http://` en `127.0.0.1`, `localhost` o `::1`, lleva
+  credenciales o una ruta extra.
+- **Solución:** usa `OLLAMA_BASE_URL=http://127.0.0.1:11434`. Es una protección deliberada: no hay
+  fallback cloud. Lo mismo aplica a modelos con etiqueta `:cloud`.
+
+---
+
+### 7. Una variable del `.env` de la raíz parece ignorada
+- **Causa:** este laboratorio usa la estrategia de **archivo único**: si existe un `.env` dentro de
+  `25-meeting-summarizer`, se ignora por completo el de la raíz.
+- **Solución:** copia en el `.env` local todas las claves que necesites o elimínalo para volver a usar
+  el de la raíz. Consulta la [tabla de estrategias](../../../docs/humano/maestro/ENVIRONMENTS.md#precedencia-actual).

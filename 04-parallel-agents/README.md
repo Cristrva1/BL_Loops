@@ -1,44 +1,67 @@
-# 04-parallel-agents
+# 04 · Agentes en paralelo: fan-out, fan-in y procedencia
 
-Laboratorio autónomo para observar cuándo un fan-out/fan-in de tres fuentes independientes reduce el tiempo de pared sin degradar la coherencia ni presentar una rama fallida como completa.
+> **Pregunta:** ¿cuándo el paralelismo reduce tiempo sin degradar coherencia ni agotar la VRAM?
+> **Nivel:** 2 · **Tiempo:** ~45 min · **Necesita Ollama:** sí, con `qwen3.5:4b` (el checker funciona sin él)
 
-## Ejecutar
+Tres documentos independientes del «Taller Norte» (precios, horario y garantía) alimentan la misma
+tarea de extracción. La variante **secuencial** procesa A, luego B, luego C; la **paralela** lanza
+las tres ramas a la vez contra un solo modelo compartido, con un tope `max_in_flight` y un timeout
+por rama. El agregador une los hechos conservando su `source_id` y **nunca** presenta como completa
+una rama fallida. El dashboard mide el tiempo de pared y si hubo solapamiento real.
+
+## Ejecutar en 5 minutos
+
+Desde la raíz de BL_Loops:
 
 ```powershell
+Set-Location .\04-parallel-agents
 uv sync --all-groups
-npm --prefix frontend install
+uv run parallel-agents-demo        # secuencial frente a paralelo con Ollama
+uv run parallel-agents-validate    # importa el JSONL de la corrida
 ```
 
-Backend:
+Dashboard (dos terminales):
 
 ```powershell
 uv run uvicorn parallel_agents.main:app --host 127.0.0.1 --port 8014 --reload
+npm --prefix frontend install
+npm --prefix frontend run dev      # abre http://127.0.0.1:5175
 ```
 
-Frontend, en otra terminal:
+## Qué deberías ver
 
-```powershell
-npm --prefix frontend run dev
-```
+La demo informa, para cada variante, el tiempo de pared (`wall_ms`), las fuentes completas y
+fallidas, el `speedup` y `overlap_observed`. Con un solo modelo compartido es normal un speedup
+menor que 3: Ollama puede atender las llamadas en cola. El laboratorio lo muestra en lugar de
+esconderlo.
 
-Abre `http://127.0.0.1:5175`. El grafo deriva de eventos SSE reales. Carga el caso `I-PARALLEL-002` para comparar la línea secuencial con el fan-out.
+## Mapa del laboratorio
 
-Demostración CLI sin interfaz:
+| Ruta | Para qué sirve |
+|---|---|
+| `backend/src/parallel_agents/` | Orquestador `asyncio`, checker (`scoring.py`), fuentes, API, store y JSONL |
+| `backend/tests/` | Pruebas con un modelo guionizado: no necesitan Ollama |
+| `examples/sources/` | Las tres fuentes sintéticas del caso `I-PARALLEL-002` |
+| `examples/i-parallel-002.json` | Definición del caso |
+| `contracts/` | JSON Schema de eventos y del handoff `FactBundle` |
+| `frontend/` | Dashboard React Flow alimentado por SSE |
+| `docs/humano/` | Manual de aprendizaje; el runtime nunca lo lee |
 
-```powershell
-uv run parallel-agents-demo
-uv run parallel-agents-validate
-```
+## Aprende paso a paso
 
-## Organización
+1. [Guía del laboratorio](docs/humano/README.md): conceptos y recorrido.
+2. [Inicio rápido](docs/humano/QUICKSTART.md): requisitos, dashboard y demo.
+3. [Ejemplos resueltos](docs/humano/EXAMPLES.md): checker, unión con una rama caída y speedup.
+4. [Ejercicios](docs/humano/EXERCISES.md): práctica con soluciones plegables.
+5. [Arquitectura](docs/humano/ARCHITECTURE.md), [metodología](docs/humano/METHODOLOGY.md),
+   [evaluación](docs/humano/EVALUATION.md) y [diagnóstico](docs/humano/TROUBLESHOOTING.md).
 
-- `AGENTS.md`: reglas portables para futuras sesiones.
-- `backend/`: orquestador asyncio, cliente de Ollama, API y pruebas.
-- `frontend/`: dashboard React Flow.
-- `contracts/`: JSON Schema de eventos y del `FactBundle`.
-- `examples/`: fixture sintético `I-PARALLEL-002` y tres fuentes independientes.
-- `docs/humano/`: guía didáctica. El runtime no la lee.
+**Viene de:** [03-orchestration](../03-orchestration/README.md), donde los pasos dependen uno del otro.
+**Sigue con:** [05-agent-loops](../05-agent-loops/README.md), donde el mismo paso se repite con presupuesto.
 
-> Estado: corte A. Un modelo Ollama compartido, `asyncio.gather` y un agregador determinista. LangGraph, CrewAI, AG2 y varios modelos simultáneos quedan aplazados.
+## Estado y límites
 
-Empieza el aprendizaje en [docs/humano/README.md](docs/humano/README.md).
+- **Implementado (corte A):** fan-out con `asyncio.gather` y tope `max_in_flight`, timeout por rama,
+  agregador determinista, comparación de tiempos, dashboard SSE y JSONL sanitizado.
+- **Aplazado:** LangGraphJS, CrewAI/AG2 y varios modelos simultáneos en VRAM.
+- Reglas para futuras sesiones de agentes de código: [AGENTS.md](AGENTS.md).

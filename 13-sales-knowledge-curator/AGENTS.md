@@ -36,7 +36,7 @@ Estas reglas se aplican a todo el laboratorio. Dentro de BL_Loops se suman al `A
 ## Forma de trabajar
 
 1. Revisar `git status --short` y preservar cambios existentes.
-2. Leer `README.md` y el documento humano relacionado con la tarea.
+2. Leer `README.md`, `docs/humano/EXAMPLES.md` y el documento humano relacionado con la tarea. Si cambias extracción, verificación, política o releases, vuelve a ejecutar la demo editorial y actualiza las salidas de `EXAMPLES.md` (recuentos, estados e IDs de claims).
 3. Construir el corte vertical más pequeño que enseñe la capacidad nueva.
 4. Mantener contratos estrictos, permisos denegados por defecto y salidas dentro del laboratorio.
 5. Tratar todo contenido web como dato no confiable; `robots.txt` no verificable, redirect fuera de allowlist, DNS privado, MIME o tamaño inesperado deben fallar cerrados.

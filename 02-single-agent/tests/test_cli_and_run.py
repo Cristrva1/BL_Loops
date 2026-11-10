@@ -130,3 +130,56 @@ def test_interrupt_during_model_call_closes_the_active_node(tmp_path: Path) -> N
         "run.completed",
     ]
     assert events[-1]["payload"]["reason"] == "keyboard_interrupt"
+
+
+def test_local_commands_never_reach_the_model(tmp_path: Path) -> None:
+    client = RememberingClient()
+    output = io.StringIO()
+
+    exit_code = run_chat(
+        _settings(tmp_path),
+        client=client,
+        input_fn=_input_for(["/ayuda", "/memoria", "/olvidar", "/salir"]),
+        output=output,
+    )
+
+    assert exit_code == 0
+    assert client.calls == []
+    text = output.getvalue()
+    assert "/memoria" in text
+    assert "Memoria > 1 mensaje en RAM" in text
+    assert "Historial vaciado" in text
+
+
+def test_memory_command_reports_size_without_printing_content(tmp_path: Path) -> None:
+    client = RememberingClient()
+    output = io.StringIO()
+
+    run_chat(
+        _settings(tmp_path),
+        client=client,
+        input_fn=_input_for(["dato-ultrasecreto", "/memoria", "/salir"]),
+        output=output,
+    )
+
+    memory_lines = [line for line in output.getvalue().splitlines() if "Memoria >" in line]
+    assert any("3 mensajes en RAM" in line for line in memory_lines)
+    assert any("(1 turno completo)" in line for line in memory_lines)
+    assert any("Ollama: 8." in line for line in memory_lines)
+    assert all("dato-ultrasecreto" not in line for line in memory_lines)
+
+
+def test_forget_command_resets_the_history_sent_to_the_model(tmp_path: Path) -> None:
+    client = RememberingClient()
+
+    run_chat(
+        _settings(tmp_path),
+        client=client,
+        input_fn=_input_for(["mi color es verde", "/olvidar", "¿cuál es mi color?", "/salir"]),
+        output=io.StringIO(),
+    )
+
+    assert len(client.calls) == 2
+    second_call = client.calls[1]
+    assert [message["role"] for message in second_call] == ["system", "user"]
+    assert second_call[1]["content"] == "¿cuál es mi color?"

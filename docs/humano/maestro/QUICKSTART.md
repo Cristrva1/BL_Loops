@@ -1,26 +1,27 @@
 # Inicio rápido del repositorio maestro
 
-> Esta guía reconoce el workspace y abre un laboratorio. No instala nada en repositorios externos ni muestra el contenido del `.env`.
+> Esta guía reconoce el workspace y abre tu primer laboratorio en unos 15 minutos. No instala nada
+> en repositorios externos ni muestra el contenido del `.env`.
 
 ## Resultado esperado
 
 Al terminar sabrás:
 
-- Dónde están las reglas y el plan.
+- Dónde están las reglas, el plan y la ruta de aprendizaje.
 - Si la configuración local existe, sin leer sus secretos.
-- Qué herramientas están disponibles.
+- Qué herramientas y modelos tienes disponibles.
 - Cómo preparar y verificar un laboratorio aislado.
-- Qué comandos pertenecen a la raíz y cuáles al proyecto elegido.
+- Qué comandos pertenecen a la raíz y cuáles al laboratorio elegido.
 
 ## 1. Abrir la raíz correcta
 
 ```powershell
-Set-Location C:\Users\criss\Desktop\Claude\BL_Loops
+Set-Location C:\Users\criss\Desktop\Claude\BL_Loops   # ajusta la ruta si tu copia vive en otro sitio
 Get-Location
 git status --short
 ```
 
-`git status --short` es una observación, no una orden de limpiar. Todo archivo previo debe tratarse como trabajo que se conserva.
+`git status --short` es una observación, no una orden de limpiar. Todo archivo previo se conserva.
 
 ## 2. Leer el mapa mínimo
 
@@ -28,10 +29,11 @@ En este orden:
 
 1. [`AGENTS.md`](../../../AGENTS.md): reglas operativas.
 2. [`docs/INDEX.md`](../../INDEX.md): mapa documental.
-3. [`PLAN_MAESTRO_DIDACTICO.md`](../../PLAN_MAESTRO_DIDACTICO.md): decisiones y progresión.
-4. Esta guía maestra: explicación humana de cómo trabajar.
+3. [Ruta de aprendizaje](RUTA_DE_APRENDIZAJE.md): qué laboratorio hacer primero y por qué.
+4. [Glosario](GLOSARIO.md): vocabulario que usan todos los laboratorios.
 
-No hace falta leer todo `Prompts/` ni todo `docs/humano/` en cada sesión. Se consultan únicamente las fuentes relevantes para la tarea.
+No hace falta leer todo `Prompts/` ni todo `docs/humano/` en cada sesión. Se consultan únicamente
+las fuentes relevantes para la tarea.
 
 ## 3. Comprobar herramientas
 
@@ -43,7 +45,9 @@ npm --version
 ollama --version
 ```
 
-Si una herramienta falta, detén la preparación de ese componente y consulta [TROUBLESHOOTING.md](TROUBLESHOOTING.md). No instales plataformas completas por anticipado.
+Resultado esperado: cada comando imprime una versión. Si falta una herramienta, detén la
+preparación de ese componente y consulta [TROUBLESHOOTING.md](TROUBLESHOOTING.md). `node` y `npm`
+solo son necesarios para los dashboards web.
 
 ## 4. Preparar la configuración compartida
 
@@ -59,9 +63,10 @@ Si devuelve `False`, crea la copia local:
 Copy-Item -LiteralPath .env.example -Destination .env
 ```
 
-No muestres el contenido del `.env` en la terminal, en logs ni en respuestas. Su contrato público es `.env.example`.
+No muestres el contenido del `.env` en la terminal, en logs ni en respuestas. Su contrato público
+es `.env.example`.
 
-## 5. Comprobar Ollama local
+## 5. Comprobar Ollama y los modelos
 
 ```powershell
 Invoke-RestMethod -Method Get -Uri "http://127.0.0.1:11434/api/tags" |
@@ -69,132 +74,93 @@ Invoke-RestMethod -Method Get -Uri "http://127.0.0.1:11434/api/tags" |
     Select-Object name
 ```
 
-El resultado esperado es una lista de modelos locales. Esta consulta no descarga modelos ni llama a internet.
+Resultado esperado: una lista que incluya, como mínimo, `qwen3.5:4b` y `gemma4:e4b`. Esta consulta
+no descarga modelos ni llama a internet. Si un modelo falta y autorizas la descarga de sus pesos:
 
-## 6. Entrar en un laboratorio
+```powershell
+ollama pull qwen3.5:4b
+```
 
-Ejemplo con el primero:
+`qwen3-embedding:latest` solo se necesita para los laboratorios 07 y 09.
+
+## 6. Entrar en tu primer laboratorio
+
+Ejemplo con el primero, que no necesita Ollama:
 
 ```powershell
 Set-Location .\01-prompt-agent-factory
 uv sync --all-groups
-npm --prefix frontend install
-```
-
-Este comando crea o actualiza `01-prompt-agent-factory/.venv`. No debe crear una `.venv` compartida en la raíz.
-
-## 7. Ejecutar sus verificaciones
-
-```powershell
 uv run pytest
-uv run ruff check .
-npm --prefix frontend run build
+uv run factory-demo --list
 uv run factory-demo
 ```
 
-Consulta la [guía propia del laboratorio](../../../01-prompt-agent-factory/docs/humano/QUICKSTART.md) para iniciar sus servidores y seguir el recorrido visual.
+Resultado esperado:
 
-Para probar directamente el chat CLI del segundo laboratorio:
+- `uv sync` crea `01-prompt-agent-factory/.venv`; nunca una `.venv` compartida en la raíz.
+- `pytest` termina en verde sin red y sin modelo.
+- `factory-demo --list` muestra los briefings de ejemplo y cuál está incompleto.
+- `factory-demo` exporta un `PromptSpec` a `.local/exports/`.
 
-```powershell
-Set-Location ..\02-single-agent
-uv sync --all-groups
-uv run single-agent
-```
+Para el dashboard web, sigue la [guía propia del laboratorio](../../../01-prompt-agent-factory/docs/humano/QUICKSTART.md).
 
-Su recorrido completo está en la [guía de inicio del agente único](../../../02-single-agent/docs/humano/QUICKSTART.md).
+## 7. Primer comando de cada laboratorio
 
-Para ver un pipeline con línea base:
+Desde la raíz de BL_Loops. Cada laboratorio tiene su propio `QUICKSTART.md` con el recorrido
+completo y su `EXAMPLES.md` con ejemplos resueltos.
 
-```powershell
-Set-Location ..\03-orchestration
-```
+| Laboratorio | Preparar | Primer comando útil | ¿Ollama? |
+|---|---|---|---|
+| [01](../../../01-prompt-agent-factory/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run factory-demo --all` | No |
+| [02](../../../02-single-agent/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run single-agent` | Sí |
+| [03](../../../03-orchestration/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run orchestration-demo` | Sí |
+| [04](../../../04-parallel-agents/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run parallel-agents-demo` | Sí |
+| [05](../../../05-agent-loops/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run agent-loops-demo` | Sí |
+| [06](../../../06-naive-rag/docs/humano/QUICKSTART.md) | `uv sync --locked --all-groups` | `uv run naive-rag index --source .\fixtures\evaluation-corpus` | Solo `ask` |
+| [07](../../../07-vector-rag/docs/humano/QUICKSTART.md) | `uv sync --locked --all-groups` | `uv run vector-rag index --source .\fixtures\evaluation-corpus` | Sí |
+| [08](../../../08-graph-rag/docs/humano/QUICKSTART.md) | `uv sync --locked --all-groups` | `uv run graph-rag index --source .\fixtures\evaluation-corpus` | Solo `ask` |
+| [09](../../../09-agentic-rag/docs/humano/QUICKSTART.md) | `uv sync --locked --all-groups` | `uv run sales-agent index --source .\fixtures\evaluation-corpus` | Sí |
+| [13](../../../13-sales-knowledge-curator/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run sales-curator doctor` | Opcional |
+| [14](../../../14-local-code-hermes/docs/humano/QUICKSTART.md) | `uv sync --locked --all-groups` | `uv run hermes-preflight --mode exploratory` | Diagnóstico |
+| [22](../../../22-hyperframes-video-studio/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run hyperframes-studio-demo` | Opcional |
+| [23](../../../23-remotion-superpowers-studio/docs/humano/QUICKSTART.md) | `uv sync --all-groups` + `npm install` | `uv run remotion-studio-demo` | Opcional |
+| [24](../../../24-open-generative-ai-studio/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run open-genai-demo` | Opcional |
+| [25](../../../25-meeting-summarizer/docs/humano/QUICKSTART.md) | `uv sync --all-groups` | `uv run meeting-summarizer parse .\fixtures\zoom_standup.vtt` | Solo `summarize` |
 
-Su recorrido está en la [guía de inicio de orquestación](../../../03-orchestration/docs/humano/QUICKSTART.md).
+Antes de cada fila, entra en la carpeta con `Set-Location .\NN-nombre`. Los laboratorios RAG
+también aceptan el corpus de libros: `--source ..\docs\humano\Libros`. Ese corpus es un dato que
+tú le das al comando; el runtime nunca lo lee por su cuenta.
 
-Para ver un fan-out de tres fuentes:
+## Mapa de puertos
 
-```powershell
-Set-Location ..\04-parallel-agents
-```
+Cada laboratorio con servidor usa puertos propios para poder tener varios abiertos a la vez.
 
-Su recorrido está en la [guía de inicio de agentes en paralelo](../../../04-parallel-agents/docs/humano/QUICKSTART.md).
+| Laboratorio | API (FastAPI) | Interfaz (Vite) |
+|---|---|---|
+| 01 | `8011` | `5173` |
+| 03 | `8012` | `5172` |
+| 13 | `8013` | `5174` |
+| 04 | `8014` | `5175` |
+| 05 | `8015` | `5176` |
+| 22 | `8022` | servida por la API en `/` |
+| 23 | `8023` | servida por la API en `/` |
+| 24 | `8024` | servida por la API en `/` |
+| 25 | `8025` | `5177` |
+| Ollama | `11434` | — |
 
-Para ver un loop con presupuesto y mejor candidato:
-
-```powershell
-Set-Location ..\05-agent-loops
-```
-
-Su recorrido está en la [guía de inicio de loops](../../../05-agent-loops/docs/humano/QUICKSTART.md).
-
-Para probar el RAG léxico con un corpus Markdown:
-
-```powershell
-Set-Location ..\06-naive-rag
-uv sync --locked --all-groups
-uv run naive-rag index --source "<ruta-a-los-markdown>"
-uv run naive-rag ask "<pregunta-con-palabras-del-corpus>"
-uv run naive-rag-validate
-```
-
-La importación genera un SQLite propio dentro del laboratorio; la consulta no lee documentos de
-otro laboratorio ni necesita la documentación humana. Sigue la
-[guía del RAG sencillo](../../../06-naive-rag/docs/humano/QUICKSTART.md) para usar el corpus de
-libros y entender sus tres nodos.
-
-Para comparar recuperación lexical, vectorial e híbrida sobre el mismo corpus:
-
-```powershell
-Set-Location ..\07-vector-rag
-uv sync --locked
-uv run vector-rag index --source "C:\Users\criss\Desktop\Claude\BL_Loops\docs\humano\Libros"
-uv run vector-rag search --mode hybrid "¿Cómo vender sin presionar?"
-uv run vector-rag ask "¿Cómo vender sin presionar?"
-uv run vector-rag-validate
-```
-
-El recorrido y la política de filtrado están en la
-[guía del RAG híbrido](../../../07-vector-rag/docs/humano/QUICKSTART.md).
-
-Para recorrer relaciones explícitas en un grafo pequeño:
-
-```powershell
-Set-Location ..\08-graph-rag
-uv sync --locked --all-groups
-uv run graph-rag index --source .\fixtures\evaluation-corpus
-uv run graph-rag search --mode compare "¿Qué fecha de congelación afecta el proyecto de Ana Ruiz?"
-uv run graph-rag ask "¿Qué fecha de congelación afecta el proyecto de Ana Ruiz?"
-uv run graph-rag-validate
-```
-
-El grafo es propio del laboratorio y no usa Neo4j ni Microsoft GraphRAG. Sigue la
-[guía del Graph RAG](../../../08-graph-rag/docs/humano/QUICKSTART.md).
-
-Para probar el agente experto en ventas con una sola herramienta local:
-
-```powershell
-Set-Location ..\09-agentic-rag
-uv sync --locked
-uv run sales-agent index --source "C:\Users\criss\Desktop\Claude\BL_Loops\docs\humano\Libros"
-uv run sales-agent ask "¿Cómo vender una vivienda sin presionar?"
-uv run sales-agent chat
-uv run sales-agent-validate
-```
-
-El agente posee su propio índice; no importa la base ni el código del laboratorio 07. Consulta
-su [quickstart](../../../09-agentic-rag/docs/humano/QUICKSTART.md) para interpretar tool calls,
-fallback, memoria en RAM y fuentes no revisadas.
+Los laboratorios 02, 06, 07, 08, 09 y 14 son solo CLI y no abren puertos.
 
 ## Regla de orientación
 
 ```mermaid
 flowchart TD
-    A[Estoy en la raíz] --> B[Leo reglas, mapa y plan]
+    A[Estoy en la raíz] --> B[Leo reglas, ruta y glosario]
     B --> C[Elijo un laboratorio]
     C --> D[Entro en su carpeta]
     D --> E[uv usa su pyproject y su .venv]
     E --> F[Las pruebas verifican ese laboratorio]
+    F --> G[Sigo su QUICKSTART y su EXAMPLES]
 ```
 
-Si no puedes identificar qué `pyproject.toml`, `.venv` o `package.json` está usando un comando, no lo ejecutes todavía.
+Si no puedes identificar qué `pyproject.toml`, `.venv` o `package.json` está usando un comando, no
+lo ejecutes todavía.

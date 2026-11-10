@@ -1,6 +1,41 @@
-"""Generador de composiciones HTML para HyperFrames."""
+"""Generador de composiciones HTML para HyperFrames.
+
+Los textos de las escenas pueden venir del modelo, así que se tratan como datos: se escapan con
+`html.escape` y los valores que acaban en `id`, selectores GSAP o CSS se validan con una lista
+blanca. Un fragmento como `<div class="clip">` se ve como texto, no se convierte en un clip real.
+"""
+
+import html
+import re
+from html.parser import HTMLParser
 
 from hyperframes_studio.schemas import SceneSpec, VideoBrief
+
+SAFE_ID = re.compile(r"^[A-Za-z][A-Za-z0-9_-]{0,63}$")
+HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
+SAFE_GRADIENT = re.compile(r"^linear-gradient\([0-9A-Za-z#%,.\s-]+\)$")
+DEFAULT_GRADIENT = SceneSpec.model_fields["bg_gradient"].default
+DEFAULT_ACCENT = SceneSpec.model_fields["accent_color"].default
+
+
+def text(value: str) -> str:
+    """Texto seguro para el contenido o un atributo HTML."""
+
+    return html.escape(value, quote=True)
+
+
+def scene_dom_id(value: str, index: int) -> str:
+    """Id válido como atributo y como selector `#id`; si no lo es, se numera la escena."""
+
+    return value if SAFE_ID.match(value) else f"scene-{index + 1}"
+
+
+def safe_accent(value: str) -> str:
+    return value if HEX_COLOR.match(value) else DEFAULT_ACCENT
+
+
+def safe_gradient(value: str) -> str:
+    return value if SAFE_GRADIENT.match(value.strip()) else DEFAULT_GRADIENT
 
 
 def generate_hyperframes_html(brief: VideoBrief, scenes: list[SceneSpec]) -> str:
@@ -13,6 +48,8 @@ def generate_hyperframes_html(brief: VideoBrief, scenes: list[SceneSpec]) -> str
     gsap_tweens = []
 
     for idx, scene in enumerate(scenes):
+        dom_id = scene_dom_id(scene.id, idx)
+        accent = safe_accent(scene.accent_color)
         snippet_html = ""
         if scene.code_snippet:
             snippet_html = f"""
@@ -20,25 +57,25 @@ def generate_hyperframes_html(brief: VideoBrief, scenes: list[SceneSpec]) -> str
               <span class="code-dot red"></span>
               <span class="code-dot yellow"></span>
               <span class="code-dot green"></span>
-              <pre><code>{scene.code_snippet}</code></pre>
+              <pre><code>{text(scene.code_snippet)}</code></pre>
             </div>
             """
 
         scene_markup = f"""
-        <div id="{scene.id}" class="clip scene-card"
+        <div id="{dom_id}" class="clip scene-card"
              data-start="{scene.start_time}"
              data-duration="{scene.duration}"
              data-track-index="1"
-             style="background: {scene.bg_gradient};">
+             style="background: {safe_gradient(scene.bg_gradient)};">
           <div class="scene-content">
             <div class="scene-header">
-              <span class="badge" style="background: {scene.accent_color}22; color: {scene.accent_color}; border-color: {scene.accent_color}66;">
-                {scene.badge_text}
+              <span class="badge" style="background: {accent}22; color: {accent}; border-color: {accent}66;">
+                {text(scene.badge_text)}
               </span>
               <span class="step-indicator">Paso {idx + 1} de {len(scenes)}</span>
             </div>
-            <h1 class="headline" style="--accent: {scene.accent_color};">{scene.headline}</h1>
-            <p class="body-text">{scene.body}</p>
+            <h1 class="headline" style="--accent: {accent};">{text(scene.headline)}</h1>
+            <p class="body-text">{text(scene.body)}</p>
             {snippet_html}
           </div>
         </div>
@@ -49,15 +86,15 @@ def generate_hyperframes_html(brief: VideoBrief, scenes: list[SceneSpec]) -> str
         t_start = scene.start_time
         gsap_tweens.append(
             f"""
-        // Animación para {scene.id}
-        tl.from("#{scene.id} .scene-content", {{
+        // Animación para {dom_id}
+        tl.from("#{dom_id} .scene-content", {{
           opacity: 0,
           y: 40,
           scale: 0.96,
           duration: 0.6,
           ease: "power2.out"
         }}, {t_start});
-        tl.to("#{scene.id} .scene-content", {{
+        tl.to("#{dom_id} .scene-content", {{
           opacity: 0,
           y: -30,
           duration: 0.4,
@@ -241,3 +278,65 @@ def generate_hyperframes_html(brief: VideoBrief, scenes: list[SceneSpec]) -> str
 </body>
 </html>
 """
+
+
+class _ClipCollector(HTMLParser):
+    """Recoge cada elemento `.clip` con su id, clases y tiempos."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.clips: list[dict] = []
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        classes = (values.get("class") or "").split()
+        if "clip" in classes:
+            self.clips.append(
+                {
+                    "id": values.get("id"),
+                    "classes": classes,
+                    "start": values.get("data-start"),
+                    "duration": values.get("data-duration"),
+                }
+            )
+
+
+def lint_composition(html_text: str, scenes: list[SceneSpec], tolerance: float = 0.05) -> list[str]:
+    """Comprueba la composición antes de abrir Chrome y devuelve los problemas encontrados.
+
+    - Hay exactamente un clip `.scene-card` por escena y ningún clip inesperado.
+    - Los ids de escena no se repiten.
+    - Las escenas son contiguas: cada una empieza donde termina la anterior, desde 0.
+    """
+
+    collector = _ClipCollector()
+    collector.feed(html_text)
+    problems: list[str] = []
+    scene_clips = [clip for clip in collector.clips if "scene-card" in clip["classes"]]
+    known = {"brand-footer", "timeline-bar"}
+    for clip in collector.clips:
+        if "scene-card" not in clip["classes"] and not known.intersection(clip["classes"]):
+            problems.append(
+                f"clip inesperado id={clip['id']!r} data-start={clip['start']} "
+                f"data-duration={clip['duration']}"
+            )
+    if len(scene_clips) != len(scenes):
+        problems.append(f"se esperaban {len(scenes)} escenas y hay {len(scene_clips)}")
+    ids = [clip["id"] for clip in scene_clips]
+    if len(set(ids)) != len(ids):
+        problems.append("hay ids de escena repetidos")
+    expected_start = 0.0
+    for clip in scene_clips:
+        try:
+            start, duration = float(clip["start"]), float(clip["duration"])
+        except (TypeError, ValueError):
+            problems.append(f"{clip['id']}: data-start o data-duration no numéricos")
+            continue
+        if duration <= 0:
+            problems.append(f"{clip['id']}: la duración debe ser positiva")
+        if abs(start - expected_start) > tolerance:
+            problems.append(
+                f"{clip['id']}: empieza en {start} s y debería empezar en {round(expected_start, 2)} s"
+            )
+        expected_start = start + duration
+    return problems

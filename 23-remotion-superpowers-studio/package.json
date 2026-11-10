@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "remotion studio src/video_composition/index.ts",
     "build": "remotion bundle src/video_composition/index.ts",
-    "render": "remotion render src/video_composition/index.ts MainVideo .local/output/remotion_superpowers.mp4"
+    "render": "remotion render src/video_composition/index.ts MainVideo .local/output/remotion_superpowers.mp4",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@remotion/cli": "4.0.523",

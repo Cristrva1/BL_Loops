@@ -59,19 +59,31 @@ La raíz coordina conocimiento y convenciones. No es un servicio central y no of
 
 ## Recorrido recomendado
 
+### Si vienes a aprender
+
+1. Sigue [QUICKSTART.md](QUICKSTART.md) para reconocer el entorno sin modificar secretos.
+2. Abre la [ruta de aprendizaje](RUTA_DE_APRENDIZAJE.md) y empieza por el laboratorio 01.
+3. Ten a mano el [glosario](GLOSARIO.md): cada término enlaza al laboratorio donde se ve.
+4. En cada laboratorio: `README.md` → `docs/humano/EXAMPLES.md` → `EXERCISES.md`.
+
+### Si vienes a mantener o ampliar el repositorio
+
 1. Lee [DOCUMENT_MAP.md](DOCUMENT_MAP.md) para entender la autoridad de cada documento.
-2. Sigue [QUICKSTART.md](QUICKSTART.md) para reconocer el entorno sin modificar secretos.
-3. Estudia [ARCHITECTURE.md](ARCHITECTURE.md) para ver los límites entre proyectos.
-4. Revisa [ENVIRONMENTS.md](ENVIRONMENTS.md) antes de instalar dependencias o crear una `.venv`.
-5. Usa [METHODOLOGY.md](METHODOLOGY.md) para construir una parte nueva de forma sencilla.
-6. Para una sesión futura de Codex, comienza por [CODEX_WORKFLOW.md](CODEX_WORKFLOW.md).
-7. Practica con [EXERCISES.md](EXERCISES.md).
-8. Comprueba el resultado con [EVALUATION.md](EVALUATION.md) y diagnostica fallos con [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+2. Estudia [ARCHITECTURE.md](ARCHITECTURE.md) para ver los límites entre proyectos.
+3. Revisa [ENVIRONMENTS.md](ENVIRONMENTS.md) antes de instalar dependencias o crear una `.venv`.
+4. Usa [METHODOLOGY.md](METHODOLOGY.md) para construir una parte nueva de forma sencilla.
+5. Para una sesión futura de Codex, comienza por [CODEX_WORKFLOW.md](CODEX_WORKFLOW.md).
+6. Practica con [EXERCISES.md](EXERCISES.md).
+7. Comprueba el resultado con [EVALUATION.md](EVALUATION.md) y diagnostica fallos con [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
+Los cambios recientes están resumidos en [NOVEDADES.md](../../NOVEDADES.md).
 
 ## Documentos de esta guía
 
 | Documento | Pregunta que responde |
 |---|---|
+| [RUTA_DE_APRENDIZAJE.md](RUTA_DE_APRENDIZAJE.md) | ¿En qué orden recorro los laboratorios y cómo sé que entendí cada uno? |
+| [GLOSARIO.md](GLOSARIO.md) | ¿Qué significa cada término y dónde lo veo funcionar? |
 | [QUICKSTART.md](QUICKSTART.md) | ¿Cómo empiezo sin romper ni instalar de más? |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | ¿Cómo se relacionan la raíz, los laboratorios y los resultados? |
 | [METHODOLOGY.md](METHODOLOGY.md) | ¿Cómo convertimos una idea en una lección ejecutable? |

@@ -1,0 +1,25 @@
+{
+  "artifact_type": "agent",
+  "idea": "Definir un agente sin herramientas que clasifique tickets sintéticos de soporte por urgencia y tema usando solo el texto recibido.",
+  "title": "Clasificador de tickets sin tools",
+  "audience": "Persona que aprende por qué una lista vacía de tools también es una decisión",
+  "context": "Cada ticket llega completo dentro de la entrada. No hay base de datos, red ni historial de clientes; el agente solo clasifica y explica su criterio.",
+  "input_name": "support_tickets",
+  "output_format": "json",
+  "success_criteria": [
+    "Cada ticket recibe una urgencia alta, media o baja con una frase de justificación",
+    "Los tickets ambiguos quedan marcados para revisión humana",
+    "La salida conserva el identificador original de cada ticket"
+  ],
+  "constraints": [
+    "No contactar clientes",
+    "No inventar datos de cuentas ni pedidos",
+    "No cerrar ni modificar tickets"
+  ],
+  "source_refs": [
+    "docs/CASOS_DE_EVALUACION.md#F-AGENT-002"
+  ],
+  "allowed_tools": [],
+  "tools_confirmed": true,
+  "requires_human_approval": true
+}

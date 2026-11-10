@@ -1,0 +1,10 @@
+{
+  "title": "Briefing",
+  "steps": [
+    "Saluda al cliente",
+    "Pregunta qué necesita"
+  ],
+  "limits": [
+    "No prometas descuentos"
+  ]
+}

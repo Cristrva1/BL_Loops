@@ -18,6 +18,13 @@ No es un error de Ollama: la búsqueda léxica devolvió cero coincidencias y el
 invocado. Prueba dos o tres términos exactos que aparezcan en títulos o texto. Después compara la
 misma paráfrasis en el futuro laboratorio vectorial.
 
+## Aparecen un documento obsoleto o un distractor entre las fuentes
+
+Es el comportamiento esperado de una búsqueda léxica: `02-politica-obsoleta.md` comparte palabras
+con la pregunta y `05-distractor.md` contiene «luna». Ejecuta `uv run naive-rag search "<pregunta>"`
+para ver sus puntuaciones. Si la **respuesta** usa la política obsoleta, el fallo está en la
+generación, no en la recuperación.
+
 ## Ollama no responde
 
 ```powershell

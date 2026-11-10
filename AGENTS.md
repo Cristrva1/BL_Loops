@@ -64,12 +64,17 @@ Cada laboratorio debe separar físicamente el material humano del runtime:
 2. `AGENTS.md` en la raíz: instrucciones operativas portables para futuras sesiones de Codex.
 3. `docs/humano/README.md`: objetivo, conceptos, mapa visual y recorrido guiado.
 4. `docs/humano/QUICKSTART.md`: comandos PowerShell explicados y resultado esperado.
-5. `docs/humano/ARCHITECTURE.md`: nodos, estados, contratos y decisiones explicados.
-6. `docs/humano/METHODOLOGY.md`: método seguido, fuentes, decisiones y límites.
-7. `docs/humano/EXERCISES.md`: ejercicios básico, intermedio y avanzado.
-8. `docs/humano/TROUBLESHOOTING.md`: fallos comunes y cómo diagnosticarlos.
-9. `docs/humano/EVALUATION.md`: casos, métricas, criterios de aprobado y exportación JSONL.
-10. Código, configuración, schemas, fixtures y pruebas deterministas fuera de `docs/humano/`.
+5. `docs/humano/EXAMPLES.md`: ejemplos resueltos con entrada, comando, qué observar y salida esperada.
+6. `docs/humano/ARCHITECTURE.md`: nodos, estados, contratos y decisiones explicados.
+7. `docs/humano/METHODOLOGY.md`: método seguido, fuentes, decisiones y límites.
+8. `docs/humano/EXERCISES.md`: ejercicios básico, intermedio y avanzado, con solución plegable.
+9. `docs/humano/TROUBLESHOOTING.md`: fallos comunes y cómo diagnosticarlos.
+10. `docs/humano/EVALUATION.md`: casos, métricas, criterios de aprobado y exportación JSONL.
+11. Código, configuración, schemas, fixtures y pruebas deterministas fuera de `docs/humano/`.
+
+Toda salida mostrada en `EXAMPLES.md` debe haberse obtenido ejecutando el comando. Cuando una parte
+depende del modelo, se indica y se muestra solo la forma esperada, nunca un texto inventado como si
+fuera real.
 
 El runtime nunca puede importar, parsear ni necesitar archivos de `docs/humano/` para funcionar. La documentación puede explicar el runtime; el runtime no depende de la documentación.
 
@@ -77,6 +82,7 @@ El runtime nunca puede importar, parsear ni necesitar archivos de `docs/humano/`
 
 - La guía humana transversal vive en `docs/humano/maestro/`.
 - Debe explicar objetivo, arquitectura, metodología, sesiones de Codex, entornos, documentos, ejercicios, diagnóstico y evaluación.
+- `RUTA_DE_APRENDIZAJE.md` ordena los laboratorios y `GLOSARIO.md` define el vocabulario común; ambos se actualizan al añadir un laboratorio o un concepto.
 - Los documentos humanos recibidos que viven fuera de `docs/humano/maestro/` se conservan como fuentes o referencias no vinculantes, salvo decisión explícita del usuario.
 - `docs/INDEX.md` debe distinguir reglas, decisiones vigentes, guías didácticas y corpus.
 
@@ -101,4 +107,6 @@ La explicación ampliada de este protocolo está en `docs/humano/maestro/CODEX_W
 - Eventos visuales: SSE por defecto; WebSocket solo cuando la interacción bidireccional lo justifique.
 - Documentación en español; identificadores de código y contratos en inglés.
 - Antes de declarar terminado un laboratorio, ejecutar sus pruebas, una demostración local y la exportación/importación de una corrida JSONL.
+- Las pruebas deben pasar en un clon recién descargado: sin `.env`, sin `.local/` y sin Ollama. Usar `--basetemp=.pytest-tmp`, dobles de prueba y workspaces sintéticos en carpetas temporales.
+- Cada laboratorio con servidor usa puertos propios; consultar el mapa de puertos de `docs/humano/maestro/QUICKSTART.md` antes de elegir uno nuevo.
 - Preservar siempre cambios ajenos y evitar ediciones en repositorios de referencia.

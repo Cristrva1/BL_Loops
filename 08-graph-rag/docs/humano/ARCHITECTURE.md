@@ -25,6 +25,11 @@ se fragmenta para la comparación léxica. Un documento puede no tener aristas; 
 4. Si la ruta tiene dos o más hops, se muestra una arista `inferred` de extremo a extremo.
 5. En modo `compare`, FTS5 lista fragmentos de la misma pregunta sin pretender reconstruir la ruta.
 
+Las rutas se ordenan de más larga a más corta. Un salto recorrido al revés conserva su triple
+original en la cita y en el diagrama Mermaid (`Ana_Ruiz -->|owns| AtlasCRM`); en la arista inferida,
+cada salto inverso lleva el prefijo `^`, la notación de caminos inversos de SPARQL 1.1
+(`MailRelay --^depends_on/^owns--> Luis Soto`).
+
 Para decenas de nodos, BFS en SQLite es suficiente. Este diseño deberá revisarse si el corpus crece
 varios órdenes de magnitud o si se autoriza un extractor no determinista.
 

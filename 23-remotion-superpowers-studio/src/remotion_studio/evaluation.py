@@ -1,8 +1,9 @@
 """Evaluación y exportación JSONL para Remotion Superpowers."""
 
-from datetime import datetime, timezone
 import json
+from datetime import UTC, datetime
 from pathlib import Path
+
 from remotion_studio.schemas import EvaluationRecord
 
 
@@ -13,7 +14,7 @@ def export_evaluation_jsonl(
     target.parent.mkdir(parents=True, exist_ok=True)
 
     entry = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "lab_id": "23-remotion-superpowers-studio",
         "case_id": record.case_id,
         "model": record.model,

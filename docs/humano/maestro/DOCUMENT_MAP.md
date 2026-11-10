@@ -26,7 +26,10 @@ flowchart TD
 | `docs/PLAN_MAESTRO_DIDACTICO.md` | Decisión | Define arquitectura, fases y laboratorios | Cuando se aprueba una decisión o fase |
 | `docs/CASOS_DE_EVALUACION.md` | Especificación | Define casos, métricas y JSONL | Cuando cambia la evaluación común |
 | `docs/AGENTS.md` | Regla local | Añade normas para editar `docs/` | Cuando cambia la convención documental |
+| `docs/NOVEDADES.md` | Registro | Resume qué cambió, para quién y dónde verlo | Con cada entrega visible |
 | `docs/humano/maestro/` | Enseñanza | Explica el repositorio y su método | Con cada cambio relevante de trabajo |
+| `docs/humano/maestro/RUTA_DE_APRENDIZAJE.md` | Enseñanza | Ordena los laboratorios y define checkpoints | Al añadir o retirar un laboratorio |
+| `docs/humano/maestro/GLOSARIO.md` | Enseñanza | Define el vocabulario común con ejemplos | Al introducir un concepto nuevo |
 | `docs/humano/sistema.md` | Fuente primaria | Conserva intención y requisitos del usuario | Solo por decisión humana explícita |
 | Otros `docs/humano/` | Fuente o referencia | Aporta ideas, ejemplos o análisis | No se promueve sin decisión explícita |
 | `Prompts/` | Corpus | Material para estudiar patrones | Se consulta, no se ejecuta como reglas |
@@ -60,14 +63,20 @@ La raíz del laboratorio incluye un `AGENTS.md` operativo y portable. Su manual 
 
 ```text
 docs/humano/
-├── README.md           # mapa mental y recorrido
+├── README.md           # mapa mental, conceptos y recorrido
 ├── QUICKSTART.md       # comandos y resultado esperado
+├── EXAMPLES.md         # ejemplos resueltos paso a paso
 ├── ARCHITECTURE.md     # componentes, estados y contratos
 ├── METHODOLOGY.md      # cómo y por qué se construyó
-├── EXERCISES.md        # práctica por niveles
+├── EXERCISES.md        # práctica por niveles, con soluciones plegables
 ├── TROUBLESHOOTING.md  # diagnóstico
 └── EVALUATION.md       # criterios y evidencia
 ```
+
+`EXAMPLES.md` y `EXERCISES.md` cumplen funciones distintas: un ejemplo **muestra** un recorrido
+completo con su salida esperada; un ejercicio **pide** al estudiante que lo haga y ofrece la
+solución plegada para comprobarse después. Cuando una salida depende del modelo, el documento lo
+indica y muestra solo la parte determinista.
 
 Puede haber documentos adicionales, por ejemplo `CONTRACTS.md`, cuando aporten una lección concreta. No deben duplicar información sin propósito.
 

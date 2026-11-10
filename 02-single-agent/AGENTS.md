@@ -6,6 +6,7 @@ Estas reglas se aplican a todo este laboratorio. Dentro de BL_Loops se suman al 
 
 - Este corte enseña el agente mínimo: una conversación de texto en la CLI de Windows 11 contra `gemma4:e4b` mediante Ollama local.
 - La única memoria es el historial en RAM de la sesión actual.
+- `/ayuda`, `/memoria`, `/olvidar` y `/salir` son comandos locales: nunca llegan al modelo ni muestran el contenido del historial.
 - No presentar tools, RAG, persistencia de conversaciones, interfaz web, SSE ni autonomía como capacidades existentes.
 - La traza JSONL contiene estados y métricas, pero no guarda el texto crudo de la conversación.
 
@@ -45,4 +46,4 @@ uv run single-agent-validate <ruta-jsonl>
 uv run single-agent
 ```
 
-La última comprobación debe usar una conversación breve real con Ollama. Termina la sesión con `/salir` y comprueba que el JSONL generado se pueda importar con `single-agent-validate`.
+La última comprobación debe usar una conversación breve real con Ollama e incluir `/memoria` y `/olvidar`. Termina la sesión con `/salir` y comprueba que el JSONL generado se pueda importar con `single-agent-validate`.

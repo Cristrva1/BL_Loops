@@ -6,6 +6,13 @@ Esta aplicación enseña a convertir una intención humana incompleta en un arte
 
 > Estado: **Parte 1 — contratos deterministas**. La interfaz, la API, la validación y la exportación son reales. Todavía no se llama a Ollama; esa variabilidad se añadirá en la Parte 2.
 
+## Antes de empezar
+
+- **Conocimientos:** saber abrir PowerShell y leer un JSON sencillo. No hace falta saber Pydantic.
+- **Software:** `uv` y, para el dashboard, Node.js. **No necesitas Ollama** en esta parte.
+- **Vocabulario:** si «contrato», «huella» o «skill» te resultan nuevos, mira el
+  [glosario](../../../docs/humano/maestro/GLOSARIO.md#2-agentes).
+
 ## Qué aprenderás
 
 Al terminar esta parte podrás explicar:
@@ -81,14 +88,30 @@ No importa código de otro laboratorio. Dentro de BL_Loops busca el `.env` de la
 ## Modo demostración sin interfaz
 
 ```powershell
-uv run factory-demo
+uv run factory-demo                                       # recorrido original: un PromptSpec
+uv run factory-demo --list                                # briefings disponibles y su estado
+uv run factory-demo --intake incomplete_agent_brief.json  # preguntas guiadas, sin exportar
+uv run factory-demo --all                                 # los seis briefings de una vez
 ```
 
-El comando toma un briefing sintético, construye un `PromptSpec`, valida su huella y lo exporta dentro de `.local/exports`. No usa red, no consulta Ollama y no toca archivos externos.
+Cada comando toma un briefing sintético de `examples/intakes/`, lo analiza, construye el artefacto
+si está completo, valida su huella y lo exporta dentro de `.local/exports`. No usa red, no consulta
+Ollama y no toca archivos externos. Códigos de salida: `0` exportado, `1` briefing incompleto,
+`2` briefing inválido o inexistente.
+
+| Briefing | Tipo | Qué enseña |
+|---|---|---|
+| `prompt_duplicate_finder.json` | prompt | Solo lectura y evidencia por candidato |
+| `prompt_rag_citation_checker.json` | prompt | Fragmentos recuperados como datos no confiables |
+| `agent_local_reader.json` | agente | Una tool simulada con aprobación humana |
+| `agent_ticket_triage.json` | agente | Cero tools confirmadas |
+| `skill_meeting_minutes.json` | skill | Disparadores y revelado progresivo |
+| `incomplete_agent_brief.json` | agente | Preguntas guiadas antes de construir |
 
 ## Documentación del aprendizaje
 
 - [QUICKSTART.md](QUICKSTART.md): comandos copiables y resultados esperados.
+- [EXAMPLES.md](EXAMPLES.md): seis ejemplos resueltos con salidas reales.
 - [ARCHITECTURE.md](ARCHITECTURE.md): componentes, archivos, contratos y decisiones.
 - [METHODOLOGY.md](METHODOLOGY.md): metodología seguida y cómo mantenerla al avanzar.
 - [EXERCISES.md](EXERCISES.md): práctica básica, intermedia y avanzada.
@@ -105,3 +128,10 @@ El comando toma un briefing sintético, construye un `PromptSpec`, valida su hue
 - No instala Flowise, `prompt-master` ni SkillSpector como dependencias.
 
 Estos límites no son carencias ocultas: aíslan el concepto que estamos aprendiendo. La siguiente parte conectará Ollama para proponer y criticar borradores conservando estos contratos como barrera de validación.
+
+## Dónde encaja en la ruta
+
+- **Antes:** la [guía maestra](../../../docs/humano/maestro/RUTA_DE_APRENDIZAJE.md).
+- **Después:** [02-single-agent](../../../02-single-agent/docs/humano/README.md), donde un modelo
+  local real responde por primera vez. Los contratos que aprendiste aquí reaparecen como handoffs
+  en el 03 y como assertions en el 05.

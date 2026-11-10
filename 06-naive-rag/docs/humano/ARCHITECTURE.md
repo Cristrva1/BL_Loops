@@ -21,6 +21,18 @@ flowchart TB
 El índice temporal evita mezclar una versión vieja con una importación incompleta. Una fuente
 vacía o ilegible falla antes de reemplazar el índice anterior.
 
+## Comandos y qué parte del flujo recorren
+
+| Comando | Recupera | Aumenta | Genera | Escribe JSONL |
+|---|---|---|---|---|
+| `index` | — | — | — | No; publica `books.sqlite3` |
+| `stats` | — | — | — | No |
+| `search` | Sí (mismo `top_k` que `ask`) | No | No | No |
+| `ask` | Sí | Sí | Sí, salvo abstención | Sí |
+
+`search` reutiliza exactamente `CorpusIndex.search()` y la etiqueta `citation_label()` de `ask`, así
+que lo que muestra es el contexto real que recibiría el modelo.
+
 ## Nodos y estados de una pregunta
 
 ```mermaid

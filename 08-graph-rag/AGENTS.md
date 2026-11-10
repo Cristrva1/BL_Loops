@@ -23,6 +23,14 @@
 - Esas aristas se guardan como `extracted`. Una ruta de dos o más saltos produce una arista
   `inferred` en consulta, nunca en SQLite.
 - Un bucle, un enlace simbólico o un corpus sin aristas fallan de forma explícita.
+- Un salto inverso conserva el sentido del triple escrito en la cita y en Mermaid; en la arista
+  inferida se marca con `^predicado`. No cambiar esa notación sin actualizar pruebas, prompt y
+  `docs/humano/EXAMPLES.md`.
+
+## Documentación
+
+- `docs/humano/EXAMPLES.md` muestra salidas reales de `index` y `search`; si cambias el formato de
+  rutas, el orden o la extracción, vuelve a ejecutar esos comandos y actualiza la salida.
 
 ## Verificación
 

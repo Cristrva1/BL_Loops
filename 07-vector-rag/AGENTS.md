@@ -24,6 +24,12 @@
 - `Contexto (Wikipedia)`, `Fuentes y Adquisición`, `Metadatos` y `Temas (Open Library)` se excluyen
   por política explícita; cualquier nuevo filtro requiere prueba y documentación.
 
+## Documentación
+
+- Leer `docs/humano/EXAMPLES.md` antes de cambiar el filtro, la fusión o el perfil. Sus ejemplos 1 a 3
+  importan código real (`prepare_markdown`, `LEXICAL_RRF_WEIGHT`, `VECTOR_RRF_WEIGHT`): si cambias
+  esas piezas, vuelve a ejecutarlos y actualiza su salida en el mismo cambio.
+
 ## Verificación
 
 ```powershell

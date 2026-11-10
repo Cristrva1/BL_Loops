@@ -10,6 +10,18 @@ Al terminar podrás explicar y ejecutar estos cinco pasos:
 4. Si no se alcanza el umbral, otro llamado reescribe el prompt.
 5. Se conserva el mejor candidato, no necesariamente el último, y se explica por qué paró.
 
+## Antes de empezar
+
+- **Laboratorio previo:** [03-orchestration](../../../03-orchestration/docs/humano/README.md), donde
+  ya viste un gate determinista y una única corrección. Aquí la corrección se convierte en un ciclo.
+- **Software:** `uv`, Ollama con `qwen3.5:4b` y, para el dashboard, Node.js.
+- **Vocabulario:** [loop](../../../docs/humano/maestro/GLOSARIO.md#loop),
+  [presupuesto](../../../docs/humano/maestro/GLOSARIO.md#presupuesto),
+  [maker/checker](../../../docs/humano/maestro/GLOSARIO.md#makerchecker) y
+  [mejor candidato](../../../docs/humano/maestro/GLOSARIO.md#mejor-candidato).
+- **Sin Ollama** puedes ver un loop completo con el modelo guionizado del
+  [ejemplo 3](EXAMPLES.md#ejemplo-3--un-loop-completo-sin-gpu).
+
 ## Mapa visual
 
 ```mermaid
@@ -42,13 +54,20 @@ La última iteración puede empeorar el score. El laboratorio guarda el máximo 
 
 Cinco iteraciones, dos errores o tres minutos. El primero que se agote gana. El motivo de salida queda en el snapshot y en el JSONL.
 
+## Una analogía
+
+Es como practicar un tiro libre con un entrenador que cuenta aciertos: tienes cinco intentos, un
+tiempo límite y te quedas con **tu mejor serie**, no con la última. Si a la segunda serie ya metes
+las cinco, paras. El entrenador no opina sobre el estilo: cuenta.
+
 ## Recorrido guiado
 
 1. Sigue [QUICKSTART.md](QUICKSTART.md).
-2. Carga el caso `I-LOOP-003` en el dashboard.
-3. Observa el score inicial del prompt débil.
-4. Mira si el mejor candidato coincide con la última iteración.
-5. Valida el JSONL y continúa con [EXERCISES.md](EXERCISES.md).
+2. Ejecuta los [ejemplos 1 y 3](EXAMPLES.md) para ver las assertions y un loop completo sin GPU.
+3. Carga el caso `I-LOOP-003` en el dashboard.
+4. Observa el score inicial del prompt débil.
+5. Mira si el mejor candidato coincide con la última iteración.
+6. Valida el JSONL y continúa con [EXERCISES.md](EXERCISES.md).
 
 ## Qué no hace
 
@@ -59,3 +78,9 @@ Cinco iteraciones, dos errores o tres minutos. El primero que se agote gana. El 
 - No conserva el prompt ni la salida completa dentro del JSONL.
 
 La arquitectura exacta está en [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Dónde encaja en la ruta
+
+- **Antes:** [04-parallel-agents](../../../04-parallel-agents/docs/humano/README.md).
+- **Después:** [06-naive-rag](../../../06-naive-rag/docs/humano/README.md), que abre la familia RAG:
+  antes de generar, el sistema busca evidencia y la cita.

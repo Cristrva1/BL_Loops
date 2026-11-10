@@ -8,7 +8,7 @@ Este documento detalla la estructura interna, flujo de datos, partición de cont
 sequenceDiagram
     autonumber
     actor Usuario
-    participant UI as Frontend React (Vite @ 5175)
+    participant UI as Frontend React (Vite @ 5177)
     participant API as FastAPI Backend (@ 8025)
     participant Parser as Parser Multi-formato
     participant Chunker as Gestor de Contexto
@@ -34,7 +34,7 @@ sequenceDiagram
     end
     Ollama-->>API: JSON estructurado con minuta
     API->>DB: Guarda reunión y reporte generado
-    API->>API: Exporta corrida determinista en .local/runs/*.jsonl
+    API->>API: Exporta traza sanitizada (métricas + report_sha256) en .local/runs/*.jsonl
     API-->>UI: SSE event: completed (reporte final)
     UI-->>Usuario: Muestra pestañas y tabla interactiva
 ```

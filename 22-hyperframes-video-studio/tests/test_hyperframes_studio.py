@@ -1,22 +1,21 @@
 """Pruebas unitarias para 22-hyperframes-video-studio."""
 
 import json
-from pathlib import Path
-import pytest
 from unittest.mock import AsyncMock, patch
 
+import pytest
+
+from hyperframes_studio.evaluation import export_evaluation_jsonl
+from hyperframes_studio.ollama_client import DEFAULT_SCENES, OllamaVideoDirector
+from hyperframes_studio.orchestrator import HyperFramesOrchestrator
 from hyperframes_studio.schemas import (
     EvaluationRecord,
-    PipelineEvent,
     PipelineState,
     RenderResult,
     SceneSpec,
     VideoBrief,
 )
 from hyperframes_studio.templates import generate_hyperframes_html
-from hyperframes_studio.ollama_client import OllamaVideoDirector, DEFAULT_SCENES
-from hyperframes_studio.evaluation import export_evaluation_jsonl
-from hyperframes_studio.orchestrator import HyperFramesOrchestrator
 
 
 def test_schemas_validation():
@@ -116,12 +115,13 @@ async def test_orchestrator_pipeline_mock(tmp_path):
     orch = HyperFramesOrchestrator(workspace_dir=str(tmp_path / "workspace"))
     queue = orch.subscribe()
 
-    brief = VideoBrief(target_duration=10.0)
+    # Brief, escenas y render simulados coherentes: 5 escenas de 3 s = 15 s.
+    brief = VideoBrief(target_duration=15.0)
 
     # Mock renderer to avoid calling Chrome in unit test
     fake_render = RenderResult(
         video_path=str(tmp_path / "mock.mp4"),
-        duration=10.0,
+        duration=15.0,
         width=1920,
         height=1080,
         fps=30,
@@ -130,7 +130,11 @@ async def test_orchestrator_pipeline_mock(tmp_path):
         success=True,
     )
 
-    with patch.object(orch.renderer, "render_video", new=AsyncMock(return_value=fake_render)):
+    # Director y renderer simulados: la prueba nunca llama a Ollama ni a Chrome reales.
+    with (
+        patch.object(orch.director, "generate_scenes", new=AsyncMock(return_value=list(DEFAULT_SCENES))),
+        patch.object(orch.renderer, "render_video", new=AsyncMock(return_value=fake_render)),
+    ):
         res = await orch.run_pipeline(brief, output_path=str(tmp_path / "mock.mp4"))
 
     assert res.success is True
