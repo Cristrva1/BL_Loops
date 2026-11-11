@@ -39,6 +39,8 @@ al resultado? La respuesta del laboratorio: sí, si el modelo solo propone conte
   de telemetría y medición sin pista de video.
 - Demo y API ejecutadas sin Ollama; las salidas de [EXAMPLES.md](EXAMPLES.md) son las obtenidas.
 - El análisis de telemetría se hizo leyendo el paquete descargado con `npm pack`, sin ejecutarlo.
+- Render real con `hyperframes@0.8.34` el 2026-11-11: 1920×1080, 30 fps, 450 fotogramas y 15,0 s
+  medidos con `ffprobe` ([ejemplo 7](EXAMPLES.md#ejemplo-7-render-real-con-hyperframes)).
 
 ## Límites conocidos
 

@@ -64,7 +64,7 @@ Hecho ocurrido en el sistema, inmutable. Estructura: `event_id`, `event_type`, `
 ## F
 
 **Federación**
-Modelo por el que el aprendizaje sube de perfiles individuales a doctrina global, pasando siempre por el Anonymizer. Inspirado en Federated Learning. Ver `50-flows/federation-loop.md`.
+Modelo por el que el aprendizaje sube de perfiles individuales a doctrina global, pasando siempre por el Anonymizer. Inspirado en Federated Learning. Ver `50-flows/03-federation-flow.md`.
 
 **Falla cerrada**
 Principio: cuando el sistema falla, nunca degrada la experiencia del usuario; devuelve un fallback seguro. El aprendizaje y la mejora son abiertos; la falla, no.

@@ -1,6 +1,6 @@
 [Skip to Main Content](#main)
 
-[![](/c/ohiolink/OhioLINK-white.png "OhioLINK Logo")](/acprod/odb_etd/r/etd/search/1?clear=0,1,5,10,20,21,1001)
+[OhioLINK ETD Center](https://etd.ohiolink.edu/acprod/odb_etd/r/etd/search/1?clear=0,1,5,10,20,21,1001)
 
 * [Frequently Asked Questions](https://etdadmin.ohiolink.edu/acprod/odb_etd/r/etd/admin/faq)
 * [Submit an ETD](https://etdadmin.ohiolink.edu/acprod/odb_etd/r/etd/admin/home)
@@ -17,7 +17,7 @@ Advanced Search
 
 School Logo
 
-![Kent State University Logo](wwv_flow.show?p_request=NATIVE%3DSVRFTSBUWVBFfjUxMjB-MzM5OTY0MjQwODIyMDk2Mzk5Nw/noikKeKEWTRX22DssWG0jRlTxYKteiXTO9z07BLbzA4w4KQ6n_GCjfzPvfqWKzsUr4eS9MmIRJdxJNgXAhZOEw&p_instance=106909031845502&p_flow_id=1501&p_flow_step_id=10&p_context=search/10/106909031845502 "Kent State University Logo")
+Kent State University
 
 ## Files
 
@@ -61,7 +61,7 @@ Pages
 
 Subject Headings
 
-[American Literature](/acprod/odb_etd/r/etd/search/search-results?p1001_subject=26&request=SUBJECT_SEARCH&clear=1001); [Literature](/acprod/odb_etd/r/etd/search/search-results?p1001_subject=275&request=SUBJECT_SEARCH&clear=1001)
+[American Literature](https://etd.ohiolink.edu/acprod/odb_etd/r/etd/search/search-results?p1001_subject=26&request=SUBJECT_SEARCH&clear=1001); [Literature](https://etd.ohiolink.edu/acprod/odb_etd/r/etd/search/search-results?p1001_subject=275&request=SUBJECT_SEARCH&clear=1001)
 
 ## Recommended CitationsRefworksEndNoteRISMendeley
 

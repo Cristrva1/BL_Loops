@@ -4,6 +4,14 @@
 > Lo más reciente va primero. Los cambios de arquitectura se deciden en el
 > [plan maestro](PLAN_MAESTRO_DIDACTICO.md); este registro solo los resume.
 
+## 2026-11-11 · Render real del 22 y enlaces de documentos recibidos
+
+| Novedad | Dónde verla |
+|---|---|
+| El laboratorio 22 ya tiene un render real con HyperFrames 0.8.34: 1920×1080, 30 fps, 450 fotogramas y 15,0 s medidos con `ffprobe`. El fragmento de código de la escena 2 se ve como texto | [Ejemplo 7 del 22](../22-hyperframes-video-studio/docs/humano/EXAMPLES.md#ejemplo-7-render-real-con-hyperframes) |
+| Diagnóstico nuevo para cuando GSAP no carga desde jsDelivr (`sub_timeline_script_failure`), con la forma de servirlo desde el workspace | [TROUBLESHOOTING del 22, punto 9](../22-hyperframes-video-studio/docs/humano/TROUBLESHOOTING.md#9-sub_timeline_script_failure-gsap-no-carga) |
+| Corregidos los 7 enlaces rotos de los documentos recibidos: los tres flujos de `Sistm2` apuntan a sus archivos reales y los enlaces de OhioLINK en `Libros` son absolutos | `docs/humano/Sistm2/00-overview/` y `docs/humano/Libros/` |
+
 ## 2026-11-05 · Revisión didáctica de todos los laboratorios
 
 ### Para estudiantes: nuevas formas de aprender
@@ -66,5 +74,6 @@
 - Demos ejecutadas sin Ollama: el fallback aparece en la terminal, los eventos y el JSONL.
 - Renders reales: animatic del 24 con FFmpeg y video del 23 con Remotion (12,0 s, 360 fotogramas).
 - El render del 22 con HyperFrames **no** se ejecutó en esta revisión; se verificó con pruebas, la
-  demo sin `npx`, la API y el análisis del paquete `hyperframes@0.8.34` sin ejecutarlo.
+  demo sin `npx`, la API y el análisis del paquete `hyperframes@0.8.34` sin ejecutarlo. Se hizo
+  después, el 2026-11-11 (ver la entrada de arriba).
 - Enlaces internos de toda la documentación comprobados.

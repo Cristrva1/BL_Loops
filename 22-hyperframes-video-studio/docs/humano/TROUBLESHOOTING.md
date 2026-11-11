@@ -66,3 +66,26 @@ de forma permanente con `npx --yes hyperframes@0.8.34 telemetry disable`.
   `/api/status`).
 - `422`: el brief no cumple el contrato (duración fuera de 5–60 s o modelo `cloud`). El detalle de la
   respuesta indica el campo.
+
+## 9. `sub_timeline_script_failure`: GSAP no carga
+
+- **Síntoma:** HyperFrames captura los 450 fotogramas y al final responde `Render blocked by 1
+  correctness warning: sub_timeline_script_failure` con
+  `https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js`.
+- **Causa:** el Chrome de HyperFrames no pudo descargar GSAP (sin red, proxy o firewall que bloquea
+  `cdn.jsdelivr.net`). Sin GSAP no hay línea de tiempo, y HyperFrames prefiere fallar a entregar un
+  video sin animaciones. El estudio marca la corrida como `FAILED`: no aprueba a ciegas.
+- **Solución:** da salida a `cdn.jsdelivr.net`. Si no puedes, sirve GSAP desde el workspace y
+  renderiza a mano:
+
+  ```powershell
+  Set-Location .\.local\workspace
+  npm pack gsap@3.14.2
+  tar -xzf gsap-3.14.2.tgz
+  Copy-Item .\package\dist\gsap.min.js .
+  (Get-Content index.html) -replace 'https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js', 'gsap.min.js' | Set-Content index.html
+  $env:HYPERFRAMES_NO_TELEMETRY = "1"
+  npx --yes hyperframes@0.8.34 render -o ..\output\manual.mp4
+  ```
+
+  Así se hizo el render del [ejemplo 7](EXAMPLES.md#ejemplo-7-render-real-con-hyperframes).

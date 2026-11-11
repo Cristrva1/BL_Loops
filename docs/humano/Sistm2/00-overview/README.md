@@ -22,9 +22,9 @@ Sistema central modular al que se le agregan progresivamente agentes de IA (herr
 7. [`20-modules/`](../20-modules/) — fichas de módulo (empezar por `core/meta-orchestrator.md`)
 
 ### Para entender el ciclo de vida de una petición
-8. [`50-flows/request-flow.md`](../50-flows/request-flow.md) — end-to-end
-9. [`50-flows/learning-loop.md`](../50-flows/learning-loop.md) — cómo el sistema mejora
-10. [`50-flows/federation-loop.md`](../50-flows/federation-loop.md) — local → global
+8. [`50-flows/01-request-flow.md`](../50-flows/01-request-flow.md) — end-to-end
+9. [`50-flows/02-learning-flow.md`](../50-flows/02-learning-flow.md) — cómo el sistema mejora
+10. [`50-flows/03-federation-flow.md`](../50-flows/03-federation-flow.md) — local → global
 
 ### Para tomar decisiones
 11. [`70-adr/`](../70-adr/) — por qué se eligió cada diseño (empezar por ADR-0001)
@@ -66,10 +66,10 @@ docs/
 │   ├── projections.md
 │   └── memory-layers.md
 ├── 50-flows/
-│   ├── request-flow.md
-│   ├── learning-loop.md
-│   ├── federation-loop.md
-│   └── escalation-rules.md
+│   ├── 01-request-flow.md
+│   ├── 02-learning-flow.md
+│   ├── 03-federation-flow.md
+│   └── 04-escalation-flow.md
 ├── 60-governance/
 │   ├── raci-matrix.md
 │   ├── okrs-template.md
