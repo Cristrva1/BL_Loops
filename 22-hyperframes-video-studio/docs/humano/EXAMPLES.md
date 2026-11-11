@@ -2,7 +2,7 @@
 
 Cada salida de este documento se obtuvo ejecutando el comando indicado, **sin Ollama**. Lo que
 depende del modelo o de un render con HyperFrames se indica como «forma esperada»: no se inventa
-aquí. Los ejemplos 2 a 5 no necesitan Node.js.
+aquí. Los ejemplos 2 a 5 no necesitan Node.js. El ejemplo 7 es un render real con HyperFrames.
 
 ## Ejemplo 1: demo sin Ollama y sin Node.js
 
@@ -186,3 +186,44 @@ Si lanzas una corrida mientras otra sigue activa, la API responde `409`.
 Tras un render correcto, `.local/eval_results.jsonl` recibe una línea con la forma descrita en
 [EVALUATION.md](EVALUATION.md#formato-de-la-línea-jsonl). Para comparar modelos, filtra las líneas con
 `director_source = "ollama"` y `duration_measured = true`.
+
+## Ejemplo 7: render real con HyperFrames
+
+Render hecho el 2026-11-11 en Linux, con Node.js 22, FFmpeg y `hyperframes@0.8.34`. Se usó la
+composición que escribe la demo en `.local/workspace/` con las escenas calibradas, sin Ollama:
+
+```bash
+cd .local/workspace
+HYPERFRAMES_NO_TELEMETRY=1 DO_NOT_TRACK=1 npx --yes hyperframes@0.8.34 render -o ../output/tutorial_hyperframes.mp4
+```
+
+Final de la salida:
+
+```text
+  ██████████████████████░░░  90%  Assembling final video
+  █████████████████████████  100%  Render complete
+
+◇  .../tutorial_hyperframes.mp4
+   2.7 MB · 15.0s video · rendered in 41.0s
+```
+
+Medición con `ffprobe`:
+
+```text
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=30/1
+nb_frames=450
+duration=15.000000
+size=2780372
+```
+
+**Qué observar:** salen las cinco escenas con su etiqueta, el titular y el paso («Paso 2 de 5»). En
+la escena 2, el fragmento `<div class="clip" data-start="0" data-duration="3">` aparece como texto
+dentro del bloque de código: el escapado funciona y el fragmento no se convierte en un clip.
+
+> **Nota:** en el entorno de esta prueba no había salida a `cdn.jsdelivr.net`, así que se sirvió
+> `gsap.min.js` 3.14.2 (el mismo archivo, descargado con `npm pack gsap@3.14.2`) desde el propio
+> workspace. Sin ese archivo, HyperFrames detiene el render con `sub_timeline_script_failure` y el
+> estudio marca la corrida como fallida. Lo explica el punto 9 de [TROUBLESHOOTING.md](TROUBLESHOOTING.md#9-sub_timeline_script_failure-gsap-no-carga).
